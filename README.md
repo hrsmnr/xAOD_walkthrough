@@ -7,3 +7,5 @@ $rc find_packages
 $rc compile
 $testRun (Output directory) (DatasetName)
 (e.g. $time testRun submitDir testwithmc 2>&1 | tee logmine.txt)
+
+test
