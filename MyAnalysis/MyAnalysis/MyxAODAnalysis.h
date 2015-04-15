@@ -3,7 +3,7 @@
 
 #include <EventLoop/Algorithm.h>
 
-/Added by minoru
+//Added by minoru
 #include"xAODRootAccess/Init.h"
 #include"xAODRootAccess/TEvent.h"
 #include"xAODRootAccess/TStore.h"
