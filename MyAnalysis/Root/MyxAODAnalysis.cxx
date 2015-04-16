@@ -1,6 +1,8 @@
 #define APP_NAME "MyxAODAnalysis"
-//#define MSG_LEVEL MSG::INFO
-#define MSG_LEVEL MSG::ERROR
+#define MyInfo if(m_debugMode<=MSG::INFO) Info
+#define MyError if(m_debugMode<=MSG::ERROR) Error
+#define MyDebug(a,b) if(m_debugMode<=MSG::DEBUG) std::cout<<"Debug in <MyxAODAnalysis::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyAlways(a,b) if(m_debugMode<=MSG::ALWAYS) std::cout<<"In <MyxAODAnalysis::"<<(a)<<">: "<<(b)<<std::endl;
 
 #include <EventLoop/Job.h>
 #include <EventLoop/StatusCode.h>
@@ -123,14 +125,14 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   // input events.
 
   //Added by minoru
-  m_debug_mode = 1;
   m_event = wk()->xaodEvent();
   m_sysId = 0;
 
   //as a check, let's see the number of events in our xAOD
-  Info("initialize()", "Number of events = %lli", m_event->getEntries()); //print in long long int
+  MyInfo("initialize()", "Number of events = %lli. %lli events will be processed.", m_event->getEntries(), m_maxEvent); //print in long long int
 
   m_eventCounter = 0;
+  m_processedEvents = 0;
   m_numCleanEvents = 0;
 
   // Event selection list
@@ -145,21 +147,21 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   CHECK(m_grl->setProperty("GoodRunsListVec", vecStringGRL));
   CHECK(m_grl->setProperty("PassThrough", false)); // if true (default) will ignore result of GRL and will just pass all events
   if (!m_grl->initialize().isSuccess()) { // check this isSuccess
-    Error("initialize()", "Failed to properly initialize the GRL. Exiting.");
+    MyError("initialize()", "Failed to properly initialize the GRL. Exiting.");
     return EL::StatusCode::FAILURE;
   }
 
   //Get meta-data from Sample Handler
   TFile *file = wk()->inputFile();
   TString sample_name = file->GetName();
-  Info( APP_NAME, "We will process the events in the dataset : %s", sample_name.Data());
+  MyInfo( "initialize()", "We will process the events in the dataset : %s", sample_name.Data());
   int posAOD = sample_name.First("AOD");
   int posLastSlash = sample_name.Last('/');
   TString dstag = sample_name(posAOD+3,posLastSlash-posAOD-3);
   TString tmpname = sample_name(0,posLastSlash);
   int posSecondLastSlash = tmpname.Last('/');
   TString dsname = tmpname(posSecondLastSlash+1,tmpname.Length()-posSecondLastSlash-1);
-  Info( APP_NAME, "Dataset Name : %s", dsname.Data());
+  MyInfo( "initialize()", "Dataset Name : %s", dsname.Data());
 
   int isData = 0;
   int isAtlFast = 0;
@@ -171,7 +173,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
     if(dstag.Contains("_a")) isAtlFast = 1;
     else                     isAtlFast = 0;
   }else{
-    Error("initialize()", "Dataset seems not like any expected categories. Exiting.");
+    MyError("initialize()", "Dataset seems not like any expected categories. Exiting.");
     return EL::StatusCode::FAILURE;
   }
 
@@ -180,7 +182,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   //  Create the tool(s) to test:
   m_susyObjTool = new ST::SUSYObjDef_xAOD("SUSYObjDef_xAOD");
   //  Configure the SUSYObjDef instance
-  m_susyObjTool->msg().setLevel( MSG_LEVEL );
+  m_susyObjTool->msg().setLevel( m_debugMode );
 
   CHECK(m_susyObjTool->setProperty("DataSource",datasource) ) ;
 
@@ -202,16 +204,16 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   CHECK(m_susyObjTool->setProperty("JESNuisanceParameterSet",1) );
   /////////////////////////////////////////////
   if( m_susyObjTool->SUSYToolsInit().isFailure() ) {
-    Error( APP_NAME, "Failed to initialise tools in SUSYToolsInit()..." );
-    Error( APP_NAME, "Exiting..." );
+    MyError( "initialize()", "Failed to initialise tools in SUSYToolsInit()..." );
+    MyError( "initialize()", "Exiting..." );
     return EL::StatusCode::FAILURE;
   }
   if( m_susyObjTool->initialize() != StatusCode::SUCCESS){
-    Error( APP_NAME, "Cannot intialize SUSYObjDef_xAOD..." );
-    Error( APP_NAME, "Exiting... " );
+    MyError( "initialize()", "Cannot intialize SUSYObjDef_xAOD..." );
+    MyError( "initialize()", "Exiting... " );
     return EL::StatusCode::FAILURE;
   }else{
-    Info( APP_NAME, "SUSYObjDef_xAOD initialized... " );
+    MyInfo( "initialize()", "SUSYObjDef_xAOD initialized... " );
   }
 
   // Now we can look at systematics:
@@ -222,28 +224,24 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   for(CP::SystematicSet::const_iterator sysItr = recommendedSystematics.begin();
       sysItr != recommendedSystematics.end(); ++sysItr){
     
-    if(m_debug_mode>=1){
-      Info(APP_NAME, "Found syst in global registry: %s", (sysItr->basename()).c_str());
-    }
+    MyInfo("initialize()", "Found syst in global registry: %s", (sysItr->basename()).c_str());
     
     TString tmpSysName = sysItr->basename();
     if(IsConsideredSyst(tmpSysName)){
       if (*sysItr == CP::SystematicVariation (sysItr->basename(), CP::SystematicVariation::CONTINUOUS)){
-	// for continuous systematics just evaluate +/-1 sigma
-	m_sysList.push_back(CP::SystematicSet());
-	m_sysList.back().insert(CP::SystematicVariation (sysItr->basename(), 1));
-	m_sysList.push_back(CP::SystematicSet());
-	m_sysList.back().insert(CP::SystematicVariation (sysItr->basename(), -1));
+        // for continuous systematics just evaluate +/-1 sigma
+        m_sysList.push_back(CP::SystematicSet());
+        m_sysList.back().insert(CP::SystematicVariation (sysItr->basename(), 1));
+        m_sysList.push_back(CP::SystematicSet());
+        m_sysList.back().insert(CP::SystematicVariation (sysItr->basename(), -1));
       }else{
-	// otherwise just add it flat
-	m_sysList.push_back(CP::SystematicSet());
-	m_sysList.back().insert(*sysItr);
+        // otherwise just add it flat
+        m_sysList.push_back(CP::SystematicSet());
+        m_sysList.back().insert(*sysItr);
       }
     }
   }
-  if(m_debug_mode>=1){
-    std::cout<<"========================================= Considered #systematics = "<<m_sysList.size()<<std::endl;
-  }
+  MyDebug("initialize()", Form("========================================= Considered #systematics = %d", (int)m_sysList.size()) );
 
   for(int eve=0; eve<nEveSelec; eve++){
     for(int syst=0; syst<nSyst; syst++){
@@ -293,17 +291,19 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   // code will go.
 
   //Added by minoru
-  if(m_eventCounter==0) Info("execute()", "Starting event by event processing.");
+  if(m_eventCounter==0) MyInfo("execute()", "Starting event by event processing.");
   // print every 100 events, so we know where we are:
-  if(m_eventCounter%100==0) Info("execute()", "Event number = %i", m_eventCounter);
+  if(m_eventCounter%100==0) MyAlways("execute()", Form("Event number = %lli", m_eventCounter));
   m_eventCounter++; //Incrementing here since event might be rejected by some quality checks below.
+  if(m_maxEvent>=0 && m_eventCounter>m_maxEvent) return EL::StatusCode::SUCCESS;
+  m_processedEvents++;
 
   //----------------------------
   // Event information
   //--------------------------- 
   const xAOD::EventInfo *eventInfo = 0;
   if(!m_event->retrieve(eventInfo, "EventInfo").isSuccess()){
-    Error("execute()", "Failed to retrieve event info collection. Exiting.");
+    MyError("execute()", "Failed to retrieve event info collection. Exiting.");
     return EL::StatusCode::FAILURE;
   }
 
@@ -322,28 +322,20 @@ EL::StatusCode MyxAODAnalysis :: execute ()
     RunNumber   = eventInfo->runNumber();
     LumiBlock   = eventInfo->lumiBlock();
     EventNumber = eventInfo->eventNumber();
-    if(m_debug_mode>=1){
-      Info("execute()", "RunNumber : %i, LumiBlock : %i, EventNumber : %i", RunNumber, LumiBlock, EventNumber);
-    }
+    MyInfo("execute()", "RunNumber : %i, LumiBlock : %i, EventNumber : %i", RunNumber, LumiBlock, EventNumber);
   }else{ //For MC, check DSID and 
     mcChannelNumber = eventInfo->mcChannelNumber(); //DSID
     mcEventNumber   = eventInfo->mcEventNumber(); //Event number in generator?
     mcEventWeight   = eventInfo->mcEventWeight();
-    if(m_debug_mode>=1){
-      Info("execute()", "ChannelNumber : %i, EventNumber : %i, EventWeight : %i", mcChannelNumber, mcEventNumber, mcEventWeight);
-    }
+    MyInfo("execute()", "ChannelNumber : %i, EventNumber : %i, EventWeight : %i", mcChannelNumber, mcEventNumber, mcEventWeight);
   }
 
-  if(m_debug_mode>=1){
-    Info( APP_NAME, "Preselection : Done.");
-  }
+  MyInfo( "initialize()", "Preselection : Done.");
+
   ///////////////////////////////////////////////////////////////////////////
   // End of preselection
   ///////////////////////////////////////////////////////////////////////////
-
-  if(m_debug_mode>=3){
-    m_store.print();
-  }
+  if(m_debugMode<=MSG::DEBUG) m_store.print();
 
   /////////////////////////////////////////////////////////////////////////
   // Now loop over all the systematic variations and event selections
@@ -356,26 +348,17 @@ EL::StatusCode MyxAODAnalysis :: execute ()
     //Systematic loop should be nested in the event selection loop.
     //This is due to the fact that we have to clear m_store after executing one set of systematic loop.
     ////////////////////////////
-    //  bool NoSyst = false;
-    bool NoSyst = true; //For development and debugging.
-    ////////////////////////////
     for(sysListItr = m_sysList.begin(); sysListItr != m_sysList.end(); ++sysListItr){
-      if(m_debug_mode>=1){
-	Info(APP_NAME, ">>>> Working on variation: sys=%i, \"%s\"", (int)isys, (sysListItr->name()).c_str());
-      }
+      MyInfo("execute()", ">>>> Working on variation: sys=%i, \"%s\"", (int)isys, (sysListItr->name()).c_str());
       // Tell the SUSYObjDef_xAOD which variation to apply
       if(m_susyObjTool->applySystematicVariation(*sysListItr) != CP::SystematicCode::Ok){
-	if(m_debug_mode>=1){
-	  Error(APP_NAME, "Cannot configure SUSYTools for systematic var. %s", (sysListItr->name()).c_str() );
-	}
+        MyError("execute()", "Cannot configure SUSYTools for systematic var. %s", (sysListItr->name()).c_str() );
       }else{
-	if(m_debug_mode>=1){
-	  Info(APP_NAME, "Variation \"%s\" configured...", (sysListItr->name()).c_str() );
-	}
+        MyInfo("execute()", "Variation \"%s\" configured...", (sysListItr->name()).c_str() );
       }
 
       EventSelector* myEveSelec = 
-      	new EventSelector(m_susyObjTool, eveSelecName.c_str(), (sysListItr->name()).c_str(), (m_isMC?1:0), 1);
+        new EventSelector(m_susyObjTool, eveSelecName.c_str(), (sysListItr->name()).c_str(), (m_isMC?1:0), m_debugMode);
       myEveSelec->initialize();
       myEveSelec->setStore(&m_store);
       myEveSelec->selectObject();
@@ -386,25 +369,24 @@ EL::StatusCode MyxAODAnalysis :: execute ()
       delete myEveSelec;
 
       m_susyObjTool->resetSystematics();
-      if(NoSyst) break; //break if NoSyst flag is true;
+      if(m_noSyst) break; //break if NoSyst flag is true;
       ++isys;
       m_sysId = isys;
     }
 
-    if(m_debug_mode==3){
-      Info(APP_NAME,"Store before .clear() ");
-      m_store.print();
-    }  
+    
+    MyDebug("execute()", "Store before .clear()");
+    if(m_debugMode<=MSG::DEBUG) m_store.print();
     m_store.clear();
-    if(m_debug_mode==3){
-      Info(APP_NAME,"Store after .clear() ");
-      m_store.print();
-    }
+    MyDebug("execute()", "Store after .clear()");
+    if(m_debugMode<=MSG::DEBUG) m_store.print();
 
   }
     
-  if(m_debug_mode==3) getchar();
-  //  getchar();
+  if(m_debugMode<=MSG::DEBUG){
+    std::cout<<"Hit enter to proceed to the next event."<<std::endl;
+    getchar();
+  }
   //end adding
 
   return EL::StatusCode::SUCCESS;
@@ -440,7 +422,8 @@ EL::StatusCode MyxAODAnalysis :: finalize ()
   // gets called on worker nodes that processed input events.
 
   //Added by minoru
-  Info("finalize()", "#Events : %i, #Healthy events : %i", m_eventCounter, m_numCleanEvents);
+  MyAlways("finalize()", Form("Total #Events in the sample dataset : %lli", m_eventCounter) );
+  MyAlways("finalize()", Form("#(Used Events) : %lli, #(Healthy events) : %lli", m_processedEvents, m_numCleanEvents) );
   dumpEventCounters();
 
   if(m_susyObjTool){
@@ -480,9 +463,7 @@ bool MyxAODAnalysis::PassPreSelection(const xAOD::EventInfo* eventInfo){
   //------------------------------------------------------------
   if(!m_isMC){ // it's data!
     if(!m_grl->passRunLB(*eventInfo)){
-      if(m_debug_mode>=1){
-	Info("EventPreSelection()", "The event is not in the GRL!! going to next event...");
-      }
+      MyInfo("EventPreSelection()", "The event is not in the GRL!! going to next event...");
       return false;
     }
   } // end if not MC
@@ -497,9 +478,7 @@ bool MyxAODAnalysis::PassPreSelection(const xAOD::EventInfo* eventInfo){
     if((eventInfo->errorState(xAOD::EventInfo::LAr )==xAOD::EventInfo::Error) ||
        (eventInfo->errorState(xAOD::EventInfo::Tile)==xAOD::EventInfo::Error) ||
        (eventInfo->isEventFlagBitSet(xAOD::EventInfo::Core, 18)) ){
-      if(m_debug_mode>=1){
-	Info("EventPreSelection()", "Event is rejected due to detector imperfections.");
-      }
+      MyInfo("EventPreSelection()", "Event is rejected due to detector imperfections.");
       return false;
     } // end if event flags check
   } // end if the event is data
@@ -533,7 +512,7 @@ bool MyxAODAnalysis::IsConsideredSyst(TString sysBasename){
 bool MyxAODAnalysis::BookHistograms(){
 
   if(m_sysList.size()!=nSyst){
-    Error("BookHistograms()", "The number of considered systematics is not the expected value!! Exiting.");
+    MyError("BookHistograms()", "The number of considered systematics is not the expected value!! Exiting.");
     exit(1);
   }
 
@@ -556,24 +535,24 @@ bool MyxAODAnalysis::BookHistograms(){
 
   // Preprocessor convenience                                                                                 
   // make a histogram by name (leave off the "h_") and binning
-  #define NEWHIST(name, xLbl, nbin, min, max) \
-    h_ ## name[iCh][wSys] = new TH1F((chanName+"_"+#name).c_str(), #name ";" xLbl, nbin, min, max); \
-    wk()->addOutput(h_ ## name[iCh][wSys])
-  #define NEWVARHIST(name, xLbl, nbin, bins) \
-    h_ ## name[iCh][wSys] = new TH1F((chanName+"_"+#name).c_str(), #name ";" xLbl, nbin, bins); \
-    wk()->addOutput(h_ ## name[iCh][wSys])
+#define NEWHIST(name, xLbl, nbin, min, max)                             \
+  h_ ## name[iCh][wSys] = new TH1F((chanName+"_"+#name).c_str(), #name ";" xLbl, nbin, min, max); \
+  wk()->addOutput(h_ ## name[iCh][wSys])
+#define NEWVARHIST(name, xLbl, nbin, bins)                              \
+  h_ ## name[iCh][wSys] = new TH1F((chanName+"_"+#name).c_str(), #name ";" xLbl, nbin, bins); \
+  wk()->addOutput(h_ ## name[iCh][wSys])
   // shorthand way to set bin labels, since it is kind of gross                                               
-  #define SETBINLABEL(name, bin, label) \
-    h_ ## name[iCh][wSys]->GetXaxis()->SetBinLabel(bin, label)
+#define SETBINLABEL(name, bin, label)                         \
+  h_ ## name[iCh][wSys]->GetXaxis()->SetBinLabel(bin, label)
   // Variable binning for lep1Pt
-  #define PT1HIST(name, xLbl) NEWVARHIST(name, xLbl, nLep1PtBins, lep1PtBins)
+#define PT1HIST(name, xLbl) NEWVARHIST(name, xLbl, nLep1PtBins, lep1PtBins)
   // MY choice of binnings                                                                                    
-  #define ETAHIST(name, xLbl) NEWHIST(name, xLbl, 10, -2.5, 2.5)
-  #define PTHIST(name, xLbl) NEWHIST(name, xLbl, 25, 0., 500.)
-  #define DRHIST(name, xLbl) NEWVARHIST(name, xLbl, nDRBins, dRBins)
-  #define DPHIHIST(name, xLbl) NEWHIST(name, xLbl, 10, 0., 3.1416)
-  #define MASSHIST(name, xLbl) NEWHIST(name, xLbl, 25, 0., 500.)
-  #define ZMASSHIST(name, xLbl) NEWHIST(name, xLbl, 25, 1.2, 501.2) // shifted for Z window 
+#define ETAHIST(name, xLbl) NEWHIST(name, xLbl, 10, -2.5, 2.5)
+#define PTHIST(name, xLbl) NEWHIST(name, xLbl, 25, 0., 500.)
+#define DRHIST(name, xLbl) NEWVARHIST(name, xLbl, nDRBins, dRBins)
+#define DPHIHIST(name, xLbl) NEWHIST(name, xLbl, 10, 0., 3.1416)
+#define MASSHIST(name, xLbl) NEWHIST(name, xLbl, 25, 0., 500.)
+#define ZMASSHIST(name, xLbl) NEWHIST(name, xLbl, 25, 1.2, 501.2) // shifted for Z window 
 
   ///////////////////////////////////////////////////////////////
   //Defining histograms
@@ -607,16 +586,16 @@ bool MyxAODAnalysis::BookHistograms(){
   //  h_jetPt = new TH1F("h_jetPt", "h_jetPt", 100, 0, 500); // jet pt [GeV]
   //  wk()->addOutput(h_jetPt);
 
-  #undef PT1HIST
-  #undef ETAHIST
-  #undef PTHIST
-  #undef DRHIST
-  #undef DPHIHIST
-  #undef MASSHIST
-  #undef ZMASSHIST
-  #undef NEWHIST
-  #undef NEWVARHIST
-  #undef SETBINLABEL
+#undef PT1HIST
+#undef ETAHIST
+#undef PTHIST
+#undef DRHIST
+#undef DPHIHIST
+#undef MASSHIST
+#undef ZMASSHIST
+#undef NEWHIST
+#undef NEWVARHIST
+#undef SETBINLABEL
   
   return true;
 }
@@ -625,13 +604,13 @@ bool MyxAODAnalysis::FillHistograms(EventSelector *EveSelec){
 
   //Retrieving objects via EventSelector
   std::vector< xAOD::Electron >* vec_signalElectron = EveSelec->GetSignalElectron();
-  std::vector< xAOD::Electron >* vec_baseElectron   = EveSelec->GetBaseElectron  ();
+  // std::vector< xAOD::Electron >* vec_baseElectron   = EveSelec->GetBaseElectron  ();
   std::vector< xAOD::Muon >*     vec_signalMuon     = EveSelec->GetSignalMuon    ();
-  std::vector< xAOD::Muon >*     vec_baseMuon       = EveSelec->GetBaseMuon      ();
-  std::vector< xAOD::Jet >*      vec_signalJet      = EveSelec->GetSignalJet     ();
-  std::vector< xAOD::Jet >*      vec_baseJet        = EveSelec->GetBaseJet       ();
-  std::vector< xAOD::Jet >*      vec_preJet         = EveSelec->GetPreJet        ();
-  TVector2                       met                = EveSelec->GetMEt           ();
+  // std::vector< xAOD::Muon >*     vec_baseMuon       = EveSelec->GetBaseMuon      ();
+  // std::vector< xAOD::Jet >*      vec_signalJet      = EveSelec->GetSignalJet     ();
+  // std::vector< xAOD::Jet >*      vec_baseJet        = EveSelec->GetBaseJet       ();
+  // std::vector< xAOD::Jet >*      vec_preJet         = EveSelec->GetPreJet        ();
+  //  TVector2                       met                = EveSelec->GetMEt           ();
   
   // std::cout<<"elSize="<<vec_signalElectron->size()<<", muSize="<<vec_signalMuon->size()<<std::endl;
   // for(UInt_t el=0; el<vec_signalElectron->size(); el++){
@@ -673,25 +652,25 @@ bool MyxAODAnalysis::FillHistograms(EventSelector *EveSelec){
   // Preprocessor convenience
   // All this does is append the corrent indices to the histo for sys and channel
   // It also fills the all-channel histo 
-#define FillChanHist( h, val, weight )		  \
-  do{                                             \
-    h[Ch_all][m_sysId]->Fill(val,weight);            \
-    h[chan][m_sysId]->Fill(val,weight);              \
+#define FillChanHist( h, val, weight )          \
+  do{                                           \
+    h[Ch_all][m_sysId]->Fill(val,weight);       \
+    h[chan][m_sysId]->Fill(val,weight);         \
   } while(0)
 #define FillChanHist2D( h, xVal, yVal, weight )   \
   do{                                             \
-    h[Ch_all][m_sysId]->Fill(xVal, yVal, weight);    \
-    h[chan][m_sysId]->Fill(xVal, yVal, weight);      \
+    h[Ch_all][m_sysId]->Fill(xVal, yVal, weight); \
+    h[chan][m_sysId]->Fill(xVal, yVal, weight);   \
   } while(0)
-#define FillElHist( index, h, val, weight )	  \
-  do{                                             \
+#define FillElHist( index, h, val, weight )                           \
+  do{                                                                 \
     if(leadLepFlavor[index]==0) h[Ch_all][m_sysId]->Fill(val,weight); \
-    if(leadLepFlavor[index]==0) h[chan][m_sysId]->Fill(val,weight);	\
+    if(leadLepFlavor[index]==0) h[chan][m_sysId]->Fill(val,weight);   \
   } while(0)
-#define FillMuHist( index, h, val, weight )	  \
-  do{                                             \
+#define FillMuHist( index, h, val, weight )                           \
+  do{                                                                 \
     if(leadLepFlavor[index]==1) h[Ch_all][m_sysId]->Fill(val,weight); \
-    if(leadLepFlavor[index]==1) h[chan][m_sysId]->Fill(val,weight);	\
+    if(leadLepFlavor[index]==1) h[chan][m_sysId]->Fill(val,weight);   \
   } while(0)
   //Fill lepton Pt
   FillChanHist( h_lep1Pt, leadLep[0].Pt()/1000., weight );
