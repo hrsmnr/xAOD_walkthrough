@@ -132,6 +132,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   MyInfo("initialize()", "Number of events = %lli. %lli events will be processed.", m_event->getEntries(), m_maxEvent); //print in long long int
 
   m_eventCounter = 0;
+  m_processedEvents = 0;
   m_numCleanEvents = 0;
 
   // Event selection list
@@ -295,6 +296,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   if(m_eventCounter%100==0) MyAlways("execute()", Form("Event number = %lli", m_eventCounter));
   m_eventCounter++; //Incrementing here since event might be rejected by some quality checks below.
   if(m_maxEvent>=0 && m_eventCounter>m_maxEvent) return EL::StatusCode::SUCCESS;
+  m_processedEvents++;
 
   //----------------------------
   // Event information
@@ -420,7 +422,8 @@ EL::StatusCode MyxAODAnalysis :: finalize ()
   // gets called on worker nodes that processed input events.
 
   //Added by minoru
-  MyAlways("finalize()", Form("#(Used Events) : %lli, #(Healthy events) : %lli", m_eventCounter, m_numCleanEvents) );
+  MyAlways("finalize()", Form("Total #Events in the sample dataset : %lli", m_eventCounter) );
+  MyAlways("finalize()", Form("#(Used Events) : %lli, #(Healthy events) : %lli", m_processedEvents, m_numCleanEvents) );
   dumpEventCounters();
 
   if(m_susyObjTool){

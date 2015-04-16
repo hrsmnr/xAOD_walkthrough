@@ -58,6 +58,7 @@ public:
   xAOD::TStore m_store; //!
   bool m_isMC; //!
   long long int m_eventCounter; //!
+  long long int m_processedEvents; //!
   long long int m_numCleanEvents; //!
   std::vector<std::string> *m_vec_eveSelec; //!
   //0:no debug output, 1:-v, 2:-vv, 3:-vvv
