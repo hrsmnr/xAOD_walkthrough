@@ -162,26 +162,26 @@ void help()
   std::cout << "  -n number of events to process"    << std::endl;
   std::cout << "     defaults: -1 (all events)"      << std::endl;
 
-  std::cout << "  -D : name of input dataset directory" << std::endl;
-  std::cout << "     defaults: ''"                      << std::endl;
-
-  std::cout << "  --FileDirBase : input file dir location" << std::endl;
-  std::cout << "     defaults: '/home/hirose/atlas/data/DC14/mc14_13TeV'" << std::endl;
-
   //  std::cout << "  -k number of events to skip"       << std::endl;
   //  std::cout << "     defaults: 0"                    << std::endl;
 
   //  std::cout << "  -q event printing frequency"       << std::endl;
   //  std::cout << "     defaults: 50000"                << std::endl;
 
-  std::cout << "  -d debug printout level"           << std::endl;
-  std::cout << "     defaults: MSG::ERROR"           << std::endl;
+  std::cout << "  --FileDirBase : input file dir location" << std::endl;
+  std::cout << "     defaults: '/home/hirose/atlas/data/DC14/mc14_13TeV'" << std::endl;
 
-  //  std::cout << "  -F name of single input file"      << std::endl;
-  //  std::cout << "     defaults: ''"                   << std::endl;
+  std::cout << "  -D : name of input dataset directory" << std::endl;
+  std::cout << "     defaults: ''"                      << std::endl;
+
+  std::cout << "  -F name of single input file"      << std::endl;
+  std::cout << "     defaults: ''"                   << std::endl;
 
   std::cout << "  -o output file directory"          << std::endl;
   std::cout << "     defaults: result/submitDir"     << std::endl;
+
+  std::cout << "  -d debug printout level"           << std::endl;
+  std::cout << "     defaults: MSG::ERROR"           << std::endl;
 
   //  std::cout << "  -s sample name, for naming files"  << std::endl;
   //  std::cout << "     defaults: ntuple sample name"   << std::endl;
