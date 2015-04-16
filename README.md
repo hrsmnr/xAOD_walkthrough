@@ -13,5 +13,5 @@ kinit [your account]@CERN.CH #not necessary but recommended
 $source rcSetup.sh
 $rc find_packages
 $rc compile
-$testRun (Output directory) (DatasetName)
+$testRun -D test -n 10
 (e.g. $time testRun submitDir testwithmc 2>&1 | tee logmine.txt)
