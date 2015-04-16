@@ -1,3 +1,10 @@
+#define APP_NAME "EventSelector"
+#define MyVerbose(a,b) if(m_dbg<=MSG::VERBOSE) std::cout<<"Verbose in <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyDebug(a,b) if(m_dbg<=MSG::DEBUG) std::cout<<"Debug in <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyInfo(a,b) if(m_dbg<=MSG::INFO) std::cout<<"Info in <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyError(a,b) if(m_dbg<=MSG::ERROR) std::cout<<"Error in <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyAlways(a,b) if(m_dbg<=MSG::ALWAYS) std::cout<<"In <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
+
 #include<iostream>
 #include"MyAnalysis/EventSelector.h"
 
@@ -12,7 +19,7 @@
 // EventSelector Constructor
 /*--------------------------------------------------------------------------------*/
 //EventSelector::EventSelector(SusyNtObject* nt, string sample, string sel, int dbg) :
-EventSelector::EventSelector(ST::SUSYObjDef_xAOD* SUSYObjDef, std::string sel, std::string sys, int isMC, int dbg) :
+EventSelector::EventSelector(ST::SUSYObjDef_xAOD* SUSYObjDef, std::string sel, std::string sys, int isMC, MSG::Level dbg) :
   m_susyObjTool(SUSYObjDef),
   m_objReady(false),
   m_nSignalLeps(-1),
@@ -174,10 +181,9 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD* SUSYObjDef, std::string sel, s
 /*--------------------------------------------------------------------------------*/
 void EventSelector::initialize()
 {
-  if(m_dbg) std::cout << "EventSelector::initialize" << std::endl;
-
+  MyDebug("initialize()","EventSelector::initialize()");
   //////////////////////////////////////////////
-  // // Set selection cut variables
+  // Set selection cut variables
   //////////////////////////////////////////////
 
   // No selection, use every event in the ntuple
@@ -204,7 +210,7 @@ void EventSelector::initialize()
   //   m_nJetMin = 2;
   // }
   else{
-    std::cout << "EventSelector ERROR - selection " << m_sel << " not supported!" << std::endl;
+    MyError("initialize()",Form("EventSelector ERROR - selection %s not supported!!",m_sel.c_str()));
     abort();
   }
 
@@ -230,9 +236,7 @@ void EventSelector::initialize()
 /*--------------------------------------------------------------------------------*/
 void EventSelector::finalize()
 {
-  //SusyNtAna::finalize();
-  if(m_dbg) std::cout << "EventSelector::finalize" << std::endl;
-  //  dumpEventCounters();
+  MyDebug("finalize()","EventSelector::finalize()");
 
   delete m_vec_signalElectron;
   delete m_vec_baseElectron;
@@ -308,7 +312,7 @@ bool EventSelector::selectObject()
   xAOD::ElectronContainer   *electrons_copy(0);
   xAOD::ShallowAuxContainer *electrons_copyaux(0);
   if(m_susyObjTool->GetElectrons(electrons_copy, electrons_copyaux)==EL::StatusCode::FAILURE){
-    std::cout<<"Error : Failing to retrieve ElectronContainer."<<std::endl;
+    MyError("selectObject()","Failing to retrieve ElectronContainer.");
     rtrvFail = true;
   }
 
@@ -318,7 +322,7 @@ bool EventSelector::selectObject()
   xAOD::PhotonContainer     *photons_copy(0);
   xAOD::ShallowAuxContainer *photons_copyaux(0);
   if(m_susyObjTool->GetPhotons(photons_copy,photons_copyaux)==EL::StatusCode::FAILURE){
-    std::cout<<"Error : Failing to retrieve PhotonContainer."<<std::endl;
+    MyError("selectObject()","Failing to retrieve PhotonContainer.");
     rtrvFail = true;
   }
 
@@ -328,7 +332,7 @@ bool EventSelector::selectObject()
   xAOD::MuonContainer       *muons_copy(0);
   xAOD::ShallowAuxContainer *muons_copyaux(0);
   if(m_susyObjTool->GetMuons(muons_copy,muons_copyaux)==EL::StatusCode::FAILURE){
-    std::cout<<"Error : Failing to retrieve MuonContainer."<<std::endl;
+    MyError("selectObject()","Failing to retrieve MuonContainer.");
     rtrvFail = true;
   }
 
@@ -339,7 +343,7 @@ bool EventSelector::selectObject()
   xAOD::JetContainer        *jets_copy(0);
   xAOD::ShallowAuxContainer *jets_copyaux(0);
   if(m_susyObjTool->GetJets(jets_copy, jets_copyaux)==EL::StatusCode::FAILURE){
-    std::cout<<"Error : Failing to retrieve JetContainer."<<std::endl;
+    MyError("selectObject()","Failing to retrieve JetContainer.");
     rtrvFail = true;
   }
   // Check if there are bad jets
@@ -356,7 +360,7 @@ bool EventSelector::selectObject()
   xAOD::TauJetContainer     *taus_copy(0);
   xAOD::ShallowAuxContainer *taus_copyaux(0);
   if(m_susyObjTool->GetTaus(taus_copy,taus_copyaux)==EL::StatusCode::FAILURE){
-    std::cout<<"Error : Failing to retrieve TauContainer."<<std::endl;
+    MyError("selectObject()","Failing to retrieve TauContainer.");
     rtrvFail = true;
   }
 
@@ -364,13 +368,13 @@ bool EventSelector::selectObject()
   // do overlap removal
   ///////////////////////////////////////////////////
   xAOD::JetContainer* goodJets = new xAOD::JetContainer(SG::VIEW_ELEMENTS);
-  std::cout<<"m_sys="<<m_sys<<std::endl;
+  MyDebug("",Form("m_sys=%s",m_sys.c_str()));
   if(m_store->record(goodJets, Form("MySelJets%s",m_sys.c_str()))==EL::StatusCode::FAILURE){
-    std::cout<<Form("Error : Failing to recode MySelJets%s to TStore.",m_sys.c_str())<<std::endl;
+    MyError("selectObject()",Form("Failing to recode MySelJets%s to TStore.",m_sys.c_str()));
     rtrvFail = true;
   }
   if(m_susyObjTool->OverlapRemoval(electrons_copy, muons_copy, jets_copy)==EL::StatusCode::FAILURE){
-    std::cout<<"Error : Failing overlap removal process."<<std::endl;
+    MyError("selectObject()","Failing overlap removal process.");
     rtrvFail = true;
   }
   //////////////////////////////////////////////////////////////////////
@@ -383,15 +387,15 @@ bool EventSelector::selectObject()
        (*jet_itr)->auxdata<char>("passOR"  )==1 ){
       m_vec_baseJet->push_back(**jet_itr);
       if( (*jet_itr)->pt()>20000.     &&
-	  fabs((*jet_itr)->eta())<2.5 ){
-	goodJets->push_back(*jet_itr);
-	m_vec_signalJet->push_back(**jet_itr);
+          fabs((*jet_itr)->eta())<2.5 ){
+        goodJets->push_back(*jet_itr);
+        m_vec_signalJet->push_back(**jet_itr);
       }
     }
   }
-   std::cout<<Form("#signalJets=%d, #baseJets=%d, #preJets=%d",
-   		  (Int_t)m_vec_signalJet->size(), (Int_t)m_vec_baseJet->size(),
-   		  (Int_t)m_vec_preJet->size() )<<std::endl;
+  MyDebug("selectObject()",
+          Form("#signalJets=%d, #baseJets=%d, #preJets=%d",
+               (Int_t)m_vec_signalJet->size(), (Int_t)m_vec_baseJet->size(),(Int_t)m_vec_preJet->size()) );
 
   //////////////////////////////////////////////////////////////////////
   // preparing signal and baseline electrons (this should be done after overlap removal)
@@ -438,18 +442,16 @@ bool EventSelector::selectObject()
   // xAOD::TauJetContainer::iterator tau_itr = (taus_copy)->begin();
   // xAOD::TauJetContainer::iterator tau_end = (taus_copy)->end();
   // for( ; tau_itr != tau_end; ++tau_itr ){
-  //   if(m_debug_mode>=2){
-  //     Info(APP_NAME, "  Tau passing IsBaseline? %i  pt=%g sf=%g",
-  // 	   (int)(*tau_itr)->auxdata<bool>("baseline"), (*tau_itr)->pt(), m_susyObjTool->GetSignalTauSF(**tau_itr) );
-  //   }
+  //   MyInfo(APP_NAME, "  Tau passing IsBaseline? %i  pt=%g sf=%g",
+  //          (int)(*tau_itr)->auxdata<bool>("baseline"), (*tau_itr)->pt(), m_susyObjTool->GetSignalTauSF(**tau_itr) );
   //   // if(m_isMC){
   //   //   T2MT.applyTruthMatch(*(*tau_itr));
   //   //   if((*tau_itr)->auxdata<bool>("IsTruthMatched")){
-  //   // 	Info(APP_NAME, "Tau was matched to a truth tau, which has %i prongs and a charge of %i",
-  //   // 	     int((*tau_itr)->auxdata<size_t>("TruthProng")),
-  //   // 	     (*tau_itr)->auxdata<int>("TruthCharge"));
+  //   //     Info(APP_NAME, "Tau was matched to a truth tau, which has %i prongs and a charge of %i",
+  //   //          int((*tau_itr)->auxdata<size_t>("TruthProng")),
+  //   //          (*tau_itr)->auxdata<int>("TruthCharge"));
   //   //   }else{
-  //   // 	Info(APP_NAME, "Tau was not matched to truth");
+  //   //     Info(APP_NAME, "Tau was not matched to truth");
   //   //   }
   //   // }
   // }
@@ -462,13 +464,13 @@ bool EventSelector::selectObject()
   xAOD::MissingETAuxContainer* metcst_aux = new xAOD::MissingETAuxContainer;
   metcst->setStore(metcst_aux);
   if( m_susyObjTool->GetMET(*metcst, jets_copy, electrons_copy, muons_copy,
-			    photons_copy, taus_copy)==EL::StatusCode::FAILURE ){
-    std::cout<<"Error : Failing to retrieve METCST."<<std::endl;
+                            photons_copy, taus_copy)==EL::StatusCode::FAILURE ){
+    MyError("selectObject()","Failing to retrieve METCST.");
     rtrvFail = true;
   }
   xAOD::MissingETContainer::const_iterator metcst_it = metcst->find("Final");
   if(metcst_it == metcst->end()){
-    std::cout<<"No RefFinal inside MET container"<<std::endl;
+    MyError("selectObject()","No RefFinal inside MET container");
     rtrvFail = true;
   }
   
@@ -477,15 +479,15 @@ bool EventSelector::selectObject()
   xAOD::MissingETAuxContainer* mettst_aux = new xAOD::MissingETAuxContainer;
   mettst->setStore(mettst_aux);
   if( m_susyObjTool->GetMET(*mettst, jets_copy, electrons_copy, muons_copy,
-			    photons_copy, taus_copy, true)==EL::StatusCode::FAILURE ){
-    std::cout<<"Error : Failing to retrieve METTST."<<std::endl;
+                            photons_copy, taus_copy, true)==EL::StatusCode::FAILURE ){
+    MyError("selectObject()","Failing to retrieve METTST.");
     rtrvFail = true;
   }
 
   m_met.SetMagPhi(0.,0.);
   for(const auto& metterm : *mettst) {
     //    std::cout<<Form("MET term \"%s\" px = %f py = %f",
-    //		    metterm->name().c_str(), metterm->mpx(), metterm->mpy())<<std::endl;
+    //    metterm->name().c_str(), metterm->mpx(), metterm->mpy())<<std::endl;
     if(metterm->name()=="Final") m_met.SetMagPhi(metterm->met(),metterm->phi());
   }
   //  std::cout<<"MyPx="<<Form("%12.6f",m_met.Px())<<", MyPy="<<Form("%12.6f",m_met.Py())<<std::endl;
@@ -523,17 +525,17 @@ bool EventSelector::selectObject()
     Double_t elPt = m_vec_baseElectron->at(elIndex).pt();
     for(Int_t id=0; id<nAnaLep; id++){
       if(elPt>m_baseLeps[id].Pt()){
-	if(id!=nAnaLep-1){
-	  for(Int_t index=nAnaLep-1; index<=id; index--){
-	    m_baseLepIndex [index] = m_baseLepIndex [index-1];
-	    m_baseLepFlavor[index] = m_baseLepFlavor[index-1];
-	    m_baseLeps     [index] = m_baseLeps     [index-1];
-	  }
-	}
-	m_baseLepIndex [id] = elIndex;
-	m_baseLepFlavor[id] = 0;
-	m_baseLeps     [id] = m_vec_baseElectron->at(elIndex).p4();
-	break;
+        if(id!=nAnaLep-1){
+          for(Int_t index=nAnaLep-1; index<=id; index--){
+            m_baseLepIndex [index] = m_baseLepIndex [index-1];
+            m_baseLepFlavor[index] = m_baseLepFlavor[index-1];
+            m_baseLeps     [index] = m_baseLeps     [index-1];
+          }
+        }
+        m_baseLepIndex [id] = elIndex;
+        m_baseLepFlavor[id] = 0;
+        m_baseLeps     [id] = m_vec_baseElectron->at(elIndex).p4();
+        break;
       }else{
       }
     }
@@ -542,17 +544,17 @@ bool EventSelector::selectObject()
     Double_t muPt = m_vec_baseMuon->at(muIndex).pt();
     for(Int_t id=0; id<nAnaLep; id++){
       if(muPt>m_baseLeps[id].Pt()){
-	if(id!=nAnaLep-1){
-	  for(Int_t index=nAnaLep-1; index<=id; index--){
-	    m_baseLepIndex [index] = m_baseLepIndex [index-1];
-	    m_baseLepFlavor[index] = m_baseLepFlavor[index-1];
-	    m_baseLeps     [index] = m_baseLeps     [index-1];
-	  }
-	}
-	m_baseLepIndex [id] = muIndex;
-	m_baseLepFlavor[id] = 1;
-	m_baseLeps     [id] = m_vec_baseMuon->at(muIndex).p4();
-	break;
+        if(id!=nAnaLep-1){
+          for(Int_t index=nAnaLep-1; index<=id; index--){
+            m_baseLepIndex [index] = m_baseLepIndex [index-1];
+            m_baseLepFlavor[index] = m_baseLepFlavor[index-1];
+            m_baseLeps     [index] = m_baseLeps     [index-1];
+          }
+        }
+        m_baseLepIndex [id] = muIndex;
+        m_baseLepFlavor[id] = 1;
+        m_baseLeps     [id] = m_vec_baseMuon->at(muIndex).p4();
+        break;
       }else{
       }
     }
@@ -563,17 +565,17 @@ bool EventSelector::selectObject()
     Double_t elPt = m_vec_signalElectron->at(elIndex).pt();
     for(Int_t id=0; id<nAnaLep; id++){
       if(elPt>m_leadLeps[id].Pt()){
-	if(id!=nAnaLep-1){
-	  for(Int_t index=nAnaLep-1; id<index; index--){
-	    m_leadLepIndex [index] = m_leadLepIndex [index-1];
-	    m_leadLepFlavor[index] = m_leadLepFlavor[index-1];
-	    m_leadLeps     [index] = m_leadLeps     [index-1];
-	  }
-	}
-	m_leadLepIndex [id] = elIndex;
-	m_leadLepFlavor[id] = 0;
-	m_leadLeps     [id] = m_vec_signalElectron->at(elIndex).p4();
-	break;
+        if(id!=nAnaLep-1){
+          for(Int_t index=nAnaLep-1; id<index; index--){
+            m_leadLepIndex [index] = m_leadLepIndex [index-1];
+            m_leadLepFlavor[index] = m_leadLepFlavor[index-1];
+            m_leadLeps     [index] = m_leadLeps     [index-1];
+          }
+        }
+        m_leadLepIndex [id] = elIndex;
+        m_leadLepFlavor[id] = 0;
+        m_leadLeps     [id] = m_vec_signalElectron->at(elIndex).p4();
+        break;
       }else{
       }
     }
@@ -582,17 +584,17 @@ bool EventSelector::selectObject()
     Double_t muPt = m_vec_signalMuon->at(muIndex).pt();
     for(Int_t id=0; id<nAnaLep; id++){
       if(muPt>m_leadLeps[id].Pt()){
-	if(id!=nAnaLep-1){
-	  for(Int_t index=nAnaLep-1; id<index; index--){
-	    m_leadLepIndex [index] = m_leadLepIndex [index-1];
-	    m_leadLepFlavor[index] = m_leadLepFlavor[index-1];
-	    m_leadLeps     [index] = m_leadLeps     [index-1];
-	  }
-	}
-	m_leadLepIndex [id] = muIndex;
-	m_leadLepFlavor[id] = 1;
-	m_leadLeps     [id] = m_vec_signalMuon->at(muIndex).p4();
-	break;
+        if(id!=nAnaLep-1){
+          for(Int_t index=nAnaLep-1; id<index; index--){
+            m_leadLepIndex [index] = m_leadLepIndex [index-1];
+            m_leadLepFlavor[index] = m_leadLepFlavor[index-1];
+            m_leadLeps     [index] = m_leadLeps     [index-1];
+          }
+        }
+        m_leadLepIndex [id] = muIndex;
+        m_leadLepFlavor[id] = 1;
+        m_leadLeps     [id] = m_vec_signalMuon->at(muIndex).p4();
+        break;
       }else{
       }
     }
@@ -624,7 +626,7 @@ bool EventSelector::selectObject()
 bool EventSelector::selectEvent()
 {
   if(m_objReady==false){
-    std::cout<<"Error : EventSelector::selectEvent() was called before selectObject()."<<std::endl;
+    MyError("selectEvents()","EventSelector::selectEvent() was called before selectObject().");
     exit(1);
   }
   n_initial++;
@@ -773,19 +775,19 @@ bool EventSelector::passNLepCut()
 
   // optional cut on baseline leptons as well
   if(m_nBaseLepMin>=0 || m_nBaseLepMax>=0){
-    int nBaseLep = baseLeptons.size();
-    if(m_nBaseLepMin>=0 && nBaseLep < m_nBaseLepMin) return false;
-    if(m_nBaseLepMax>=0 && nBaseLep > m_nBaseLepMax) return false;
+  int nBaseLep = baseLeptons.size();
+  if(m_nBaseLepMin>=0 && nBaseLep < m_nBaseLepMin) return false;
+  if(m_nBaseLepMax>=0 && nBaseLep > m_nBaseLepMax) return false;
   }
 
   // optional cut on number electrons, a way to select lepton channel
   if(m_nEleMin>=0 || m_nEleMax>=0){
-    int nEle = 0;
-    for(int iL=0; iL<nLep; iL++){
-      if(signalLeptons[iL]->isEle()) nEle++;
-    }
-    if(m_nEleMin>=0 && nEle < m_nEleMin) return false;
-    if(m_nEleMax>=0 && nEle > m_nEleMax) return false;
+  int nEle = 0;
+  for(int iL=0; iL<nLep; iL++){
+  if(signalLeptons[iL]->isEle()) nEle++;
+  }
+  if(m_nEleMin>=0 && nEle < m_nEleMin) return false;
+  if(m_nEleMax>=0 && nEle > m_nEleMax) return false;
   }
   */
   return true;
@@ -1008,7 +1010,7 @@ bool EventSelector::passVbfCut()
     TLorentzVector jets[2];
     for(Int_t cnt=0; cnt<2; cnt++){
       jets[cnt].SetPtEtaPhiE(m_vec_baseJet->at(cnt).pt(), m_vec_baseJet->at(cnt).eta(),
-			     m_vec_baseJet->at(cnt).phi(), m_vec_baseJet->at(cnt).e() );
+                             m_vec_baseJet->at(cnt).phi(), m_vec_baseJet->at(cnt).e() );
     }
     float dijetM        = (jets[0]+jets[1]).M();
     float dEta          = fabs(jets[0].Eta()-jets[1].Eta());
@@ -1133,12 +1135,12 @@ bool EventSelector::passZeeSSCut()
       leps[0] = m_vec_signalElectron->at(iL).p4();
       charge[0] = m_vec_signalElectron->at(iL).charge();
       for(uint iL2=0; iL2<m_vec_signalElectron->size(); iL2++){
-	if(iL2<=iL) continue;
-	charge[1] = m_vec_signalElectron->at(iL2).charge();
-	if(isSS(charge[0], charge[1])){
-	  leps[1] = m_vec_signalElectron->at(iL2).p4();
-	  if(isInZWindow( (leps[0]+leps[1]).M()/1000., massWindow)) return false;
-	}
+        if(iL2<=iL) continue;
+        charge[1] = m_vec_signalElectron->at(iL2).charge();
+        if(isSS(charge[0], charge[1])){
+          leps[1] = m_vec_signalElectron->at(iL2).p4();
+          if(isInZWindow( (leps[0]+leps[1]).M()/1000., massWindow)) return false;
+        }
       }
     }
   }
@@ -1266,14 +1268,14 @@ bool EventSelector::passMtCut()
       findBestMSFOS(index[0],index[1],flav);
       if(flav==-1) return false;
       else{
-	Int_t lepWIndex=-1;
-	if     (index[0]==0 && index[1]==1) lepWIndex=2;
-	else if(index[0]==0 && index[1]==2) lepWIndex=1;
-	else if(index[0]==1 && index[1]==2) lepWIndex=0;
-	TLorentzVector lep = getFourVector(m_leadLepIndex[lepWIndex], m_leadLepFlavor[lepWIndex]);
-	float mt = getMt(lep,m_met);
-	if(m_mtMin > 0 && mt < m_mtMin) return false;
-	if(m_mtMax > 0 && mt > m_mtMax) return false;
+        Int_t lepWIndex=-1;
+        if     (index[0]==0 && index[1]==1) lepWIndex=2;
+        else if(index[0]==0 && index[1]==2) lepWIndex=1;
+        else if(index[0]==1 && index[1]==2) lepWIndex=0;
+        TLorentzVector lep = getFourVector(m_leadLepIndex[lepWIndex], m_leadLepFlavor[lepWIndex]);
+        float mt = getMt(lep,m_met);
+        if(m_mtMin > 0 && mt < m_mtMin) return false;
+        if(m_mtMax > 0 && mt > m_mtMax) return false;
       }
     }
     // For 2 leptons, use maximum mt
@@ -1287,14 +1289,14 @@ bool EventSelector::passMtCut()
     // General case, use all leptons
     else{
       for(uint iL=0; iL<m_vec_signalElectron->size(); iL++){
-	float mt = getMt(m_vec_signalElectron->at(iL).p4(),m_met);
-	if(m_mtMin > 0 && mt < m_mtMin) return false;
-	if(m_mtMax > 0 && mt > m_mtMax) return false;
+        float mt = getMt(m_vec_signalElectron->at(iL).p4(),m_met);
+        if(m_mtMin > 0 && mt < m_mtMin) return false;
+        if(m_mtMax > 0 && mt > m_mtMax) return false;
       }
       for(uint iL=0; iL<m_vec_signalMuon    ->size(); iL++){
-	float mt = getMt(m_vec_signalMuon->at(iL).p4(),m_met);
-	if(m_mtMin > 0 && mt < m_mtMin) return false;
-	if(m_mtMax > 0 && mt > m_mtMax) return false;
+        float mt = getMt(m_vec_signalMuon->at(iL).p4(),m_met);
+        if(m_mtMin > 0 && mt < m_mtMin) return false;
+        if(m_mtMax > 0 && mt > m_mtMax) return false;
       }
     }
   }
@@ -1335,8 +1337,8 @@ float EventSelector::getMaxMT2()
   //   mT2L1T1 = getMT2(leptons[0], taus[0], met);
   if(nLep >=2){
     ComputeMT2 mt2class = ComputeMT2(getFourVector(m_leadLepIndex[0], m_leadLepFlavor[0]),
-				     getFourVector(m_leadLepIndex[1], m_leadLepFlavor[1]),
-				     metp,invismassA,invismassB);// for ss exploration and os
+                                     getFourVector(m_leadLepIndex[1], m_leadLepFlavor[1]),
+                                     metp,invismassA,invismassB);// for ss exploration and os
     mT2LL = mt2class.Compute();
   }
   // if(nLep >=2 && nTau>=1)
@@ -1419,22 +1421,22 @@ bool EventSelector::passMinDPhiOSCut()
       charge[0] = m_vec_signalElectron->at(iL).charge();
       //For electron-electron
       for(uint iL2=0; iL2<m_vec_signalElectron->size(); iL2++){
-	if(iL2<=iL) continue;
-	charge[1] = m_vec_signalElectron->at(iL2).charge();
-	if(isOS(charge[0], charge[1])){
-	  leps[1] = m_vec_signalElectron->at(iL2).p4();
-	  Double_t dphi = fabs(leps[0].DeltaPhi(leps[1]));
-	  if(minDPhi<0 || dphi<minDPhi) minDPhi = dphi;
-	}
+        if(iL2<=iL) continue;
+        charge[1] = m_vec_signalElectron->at(iL2).charge();
+        if(isOS(charge[0], charge[1])){
+          leps[1] = m_vec_signalElectron->at(iL2).p4();
+          Double_t dphi = fabs(leps[0].DeltaPhi(leps[1]));
+          if(minDPhi<0 || dphi<minDPhi) minDPhi = dphi;
+        }
       }
       //For electron-muon
       for(uint iL2=0; iL2<m_vec_signalMuon->size(); iL2++){
-	charge[1] = m_vec_signalMuon->at(iL2).charge();
-	if(isOS(charge[0], charge[1])){
-	  leps[1] = m_vec_signalMuon->at(iL2).p4();
-	  Double_t dphi = fabs(leps[0].DeltaPhi(leps[1]));
-	  if(minDPhi<0 || dphi<minDPhi) minDPhi = dphi;
-	}
+        charge[1] = m_vec_signalMuon->at(iL2).charge();
+        if(isOS(charge[0], charge[1])){
+          leps[1] = m_vec_signalMuon->at(iL2).p4();
+          Double_t dphi = fabs(leps[0].DeltaPhi(leps[1]));
+          if(minDPhi<0 || dphi<minDPhi) minDPhi = dphi;
+        }
       }
     }
     // for muon-muon
@@ -1442,13 +1444,13 @@ bool EventSelector::passMinDPhiOSCut()
       leps[0] = m_vec_signalMuon->at(iL).p4();
       charge[0] = m_vec_signalMuon->at(iL).charge();
       for(uint iL2=0; iL2<m_vec_signalMuon->size(); iL2++){
-	if(iL2<=iL) continue;
-	charge[1] = m_vec_signalMuon->at(iL2).charge();
-	if(isOS(charge[0], charge[1])){
-	  leps[1] = m_vec_signalMuon->at(iL2).p4();
-	  Double_t dphi = fabs(leps[0].DeltaPhi(leps[1]));
-	  if(minDPhi<0 || dphi<minDPhi) minDPhi = dphi;
-	}
+        if(iL2<=iL) continue;
+        charge[1] = m_vec_signalMuon->at(iL2).charge();
+        if(isOS(charge[0], charge[1])){
+          leps[1] = m_vec_signalMuon->at(iL2).p4();
+          Double_t dphi = fabs(leps[0].DeltaPhi(leps[1]));
+          if(minDPhi<0 || dphi<minDPhi) minDPhi = dphi;
+        }
       }
     }
     if(minDPhi >= 0){
@@ -1556,7 +1558,7 @@ bool EventSelector::passLepTruthCut()
     for(uint i=0; i<3; i++){
       if(isFakeLepton(i)) return false;
       if(m_leadLepFlavor[i]==0){
-	if(isChargeFlipElectron(i)) return false;
+        if(isChargeFlipElectron(i)) return false;
       }
     }
   }
@@ -1848,35 +1850,34 @@ bool EventSelector::passLepTruthCut()
 /*--------------------------------------------------------------------------------*/
 void EventSelector::dumpEventCounters()
 {
-  std::cout << std::endl;
-  std::cout << "Event selection counters for " << m_sel 
-	    << " " << m_sys << std::endl;
+  std::cout<<std::endl;
+  MyVerbose("dumpEventCounters()",Form("Event selection counters for (%s, %s).",m_sel.c_str(),m_sys.c_str()) );
 
-  std::cout << "  initial:      " << n_initial      << std::endl;
-  std::cout << "  pass hotSpot: " << n_pass_hotSpot << std::endl;
-  std::cout << "  pass badJet:  " << n_pass_badJet  << std::endl;
-  std::cout << "  pass FEB:     " << n_pass_feb     << std::endl;
-  std::cout << "  pass badMu:   " << n_pass_badMu   << std::endl;
-  std::cout << "  pass cosmic:  " << n_pass_cosmic  << std::endl;
-  std::cout << "  pass clean:   " << n_pass_clean   << std::endl;
-  std::cout << "  pass nBLep:   " << n_pass_nBLep   << std::endl;
-  std::cout << "  pass mllBase: " << n_pass_mllBase << std::endl;
-  std::cout << "  pass nLep:    " << n_pass_nLep    << std::endl;
-  std::cout << "  pass nTau:    " << n_pass_nTau    << std::endl;
-  std::cout << "  pass trig:    " << n_pass_trig    << std::endl;
-  std::cout << "  pass truth:   " << n_pass_truth   << std::endl;
-  std::cout << "  pass flavQ:   " << n_pass_sfos    << std::endl;
-  //std::cout << "  pass loose Z: " << n_pass_lz      << std::endl;
-  std::cout << "  pass jet:     " << n_pass_jet     << std::endl;
-  std::cout << "  pass vbf:     " << n_pass_vbf     << std::endl;
-  std::cout << "  pass lepPt:   " << n_pass_lepPt   << std::endl;
-  std::cout << "  pass z:       " << n_pass_z       << std::endl;
-  std::cout << "  pass lep dR:  " << n_pass_lepDR   << std::endl;
-  std::cout << "  pass met:     " << n_pass_met     << std::endl;
-  std::cout << "  pass mt:      " << n_pass_mt      << std::endl;
-  std::cout << "  pass meff:    " << n_pass_meff    << std::endl;
-  //std::cout << "  pass mljj:    " << n_pass_mljj    << std::endl;
-  //std::cout << "  pass other:   " << n_pass_other   << std::endl;
+  MyVerbose("dumpEventCounters()",Form("  initial:      %d", n_initial     ));
+  MyVerbose("dumpEventCounters()",Form("  pass hotSpot: %d", n_pass_hotSpot));
+  MyVerbose("dumpEventCounters()",Form("  pass badJet:  %d", n_pass_badJet ));
+  MyVerbose("dumpEventCounters()",Form("  pass FEB:     %d", n_pass_feb    ));
+  MyVerbose("dumpEventCounters()",Form("  pass badMu:   %d", n_pass_badMu  ));
+  MyVerbose("dumpEventCounters()",Form("  pass cosmic:  %d", n_pass_cosmic ));
+  MyVerbose("dumpEventCounters()",Form("  pass clean:   %d", n_pass_clean  ));
+  MyVerbose("dumpEventCounters()",Form("  pass nBLep:   %d", n_pass_nBLep  ));
+  MyVerbose("dumpEventCounters()",Form("  pass mllBase: %d", n_pass_mllBase));
+  MyVerbose("dumpEventCounters()",Form("  pass nLep:    %d", n_pass_nLep   ));
+  MyVerbose("dumpEventCounters()",Form("  pass nTau:    %d", n_pass_nTau   ));
+  MyVerbose("dumpEventCounters()",Form("  pass trig:    %d", n_pass_trig   ));
+  MyVerbose("dumpEventCounters()",Form("  pass truth:   %d", n_pass_truth  ));
+  MyVerbose("dumpEventCounters()",Form("  pass flavQ:   %d", n_pass_sfos   ));
+  //MyVerbose("dumpEventCounters()",Form("  pass loose Z: %d", n_pass_lz     ));
+  MyVerbose("dumpEventCounters()",Form("  pass jet:     %d", n_pass_jet    ));
+  MyVerbose("dumpEventCounters()",Form("  pass vbf:     %d", n_pass_vbf    ));
+  MyVerbose("dumpEventCounters()",Form("  pass lepPt:   %d", n_pass_lepPt  ));
+  MyVerbose("dumpEventCounters()",Form("  pass z:       %d", n_pass_z      ));
+  MyVerbose("dumpEventCounters()",Form("  pass lep dR:  %d", n_pass_lepDR  ));
+  MyVerbose("dumpEventCounters()",Form("  pass met:     %d", n_pass_met    ));
+  MyVerbose("dumpEventCounters()",Form("  pass mt:      %d", n_pass_mt     ));
+  MyVerbose("dumpEventCounters()",Form("  pass meff:    %d", n_pass_meff   ));
+  //MyVerbose("dumpEventCounters()",Form("  pass mljj:    %d", n_pass_mljj   ));
+  //MyVerbose("dumpEventCounters()",Form("  pass other:   %d", n_pass_other  ));
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -1891,30 +1892,29 @@ bool EventSelector::isRealLepton(unsigned int id)
       //      Int_t origin = xAOD::EgammaHelpers::getParticleTruthOrigin(&(m_vec_signalElectron->at(m_leadLepIndex[id])));
       //      std::cout<<Form("Electron type %d origin %d", type, origin)<<std::endl;
       if(type==MCTruthPartClassifier::IsoElectron) return true;
-      // 	const xAOD::TruthParticle* truthEle = xAOD::EgammaHelpers::getTruthParticle(&el);
-      // 	if(truthEle){
-      // 	  std::cout<<Form(" Truth Electron pt %f eta %f", truthEle->pt(), truthEle->eta())<<std::endl;
-      // 	}else{
-      // 	  std::cout<<Form(" Truth Electron not found")<<std::endl;
-      // 	}
-      //   }
+      //      const xAOD::TruthParticle* truthEle = xAOD::EgammaHelpers::getTruthParticle(&el);
+      //      if(truthEle){
+      //        std::cout<<Form(" Truth Electron pt %f eta %f", truthEle->pt(), truthEle->eta())<<std::endl;
+      //      }else{
+      //        std::cout<<Form(" Truth Electron not found")<<std::endl;
+      //      }
     }else{
       int muonTruthType   = 0;
       //      int muonTruthOrigin = 0;
       const xAOD::TrackParticle* trackParticle = (&(m_vec_signalMuon->at(m_leadLepIndex[id])))->primaryTrackParticle();
       if(trackParticle){
-	static SG::AuxElement::Accessor<int> acc_truthType  ("truthType"  );
-	//	static SG::AuxElement::Accessor<int> acc_truthOrigin("truthOrigin");
-	if(acc_truthType  .isAvailable(*trackParticle)) muonTruthType   = acc_truthType  (*trackParticle);
-	//	if(acc_truthOrigin.isAvailable(*trackParticle)) muonTruthOrigin = acc_truthOrigin(*trackParticle);
-	//	std::cout<<Form("Muon type %d origin %d", muonTruthType, muonTruthOrigin)<<std::endl;
-	if(muonTruthType==MCTruthPartClassifier::IsoMuon) return true;
-	// 	  const xAOD::TruthParticle* truthMu = xAOD::EgammaHelpers::getTruthParticle(trackParticle);
-	// 	  if(truthMu){
-	// 	    Info( APP_NAME, " Truth Muon pt %f eta %f", truthMu->pt(), truthMu->eta() );
-	// 	  }else{
-	// 	    Info( APP_NAME, " Truth Muon not found");
-	// 	  }
+        static SG::AuxElement::Accessor<int> acc_truthType  ("truthType"  );
+        //        static SG::AuxElement::Accessor<int> acc_truthOrigin("truthOrigin");
+        if(acc_truthType  .isAvailable(*trackParticle)) muonTruthType   = acc_truthType  (*trackParticle);
+        //        if(acc_truthOrigin.isAvailable(*trackParticle)) muonTruthOrigin = acc_truthOrigin(*trackParticle);
+        //        std::cout<<Form("Muon type %d origin %d", muonTruthType, muonTruthOrigin)<<std::endl;
+        if(muonTruthType==MCTruthPartClassifier::IsoMuon) return true;
+        // const xAOD::TruthParticle* truthMu = xAOD::EgammaHelpers::getTruthParticle(trackParticle);
+        // if(truthMu){
+        //   Info( APP_NAME, " Truth Muon pt %f eta %f", truthMu->pt(), truthMu->eta() );
+        // }else{
+        //   Info( APP_NAME, " Truth Muon not found");
+        // }
       }
     }
   }
@@ -2019,9 +2019,9 @@ bool EventSelector::hasSFOS()
     for(Int_t id2=0; id2<3; id2++){
       if(m_leadLepIndex[id2]==-1) continue;
       if(m_leadLepFlavor[id1]==m_leadLepFlavor[id2] && 
-	 recoCharge     [id1]!=recoCharge     [id2] ){
-	hasSFOS = kTRUE;
-	break;
+         recoCharge     [id1]!=recoCharge     [id2] ){
+        hasSFOS = kTRUE;
+        break;
       }
     }
   }
@@ -2038,9 +2038,9 @@ bool EventSelector::hasSFSS()
     for(Int_t id2=0; id2<3; id2++){
       if(m_leadLepIndex[id2]==-1) continue;
       if(m_leadLepFlavor[id1]==m_leadLepFlavor[id2] && 
-	 recoCharge     [id1]==recoCharge     [id2] ){
-	hasSFSS = kTRUE;
-	break;
+         recoCharge     [id1]==recoCharge     [id2] ){
+        hasSFSS = kTRUE;
+        break;
       }
     }
   }
@@ -2057,9 +2057,9 @@ bool EventSelector::hasOFOS()
     for(Int_t id2=0; id2<3; id2++){
       if(m_leadLepIndex[id2]==-1) continue;
       if(m_leadLepFlavor[id1]!=m_leadLepFlavor[id2] && 
-	 recoCharge     [id1]!=recoCharge     [id2] ){
-	hasOFOS = kTRUE;
-	break;
+         recoCharge     [id1]!=recoCharge     [id2] ){
+        hasOFOS = kTRUE;
+        break;
       }
     }
   }
@@ -2076,8 +2076,8 @@ bool EventSelector::hasOS()
     for(Int_t id2=0; id2<3; id2++){
       if(m_leadLepIndex[id2]==-1) continue;
       if(recoCharge[id1]!=recoCharge[id2]){
-	hasOS = kTRUE;
-	break;
+        hasOS = kTRUE;
+        break;
       }
     }
   }
@@ -2094,8 +2094,8 @@ bool EventSelector::hasSS()
     for(Int_t id2=0; id2<3; id2++){
       if(m_leadLepIndex[id2]==-1) continue;
       if(recoCharge[id1]==recoCharge[id2]){
-	hasSS = kTRUE;
-	break;
+        hasSS = kTRUE;
+        break;
       }
     }
   }
@@ -2148,8 +2148,8 @@ bool EventSelector::hasZ()
       if(iL2<=iL) continue;
       charge[1] = m_vec_signalElectron->at(iL2).charge();
       if(isOS(charge[0],charge[1])){
-	leps[1] = m_vec_signalElectron->at(iL2).p4();
-	if(isInZWindow( (leps[0]+leps[1]).M()/1000., massWindow)) return true;
+        leps[1] = m_vec_signalElectron->at(iL2).p4();
+        if(isInZWindow( (leps[0]+leps[1]).M()/1000., massWindow)) return true;
       }
     }
   }
@@ -2161,12 +2161,12 @@ bool EventSelector::hasZ()
       if(iL2<=iL) continue;
       charge[1] = m_vec_signalMuon->at(iL2).charge();
       if(isOS(charge[0],charge[1])){
-  	leps[1] = m_vec_signalMuon->at(iL2).p4();
-  	if(isInZWindow( (leps[0]+leps[1]).M()/1000., massWindow)) return true;
+        leps[1] = m_vec_signalMuon->at(iL2).p4();
+        if(isInZWindow( (leps[0]+leps[1]).M()/1000., massWindow)) return true;
       }
     }
   }
-			    
+
   return false;
 }
 /*--------------------------------------------------------------------------------*/
@@ -2184,18 +2184,18 @@ bool EventSelector::hasZlll()
       if(iL2<=iL) continue;
       charge[1] = m_vec_signalElectron->at(iL2).charge();
       if(isOS(charge[0],charge[1])){
-	leps[1] = m_vec_signalElectron->at(iL2).p4();
-	//Trying to add one more electron
-	for(uint iL3=0; iL3<m_vec_signalElectron->size(); iL3++){
-	  if((iL3==iL) || (iL3==iL2)) continue;
-	  leps[2] = m_vec_signalElectron->at(iL3).p4();
-	  if(isInZWindow( (leps[0]+leps[1]+leps[2]).M()/1000., massWindow)) return true;
-	}
-	//Trying to add a muon
-	for(uint iL3=0; iL3<m_vec_signalMuon->size(); iL3++){
-	  leps[2] = m_vec_signalMuon->at(iL3).p4();
-	  if(isInZWindow( (leps[0]+leps[1]+leps[2]).M()/1000., massWindow)) return true;
-	}
+        leps[1] = m_vec_signalElectron->at(iL2).p4();
+        //Trying to add one more electron
+        for(uint iL3=0; iL3<m_vec_signalElectron->size(); iL3++){
+          if((iL3==iL) || (iL3==iL2)) continue;
+          leps[2] = m_vec_signalElectron->at(iL3).p4();
+          if(isInZWindow( (leps[0]+leps[1]+leps[2]).M()/1000., massWindow)) return true;
+        }
+        //Trying to add a muon
+        for(uint iL3=0; iL3<m_vec_signalMuon->size(); iL3++){
+          leps[2] = m_vec_signalMuon->at(iL3).p4();
+          if(isInZWindow( (leps[0]+leps[1]+leps[2]).M()/1000., massWindow)) return true;
+        }
       }
     }
   }
@@ -2207,18 +2207,18 @@ bool EventSelector::hasZlll()
       if(iL2<=iL) continue;
       charge[1] = m_vec_signalMuon->at(iL2).charge();
       if(isOS(charge[0],charge[1])){
-	leps[1] = m_vec_signalMuon->at(iL2).p4();
-	//Trying to add one more muon
-	for(uint iL3=0; iL3<m_vec_signalMuon->size(); iL3++){
-	  if((iL3==iL) || (iL3==iL2)) continue;
-	  leps[2] = m_vec_signalMuon->at(iL3).p4();
-	  if(isInZWindow( (leps[0]+leps[1]+leps[2]).M()/1000., massWindow)) return true;
-	}
-	//Trying to add a electron
-	for(uint iL3=0; iL3<m_vec_signalElectron->size(); iL3++){
-	  leps[2] = m_vec_signalElectron->at(iL3).p4();
-	  if(isInZWindow( (leps[0]+leps[1]+leps[2]).M()/1000., massWindow)) return true;
-	}
+        leps[1] = m_vec_signalMuon->at(iL2).p4();
+        //Trying to add one more muon
+        for(uint iL3=0; iL3<m_vec_signalMuon->size(); iL3++){
+          if((iL3==iL) || (iL3==iL2)) continue;
+          leps[2] = m_vec_signalMuon->at(iL3).p4();
+          if(isInZWindow( (leps[0]+leps[1]+leps[2]).M()/1000., massWindow)) return true;
+        }
+        //Trying to add a electron
+        for(uint iL3=0; iL3<m_vec_signalElectron->size(); iL3++){
+          leps[2] = m_vec_signalElectron->at(iL3).p4();
+          if(isInZWindow( (leps[0]+leps[1]+leps[2]).M()/1000., massWindow)) return true;
+        }
       }
     }
   }
@@ -2241,34 +2241,34 @@ bool EventSelector::hasZllll()
       if(iL2<=iL) continue;
       charge[1] = m_vec_signalElectron->at(iL2).charge();
       if(isOS(charge[0],charge[1])){
-	leps[1] = m_vec_signalElectron->at(iL2).p4();
-	//Trying to add two more electrons
-	for(uint iL3=0; iL3<m_vec_signalElectron->size(); iL3++){
-	  if((iL3==iL) || (iL3==iL2)) continue;
-	  leps[2] = m_vec_signalElectron->at(iL3).p4();
-	  charge[2] = m_vec_signalElectron->at(iL3).charge();
-	  for(uint iL4=0; iL4<m_vec_signalElectron->size(); iL4++){
-	    if((iL4==iL) || (iL4==iL2) || (iL4==iL3)) continue;
-	    charge[3] = m_vec_signalElectron->at(iL4).charge();
-	    if(isOS(charge[2],charge[3])){
-	      leps[3] = m_vec_signalElectron->at(iL4).p4();
-	      if(isInZWindow( (leps[0]+leps[1]+leps[2]+leps[3]).M()/1000., massWindow)) return true;
-	    }
-	  }
-	}
-	//Trying to add two more muons
-	for(uint iL3=0; iL3<m_vec_signalMuon->size(); iL3++){
-	  leps[2] = m_vec_signalMuon->at(iL3).p4();
-	  charge[2] = m_vec_signalMuon->at(iL3).charge();
-	  for(uint iL4=0; iL4<m_vec_signalMuon->size(); iL4++){
-	    if(iL4<=iL3) continue;
-	    charge[3] = m_vec_signalMuon->at(iL4).charge();
-	    if(isOS(charge[2],charge[3])){
-	      leps[3] = m_vec_signalMuon->at(iL4).p4();
-	      if(isInZWindow( (leps[0]+leps[1]+leps[2]+leps[3]).M()/1000., massWindow)) return true;
-	    }
-	  }
-	}
+        leps[1] = m_vec_signalElectron->at(iL2).p4();
+        //Trying to add two more electrons
+        for(uint iL3=0; iL3<m_vec_signalElectron->size(); iL3++){
+          if((iL3==iL) || (iL3==iL2)) continue;
+          leps[2] = m_vec_signalElectron->at(iL3).p4();
+          charge[2] = m_vec_signalElectron->at(iL3).charge();
+          for(uint iL4=0; iL4<m_vec_signalElectron->size(); iL4++){
+            if((iL4==iL) || (iL4==iL2) || (iL4==iL3)) continue;
+            charge[3] = m_vec_signalElectron->at(iL4).charge();
+            if(isOS(charge[2],charge[3])){
+              leps[3] = m_vec_signalElectron->at(iL4).p4();
+              if(isInZWindow( (leps[0]+leps[1]+leps[2]+leps[3]).M()/1000., massWindow)) return true;
+            }
+          }
+        }
+        //Trying to add two more muons
+        for(uint iL3=0; iL3<m_vec_signalMuon->size(); iL3++){
+          leps[2] = m_vec_signalMuon->at(iL3).p4();
+          charge[2] = m_vec_signalMuon->at(iL3).charge();
+          for(uint iL4=0; iL4<m_vec_signalMuon->size(); iL4++){
+            if(iL4<=iL3) continue;
+            charge[3] = m_vec_signalMuon->at(iL4).charge();
+            if(isOS(charge[2],charge[3])){
+              leps[3] = m_vec_signalMuon->at(iL4).p4();
+              if(isInZWindow( (leps[0]+leps[1]+leps[2]+leps[3]).M()/1000., massWindow)) return true;
+            }
+          }
+        }
       }
     }
   }
@@ -2280,38 +2280,38 @@ bool EventSelector::hasZllll()
       if(iL2<=iL) continue;
       charge[1] = m_vec_signalMuon->at(iL2).charge();
       if(isOS(charge[0],charge[1])){
-	leps[1] = m_vec_signalMuon->at(iL2).p4();
-	//Trying to add two more muons
-	for(uint iL3=0; iL3<m_vec_signalMuon->size(); iL3++){
-	  if((iL3==iL) || (iL3==iL2)) continue;
-	  leps[2] = m_vec_signalMuon->at(iL3).p4();
-	  charge[2] = m_vec_signalMuon->at(iL3).charge();
-	  for(uint iL4=0; iL4<m_vec_signalMuon->size(); iL4++){
-	    if((iL4==iL) || (iL4==iL2) || (iL4==iL3)) continue;
-	    charge[3] = m_vec_signalMuon->at(iL4).charge();
-	    if(isOS(charge[2],charge[3])){
-	      leps[3] = m_vec_signalMuon->at(iL4).p4();
-	      if(isInZWindow( (leps[0]+leps[1]+leps[2]+leps[3]).M()/1000., massWindow)) return true;
-	    }
-	  }
-	}
-	//Trying to add two more electrons
-	for(uint iL3=0; iL3<m_vec_signalElectron->size(); iL3++){
-	  leps[2] = m_vec_signalElectron->at(iL3).p4();
-	  charge[2] = m_vec_signalElectron->at(iL3).charge();
-	  for(uint iL4=0; iL4<m_vec_signalElectron->size(); iL4++){
-	    if(iL4<=iL3) continue;
-	    charge[3] = m_vec_signalElectron->at(iL4).charge();
-	    if(isOS(charge[2],charge[3])){
-	      leps[3] = m_vec_signalElectron->at(iL4).p4();
-	      if(isInZWindow( (leps[0]+leps[1]+leps[2]+leps[3]).M()/1000., massWindow)) return true;
-	    }
-	  }
-	}
+        leps[1] = m_vec_signalMuon->at(iL2).p4();
+        //Trying to add two more muons
+        for(uint iL3=0; iL3<m_vec_signalMuon->size(); iL3++){
+          if((iL3==iL) || (iL3==iL2)) continue;
+          leps[2] = m_vec_signalMuon->at(iL3).p4();
+          charge[2] = m_vec_signalMuon->at(iL3).charge();
+          for(uint iL4=0; iL4<m_vec_signalMuon->size(); iL4++){
+            if((iL4==iL) || (iL4==iL2) || (iL4==iL3)) continue;
+            charge[3] = m_vec_signalMuon->at(iL4).charge();
+            if(isOS(charge[2],charge[3])){
+              leps[3] = m_vec_signalMuon->at(iL4).p4();
+              if(isInZWindow( (leps[0]+leps[1]+leps[2]+leps[3]).M()/1000., massWindow)) return true;
+            }
+          }
+        }
+        //Trying to add two more electrons
+        for(uint iL3=0; iL3<m_vec_signalElectron->size(); iL3++){
+          leps[2] = m_vec_signalElectron->at(iL3).p4();
+          charge[2] = m_vec_signalElectron->at(iL3).charge();
+          for(uint iL4=0; iL4<m_vec_signalElectron->size(); iL4++){
+            if(iL4<=iL3) continue;
+            charge[3] = m_vec_signalElectron->at(iL4).charge();
+            if(isOS(charge[2],charge[3])){
+              leps[3] = m_vec_signalElectron->at(iL4).p4();
+              if(isInZWindow( (leps[0]+leps[1]+leps[2]+leps[3]).M()/1000., massWindow)) return true;
+            }
+          }
+        }
       }
     }
   }
-			    
+
   return false;
 }
 
@@ -2329,14 +2329,14 @@ float EventSelector::findBestMSFOS(int& index1, int& index2, int& flav)
       if(iL2<=iL) continue;
       charge[1] = m_vec_signalElectron->at(iL2).charge();
       if(isOS(charge[0],charge[1])){
-	leps[1] = m_vec_signalElectron->at(iL2).p4();
-	Double_t mll = (leps[0]+leps[1]).M()/1000.;
-	if(bestZMass<0. || fabs(bestZMass-MZ)>fabs(mll-MZ)){
-	  bestZMass = mll;
-	  index1 = iL;
-	  index2 = iL2;
-	  flav = 0; //means electron.
-	}
+        leps[1] = m_vec_signalElectron->at(iL2).p4();
+        Double_t mll = (leps[0]+leps[1]).M()/1000.;
+        if(bestZMass<0. || fabs(bestZMass-MZ)>fabs(mll-MZ)){
+          bestZMass = mll;
+          index1 = iL;
+          index2 = iL2;
+          flav = 0; //means electron.
+        }
       }
     }
   }
@@ -2348,14 +2348,14 @@ float EventSelector::findBestMSFOS(int& index1, int& index2, int& flav)
       if(iL2<=iL) continue;
       charge[1] = m_vec_signalMuon->at(iL2).charge();
       if(isOS(charge[0],charge[1])){
-  	leps[1] = m_vec_signalMuon->at(iL2).p4();
-	Double_t mll = (leps[0]+leps[1]).M()/1000.;
-	if(bestZMass<0. || fabs(bestZMass-MZ)>fabs(mll-MZ)){
-	  bestZMass = mll;
-	  index1 = iL;
-	  index2 = iL2;
-	  flav = 1; //means muon.
-	}
+        leps[1] = m_vec_signalMuon->at(iL2).p4();
+        Double_t mll = (leps[0]+leps[1]).M()/1000.;
+        if(bestZMass<0. || fabs(bestZMass-MZ)>fabs(mll-MZ)){
+          bestZMass = mll;
+          index1 = iL;
+          index2 = iL2;
+          flav = 1; //means muon.
+        }
       }
     }
   }

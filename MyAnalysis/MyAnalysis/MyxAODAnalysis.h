@@ -8,6 +8,7 @@
 #include"xAODRootAccess/TEvent.h"
 #include"xAODRootAccess/TStore.h"
 #include"CPAnalysisExamples/errorcheck.h"
+#include"AsgTools/MsgLevel.h"
 
 #include "PATInterfaces/SystematicVariation.h"
 #include "PATInterfaces/SystematicRegistry.h"
@@ -51,15 +52,22 @@ public:
   // TH1 *myHist; //!
 
   //Added by minoru
+  //Variables which are initialized in initialize();
+  //We do need "//!" after the declaration.
   xAOD::TEvent *m_event; //!
   xAOD::TStore m_store; //!
   bool m_isMC; //!
-  int m_eventCounter; //!
-  int m_numCleanEvents; //!
-  int m_debug_mode; //!
+  long long int m_eventCounter; //!
+  long long int m_numCleanEvents; //!
   std::vector<std::string> *m_vec_eveSelec; //!
   //0:no debug output, 1:-v, 2:-vv, 3:-vvv
   std::vector<CP::SystematicSet> m_sysList; //!
+
+  //Variables which are initialized (or Set) in testRun.cxx;
+  //We don't need "//!" for them.
+  long long int m_maxEvent;
+  MSG::Level m_debugMode;
+  bool m_noSyst;
 
 #ifndef __CINT__
   ST::SUSYObjDef_xAOD *m_susyObjTool; //!
@@ -87,6 +95,11 @@ public:
   bool FillHistograms(EventSelector *EveSelec);
   bool PassPreSelection(const xAOD::EventInfo* eventInfo);
   void dumpEventCounters();
+
+  //Setter used in a steering macro (e.g. test.Run.cxx).
+  void SetDebugMode(MSG::Level debugMode=MSG::ERROR){m_debugMode = debugMode;};
+  void SetMaxEvent(long long int maxEvent=-1){m_maxEvent = maxEvent;};
+  void SetNoSyst(bool nosyst=true){m_noSyst = nosyst;};
 
   //end adding
 

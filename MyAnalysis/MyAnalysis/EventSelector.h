@@ -10,6 +10,7 @@
 #include"xAODMuon/Muon.h"
 #include"xAODEgamma/Electron.h"
 #include"xAODJet/Jet.h"
+#include"AsgTools/MsgLevel.h"
 
 namespace ST{
   class SUSYObjDef_xAOD;
@@ -30,8 +31,8 @@ const float MUON_Z0_SINTHETA_CUT        = 1.0;//0.2;
 class EventSelector : public TObject
 {
  public:
-  //    EventSelector(Susy::SusyNtObject* nt, std::string sample, std::string sel="none", int dbg=0);
-  EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, std::string sel="none", std::string sys="none", int isMC=1, int dbg=0);
+  EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, std::string sel="none", std::string sys="none",
+                int isMC=1, MSG::Level dbg=MSG::ERROR);
   virtual ~EventSelector(){};
 
   // Initialization
@@ -302,7 +303,7 @@ class EventSelector : public TObject
   int                            m_nBaselineLeps;
   int                            m_nSignalJets;
   int                            m_nBaselineJets;
-  int                            m_dbg;            // debug level
+  MSG::Level                     m_dbg;            // debug level
   int                            m_isMC;           // 1:MC, 0:Data
   /* std::string                 m_sample;         // sample name */
   std::string                    m_sel;            // event selection string
