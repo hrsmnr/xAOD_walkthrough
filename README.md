@@ -14,4 +14,3 @@ $source rcSetup.sh
 $rc find_packages
 $rc compile
 $testRun -D test -n 10
-(e.g. $time testRun submitDir testwithmc 2>&1 | tee logmine.txt)
