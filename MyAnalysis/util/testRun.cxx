@@ -17,7 +17,9 @@ MSG::Level GetMsgLevel(int level);
 int main( int argc, char* argv[] ) {
 
   if(argc==1) help();
-  std::cout << "Starting analysis code..." << std::endl;
+  std::cout << "=============================" << std::endl;
+  std::cout << "Starting analysis code..."     << std::endl;
+  std::cout << "=============================" << std::endl;
   std::cout << std::endl;
 
   int nEvt = -1;
@@ -86,7 +88,7 @@ int main( int argc, char* argv[] ) {
   std::cout << std::endl;
 
   std::cout << "selections: ";
-  for(uint i=0; i<sels.size(); i++) std::cout << sels[i] << ", ";
+  for(uint i=0; i<sels.size(); i++) std::cout << "\"" << sels[i] << "\" ";
   std::cout << std::endl;
   std::cout << std::endl;
 
@@ -151,6 +153,7 @@ int main( int argc, char* argv[] ) {
   // Run the job using the local/direct driver:
   EL::DirectDriver driver;
   driver.submit( job, submitDir );
+  std::cout<<std::endl;
 
   return 0;
 }
