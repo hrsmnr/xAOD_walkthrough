@@ -28,12 +28,24 @@ done
 echo Target DS directory     = $TARGETDS
 echo Target selection region = $TARGETSELECREG
 
+###########################################################
+# Deleting old logfiles in ./lsfoutput
+###########################################################
+\rm lsfoutput/*.log~* #delete logfiles with "~" first
+for logfile in `ls ./lsfoutput`
+do
+    \cp -p --force lsfoutput/$logfile lsfoutput/$logfile~
+    \rm lsfoutput/$logfile
+done
+return 1
+
+###########################################################
+# Submitting jobs to the dataset in the target directory 
+###########################################################
 for DatasetDir in `ls $TARGETDS`
 do
-#echo $DatasetDir
-############################################
+######################################################
 # Finding "data type" and "run number"
-############################################
 runnumStartPos=-1
 runnumEndPos=-1
 matched=-1
@@ -72,22 +84,24 @@ if [ $dataType = "data14_13TeV" ]; then
     runnum=`echo $DatasetDir | cut -c $runnumStartPos-$runnumEndPos`
     matched=1
 fi
+#echo $DatasetDir
 #echo $dataType
 #echo $runnum
+######################################################
 
-#######################################################
+######################################################
 # Waiting for #submitted jobs to be less than maxJobs
-#######################################################
 maxJobs=150
 while [ $(bjobs | wc -l) -gt $maxJobs  ]
 do
     echo Currently $(bjobs | wc -l) jobs are runnning. Wait for 10 seconds to keep less running jobs...
     sleep 10
 done
+######################################################
 
 maxEve=-1
 echo Starting testRun for DSID=$runnum '('$DatasetDir')'...
 echo 'bsub -q 12h -o ./lsfoutput/'$runnum'_00.log testRun -n '$maxEve' --FileDirBase '$TARGETDS' -D '$DatasetDir' -o result/'$runnum'_00 '$TARGETSELECREG
-bsub -q 12h -o ./lsfoutput/${runnum}_00.log testRun -n $maxEve --FileDirBase $TARGETDS -D $DatasetDir -o result/${runnum}_00 $TARGETSELECREG
+#bsub -q 12h -o ./lsfoutput/${runnum}_00.log testRun -n $maxEve --FileDirBase $TARGETDS -D $DatasetDir -o result/${runnum}_00 $TARGETSELECREG
 echo ''
 done
