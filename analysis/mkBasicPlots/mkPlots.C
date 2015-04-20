@@ -1,3 +1,10 @@
+//////////////////////////////////////////////////////
+// Scripts to make various plots.
+// Usage : 
+// root -q -b 'mkPlots.C+O("none")'
+// root -q -b 'mkPlots.C+O("3lep")'
+// etc...
+//////////////////////////////////////////////////////
 #include<iostream>
 #include<vector>
 #include<string>
