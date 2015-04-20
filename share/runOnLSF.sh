@@ -31,11 +31,11 @@ echo Target selection region = $TARGETSELECREG
 ###########################################################
 # Deleting old logfiles in ./lsfoutput
 ###########################################################
-\rm lsfoutput/*.log~* #delete logfiles with "~" first
+\rm -f lsfoutput/*.log~* #delete logfiles with "~" first
 for logfile in `ls ./lsfoutput`
 do
     \cp -p --force lsfoutput/$logfile lsfoutput/$logfile~
-    \rm lsfoutput/$logfile
+    \rm -f lsfoutput/$logfile
 done
 return 1
 
