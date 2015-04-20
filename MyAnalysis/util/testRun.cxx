@@ -135,6 +135,12 @@ int main( int argc, char* argv[] ) {
     SH::scanSingleDir (sh, fileDir.c_str(), list);
   }
 
+  // Obtain DSID/RunNumber from file directory name
+  int dsid = -1;
+  if     (fileDir.substr(0,10)=="mc14_13TeV"  ) dsid = atoi(fileDir.substr(11,6).c_str());
+  else if(fileDir.substr(0, 9)=="mc14_8TeV"   ) dsid = atoi(fileDir.substr(10,6).c_str());
+  else if(fileDir.substr(0,12)=="data14_13TeV") dsid = atoi(fileDir.substr(13,6).c_str());
+
   // Set the name of the input TTree. It's always "CollectionTree" for xAOD files.
   sh.setMetaString( "nc_tree", "CollectionTree" );
   sh.print(); // Print what we found:
@@ -148,6 +154,7 @@ int main( int argc, char* argv[] ) {
   alg->SetDebugMode(dbg);
   alg->SetMaxEvent(nEvt);
   alg->SetNoSyst(!doSys);
+  alg->SetDSID(dsid);
   job.algsAdd( alg );
 
   // Run the job using the local/direct driver:

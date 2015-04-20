@@ -12,6 +12,7 @@
 //added by minoru
 #include"GoodRunsLists/GoodRunsListSelectionTool.h"
 #include"SUSYTools/SUSYObjDef_xAOD.h"
+#include"SUSYTools/SUSYCrossSection.h"
 
 #include"MyAnalysis/EventSelector.h"
 
@@ -134,6 +135,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   m_eventCounter = 0;
   m_processedEvents = 0;
   m_numCleanEvents = 0;
+  m_eventWeight = 1.;
 
   // Event selection list
   m_vec_eveSelec = new std::vector<std::string>();
@@ -215,6 +217,15 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
     return EL::StatusCode::FAILURE;
   }else{
     MyInfo( "initialize()", "SUSYObjDef_xAOD initialized... " );
+  }
+
+  m_XSDB = new SUSY::CrossSectionDB("susy_crosssections_13TeV.txt");
+  if(isData) m_crossSection = 0.;
+  else       m_crossSection = m_XSDB->xsectTimesEff(m_dsid);
+  MyInfo("initialize()", Form("Cross section times filter efficiency for DSID #%i: %f pb", m_dsid, m_crossSection));
+  if(m_crossSection<0.){
+    MyError("initialize()","Failed to obtain the cross section for DSID=%i.",m_dsid);
+    return EL::StatusCode::FAILURE;
   }
 
   // Now we can look at systematics:
@@ -313,22 +324,26 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   if(not PassPreSelection(eventInfo)) return EL::StatusCode::SUCCESS;
 
   // check run number and luminosity block in data
-  uint32_t RunNumber   = -999;
-  uint32_t LumiBlock   = -999;
-  uint32_t EventNumber = -999;
-  uint32_t mcChannelNumber = -999; //DSID
-  uint32_t mcEventNumber   = -999; //Event number in generator?
-  uint32_t mcEventWeight   = -999;
+  Int_t RunNumber   = -999;
+  Int_t LumiBlock   = -999;
+  Int_t EventNumber = -999;
+  Int_t mcChannelNumber = -999; //DSID
+  Int_t mcEventNumber   = -999; //Event number in generator?
+  m_eventWeight = -999.;
   if(!m_isMC){ //For data
     RunNumber   = eventInfo->runNumber();
     LumiBlock   = eventInfo->lumiBlock();
     EventNumber = eventInfo->eventNumber();
+    m_eventWeight = 1.;
     MyInfo("execute()", "RunNumber : %i, LumiBlock : %i, EventNumber : %i", RunNumber, LumiBlock, EventNumber);
   }else{ //For MC, check DSID and 
     mcChannelNumber = eventInfo->mcChannelNumber(); //DSID
     mcEventNumber   = eventInfo->mcEventNumber(); //Event number in generator?
-    mcEventWeight   = eventInfo->mcEventWeight();
-    MyInfo("execute()", "ChannelNumber : %i, EventNumber : %i, EventWeight : %i", mcChannelNumber, mcEventNumber, mcEventWeight);
+    m_eventWeight   = eventInfo->mcEventWeight();
+    MyInfo("execute()", "ChannelNumber : %i, EventNumber : %i, EventWeight : %f", mcChannelNumber, mcEventNumber, m_eventWeight);
+    if(m_dsid!=mcChannelNumber){
+      MyError("execute()",Form("mcChannelNumber(%d) by EventInfo is different from the one in testRun arugument(%d).",mcChannelNumber,m_dsid));
+    }
   }
 
   MyInfo( "initialize()", "Preselection : Done.");
@@ -603,6 +618,8 @@ bool MyxAODAnalysis::BookHistograms(){
 
 bool MyxAODAnalysis::FillHistograms(EventSelector *EveSelec){
 
+  MyDebug("FillHistograms()", "Filling histogram ...");
+
   //Retrieving objects via EventSelector
   std::vector< xAOD::Electron >* vec_signalElectron = EveSelec->GetSignalElectron();
   // std::vector< xAOD::Electron >* vec_baseElectron   = EveSelec->GetBaseElectron  ();
@@ -647,8 +664,7 @@ bool MyxAODAnalysis::FillHistograms(EventSelector *EveSelec){
   }
 
   //===========================================================================
-  //  std::cout<<"Filling histogram ..."<<std::endl;
-  Double_t weight=1.;
+  Double_t weight=m_eventWeight*EveSelec->getTotalSF();
 
   // Preprocessor convenience
   // All this does is append the corrent indices to the histo for sys and channel

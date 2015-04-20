@@ -46,6 +46,7 @@ class EventSelector : public TObject
   // Full event selection.
   virtual bool selectObject();
   virtual bool selectEvent();
+  virtual double getTotalSF(){return m_totalSF;};
 
   Int_t getBaseLepIndex (Int_t id){return m_baseLepIndex [id];};
   Int_t getBaseLepFlavor(Int_t id){return m_baseLepFlavor[id];};
@@ -305,6 +306,7 @@ class EventSelector : public TObject
   int                            m_nBaselineJets;
   MSG::Level                     m_dbg;            // debug level
   int                            m_isMC;           // 1:MC, 0:Data
+  double                         m_totalSF;        // Total scale factor
   /* std::string                 m_sample;         // sample name */
   std::string                    m_sel;            // event selection string
   std::string                    m_sys;            // systematic name string

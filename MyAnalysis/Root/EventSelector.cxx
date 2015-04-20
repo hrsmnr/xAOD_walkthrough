@@ -28,6 +28,7 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD* SUSYObjDef, std::string sel, s
   m_nBaselineJets(-1),
   m_dbg(dbg),
   m_isMC(isMC),
+  m_totalSF(1.),
   m_sel(sel),
   m_sys(sys),
   // m_selFlag(0),
@@ -299,11 +300,6 @@ bool EventSelector::IsMyPreJet(xAOD::Jet jet){
 // Object selection
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::selectObject()
-// bool EventSelector::selectEvent(const LeptonVector& signalLeptons, const LeptonVector& baseLeps,
-//                                 const MuonVector& preMuons, const MuonVector& baseMuons,
-//                                 const TauVector& signalTaus, const TauVector& tightTaus, 
-//                                 const JetVector& signalJets, const JetVector& baseJets,
-//                                 const JetVector& preJets, const Met* met)
 {
   bool rtrvFail = false;
   ///////////////////////////////////////////////////
