@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <cmath>
 
@@ -31,7 +30,7 @@ TGraphErrors* myTGraphErrorsDivide(TGraphErrors* g1,TGraphErrors* g2) {
   Int_t n2=g2->GetN();
 
   if (n1!=n2) {
-   printf("**myTGraphErrorsDivide: vector do not have same number of entries !  \n"); 
+    printf("**myTGraphErrorsDivide: vector do not have same number of entries !  \n"); 
   }
 
   TGraphErrors* g3= new TGraphErrors();
@@ -41,40 +40,40 @@ TGraphErrors* myTGraphErrorsDivide(TGraphErrors* g1,TGraphErrors* g2) {
 
   Int_t iv=0;
   for (Int_t i1=0; i1<n1; i1++) {
-   for (Int_t i2=0; i2<n2; i2++) {
-     //if (debug) printf("**myTGraphErrorsDivide: %d  %d !  \n",i1,i2);
+    for (Int_t i2=0; i2<n2; i2++) {
+      //if (debug) printf("**myTGraphErrorsDivide: %d  %d !  \n",i1,i2);
 
-    g1->GetPoint(i1,x1,y1);
-    g2->GetPoint(i2,x2,y2);
-    if (x1!=x2) {
-      //printf("**myTGraphErrorsDivide: %d x1!=x2  %f %f  !  \n",iv,x1,x2);
-    }else{
-      //if (debug) printf("**myTGraphErrorsDivide: %d x1=x2  %f %f  !  \n",iv,x1,x2);
-     dx1  = g1->GetErrorX(i1);
-     if (y1!=0) dy1  = g1->GetErrorY(i1)/y1;
-     if (y2!=0) dy2  = g2->GetErrorY(i2)/y2;
+      g1->GetPoint(i1,x1,y1);
+      g2->GetPoint(i2,x2,y2);
+      if (x1!=x2) {
+        //printf("**myTGraphErrorsDivide: %d x1!=x2  %f %f  !  \n",iv,x1,x2);
+      }else{
+        //if (debug) printf("**myTGraphErrorsDivide: %d x1=x2  %f %f  !  \n",iv,x1,x2);
+        dx1  = g1->GetErrorX(i1);
+        if (y1!=0) dy1  = g1->GetErrorY(i1)/y1;
+        if (y2!=0) dy2  = g2->GetErrorY(i2)/y2;
    
-     if (debug)
-      printf("**myTGraphErrorsDivide: %d x1=%f x2=%f y1=%f y2=%f  \n",iv,x1,x2,y1,y2);
+        if (debug)
+          printf("**myTGraphErrorsDivide: %d x1=%f x2=%f y1=%f y2=%f  \n",iv,x1,x2,y1,y2);
 
-     if (y2!=0.) g3->SetPoint(iv, x1,y1/y2);
-     else        g3->SetPoint(iv, x1,y2);
+        if (y2!=0.) g3->SetPoint(iv, x1,y1/y2);
+        else        g3->SetPoint(iv, x1,y2);
    
-     Double_t e=0.;
-     if (y1!=0 && y2!=0) e=std::sqrt(dy1*dy1+dy2*dy2)*(y1/y2); 
-     g3->SetPointError(iv,dx1,e);
+        Double_t e=0.;
+        if (y1!=0 && y2!=0) e=std::sqrt(dy1*dy1+dy2*dy2)*(y1/y2); 
+        g3->SetPointError(iv,dx1,e);
 
 
-     if (debug) {
-       //Double_t g3y, g3x,g3e;
-       //g3->GetPoint(iv, g3y,g3x);
-       //g3e=g3->GetErrorY(iv);
-       //printf("%d g3y= %f g3e=%f  \n",iv,g3y,g3e);
-     }
-     iv++;
+        if (debug) {
+          //Double_t g3y, g3x,g3e;
+          //g3->GetPoint(iv, g3y,g3x);
+          //g3e=g3->GetErrorY(iv);
+          //printf("%d g3y= %f g3e=%f  \n",iv,g3y,g3e);
+        }
+        iv++;
+      }
+      //    printf("**myTGraphErrorsDivide: ...next  \n");
     }
-    //    printf("**myTGraphErrorsDivide: ...next  \n");
-   }
   }  
   return g3;
 
@@ -91,7 +90,7 @@ TGraphAsymmErrors* myTGraphErrorsDivide(TGraphAsymmErrors* g1,TGraphAsymmErrors*
 
   if (n1!=n2) {
     printf(" vectors do not have same number of entries !  \n");
-   return g3;
+    return g3;
   }
 
   Double_t   x1=0.,   y1=0., x2=0., y2=0.;
@@ -99,17 +98,17 @@ TGraphAsymmErrors* myTGraphErrorsDivide(TGraphAsymmErrors* g1,TGraphAsymmErrors*
   Double_t dy1h=0., dy1l=0.;
   Double_t dy2h=0., dy2l=0.;
 
-//   Double_t* X1 = g1->GetX();
-//   Double_t* Y1 = g1->GetY();
+  //   Double_t* X1 = g1->GetX();
+  //   Double_t* Y1 = g1->GetY();
   Double_t* EXhigh1 = g1->GetEXhigh();
   Double_t* EXlow1 =  g1->GetEXlow();
   Double_t* EYhigh1 = g1->GetEYhigh();
   Double_t* EYlow1 =  g1->GetEYlow();
 
-//   Double_t* X2 = g2->GetX();
-//   Double_t* Y2 = g2->GetY();
-//   Double_t* EXhigh2 = g2->GetEXhigh();
-//   Double_t* EXlow2 =  g2->GetEXlow();
+  //   Double_t* X2 = g2->GetX();
+  //   Double_t* Y2 = g2->GetY();
+  //   Double_t* EXhigh2 = g2->GetEXhigh();
+  //   Double_t* EXlow2 =  g2->GetEXlow();
   Double_t* EYhigh2 = g2->GetEYhigh();
   Double_t* EYlow2 =  g2->GetEYlow();
 
@@ -131,7 +130,7 @@ TGraphAsymmErrors* myTGraphErrorsDivide(TGraphAsymmErrors* g1,TGraphAsymmErrors*
     //printf("%d x1=%f x2=%f y1=%f y2=%f  \n",i,x1,x2,y1,y2);
     if (debug)
       printf("%d dy1=%f %f dy2=%f %f sqrt= %f %f \n",i,dy1l,dy1h,dy2l,dy2h,
-	     std::sqrt(dy1l*dy1l+dy2l*dy2l), std::sqrt(dy1h*dy1h+dy2h*dy2h));
+             std::sqrt(dy1l*dy1l+dy2l*dy2l), std::sqrt(dy1h*dy1h+dy2h*dy2h));
 
     if (y2!=0.) g3->SetPoint(i, x1,y1/y2);
     else       g3->SetPoint(i, x1,y2);
@@ -152,7 +151,7 @@ TGraphAsymmErrors* myTGraphErrorsDivide(TGraphAsymmErrors* g1,TGraphAsymmErrors*
 
 TGraphAsymmErrors* myMakeBand(TGraphErrors* g0, TGraphErrors* g1,TGraphErrors* g2) {
   // default is g0
-    //const Int_t debug=0;
+  //const Int_t debug=0;
 
   TGraphAsymmErrors* g3= new TGraphAsymmErrors();
 
@@ -164,7 +163,7 @@ TGraphAsymmErrors* myMakeBand(TGraphErrors* g0, TGraphErrors* g1,TGraphErrors* g
     g1->GetPoint(i, x1,y1);
     g2->GetPoint(i, x1,y2);
 
-    // if (y1==0) y1=1;
+    //if (y1==0) y1=1;
     //if (y2==0) y2=1;
 
     if (i==g1->GetN()-1) x2=x1;
@@ -222,17 +221,17 @@ void myAddtoBand(TGraphErrors* g1, TGraphAsymmErrors* g2) {
 
     y0=y1-y2;
     if (y0!=0) {
-     if (y0>0){
-      eyh=EYhigh[i];
-      eyh=std::sqrt(eyh*eyh+y0*y0);
-      //printf("high: %d: y0=%f eyh=%f  \n",i,y0,eyh);
-      g2->SetPointEYhigh(i,eyh);
-     } else {
-      eyl=EYlow[i];
-      eyl=std::sqrt(eyl*eyl+y0*y0);
-      // printf("low: %d: y0=%f eyl=%f  \n",i,y0,eyl);
-      g2->SetPointEYlow (i,eyl);
-     }
+      if (y0>0){
+        eyh=EYhigh[i];
+        eyh=std::sqrt(eyh*eyh+y0*y0);
+        //printf("high: %d: y0=%f eyh=%f  \n",i,y0,eyh);
+        g2->SetPointEYhigh(i,eyh);
+      } else {
+        eyl=EYlow[i];
+        eyl=std::sqrt(eyl*eyl+y0*y0);
+        // printf("low: %d: y0=%f eyl=%f  \n",i,y0,eyl);
+        g2->SetPointEYlow (i,eyl);
+      }
     }
   }
   return;
@@ -240,7 +239,6 @@ void myAddtoBand(TGraphErrors* g1, TGraphAsymmErrors* g2) {
 }
 
 TGraphErrors* TH1TOTGraph(TH1 *h1){
-
 
   if (!h1) std::cout << "TH1TOTGraph: histogram not found !" << std::endl;
 

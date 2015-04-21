@@ -90,7 +90,7 @@ history :
 std::string get_file_contents(const char *filename);
 
 class TUtil{
-public:
+ public:
   TUtil(const char* psFile=TUTIL_PSFILE, const char* rootFile=TUTIL_ROOTFILE, const Int_t canv_x=640, const Int_t canv_y=856, const Int_t debug=false);
   TUtil(const char* psFile=TUTIL_PSFILE, const char* rootFile=TUTIL_ROOTFILE, const Bool_t debug=false);
   virtual ~TUtil(void);
@@ -159,7 +159,7 @@ public:
   static const std::string GetVersion(void){ return TUTIL_VERSION; }
   static const std::string Version(void){ return GetVersion(); }
   
-protected:
+ protected:
   
   // init
   void init_style(void);
