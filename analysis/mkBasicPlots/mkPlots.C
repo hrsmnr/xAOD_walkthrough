@@ -334,18 +334,12 @@ void SetDataType(void){
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
-enum BGType{WZ,nBGType};
-TString BGTypeNames[nBGType] = {"WZ"};
-Int_t BGTypeHistColors[nBGType] = {kAzure-3};
-Int_t BGTypeFillColors[nBGType] = {kAzure-3};
-Int_t BGStackOrder1[nBGType] = {WZ};
-Int_t BGStackOrder2[nBGType] = {WZ};
-// enum BGType{WZ,ttbar,nBGType};
-// TString BGTypeNames[nBGType] = {"WZ","ttbar"};
-// Int_t BGTypeHistColors[nBGType] = {kAzure-3,kCyan-2};
-// Int_t BGTypeFillColors[nBGType] = {kAzure-3,kCyan-2};
-// Int_t BGStackOrder1[nBGType] = {WZ,ttbar};
-// Int_t BGStackOrder2[nBGType] = {ttbar,WZ};
+enum BGType{WZ,ttbar,nBGType};
+TString BGTypeNames[nBGType] = {"WZ","ttbar"};
+Int_t BGTypeHistColors[nBGType] = {kAzure-3,kOrange-2};
+Int_t BGTypeFillColors[nBGType] = {kAzure-3,kOrange-2};
+Int_t BGStackOrder1[nBGType] = {WZ,ttbar};
+Int_t BGStackOrder2[nBGType] = {ttbar,WZ};
 // enum BGType{WZ,ZZ,ttW,ttZ,tPlusVs,Tribosons,Higgs,Zjets,Wjets,ttbar,OtherFake,nBGType};
 // TString BGTypeNames[nBGType] = {"WZ","ZZ","ttW","ttZ","tPlusVs","Tribosons","Higgs","Zjets","Wjets","ttbar","OtherFake"};
 // Int_t BGTypeHistColors[nBGType] = {kAzure-3,kAzure-4,kCyan-2,kCyan-1,kCyan,kMagenta,kBlack,kViolet-7,kViolet-9,kOrange-2,kGreen+2};
@@ -354,7 +348,7 @@ Int_t BGStackOrder2[nBGType] = {WZ};
 // Int_t BGStackOrder2[nBGType] = {OtherFake,ttbar,Wjets,Zjets,Higgs,Tribosons,tPlusVs,ttZ,ttW,ZZ,WZ};
 
 //enum WZFiles{WZpeee,WZpemm,WZpett,WZpmee,WZpmmm,WZpmtt,WZptee,WZptmm,WZpttt,
-//	     WZneee,WZnemm,WZnett,WZnmee,WZnmmm,WZnmtt,WZntee,WZntmm,WZnttt,nWZFiles};
+//     WZneee,WZnemm,WZnett,WZnmee,WZnmmm,WZnmtt,WZntee,WZntmm,WZnttt,nWZFiles};
 std::vector<TString> *BGFileNames  [nBGType];
 std::vector<TString> *BGIncludeFlag[nBGType]; //e.g. "00110" means the sample is included to the "eem" and "emm" channels.
 
@@ -385,7 +379,7 @@ void SetBGType(void){
   // BGFileNames[WZ]->push_back("187178"); BGIncludeFlag[WZ]->push_back("01111");
 
   //ttbar
-  //  BGFileNames[ttbar]->push_back("110401"); BGIncludeFlag[ttbar]->push_back("01111");//no all-had
+  BGFileNames[ttbar]->push_back("110401"); BGIncludeFlag[ttbar]->push_back("01111");//no all-had
 
 }
 
@@ -513,16 +507,16 @@ Int_t mkPlots(TString SelecReg){
   //     std::string fsname = FSTypeNames[fstype].Data();
   //     std::cout<<"Adding histograms in "<<DataFileNames->at(datafile)<<" to "<<FSTypeNames[fstype]<<" histograms..."<<std::endl;
   //     for(Int_t disttype=0; disttype<nDistType; disttype++){
-	// //Getting the histogram to add.
-	// std::string distname = DistTypeNames[disttype].Data();
-	// std::string histname = Form("%s_%s;1",fsname.c_str(),distname.c_str());
-	// TFile *f_tmp = vec_datafiles->at(datafile);
-	// TH1F *h_tmp = (TH1F*)(f_tmp->Get(histname.c_str()));
-	// dist_data[fstype][disttype]->Add(h_tmp);
-	// dist_data[fstype][disttype]->SetTitle(FSTypeNames[fstype]+":Data");
-	// dist_data[fstype][disttype]->SetMarkerStyle(kFullCircle);
-	// dist_data[fstype][disttype]->SetMarkerSize(1.2);
-	// std::cout<<"#Entries : "<<h_tmp->GetName()<<" : "<<h_tmp->GetEntries()<<std::endl;
+  // //Getting the histogram to add.
+  // std::string distname = DistTypeNames[disttype].Data();
+  // std::string histname = Form("%s_%s;1",fsname.c_str(),distname.c_str());
+  // TFile *f_tmp = vec_datafiles->at(datafile);
+  // TH1F *h_tmp = (TH1F*)(f_tmp->Get(histname.c_str()));
+  // dist_data[fstype][disttype]->Add(h_tmp);
+  // dist_data[fstype][disttype]->SetTitle(FSTypeNames[fstype]+":Data");
+  // dist_data[fstype][disttype]->SetMarkerStyle(kFullCircle);
+  // dist_data[fstype][disttype]->SetMarkerSize(1.2);
+  // std::cout<<"#Entries : "<<h_tmp->GetName()<<" : "<<h_tmp->GetEntries()<<std::endl;
   //     }
   //   }
   // }
@@ -633,8 +627,8 @@ Int_t mkPlots(TString SelecReg){
       for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
         std::cout<<"Adding "<<BGTypeNames[BGStackOrder2[bgtype]]<<" to THStack..."<<std::endl;
         hs_bg[fstype][disttype]->Add(dist_bg[fstype][BGStackOrder2[bgtype]][disttype]);
-        //	std::cout<<"Adding "<<BGTypeNames[bgtype]<<" to THStack..."<<std::endl;
-        //	hs_bg[fstype][disttype]->Add(dist_bg[fstype][bgtype][disttype]);
+        //std::cout<<"Adding "<<BGTypeNames[bgtype]<<" to THStack..."<<std::endl;
+        //hs_bg[fstype][disttype]->Add(dist_bg[fstype][bgtype][disttype]);
       }
     }
   }
@@ -657,19 +651,19 @@ Int_t mkPlots(TString SelecReg){
 
   //     Int_t nbins = dist_ratioErr[fstype][disttype]->GetNbinsX();
   //     for(Int_t bin=0; bin<nbins; bin++){
-	// Double_t dataCont = dist_data   [fstype][disttype]->GetBinContent(bin+1);
-	// Double_t bgCont   = dist_totalbg[fstype][disttype]->GetBinContent(bin+1);
-	// Double_t dataErr  = dist_data   [fstype][disttype]->GetBinError(bin+1);
-	// Double_t bgErr    = dist_totalbg[fstype][disttype]->GetBinError(bin+1);
-	// Double_t ratioData    = bgCont!=0.?dataCont/bgCont:0.;
-	// Double_t ratioDataErr = bgCont!=0.?dataErr/bgCont:0.;
-	// Double_t ratioMC      = 1.;
-	// //	Double_t ratioMCErr   = bgCont!=0.?bgErr*dataCont/bgCont/bgCont:0.;
-	// Double_t ratioMCErr   = bgCont!=0.?bgErr/bgCont:0.;
-	// dist_ratio[fstype][disttype]->SetBinContent(bin+1,ratioData);
-	// dist_ratio[fstype][disttype]->SetBinError(bin+1,ratioDataErr);
-	// dist_ratioErr[fstype][disttype]->SetBinContent(bin+1,ratioMC);
-	// dist_ratioErr[fstype][disttype]->SetBinError(bin+1,ratioMCErr);
+  //       Double_t dataCont = dist_data   [fstype][disttype]->GetBinContent(bin+1);
+  //       Double_t bgCont   = dist_totalbg[fstype][disttype]->GetBinContent(bin+1);
+  //       Double_t dataErr  = dist_data   [fstype][disttype]->GetBinError(bin+1);
+  //       Double_t bgErr    = dist_totalbg[fstype][disttype]->GetBinError(bin+1);
+  //       Double_t ratioData    = bgCont!=0.?dataCont/bgCont:0.;
+  //       Double_t ratioDataErr = bgCont!=0.?dataErr/bgCont:0.;
+  //       Double_t ratioMC      = 1.;
+  //       //Double_t ratioMCErr   = bgCont!=0.?bgErr*dataCont/bgCont/bgCont:0.;
+  //       Double_t ratioMCErr   = bgCont!=0.?bgErr/bgCont:0.;
+  //       dist_ratio[fstype][disttype]->SetBinContent(bin+1,ratioData);
+  //       dist_ratio[fstype][disttype]->SetBinError(bin+1,ratioDataErr);
+  //       dist_ratioErr[fstype][disttype]->SetBinContent(bin+1,ratioMC);
+  //       dist_ratioErr[fstype][disttype]->SetBinError(bin+1,ratioMCErr);
   //     }
 
   //   }
@@ -695,7 +689,7 @@ Int_t mkPlots(TString SelecReg){
   // leg->AddEntry(h_higgs4leg,"Higgs","f");
   // leg->AddEntry(dist_bg[0][Zjets][0],"Z/#gamma^{*}+jets","f");
   // leg->AddEntry(dist_bg[0][Wjets][0],"W+jets","f");
-  // leg->AddEntry(dist_bg[0][ttbar][0],"t#bar{t}","f");
+  leg->AddEntry(dist_bg[0][ttbar][0],"t#bar{t}","f");
   // leg->AddEntry(dist_bg[0][OtherFake][0],"Other BG with fakes","f");
   // leg->AddEntry(dist_totalbg[0][0],"Total SM","l");
   // leg->AddEntry(dist_totalbgErr[0][0],"Unct. for SM ","f");
@@ -762,7 +756,7 @@ Int_t mkPlots(TString SelecReg){
         hs_bg[fstype][disttype]->GetXaxis()->SetTitle(dist_bg[fstype][0][disttype]->GetXaxis()->GetTitle());
         hs_bg[fstype][disttype]->GetYaxis()->SetTitle(dist_bg[fstype][0][disttype]->GetYaxis()->GetTitle());
         u->Draw(dist_totalbg   [fstype][disttype],"samehist"); //should be drawn after the error histogram.
-        //	dist_data[fstype][disttype]->Draw("sameE");
+        // dist_data[fstype][disttype]->Draw("sameE");
         u->Draw(dist_totalbgErr[fstype][disttype],"sameE2");
         TH1F *h_sig1 = vec_dist_signal[fstype][DrawnSignalType->at(0)][disttype]->at(DrawnSignalFile->at(0));
         TH1F *h_sig2 = vec_dist_signal[fstype][DrawnSignalType->at(1)][disttype]->at(DrawnSignalFile->at(1));
@@ -785,10 +779,10 @@ Int_t mkPlots(TString SelecReg){
         hs_bg[fstype][disttype]->SetMinimum(1.E-2);
         hs_bg[fstype][disttype]->Draw("hist");
         u->Draw(dist_totalbg   [fstype][disttype],"samehist");
-        //	dist_data[fstype][disttype]->Draw("sameE");
+        // dist_data[fstype][disttype]->Draw("sameE");
         u->Draw(dist_totalbgErr[fstype][disttype],"sameE2");
         h_sig1->Draw("samehist");
-        //	h_sig2->Draw("samehist");
+        // h_sig2->Draw("samehist");
         gPad->SetLogy();
       }
       //Ratio plot

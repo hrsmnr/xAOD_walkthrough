@@ -5,16 +5,16 @@ std::string get_file_contents(const char *filename)
 {
   std::ifstream fin(filename, std::ios_base::in);
   if (fin)
-  {
-    std::string s_contents;
-    fin.seekg(0, std::ios::end);
-    s_contents.resize(fin.tellg());
-    fin.seekg(0, std::ios::beg);
-    fin.read(&s_contents[0], s_contents.size());
-    fin.close();
-    return(s_contents);
-    //how to delete s_contents?
-  }
+    {
+      std::string s_contents;
+      fin.seekg(0, std::ios::end);
+      s_contents.resize(fin.tellg());
+      fin.seekg(0, std::ios::beg);
+      fin.read(&s_contents[0], s_contents.size());
+      fin.close();
+      return(s_contents);
+      //how to delete s_contents?
+    }
   std::cout << filename <<" cannot be read!" << std::endl;
   throw(errno);
 }
@@ -254,9 +254,9 @@ void TUtil::skeletonDraw(void* obj, const char* option, int logScale, int drawTy
     if ( t_opt.Contains("same",TString::kIgnoreCase) ){ b_same=kTRUE; }
     if ( b_same && gPad->GetListOfPrimitives()->GetEntries()==0 ){
       if ( t_opt.Contains("sames",TString::kIgnoreCase) ){
-	t_opt.Remove(t_opt.Index("sames",0,TString::kIgnoreCase),5);
+        t_opt.Remove(t_opt.Index("sames",0,TString::kIgnoreCase),5);
       }else{
-	t_opt.Remove(t_opt.Index("same",0,TString::kIgnoreCase),4);
+        t_opt.Remove(t_opt.Index("same",0,TString::kIgnoreCase),4);
       }
       b_same=kFALSE;
       std::cerr << "[Error] TUtil::Draw(...) >> Invalid option 'SAME(S)', ignored." << std::endl;
@@ -324,11 +324,11 @@ void TUtil::skeletonDraw(void* obj, const char* option, int logScale, int drawTy
       TAttMarker* t_firstDrawMarker=0;
       TString t_firstDrawClassName=m_drawObj[m_drawObj.size()-2]->ClassName();
       if ( t_firstDrawClassName.Contains("TGraph") ){
-	t_firstDrawLine=(TGraph*)m_drawObj[m_drawObj.size()-2];
-	t_firstDrawMarker=(TGraph*)m_drawObj[m_drawObj.size()-2];
+        t_firstDrawLine=(TGraph*)m_drawObj[m_drawObj.size()-2];
+        t_firstDrawMarker=(TGraph*)m_drawObj[m_drawObj.size()-2];
       }else if ( t_firstDrawClassName.Contains("TH") || t_firstDrawClassName.Contains("TProfile") ){
-	t_firstDrawLine=(TH1*)m_drawObj[m_drawObj.size()-2];
-	t_firstDrawMarker=(TH1*)m_drawObj[m_drawObj.size()-2];
+        t_firstDrawLine=(TH1*)m_drawObj[m_drawObj.size()-2];
+        t_firstDrawMarker=(TH1*)m_drawObj[m_drawObj.size()-2];
       }
       t_firstDrawLine->SetLineColor(m_colorTable[0]);
       t_firstDrawMarker->SetMarkerColor(m_colorTable[0]);
