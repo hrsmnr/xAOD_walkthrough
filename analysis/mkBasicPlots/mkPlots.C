@@ -334,18 +334,12 @@ void SetDataType(void){
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
-enum BGType{WZ,nBGType};
-TString BGTypeNames[nBGType] = {"WZ"};
-Int_t BGTypeHistColors[nBGType] = {kAzure-3};
-Int_t BGTypeFillColors[nBGType] = {kAzure-3};
-Int_t BGStackOrder1[nBGType] = {WZ};
-Int_t BGStackOrder2[nBGType] = {WZ};
-// enum BGType{WZ,ttbar,nBGType};
-// TString BGTypeNames[nBGType] = {"WZ","ttbar"};
-// Int_t BGTypeHistColors[nBGType] = {kAzure-3,kCyan-2};
-// Int_t BGTypeFillColors[nBGType] = {kAzure-3,kCyan-2};
-// Int_t BGStackOrder1[nBGType] = {WZ,ttbar};
-// Int_t BGStackOrder2[nBGType] = {ttbar,WZ};
+enum BGType{WZ,ttbar,nBGType};
+TString BGTypeNames[nBGType] = {"WZ","ttbar"};
+Int_t BGTypeHistColors[nBGType] = {kAzure-3,kOrange-2};
+Int_t BGTypeFillColors[nBGType] = {kAzure-3,kOrange-2};
+Int_t BGStackOrder1[nBGType] = {WZ,ttbar};
+Int_t BGStackOrder2[nBGType] = {ttbar,WZ};
 // enum BGType{WZ,ZZ,ttW,ttZ,tPlusVs,Tribosons,Higgs,Zjets,Wjets,ttbar,OtherFake,nBGType};
 // TString BGTypeNames[nBGType] = {"WZ","ZZ","ttW","ttZ","tPlusVs","Tribosons","Higgs","Zjets","Wjets","ttbar","OtherFake"};
 // Int_t BGTypeHistColors[nBGType] = {kAzure-3,kAzure-4,kCyan-2,kCyan-1,kCyan,kMagenta,kBlack,kViolet-7,kViolet-9,kOrange-2,kGreen+2};
@@ -385,7 +379,7 @@ void SetBGType(void){
   // BGFileNames[WZ]->push_back("187178"); BGIncludeFlag[WZ]->push_back("01111");
 
   //ttbar
-  //  BGFileNames[ttbar]->push_back("110401"); BGIncludeFlag[ttbar]->push_back("01111");//no all-had
+  BGFileNames[ttbar]->push_back("110401"); BGIncludeFlag[ttbar]->push_back("01111");//no all-had
 
 }
 
@@ -695,7 +689,7 @@ Int_t mkPlots(TString SelecReg){
   // leg->AddEntry(h_higgs4leg,"Higgs","f");
   // leg->AddEntry(dist_bg[0][Zjets][0],"Z/#gamma^{*}+jets","f");
   // leg->AddEntry(dist_bg[0][Wjets][0],"W+jets","f");
-  // leg->AddEntry(dist_bg[0][ttbar][0],"t#bar{t}","f");
+  leg->AddEntry(dist_bg[0][ttbar][0],"t#bar{t}","f");
   // leg->AddEntry(dist_bg[0][OtherFake][0],"Other BG with fakes","f");
   // leg->AddEntry(dist_totalbg[0][0],"Total SM","l");
   // leg->AddEntry(dist_totalbgErr[0][0],"Unct. for SM ","f");
