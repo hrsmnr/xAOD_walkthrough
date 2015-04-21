@@ -194,10 +194,10 @@ void EventSelector::initialize()
     m_metRelMin = 10.;
     m_mtMin = 30.;
   }
-  // // 3 signal leptons, that's all
-  // else if(m_sel=="3lep"){
-  //   m_applyTrig = false;
-  // }
+  // 3 signal leptons, that's all
+  else if(m_sel=="3lep"){
+    m_applyTrig = false;
+  }
   // else if(m_sel=="3lepNoTrig"){
   //   m_trigAccOnly = true;
   // }

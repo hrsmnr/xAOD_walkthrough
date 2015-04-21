@@ -138,7 +138,8 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   // Event selection list
   m_vec_eveSelec = new std::vector<std::string>();
   m_vec_eveSelec->clear();
-  m_vec_eveSelec->push_back("none");
+  //  m_vec_eveSelec->push_back("none");
+  m_vec_eveSelec->push_back("3lep");
 
   // GRL tool initialization
   m_grl = new GoodRunsListSelectionTool("GoodRunsListSelectionTool");
@@ -293,7 +294,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   //Added by minoru
   if(m_eventCounter==0) MyInfo("execute()", "Starting event by event processing.");
   // print every 100 events, so we know where we are:
-  if(m_eventCounter%100==0) MyAlways("execute()", Form("Event number = %lli", m_eventCounter));
+  if(m_eventCounter%5000==0) MyAlways("execute()", Form("Event number = %lli", m_eventCounter));
   m_eventCounter++; //Incrementing here since event might be rejected by some quality checks below.
   if(m_maxEvent>=0 && m_eventCounter>m_maxEvent) return EL::StatusCode::SUCCESS;
   m_processedEvents++;
