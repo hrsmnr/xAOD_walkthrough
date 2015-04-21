@@ -65,8 +65,6 @@ public:
   long long int m_numCleanEvents; //!
   double m_eventWeight; //!
   double m_crossSection; //!
-  std::vector<std::string> *m_vec_eveSelec; //!
-  //0:no debug output, 1:-v, 2:-vv, 3:-vvv
   std::vector<CP::SystematicSet> m_sysList; //!
 
   //Variables which are initialized (or Set) in testRun.cxx;
@@ -75,6 +73,8 @@ public:
   MSG::Level m_debugMode;
   bool m_noSyst;
   int m_dsid;
+  long long int m_nSkipNum;
+  std::vector<std::string> *m_vec_eveSelec;
 
 #ifndef __CINT__
   ST::SUSYObjDef_xAOD *m_susyObjTool; //!
@@ -110,7 +110,9 @@ public:
   void SetDebugMode(MSG::Level debugMode=MSG::ERROR){m_debugMode = debugMode;};
   void SetMaxEvent(long long int maxEvent=-1){m_maxEvent = maxEvent;};
   void SetNoSyst(bool nosyst=true){m_noSyst = nosyst;};
-  void SetDSID(int dsid){m_dsid = dsid;};
+  void SetDSID(long long int dsid){m_dsid = dsid;};
+  void SetSkipNum(long long int nskip){m_nSkipNum = nskip;};
+  void SetSelectionRegion(const char* selec){m_vec_eveSelec->push_back(selec);};
 
   //end adding
 

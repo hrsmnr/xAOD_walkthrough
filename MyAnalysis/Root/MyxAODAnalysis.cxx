@@ -60,6 +60,11 @@ MyxAODAnalysis :: MyxAODAnalysis ()
   // called on both the submission and the worker node.  Most of your
   // initialization code will go into histInitialize() and
   // initialize().
+
+  // Event selection list
+  m_vec_eveSelec = new std::vector<std::string>();
+  m_vec_eveSelec->clear();
+
 }
 
 
@@ -136,12 +141,6 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   m_processedEvents = 0;
   m_numCleanEvents = 0;
   m_eventWeight = 1.;
-
-  // Event selection list
-  m_vec_eveSelec = new std::vector<std::string>();
-  m_vec_eveSelec->clear();
-  //  m_vec_eveSelec->push_back("none");
-  m_vec_eveSelec->push_back("3lep");
 
   // GRL tool initialization
   m_grl = new GoodRunsListSelectionTool("GoodRunsListSelectionTool");
@@ -307,7 +306,8 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   // print every 100 events, so we know where we are:
   if(m_eventCounter%5000==0) MyAlways("execute()", Form("Event number = %lli", m_eventCounter));
   m_eventCounter++; //Incrementing here since event might be rejected by some quality checks below.
-  if(m_maxEvent>=0 && m_eventCounter>m_maxEvent) return EL::StatusCode::SUCCESS;
+  if( m_maxEvent>=0 && 
+      ( m_eventCounter<=m_nSkipNum || (m_maxEvent+m_nSkipNum)<m_eventCounter ) ) return EL::StatusCode::SUCCESS;
   m_processedEvents++;
 
   //----------------------------
@@ -690,7 +690,9 @@ bool MyxAODAnalysis::FillHistograms(EventSelector *EveSelec){
     if(leadLepFlavor[index]==1) h[chan][m_sysId]->Fill(val,weight);   \
   } while(0)
   //Fill lepChan histograms
+  h_lepChan       [Ch_all][m_sysId]->Fill(Ch_all,weight);
   h_lepChan       [Ch_all][m_sysId]->Fill(chan,weight);
+  h_nEveInEachChan[Ch_all][m_sysId]->Fill(Ch_all,1.); //Here, we need to use "1" for weight.
   h_nEveInEachChan[Ch_all][m_sysId]->Fill(chan,1.); //Here, we need to use "1" for weight.
 
   //Fill lepton Pt
