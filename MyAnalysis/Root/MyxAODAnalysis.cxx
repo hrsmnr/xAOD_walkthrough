@@ -60,6 +60,11 @@ MyxAODAnalysis :: MyxAODAnalysis ()
   // called on both the submission and the worker node.  Most of your
   // initialization code will go into histInitialize() and
   // initialize().
+
+  // Event selection list
+  m_vec_eveSelec = new std::vector<std::string>();
+  m_vec_eveSelec->clear();
+
 }
 
 
@@ -136,12 +141,6 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   m_processedEvents = 0;
   m_numCleanEvents = 0;
   m_eventWeight = 1.;
-
-  // Event selection list
-  m_vec_eveSelec = new std::vector<std::string>();
-  m_vec_eveSelec->clear();
-  //  m_vec_eveSelec->push_back("none");
-  m_vec_eveSelec->push_back("3lep");
 
   // GRL tool initialization
   m_grl = new GoodRunsListSelectionTool("GoodRunsListSelectionTool");

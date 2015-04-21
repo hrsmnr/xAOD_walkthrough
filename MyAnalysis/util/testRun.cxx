@@ -152,6 +152,7 @@ int main( int argc, char* argv[] ) {
   alg->SetNoSyst(!doSys);
   alg->SetDSID(dsid);
   alg->SetSkipNum(nSkip);
+  for(uint i=0; i<sels.size(); i++) alg->SetSelectionRegion(sels.at(i).c_str());
   job.algsAdd( alg );
 
   // Run the job using the local/direct driver:
