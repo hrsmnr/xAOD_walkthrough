@@ -690,7 +690,9 @@ bool MyxAODAnalysis::FillHistograms(EventSelector *EveSelec){
     if(leadLepFlavor[index]==1) h[chan][m_sysId]->Fill(val,weight);   \
   } while(0)
   //Fill lepChan histograms
+  h_lepChan       [Ch_all][m_sysId]->Fill(Ch_all,weight);
   h_lepChan       [Ch_all][m_sysId]->Fill(chan,weight);
+  h_nEveInEachChan[Ch_all][m_sysId]->Fill(Ch_all,1.); //Here, we need to use "1" for weight.
   h_nEveInEachChan[Ch_all][m_sysId]->Fill(chan,1.); //Here, we need to use "1" for weight.
 
   //Fill lepton Pt
