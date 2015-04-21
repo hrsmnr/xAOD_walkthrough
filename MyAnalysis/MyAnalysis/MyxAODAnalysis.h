@@ -75,6 +75,7 @@ public:
   MSG::Level m_debugMode;
   bool m_noSyst;
   int m_dsid;
+  long long int m_nSkipNum;
 
 #ifndef __CINT__
   ST::SUSYObjDef_xAOD *m_susyObjTool; //!
@@ -110,7 +111,8 @@ public:
   void SetDebugMode(MSG::Level debugMode=MSG::ERROR){m_debugMode = debugMode;};
   void SetMaxEvent(long long int maxEvent=-1){m_maxEvent = maxEvent;};
   void SetNoSyst(bool nosyst=true){m_noSyst = nosyst;};
-  void SetDSID(int dsid){m_dsid = dsid;};
+  void SetDSID(long long int dsid){m_dsid = dsid;};
+  void SetSkipNum(long long int nskip){m_nSkipNum = nskip;};
 
   //end adding
 

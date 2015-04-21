@@ -307,7 +307,8 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   // print every 100 events, so we know where we are:
   if(m_eventCounter%5000==0) MyAlways("execute()", Form("Event number = %lli", m_eventCounter));
   m_eventCounter++; //Incrementing here since event might be rejected by some quality checks below.
-  if(m_maxEvent>=0 && m_eventCounter>m_maxEvent) return EL::StatusCode::SUCCESS;
+  if( m_maxEvent>=0 && 
+      ( m_eventCounter<=m_nSkipNum || (m_maxEvent+m_nSkipNum)<m_eventCounter ) ) return EL::StatusCode::SUCCESS;
   m_processedEvents++;
 
   //----------------------------
