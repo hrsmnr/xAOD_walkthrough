@@ -5,6 +5,8 @@
 // root -q -b 'mkPlots.C+O("3lep")'
 // etc...
 //////////////////////////////////////////////////////
+#define IntLumi 10000. //Integrated luminosity to normalize MC in pico-barn
+
 #include<iostream>
 #include<vector>
 #include<string>
@@ -17,8 +19,6 @@
 #include"TUtil.cc"
 #include"AtlasUtils.cc"
 
-//enum DistType{met,nJet,nDistType};
-//TString DistTypeNames[nDistType] = {"met","nJet"};
 enum DistType{
   //  all,
   lep1Pt,
@@ -361,13 +361,13 @@ void SetBGType(void){
   //WZ files
   BGFileNames[WZ]->push_back("187160"); BGIncludeFlag[WZ]->push_back("01000");
   BGFileNames[WZ]->push_back("187161"); BGIncludeFlag[WZ]->push_back("00010");
-  // BGFileNames[WZ]->push_back("187162"); BGIncludeFlag[WZ]->push_back("01110");
-  // BGFileNames[WZ]->push_back("187163"); BGIncludeFlag[WZ]->push_back("00100");
-  // BGFileNames[WZ]->push_back("187164"); BGIncludeFlag[WZ]->push_back("00001");
-  // BGFileNames[WZ]->push_back("187165"); BGIncludeFlag[WZ]->push_back("00111");
-  // BGFileNames[WZ]->push_back("187166"); BGIncludeFlag[WZ]->push_back("01100");
-  // BGFileNames[WZ]->push_back("187167"); BGIncludeFlag[WZ]->push_back("00011");
-  // BGFileNames[WZ]->push_back("187168"); BGIncludeFlag[WZ]->push_back("01111");
+  BGFileNames[WZ]->push_back("187162"); BGIncludeFlag[WZ]->push_back("01110");
+  BGFileNames[WZ]->push_back("187163"); BGIncludeFlag[WZ]->push_back("00100");
+  BGFileNames[WZ]->push_back("187164"); BGIncludeFlag[WZ]->push_back("00001");
+  BGFileNames[WZ]->push_back("187165"); BGIncludeFlag[WZ]->push_back("00111");
+  BGFileNames[WZ]->push_back("187166"); BGIncludeFlag[WZ]->push_back("01100");
+  BGFileNames[WZ]->push_back("187167"); BGIncludeFlag[WZ]->push_back("00011");
+  BGFileNames[WZ]->push_back("187168"); BGIncludeFlag[WZ]->push_back("01111");
   // BGFileNames[WZ]->push_back("187170"); BGIncludeFlag[WZ]->push_back("01000");
   // BGFileNames[WZ]->push_back("187171"); BGIncludeFlag[WZ]->push_back("00010");
   // BGFileNames[WZ]->push_back("187172"); BGIncludeFlag[WZ]->push_back("01110");
@@ -392,6 +392,15 @@ TString getHistFileName(std::string path){
     exit(1);
   }
   return strFileName;
+}
+
+Double_t getMCScale(TFile *file){
+  //Calculate MC scaling factor from the given file
+  Double_t xsec = (TH1F*)(file->Get("h_xsec"))->GetBinContent(1);
+  Double_t neve = (TH1F*)(file->Get("all_lepChan;1"))->GetBinContent(1);
+  Double_t scale = (neve/xsec)/IntLumi;
+  std::cout<<"MC CrossSection="<<xsec<<", #Eve="<<neve<<", MCScale="<<scale<<std::endl;
+  return scale;
 }
 
 Int_t mkPlots(TString SelecReg){
@@ -507,16 +516,16 @@ Int_t mkPlots(TString SelecReg){
   //     std::string fsname = FSTypeNames[fstype].Data();
   //     std::cout<<"Adding histograms in "<<DataFileNames->at(datafile)<<" to "<<FSTypeNames[fstype]<<" histograms..."<<std::endl;
   //     for(Int_t disttype=0; disttype<nDistType; disttype++){
-  // //Getting the histogram to add.
-  // std::string distname = DistTypeNames[disttype].Data();
-  // std::string histname = Form("%s_%s;1",fsname.c_str(),distname.c_str());
-  // TFile *f_tmp = vec_datafiles->at(datafile);
-  // TH1F *h_tmp = (TH1F*)(f_tmp->Get(histname.c_str()));
-  // dist_data[fstype][disttype]->Add(h_tmp);
-  // dist_data[fstype][disttype]->SetTitle(FSTypeNames[fstype]+":Data");
-  // dist_data[fstype][disttype]->SetMarkerStyle(kFullCircle);
-  // dist_data[fstype][disttype]->SetMarkerSize(1.2);
-  // std::cout<<"#Entries : "<<h_tmp->GetName()<<" : "<<h_tmp->GetEntries()<<std::endl;
+  //       //Getting the histogram to add.
+  //       std::string distname = DistTypeNames[disttype].Data();
+  //       std::string histname = Form("%s_%s;1",fsname.c_str(),distname.c_str());
+  //       TFile *f_tmp = vec_datafiles->at(datafile);
+  //       TH1F *h_tmp = (TH1F*)(f_tmp->Get(histname.c_str()));
+  //       dist_data[fstype][disttype]->Add(h_tmp);
+  //       dist_data[fstype][disttype]->SetTitle(FSTypeNames[fstype]+":Data");
+  //       dist_data[fstype][disttype]->SetMarkerStyle(kFullCircle);
+  //       dist_data[fstype][disttype]->SetMarkerSize(1.2);
+  //       std::cout<<"#Entries : "<<h_tmp->GetName()<<" : "<<h_tmp->GetEntries()<<std::endl;
   //     }
   //   }
   // }
@@ -534,17 +543,20 @@ Int_t mkPlots(TString SelecReg){
         if(inclFlag4fs=="0") continue;
         else{
           std::cout<<"Adding histograms in "<<BGFileNames[bgtype]->at(bgfile)<<" to "<<FSTypeNames[fstype]<<" histograms..."<<std::endl;
+          // Obtaining XS and N_MC
+          TFile *f_tmp = vec_mcfiles->at(fileidx);
+          Double_t scale = getMCScale(f_tmp);
+          getchar();
           for(Int_t disttype=0; disttype<nDistType; disttype++){
             //Getting the histogram to add.
             std::string distname = DistTypeNames[disttype].Data();
             std::string histname = Form("%s_%s;1",fsname.c_str(),distname.c_str());
-            TFile *f_tmp = vec_mcfiles->at(fileidx);
             TH1F *h_tmp = (TH1F*)(f_tmp->Get(histname.c_str()));
             if(h_tmp->Integral()<0.){
               std::cout<<"FileIdx : "<<fileidx<<", "<<h_tmp->Integral()<<std::endl;
               getchar();
             }
-            dist_bg[fstype][bgtype][disttype]->Add(h_tmp);
+            dist_bg[fstype][bgtype][disttype]->Add(h_tmp,scale);
             dist_bg[fstype][bgtype][disttype]->SetTitle(FSTypeNames[fstype]+":"+BGTypeNames[bgtype]);
             dist_bg[fstype][bgtype][disttype]->SetMarkerColor(BGTypeHistColors[bgtype]);
             dist_bg[fstype][bgtype][disttype]->SetFillColor(BGTypeFillColors[bgtype]);
@@ -565,13 +577,16 @@ Int_t mkPlots(TString SelecReg){
       for(Int_t fstype=0; fstype<nFSType; fstype++){
         std::string fsname = FSTypeNames[fstype].Data();
         std::cout<<"Adding histograms in "<<SignalFileNames[signaltype]->at(signalfile)<<" to "<<FSTypeNames[fstype]<<" histograms..."<<std::endl;
+        // Obtaining XS and N_MC
+        TFile *f_tmp = vec_signalfiles->at(fileidx);
+        Double_t scale = getMCScale(f_tmp);
+        getchar();
         for(Int_t disttype=0; disttype<nDistType; disttype++){
           //Getting the histogram to add.
           std::string distname = DistTypeNames[disttype].Data();
           std::string histname = Form("%s_%s;1",fsname.c_str(),distname.c_str());
-          TFile *f_tmp = vec_signalfiles->at(fileidx);
           TH1F *h_tmp = (TH1F*)(f_tmp->Get(histname.c_str()));
-          vec_dist_signal[fstype][signaltype][disttype]->at(signalfile)->Add(h_tmp);
+          vec_dist_signal[fstype][signaltype][disttype]->at(signalfile)->Add(h_tmp,scale);
           vec_dist_signal[fstype][signaltype][disttype]->at(signalfile)->SetTitle(FSTypeNames[fstype]+":"+SignalTypeNames[signaltype]);
           Int_t color = kBlack;
           Int_t style = kSolid;

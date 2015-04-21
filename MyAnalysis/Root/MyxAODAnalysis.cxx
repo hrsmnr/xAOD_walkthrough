@@ -539,16 +539,6 @@ bool MyxAODAnalysis::BookHistograms(){
   vec_chan.push_back("emm");
   vec_chan.push_back("mmm");
 
-  // lepton channel / systematics loop
-  for(uint wSys=0; wSys<nSyst; wSys++){
-    // Lepton channel histo, only defined for the 'all' channel
-    h_lepChan[Ch_all][wSys] = new TH1F("all_lepChan", "all_lepChan;Unordered lepton channel;Events", nChan, 0, nChan);
-    for(uint iCh=0; iCh<nChan; iCh++){
-      std::string chanName = vec_chan.at(iCh);
-      h_lepChan[Ch_all][wSys]->GetXaxis()->SetBinLabel(iCh+1, chanName.c_str());
-    }
-  }
-
   // Preprocessor convenience                                                                                 
   // make a histogram by name (leave off the "h_") and binning
 #define NEWHIST(name, xLbl, nbin, min, max)                             \
@@ -573,14 +563,24 @@ bool MyxAODAnalysis::BookHistograms(){
   ///////////////////////////////////////////////////////////////
   //Defining histograms
   ///////////////////////////////////////////////////////////////
-  
+
+  // Histogram to store the MC cross section
+  h_xsec = new TH1F("h_xsec","h_xsec;;MC cross-section[pb]",1,0.,1.);
+  wk()->addOutput(h_xsec);
+  h_xsec->SetBinContent(h_xsec->FindBin(0.),m_crossSection); //set cross-section
+
   // lepton channel / systematics loop
   for(uint wSys=0; wSys<nSyst; wSys++){
     // Lepton channel histo, only defined for the 'all' channel
-    h_lepChan[Ch_all][wSys] = new TH1F("all_lepChan", "all_lepChan;Unordered lepton channel;Events", nChan, 0, nChan);
-    wk()->addOutput(h_lepChan[Ch_all][wSys]);
+    h_lepChan       [Ch_all][wSys] = new TH1F("all_lepChan"       ,
+                                              "all_lepChan;Unordered lepton channel;Events", nChan, 0, nChan);
+    h_nEveInEachChan[Ch_all][wSys] = new TH1F("all_nEveInEachChan",
+                                              "all_nEveInEachChan;Unordered lepton channel;Events w/o SF", nChan, 0, nChan);
+    wk()->addOutput(h_lepChan       [Ch_all][wSys]);
+    wk()->addOutput(h_nEveInEachChan[Ch_all][wSys]);
     for(uint iCh=0; iCh<nChan; iCh++){
       std::string chanName = vec_chan.at(iCh);
+      h_lepChan[Ch_all][wSys]->GetXaxis()->SetBinLabel(iCh+1, chanName.c_str());
       // Single bin event count                                                                                   
       NEWHIST( all, ";Events", 1, 0, 1 );
       // lep pt - my choice of binning                                                                            
@@ -689,6 +689,10 @@ bool MyxAODAnalysis::FillHistograms(EventSelector *EveSelec){
     if(leadLepFlavor[index]==1) h[Ch_all][m_sysId]->Fill(val,weight); \
     if(leadLepFlavor[index]==1) h[chan][m_sysId]->Fill(val,weight);   \
   } while(0)
+  //Fill lepChan histograms
+  h_lepChan       [Ch_all][m_sysId]->Fill(chan,weight);
+  h_nEveInEachChan[Ch_all][m_sysId]->Fill(chan,1.); //Here, we need to use "1" for weight.
+
   //Fill lepton Pt
   FillChanHist( h_lep1Pt, leadLep[0].Pt()/1000., weight );
   FillChanHist( h_lep2Pt, leadLep[1].Pt()/1000., weight );

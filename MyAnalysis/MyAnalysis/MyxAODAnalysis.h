@@ -82,7 +82,9 @@ public:
   GoodRunsListSelectionTool *m_grl; //!
 #endif // not __CINT__
 
+  TH1F *h_xsec; //!
   TH1F *h_lepChan[nChan][nSyst]; //!
+  TH1F *h_nEveInEachChan[nChan][nSyst]; //!
   TH1F *h_all[nChan][nSyst]; //!
   TH1F *h_lep1Pt[nChan][nSyst]; //!
   TH1F *h_lep2Pt[nChan][nSyst]; //!
