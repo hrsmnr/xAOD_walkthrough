@@ -397,7 +397,7 @@ TString getHistFileName(std::string path){
 Double_t getMCScale(TFile *file){
   //Calculate MC scaling factor from the given file
   Double_t xsec = ((TH1F*)file->Get("h_xsec"))->GetBinContent(1);
-  Double_t neve = ((TH1F*)file->Get("all_lepChan;1"))->GetBinContent(1);
+  Double_t neve = ((TH1F*)file->Get("h_nEve"))->GetBinContent(1);
   Double_t scale = (neve/xsec)/IntLumi;
   std::cout<<"MC CrossSection="<<xsec<<", #Eve="<<neve<<", MCScale="<<scale<<std::endl;
   return scale;
@@ -546,7 +546,6 @@ Int_t mkPlots(TString SelecReg){
           // Obtaining XS and N_MC
           TFile *f_tmp = vec_mcfiles->at(fileidx);
           Double_t scale = getMCScale(f_tmp);
-          getchar();
           for(Int_t disttype=0; disttype<nDistType; disttype++){
             //Getting the histogram to add.
             std::string distname = DistTypeNames[disttype].Data();
@@ -580,7 +579,6 @@ Int_t mkPlots(TString SelecReg){
         // Obtaining XS and N_MC
         TFile *f_tmp = vec_signalfiles->at(fileidx);
         Double_t scale = getMCScale(f_tmp);
-        getchar();
         for(Int_t disttype=0; disttype<nDistType; disttype++){
           //Getting the histogram to add.
           std::string distname = DistTypeNames[disttype].Data();

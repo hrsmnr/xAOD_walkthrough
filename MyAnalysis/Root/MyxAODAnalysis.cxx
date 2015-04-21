@@ -321,7 +321,6 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 
   // check if the event is data or MC
   m_isMC = eventInfo->eventType(xAOD::EventInfo::IS_SIMULATION) ? true : false;
-  if(not PassPreSelection(eventInfo)) return EL::StatusCode::SUCCESS;
 
   // check run number and luminosity block in data
   Int_t RunNumber   = -999;
@@ -345,7 +344,9 @@ EL::StatusCode MyxAODAnalysis :: execute ()
       MyError("execute()",Form("mcChannelNumber(%d) by EventInfo is different from the one in testRun arugument(%d).",mcChannelNumber,m_dsid));
     }
   }
+  h_nEve->Fill(0.,m_eventWeight);
 
+  if(not PassPreSelection(eventInfo)) return EL::StatusCode::SUCCESS;
   MyInfo( "initialize()", "Preselection : Done.");
 
   ///////////////////////////////////////////////////////////////////////////
@@ -566,7 +567,9 @@ bool MyxAODAnalysis::BookHistograms(){
 
   // Histogram to store the MC cross section
   h_xsec = new TH1F("h_xsec","h_xsec;;MC cross-section[pb]",1,0.,1.);
+  h_nEve = new TH1F("h_nEve","h_nEve;;Events"              ,1,0.,1.);
   wk()->addOutput(h_xsec);
+  wk()->addOutput(h_nEve);
   h_xsec->SetBinContent(h_xsec->FindBin(0.),m_crossSection); //set cross-section
 
   // lepton channel / systematics loop
@@ -574,10 +577,7 @@ bool MyxAODAnalysis::BookHistograms(){
     // Lepton channel histo, only defined for the 'all' channel
     h_lepChan       [Ch_all][wSys] = new TH1F("all_lepChan"       ,
                                               "all_lepChan;Unordered lepton channel;Events", nChan, 0, nChan);
-    h_nEveInEachChan[Ch_all][wSys] = new TH1F("all_nEveInEachChan",
-                                              "all_nEveInEachChan;Unordered lepton channel;Events w/o SF", nChan, 0, nChan);
     wk()->addOutput(h_lepChan       [Ch_all][wSys]);
-    wk()->addOutput(h_nEveInEachChan[Ch_all][wSys]);
     for(uint iCh=0; iCh<nChan; iCh++){
       std::string chanName = vec_chan.at(iCh);
       h_lepChan[Ch_all][wSys]->GetXaxis()->SetBinLabel(iCh+1, chanName.c_str());
@@ -692,8 +692,6 @@ bool MyxAODAnalysis::FillHistograms(EventSelector *EveSelec){
   //Fill lepChan histograms
   h_lepChan       [Ch_all][m_sysId]->Fill(Ch_all,weight);
   h_lepChan       [Ch_all][m_sysId]->Fill(chan,weight);
-  h_nEveInEachChan[Ch_all][m_sysId]->Fill(Ch_all,1.); //Here, we need to use "1" for weight.
-  h_nEveInEachChan[Ch_all][m_sysId]->Fill(chan,1.); //Here, we need to use "1" for weight.
 
   //Fill lepton Pt
   FillChanHist( h_lep1Pt, leadLep[0].Pt()/1000., weight );
