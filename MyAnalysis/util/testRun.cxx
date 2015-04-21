@@ -22,9 +22,8 @@ int main( int argc, char* argv[] ) {
   std::cout << "=============================" << std::endl;
   std::cout << std::endl;
 
-  int nEvt = -1;
-  //  int nSkip = 0;
-  //  int freq = 50000;
+  long long int nEvt = -1;
+  long long int nSkip = 0;
   MSG::Level dbg = MSG::ERROR;
   //  std::string sample = "";
   std::vector<std::string> sels;
@@ -39,10 +38,8 @@ int main( int argc, char* argv[] ) {
   for(int i = 1; i < argc; i++) {
     if (strcmp(argv[i], "-n") == 0)
       nEvt = atoi(argv[++i]);
-    //    else if (strcmp(argv[i], "-k") == 0)
-    //      nSkip = atoi(argv[++i]);
-    //    else if (strcmp(argv[i], "-q") == 0)
-    //      freq = atoi(argv[++i]);
+    else if (strcmp(argv[i], "-k") == 0)
+      nSkip = atoi(argv[++i]);
     else if (strcmp(argv[i], "-d") == 0)
       dbg = GetMsgLevel( atoi(argv[++i]) );
     else if (strcmp(argv[i], "-F") == 0)
@@ -77,11 +74,10 @@ int main( int argc, char* argv[] ) {
 
   std::cout << "flags:" << std::endl;
   //  std::cout << "  sample  " << sample   << std::endl;
-  std::cout <<Form("  outDir   : %s", outputDir.c_str()  ) << std::endl;
-  std::cout <<Form("  nEvt     : %d", nEvt               ) << std::endl;
-  //  std::cout << "  nSkip   " << nSkip    << std::endl;
-  //  std::cout << "  freq    " << freq     << std::endl;
-  std::cout <<Form("  dbg      : %s", GetMsgLevelStr(dbg)) << std::endl;
+  std::cout <<Form("  outDir   : %s"  , outputDir.c_str()  ) << std::endl;
+  std::cout <<Form("  nEvt     : %lli", nEvt               ) << std::endl;
+  std::cout <<Form("  nSkip    : %lli", nSkip              ) << std::endl;
+  std::cout <<Form("  dbg      : %s"  , GetMsgLevelStr(dbg)) << std::endl;
   if(!fileDirBase.empty()) std::cout << Form("  DataPath : %s", fileDirBase.c_str()) << std::endl;
   if(!fileDir    .empty()) std::cout << Form("  inputDir : %s", fileDir    .c_str()) << std::endl;
   if(!file       .empty()) std::cout << Form("  file     : %s", file       .c_str()) << std::endl;
@@ -135,6 +131,12 @@ int main( int argc, char* argv[] ) {
     SH::scanSingleDir (sh, fileDir.c_str(), list);
   }
 
+  // Obtain DSID/RunNumber from file directory name
+  int dsid = -1;
+  if     (fileDir.substr(0,10)=="mc14_13TeV"  ) dsid = atoi(fileDir.substr(11,6).c_str());
+  else if(fileDir.substr(0, 9)=="mc14_8TeV"   ) dsid = atoi(fileDir.substr(10,6).c_str());
+  else if(fileDir.substr(0,12)=="data14_13TeV") dsid = atoi(fileDir.substr(13,6).c_str());
+
   // Set the name of the input TTree. It's always "CollectionTree" for xAOD files.
   sh.setMetaString( "nc_tree", "CollectionTree" );
   sh.print(); // Print what we found:
@@ -148,6 +150,9 @@ int main( int argc, char* argv[] ) {
   alg->SetDebugMode(dbg);
   alg->SetMaxEvent(nEvt);
   alg->SetNoSyst(!doSys);
+  alg->SetDSID(dsid);
+  alg->SetSkipNum(nSkip);
+  for(uint i=0; i<sels.size(); i++) alg->SetSelectionRegion(sels.at(i).c_str());
   job.algsAdd( alg );
 
   // Run the job using the local/direct driver:
@@ -165,11 +170,8 @@ void help()
   std::cout << "  -n number of events to process"    << std::endl;
   std::cout << "     defaults: -1 (all events)"      << std::endl;
 
-  //  std::cout << "  -k number of events to skip"       << std::endl;
-  //  std::cout << "     defaults: 0"                    << std::endl;
-
-  //  std::cout << "  -q event printing frequency"       << std::endl;
-  //  std::cout << "     defaults: 50000"                << std::endl;
+  std::cout << "  -k number of events to skip"       << std::endl;
+  std::cout << "     defaults: 0"                    << std::endl;
 
   std::cout << "  --FileDirBase : input file dir location" << std::endl;
   std::cout << "     defaults: '/home/hirose/atlas/data/DC14/mc14_13TeV'" << std::endl;
