@@ -116,7 +116,10 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD* SUSYObjDef, std::string sel, s
   m_minDPhiOSMax(-1),
   m_minDPhiOSMin(-1),
   m_lepDEtaMax(-1),
+  m_jetPtMin(-1),
+  m_jetPtMax(-1),
   m_lepPtMin(-1),
+  m_lepPtMax(-1),
   m_lep1PtMin(-1),
   m_lep2PtMin(-1),
   m_sumLepPtMin(-1),
@@ -199,17 +202,121 @@ void EventSelector::initialize()
   else if(m_sel=="3lep"){
     m_applyTrig = false;
   }
-  // else if(m_sel=="3lepNoTrig"){
-  //   m_trigAccOnly = true;
-  // }
-  // else if(m_sel=="3lepFake1"){
-  //   m_vetoRealLep1 = true;
-  // }
-  // // added by minoru
-  // else if(m_sel=="3lep2jets"){
-  //   m_applyTrig = false;
-  //   m_nJetMin = 2;
-  // }
+  else if (m_sel=="VR0a") {
+    TypSel(3,0,3,0,0,0);
+    m_jetPtMax = 50;
+    m_metMax = 30;
+    //    m_minMllMin = 4;
+    m_selZ = false;
+    m_vetoExtZ = true;
+    //    m_vetoUpsilon = true;
+    //    m_isoL3 = true;
+  }
+  else if (m_sel=="VR0b") {
+    TypSel(3,0,3,0,1,1);
+    m_jetPtMax = 50;
+    m_metMin = 30;
+    //    m_minMllMin = 4;
+    //    m_vetoUpsilon = true;
+    //    m_isoL3 = true;
+  }
+  else if (m_sel=="VR0c") {
+    TypSel(3,0,3,0,0,0);
+    m_jetPtMax = 50;
+    m_lepPtMax = 30;
+    m_selSFOS = true;
+    m_metMin = 50; 
+    m_mlllMin = 60;
+    //    m_minMllMin = 15;
+    //    m_minMllMax = 25;
+    //    m_vetoUpsilon = true;
+    //    m_isoL3 = true;
+  }
+  else if (m_sel=="VR1a") { 
+    TypSel(3,0,3,0,0,0);
+    m_nJetMin = 1;
+    m_jetPtMin = 50;
+    m_metMin = 30;
+    m_metMax = 50;
+    m_selZ = false;
+    m_vetoExtZ = true;
+    //    m_vetoUpsilon = true;
+    //    m_isoL3 = true;
+  }
+  else if (m_sel=="VR1b") { 
+    TypSel(3,0,3,0,1,1);
+    m_nJetMin = 1;
+    m_jetPtMin = 50;
+    m_metMin = 50;
+    m_selZ = false;
+    m_vetoExtZ = true;
+    //    m_vetoUpsilon = true;
+    //    m_isoL3 = true;
+  }
+  else if (m_sel=="CRWZ") {
+    TypSel(3,0,3,0,0,0);
+    m_nJetMin = 1;
+    m_jetPtMin = 50.;
+    m_lepPtMin = 30.;
+    m_metMin = 30.;
+    m_metMax = 50.;
+    m_selSFOS = true;
+    m_selZ = false;
+    m_vetoExtZ = true;
+    //    m_isoL3 = true;
+  }
+  else if (m_sel=="SR0a") {
+    TypSel(3,0,3,0,0,0);
+    m_jetPtMax = 50;
+    m_lepPtMax = 30;
+    m_metMin = 30;
+    m_mtMax = 20;
+    m_mlllMin = 30;
+    //    m_minMllMin = 4;
+    //    m_minMllMax = 15;
+    m_mlllMax = 60;
+    m_selSFOS = true;
+    //    m_vetoUpsilon = true;
+    //    m_isoL3 = true;
+  }
+  else if (m_sel=="SR0b") {
+    TypSel(3,0,3,0,0,0);
+    m_jetPtMax = 50;
+    m_lepPtMax = 30;
+    m_metMin = 30;
+    m_mlllMin = 30;
+    m_mlllMax = 60;
+    //    m_minMllMin = 15;
+    //    m_minMllMax = 25;
+    m_selSFOS = true;
+    //    m_vetoUpsilon = true;
+    //    m_isoL3 = true;
+  }
+  else if (m_sel=="SR1a") {
+    TypSel(3,0,3,0,0,0);
+    m_nJetMin = 1;
+    m_jetPtMin = 50;
+    m_lepPtMax = 30;
+    m_metMin = 50;
+    //    m_minMllMin = 5;
+    //    m_minMllMax = 15;
+    //    m_rl1j1ptMax = 0.2;
+    //    m_metj1dphiMin = 0.86;
+    //    m_vetoUpsilon = true;
+    //    m_isoL3 = true;
+  }
+  else if (m_sel=="SR1b") {
+    TypSel(3,0,3,0,0,0);
+    m_nJetMin = 1;
+    m_jetPtMin = 50;
+    m_lepPtMax = 30;
+    m_metMin = 50;
+    //    m_minMllMin = 15;
+    //    m_minMllMax = 25;
+    //    m_metWZdphiMax = 0.7;
+    //    m_vetoUpsilon = true;
+    //    m_isoL3 = true;
+  }
   else{
     MyError("initialize()",Form("EventSelector ERROR - selection %s not supported!!",m_sel.c_str()));
     abort();
@@ -809,6 +916,11 @@ bool EventSelector::passNJetCut()
 {
   if(m_nJetMin>=0 && nSignalJets() < m_nJetMin) return false;
   if(m_nJetMax>=0 && nSignalJets() > m_nJetMax) return false;
+
+  if (nSignalJets()>0) {
+    if (m_jetPtMin>0 && m_vec_signalJet->at(0).pt()/1000. < m_jetPtMin) return false;
+    if (m_jetPtMax>0 && m_vec_signalJet->at(0).pt()/1000. > m_jetPtMax) return false;
+  }
 
   // 3-lepton b-jet
   if(m_vetoB || m_selB){
@@ -1489,15 +1601,15 @@ bool EventSelector::passLepPtCut()
   for(uint id=0; id<2; id++) lepPt[id] = getFourVector(m_leadLepIndex[id], m_leadLepFlavor[id]).Pt();
   if(m_lep1PtMin > 0 && lepPt[0]/1000. < m_lep1PtMin) return false;
   if(m_lep2PtMin > 0 && lepPt[1]/1000. < m_lep2PtMin) return false;
-  if(m_lepPtMin > 0){
-    for(uint iL=0; iL<m_vec_signalElectron->size(); iL++){
-      Double_t lepPtInGeV = m_vec_signalElectron->at(m_leadLepIndex[iL]).pt()/1000.;
-      if(lepPtInGeV<m_lepPtMin) return false;
-    }
-    for(uint iL=0; iL<m_vec_signalMuon    ->size(); iL++){
-      Double_t lepPtInGeV = m_vec_signalMuon    ->at(m_leadLepIndex[iL]).pt()/1000.;
-      if(lepPtInGeV<m_lepPtMin) return false;
-    }
+  for(uint iL=0; iL<m_vec_signalElectron->size(); iL++){
+    Double_t lepPtInGeV = m_vec_signalElectron->at(m_leadLepIndex[iL]).pt()/1000.;
+    if(m_lepPtMin > 0 && lepPtInGeV<m_lepPtMin) return false;
+    if(m_lepPtMax > 0 && lepPtInGeV>m_lepPtMax) return false;
+  }
+  for(uint iL=0; iL<m_vec_signalMuon    ->size(); iL++){
+    Double_t lepPtInGeV = m_vec_signalMuon    ->at(m_leadLepIndex[iL]).pt()/1000.;
+    if(m_lepPtMin > 0 && lepPtInGeV<m_lepPtMin) return false;
+    if(m_lepPtMax > 0 && lepPtInGeV>m_lepPtMax) return false;
   }
   return true;
 }
@@ -2452,6 +2564,21 @@ bool EventSelector::isSS(int charge1, int charge2)
   if( (charge1==1  && charge2==1 ) ||
       (charge1==-1 && charge2==-1) ) isSS = kTRUE;
   return isSS;
+}
+
+/*--------------------------------------------------------------------------------*/
+// Typical selection for 3L 
+/*--------------------------------------------------------------------------------*/
+void EventSelector::TypSel(int nLep, int nTau, int nBaseLep, int nBaseTau, int nBjetMin, int nBjetMax)
+{
+  m_nLepMin = m_nLepMax = nLep;
+  m_nTauMin = m_nTauMax = nTau;
+  m_nBaseLepMin = m_nBaseLepMax = nBaseLep;
+  //  m_nBaseTauMin = m_nBaseTauMax = nBaseTau;
+  m_nBJetMin = nBjetMin;
+  m_nBJetMax = nBjetMax;
+  if (m_nBJetMax==0) m_selB = 0;
+  if (m_nBJetMin>=1) m_selB = 1;
 }
 
 // /*--------------------------------------------------------------------------------*/

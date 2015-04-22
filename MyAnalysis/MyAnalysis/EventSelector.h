@@ -259,6 +259,7 @@ class EventSelector : public TObject
   virtual int getCharge(int index, int flav);
   virtual bool isOS(int charge1, int charge2);
   virtual bool isSS(int charge1, int charge2);
+  virtual void TypSel(int nLep, int nTau, int nBaseLep, int nBaseTau, int nBjetMin, int nBjetMax);
 
   /* // Selection region */
   /* void setSelection(std::string s) { m_sel = s; } */
@@ -424,7 +425,10 @@ class EventSelector : public TObject
   float               m_minDPhiOSMax;   // maximum min dphi cut between OS leptons 
   float               m_minDPhiOSMin;   // minimum min dphi cut between OS leptons 
   float               m_lepDEtaMax;     // maximum dEtall 
+  float               m_jetPtMin;       // jet pt cuts 
+  float               m_jetPtMax;       // jet pt cuts 
   float               m_lepPtMin;       // lepton pt cuts 
+  float               m_lepPtMax;       // lepton pt cuts 
   float               m_lep1PtMin;      // leading lepton pt cut 
   float               m_lep2PtMin;      // leading lepton pt cut 
   float               m_sumLepPtMin;    // sum lepton pt cut 

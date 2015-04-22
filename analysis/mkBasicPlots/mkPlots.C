@@ -293,12 +293,12 @@ void SetSignalType(void){
   DrawnSignalStyle = new std::vector<Int_t>();
   //Signal reference sample #1
   DrawnSignalType->push_back(SmplViaWZ);
-  DrawnSignalFile->push_back(SmplViaWZ_1);
+  DrawnSignalFile->push_back(SmplViaWZ_6);//M_N2=150, M_N1=100
   DrawnSignalColor->push_back(kRed);
   DrawnSignalStyle->push_back(kDotted);
   //Signal reference sample #2
   DrawnSignalType->push_back(SmplViaWZ);
-  DrawnSignalFile->push_back(SmplViaWZ_5);
+  DrawnSignalFile->push_back(SmplViaWZ_8);//M_N2=200, M_N1=150
   DrawnSignalColor->push_back(kBlue);
   DrawnSignalStyle->push_back(kDashDotted); //kDashDotted, kDashed
 
@@ -368,15 +368,15 @@ void SetBGType(void){
   BGFileNames[WZ]->push_back("187166"); BGIncludeFlag[WZ]->push_back("01100");
   BGFileNames[WZ]->push_back("187167"); BGIncludeFlag[WZ]->push_back("00011");
   BGFileNames[WZ]->push_back("187168"); BGIncludeFlag[WZ]->push_back("01111");
-  // BGFileNames[WZ]->push_back("187170"); BGIncludeFlag[WZ]->push_back("01000");
-  // BGFileNames[WZ]->push_back("187171"); BGIncludeFlag[WZ]->push_back("00010");
-  // BGFileNames[WZ]->push_back("187172"); BGIncludeFlag[WZ]->push_back("01110");
-  // BGFileNames[WZ]->push_back("187173"); BGIncludeFlag[WZ]->push_back("00100");
-  // BGFileNames[WZ]->push_back("187174"); BGIncludeFlag[WZ]->push_back("00001");
-  // BGFileNames[WZ]->push_back("187175"); BGIncludeFlag[WZ]->push_back("00111");
-  // BGFileNames[WZ]->push_back("187176"); BGIncludeFlag[WZ]->push_back("01100");
-  // BGFileNames[WZ]->push_back("187177"); BGIncludeFlag[WZ]->push_back("00011");
-  // BGFileNames[WZ]->push_back("187178"); BGIncludeFlag[WZ]->push_back("01111");
+  BGFileNames[WZ]->push_back("187170"); BGIncludeFlag[WZ]->push_back("01000");
+  BGFileNames[WZ]->push_back("187171"); BGIncludeFlag[WZ]->push_back("00010");
+  BGFileNames[WZ]->push_back("187172"); BGIncludeFlag[WZ]->push_back("01110");
+  BGFileNames[WZ]->push_back("187173"); BGIncludeFlag[WZ]->push_back("00100");
+  BGFileNames[WZ]->push_back("187174"); BGIncludeFlag[WZ]->push_back("00001");
+  BGFileNames[WZ]->push_back("187175"); BGIncludeFlag[WZ]->push_back("00111");
+  BGFileNames[WZ]->push_back("187176"); BGIncludeFlag[WZ]->push_back("01100");
+  BGFileNames[WZ]->push_back("187177"); BGIncludeFlag[WZ]->push_back("00011");
+  BGFileNames[WZ]->push_back("187178"); BGIncludeFlag[WZ]->push_back("01111");
 
   //ttbar
   BGFileNames[ttbar]->push_back("110401"); BGIncludeFlag[ttbar]->push_back("01111");//no all-had
