@@ -398,7 +398,7 @@ Double_t getMCScale(TFile *file){
   //Calculate MC scaling factor from the given file
   Double_t xsec = ((TH1F*)file->Get("h_xsec"))->GetBinContent(1);
   Double_t neve = ((TH1F*)file->Get("h_nEve"))->GetBinContent(1);
-  Double_t scale = (neve/xsec)/IntLumi;
+  Double_t scale = IntLumi/(neve/xsec);
   std::cout<<"MC CrossSection="<<xsec<<", #Eve="<<neve<<", MCScale="<<scale<<std::endl;
   return scale;
 }
