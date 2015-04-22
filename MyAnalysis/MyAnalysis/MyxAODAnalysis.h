@@ -25,6 +25,9 @@
 namespace ST{
   class SUSYObjDef_xAOD;
 }
+namespace SUSY{
+  class CrossSectionDB;
+}
 namespace xAOD{
   class EventInfo_v1;
   typedef EventInfo_v1 EventInfo;
@@ -60,8 +63,8 @@ public:
   long long int m_eventCounter; //!
   long long int m_processedEvents; //!
   long long int m_numCleanEvents; //!
-  std::vector<std::string> *m_vec_eveSelec; //!
-  //0:no debug output, 1:-v, 2:-vv, 3:-vvv
+  double m_eventWeight; //!
+  double m_crossSection; //!
   std::vector<CP::SystematicSet> m_sysList; //!
 
   //Variables which are initialized (or Set) in testRun.cxx;
@@ -69,12 +72,18 @@ public:
   long long int m_maxEvent;
   MSG::Level m_debugMode;
   bool m_noSyst;
+  int m_dsid;
+  long long int m_nSkipNum;
+  std::vector<std::string> *m_vec_eveSelec;
 
 #ifndef __CINT__
   ST::SUSYObjDef_xAOD *m_susyObjTool; //!
+  SUSY::CrossSectionDB *m_XSDB; //!
   GoodRunsListSelectionTool *m_grl; //!
 #endif // not __CINT__
 
+  TH1F *h_xsec; //!
+  TH1F *h_nEve; //!
   TH1F *h_lepChan[nChan][nSyst]; //!
   TH1F *h_all[nChan][nSyst]; //!
   TH1F *h_lep1Pt[nChan][nSyst]; //!
@@ -101,6 +110,9 @@ public:
   void SetDebugMode(MSG::Level debugMode=MSG::ERROR){m_debugMode = debugMode;};
   void SetMaxEvent(long long int maxEvent=-1){m_maxEvent = maxEvent;};
   void SetNoSyst(bool nosyst=true){m_noSyst = nosyst;};
+  void SetDSID(long long int dsid){m_dsid = dsid;};
+  void SetSkipNum(long long int nskip){m_nSkipNum = nskip;};
+  void SetSelectionRegion(const char* selec){m_vec_eveSelec->push_back(selec);};
 
   //end adding
 

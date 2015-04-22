@@ -12,6 +12,7 @@
 //added by minoru
 #include"GoodRunsLists/GoodRunsListSelectionTool.h"
 #include"SUSYTools/SUSYObjDef_xAOD.h"
+#include"SUSYTools/SUSYCrossSection.h"
 
 #include"MyAnalysis/EventSelector.h"
 
@@ -59,6 +60,11 @@ MyxAODAnalysis :: MyxAODAnalysis ()
   // called on both the submission and the worker node.  Most of your
   // initialization code will go into histInitialize() and
   // initialize().
+
+  // Event selection list
+  m_vec_eveSelec = new std::vector<std::string>();
+  m_vec_eveSelec->clear();
+
 }
 
 
@@ -134,12 +140,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   m_eventCounter = 0;
   m_processedEvents = 0;
   m_numCleanEvents = 0;
-
-  // Event selection list
-  m_vec_eveSelec = new std::vector<std::string>();
-  m_vec_eveSelec->clear();
-  //  m_vec_eveSelec->push_back("none");
-  m_vec_eveSelec->push_back("3lep");
+  m_eventWeight = 1.;
 
   // GRL tool initialization
   m_grl = new GoodRunsListSelectionTool("GoodRunsListSelectionTool");
@@ -215,6 +216,15 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
     return EL::StatusCode::FAILURE;
   }else{
     MyInfo( "initialize()", "SUSYObjDef_xAOD initialized... " );
+  }
+
+  m_XSDB = new SUSY::CrossSectionDB("susy_crosssections_13TeV.txt");
+  if(isData) m_crossSection = 0.;
+  else       m_crossSection = m_XSDB->xsectTimesEff(m_dsid);
+  MyInfo("initialize()", Form("Cross section times filter efficiency for DSID #%i: %f pb", m_dsid, m_crossSection));
+  if(m_crossSection<0.){
+    MyError("initialize()","Failed to obtain the cross section for DSID=%i.",m_dsid);
+    return EL::StatusCode::FAILURE;
   }
 
   // Now we can look at systematics:
@@ -296,7 +306,8 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   // print every 100 events, so we know where we are:
   if(m_eventCounter%5000==0) MyAlways("execute()", Form("Event number = %lli", m_eventCounter));
   m_eventCounter++; //Incrementing here since event might be rejected by some quality checks below.
-  if(m_maxEvent>=0 && m_eventCounter>m_maxEvent) return EL::StatusCode::SUCCESS;
+  if( m_maxEvent>=0 && 
+      ( m_eventCounter<=m_nSkipNum || (m_maxEvent+m_nSkipNum)<m_eventCounter ) ) return EL::StatusCode::SUCCESS;
   m_processedEvents++;
 
   //----------------------------
@@ -310,27 +321,32 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 
   // check if the event is data or MC
   m_isMC = eventInfo->eventType(xAOD::EventInfo::IS_SIMULATION) ? true : false;
-  if(not PassPreSelection(eventInfo)) return EL::StatusCode::SUCCESS;
 
   // check run number and luminosity block in data
-  uint32_t RunNumber   = -999;
-  uint32_t LumiBlock   = -999;
-  uint32_t EventNumber = -999;
-  uint32_t mcChannelNumber = -999; //DSID
-  uint32_t mcEventNumber   = -999; //Event number in generator?
-  uint32_t mcEventWeight   = -999;
+  Int_t RunNumber   = -999;
+  Int_t LumiBlock   = -999;
+  Int_t EventNumber = -999;
+  Int_t mcChannelNumber = -999; //DSID
+  Int_t mcEventNumber   = -999; //Event number in generator?
+  m_eventWeight = -999.;
   if(!m_isMC){ //For data
     RunNumber   = eventInfo->runNumber();
     LumiBlock   = eventInfo->lumiBlock();
     EventNumber = eventInfo->eventNumber();
+    m_eventWeight = 1.;
     MyInfo("execute()", "RunNumber : %i, LumiBlock : %i, EventNumber : %i", RunNumber, LumiBlock, EventNumber);
   }else{ //For MC, check DSID and 
     mcChannelNumber = eventInfo->mcChannelNumber(); //DSID
     mcEventNumber   = eventInfo->mcEventNumber(); //Event number in generator?
-    mcEventWeight   = eventInfo->mcEventWeight();
-    MyInfo("execute()", "ChannelNumber : %i, EventNumber : %i, EventWeight : %i", mcChannelNumber, mcEventNumber, mcEventWeight);
+    m_eventWeight   = eventInfo->mcEventWeight();
+    MyInfo("execute()", "ChannelNumber : %i, EventNumber : %i, EventWeight : %f", mcChannelNumber, mcEventNumber, m_eventWeight);
+    if(m_dsid!=mcChannelNumber){
+      MyError("execute()",Form("mcChannelNumber(%d) by EventInfo is different from the one in testRun arugument(%d).",mcChannelNumber,m_dsid));
+    }
   }
+  h_nEve->Fill(0.,m_eventWeight);
 
+  if(not PassPreSelection(eventInfo)) return EL::StatusCode::SUCCESS;
   MyInfo( "initialize()", "Preselection : Done.");
 
   ///////////////////////////////////////////////////////////////////////////
@@ -524,16 +540,6 @@ bool MyxAODAnalysis::BookHistograms(){
   vec_chan.push_back("emm");
   vec_chan.push_back("mmm");
 
-  // lepton channel / systematics loop
-  for(uint wSys=0; wSys<nSyst; wSys++){
-    // Lepton channel histo, only defined for the 'all' channel
-    h_lepChan[Ch_all][wSys] = new TH1F("all_lepChan", "all_lepChan;Unordered lepton channel;Events", nChan, 0, nChan);
-    for(uint iCh=0; iCh<nChan; iCh++){
-      std::string chanName = vec_chan.at(iCh);
-      h_lepChan[Ch_all][wSys]->GetXaxis()->SetBinLabel(iCh+1, chanName.c_str());
-    }
-  }
-
   // Preprocessor convenience                                                                                 
   // make a histogram by name (leave off the "h_") and binning
 #define NEWHIST(name, xLbl, nbin, min, max)                             \
@@ -558,14 +564,23 @@ bool MyxAODAnalysis::BookHistograms(){
   ///////////////////////////////////////////////////////////////
   //Defining histograms
   ///////////////////////////////////////////////////////////////
-  
+
+  // Histogram to store the MC cross section
+  h_xsec = new TH1F("h_xsec","h_xsec;;MC cross-section[pb]",1,0.,1.);
+  h_nEve = new TH1F("h_nEve","h_nEve;;Events"              ,1,0.,1.);
+  wk()->addOutput(h_xsec);
+  wk()->addOutput(h_nEve);
+  h_xsec->SetBinContent(h_xsec->FindBin(0.),m_crossSection); //set cross-section
+
   // lepton channel / systematics loop
   for(uint wSys=0; wSys<nSyst; wSys++){
     // Lepton channel histo, only defined for the 'all' channel
-    h_lepChan[Ch_all][wSys] = new TH1F("all_lepChan", "all_lepChan;Unordered lepton channel;Events", nChan, 0, nChan);
-    wk()->addOutput(h_lepChan[Ch_all][wSys]);
+    h_lepChan       [Ch_all][wSys] = new TH1F("all_lepChan"       ,
+                                              "all_lepChan;Unordered lepton channel;Events", nChan, 0, nChan);
+    wk()->addOutput(h_lepChan       [Ch_all][wSys]);
     for(uint iCh=0; iCh<nChan; iCh++){
       std::string chanName = vec_chan.at(iCh);
+      h_lepChan[Ch_all][wSys]->GetXaxis()->SetBinLabel(iCh+1, chanName.c_str());
       // Single bin event count                                                                                   
       NEWHIST( all, ";Events", 1, 0, 1 );
       // lep pt - my choice of binning                                                                            
@@ -602,6 +617,8 @@ bool MyxAODAnalysis::BookHistograms(){
 }
 
 bool MyxAODAnalysis::FillHistograms(EventSelector *EveSelec){
+
+  MyDebug("FillHistograms()", "Filling histogram ...");
 
   //Retrieving objects via EventSelector
   std::vector< xAOD::Electron >* vec_signalElectron = EveSelec->GetSignalElectron();
@@ -647,8 +664,7 @@ bool MyxAODAnalysis::FillHistograms(EventSelector *EveSelec){
   }
 
   //===========================================================================
-  //  std::cout<<"Filling histogram ..."<<std::endl;
-  Double_t weight=1.;
+  Double_t weight=m_eventWeight*EveSelec->getTotalSF();
 
   // Preprocessor convenience
   // All this does is append the corrent indices to the histo for sys and channel
@@ -673,6 +689,10 @@ bool MyxAODAnalysis::FillHistograms(EventSelector *EveSelec){
     if(leadLepFlavor[index]==1) h[Ch_all][m_sysId]->Fill(val,weight); \
     if(leadLepFlavor[index]==1) h[chan][m_sysId]->Fill(val,weight);   \
   } while(0)
+  //Fill lepChan histograms
+  h_lepChan       [Ch_all][m_sysId]->Fill(Ch_all,weight);
+  h_lepChan       [Ch_all][m_sysId]->Fill(chan,weight);
+
   //Fill lepton Pt
   FillChanHist( h_lep1Pt, leadLep[0].Pt()/1000., weight );
   FillChanHist( h_lep2Pt, leadLep[1].Pt()/1000., weight );
