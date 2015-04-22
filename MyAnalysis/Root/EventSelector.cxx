@@ -401,7 +401,8 @@ bool EventSelector::selectObject()
   for( ; el_itr!=el_end; ++el_itr){
     xAOD::Electron el = **el_itr;
     m_vec_baseElectron->push_back(el);
-    Bool_t isSignalElectron = m_susyObjTool->IsSignalElectronExp(el, ST::SignalIsoExp::TightIso);
+    //    Bool_t isSignalElectron = m_susyObjTool->IsSignalElectronExp(el, ST::SignalIsoExp::TightIso);
+    Bool_t isSignalElectron = m_susyObjTool->IsSignalElectron(el, 10000.);
     if(isSignalElectron) m_vec_signalElectron->push_back(el);
     iEl++;
   }
@@ -425,7 +426,8 @@ bool EventSelector::selectObject()
   for( ; mu_itr!=mu_end; ++mu_itr){
     m_vec_baseMuon->at(nBaselineMuon).makePrivateStore(**mu_itr);
     nBaselineMuon++;
-    Bool_t isSignalMuon = m_susyObjTool->IsSignalMuonExp(**mu_itr, ST::SignalIsoExp::TightIso);
+    //    Bool_t isSignalMuon = m_susyObjTool->IsSignalMuonExp(**mu_itr, ST::SignalIsoExp::TightIso);
+    Bool_t isSignalMuon = m_susyObjTool->IsSignalMuon(**mu_itr, 10000.);
     if(isSignalMuon){
       m_vec_signalMuon->at(nSignalMuon).makePrivateStore(**mu_itr);
       nSignalMuon++;
@@ -1022,7 +1024,8 @@ bool EventSelector::passVbfCut()
     if(m_productEtaEtaMin >= 0 && productEtaEta < m_productEtaEtaMin) return false;
     if(m_productEtaEtaMax >= 0 && productEtaEta > m_productEtaEtaMax) return false;
   }else{
-    return false;
+    if(m_mjjMin > 0 || m_mjjMax > 0 || m_dEtaJJMin > 0 || m_dEtaJJMax > 0 ||
+       m_productEtaEtaMin > 0 || m_productEtaEtaMax > 0) return false;
   }
   return true;
 }
