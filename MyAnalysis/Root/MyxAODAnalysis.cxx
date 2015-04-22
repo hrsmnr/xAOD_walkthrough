@@ -400,7 +400,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 
   }
     
-  if(m_debugMode<=MSG::DEBUG){
+  if(m_debugMode<=MSG::VERBOSE){
     std::cout<<"Hit enter to proceed to the next event."<<std::endl;
     getchar();
   }

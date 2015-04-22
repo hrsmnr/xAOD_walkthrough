@@ -25,6 +25,7 @@ enum ChIndex{Ch_all,Ch_eee,Ch_eem,Ch_emm,Ch_mmm,nChannels};
 
 // Signal Requirements
 const float MZ                          = 91.2;
+const float MUPSILON                    = 9.4;
 const float MUON_D0SIG_CUT              = 3.0;
 const float MUON_Z0_SINTHETA_CUT        = 1.0;//0.2;
 
@@ -148,12 +149,14 @@ class EventSelector : public TObject
   // Lepton/tau invariant mass
   bool passMllBaseCut();
   bool passMllCut();
+  bool passUpsilonCut();
   bool passZCut();
   bool passZeeSSCut();
   bool passLooseZCut();
   bool isLooseSoftEle(unsigned int id, bool isSignal=false);
   bool isLooseSoftMu(unsigned int id, bool isSignal=false);
   bool passMsfosCut();
+  bool passMinMsfosCut();
   bool passMlllCut();
   /* bool passMltCut(); */
   /* bool passMttCut(const TauVector& taus); */
@@ -244,13 +247,14 @@ class EventSelector : public TObject
   virtual bool hasOFOS();
   virtual bool hasOS();
   virtual bool hasSS();
-  virtual bool hasBJet();
+  //  virtual bool hasBJet();
   virtual int numBJets();
-  virtual bool isInZWindow(Double_t mass, Double_t window);
+  virtual bool isInMassWindow(Double_t mass, Double_t targetMass, Double_t window);
+  virtual bool hasUpsilon();
   virtual bool hasZ();
   virtual bool hasZlll();
   virtual bool hasZllll();
-  virtual float findBestMSFOS(int& index1, int& index2, int& flav);
+  virtual float findBestMSFOS(int& index1, int& index2, int& flav, float mass=MZ);
   virtual float getMetRel(bool useForward=false);
   virtual float getMt(TLorentzVector lep, TVector2 met);
   virtual float getMeff(float jetPtCut=40., bool useMet=true);
@@ -382,14 +386,15 @@ class EventSelector : public TObject
   float               m_metMin;         // minimum met cut 
   float               m_metMax;         // maximum met cut 
   float               m_metRelMin;      // minimum met rel 
+  bool                m_vetoUpsilon;    // flag to veto Upsilon
   bool                m_vetoZ;          // flag to veto Zs 
   bool                m_selZ;           // flag to select Zs 
   bool                m_vetoExtZ;       // extended multilepton Z veto  
   bool                m_selExtZ;        // extended multilepton Z veto  
   bool                m_vetoLooseZ;     // Z veto using loose soft leptons 
   bool                m_vetoZeeSS;      // veto SS ee pair in the Z window 
-  bool                m_vetoB;          // flag to veto B jets 
-  bool                m_selB;           // flag to select B jets 
+  //  bool                m_vetoB;          // flag to veto B jets 
+  //  bool                m_selB;           // flag to select B jets 
   bool                m_vetoSFOS;       // flag to veto SFOS leptons 
   bool                m_selSFOS;        // flag to require SFOS leptons 
   bool                m_vetoSFSS;       // flag to veto SFSS leptons 
@@ -405,6 +410,8 @@ class EventSelector : public TObject
   bool                m_specialCut;     // just a temporary cut for testing/hacking 
   bool                m_orthoCut;       // temporary prescription for orthogonality requirement in SR0 
   float               m_mllBaseMin;     // minimum base-dilepton mass (any flav, charge) 
+  float               m_minMllMin;      // minimum Msfos
+  float               m_minMllMax;      // maximum Msfos
   float               m_mllMin;         // minimum dilepton mass (any flav, charge) 
   float               m_mllMax;         // maximum dilepton mass (any flav, charge) 
   float               m_vetoMllMin;     // mll veto window 

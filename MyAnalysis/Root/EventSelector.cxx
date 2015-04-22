@@ -75,14 +75,15 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD* SUSYObjDef, std::string sel, s
   m_metMin(-1),
   m_metMax(-1),
   m_metRelMin(-1),
+  m_vetoUpsilon(false),
   m_vetoZ(false),
   m_selZ(false),
   m_vetoExtZ(false),
   m_selExtZ(false),
   m_vetoLooseZ(false),
   m_vetoZeeSS(false),
-  m_vetoB(false),
-  m_selB(false),
+  //  m_vetoB(false),
+  //  m_selB(false),
   m_vetoSFOS(false),
   m_selSFOS(false),
   m_vetoSFSS(false),
@@ -96,6 +97,8 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD* SUSYObjDef, std::string sel, s
   //m_specialCut(false),
   m_orthoCut(false),
   m_mllBaseMin(-1),
+  m_minMllMin(4.),
+  m_minMllMax(-1),
   m_mllMin(-1),
   m_mllMax(-1),
   m_vetoMllMin(-1),
@@ -203,118 +206,124 @@ void EventSelector::initialize()
     m_applyTrig = false;
   }
   else if (m_sel=="VR0a") {
-    TypSel(3,0,3,0,0,0);
+    //    TypSel(3,0,3,0,0,0);
+    TypSel(3,0,-1,0,0,0);
     m_jetPtMax = 50;
     m_metMax = 30;
-    //    m_minMllMin = 4;
-    m_selZ = false;
+    m_minMllMin = 4;
     m_vetoExtZ = true;
-    //    m_vetoUpsilon = true;
+    m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
   else if (m_sel=="VR0b") {
-    TypSel(3,0,3,0,1,1);
+    //    TypSel(3,0,3,0,1,1);
+    TypSel(3,0,-1,0,1,1);
     m_jetPtMax = 50;
     m_metMin = 30;
-    //    m_minMllMin = 4;
-    //    m_vetoUpsilon = true;
+    m_minMllMin = 4;
+    m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
   else if (m_sel=="VR0c") {
-    TypSel(3,0,3,0,0,0);
+    //    TypSel(3,0,3,0,0,0);
+    TypSel(3,0,-1,0,0,0);
     m_jetPtMax = 50;
     m_lepPtMax = 30;
     m_selSFOS = true;
     m_metMin = 50; 
     m_mlllMin = 60;
-    //    m_minMllMin = 15;
-    //    m_minMllMax = 25;
-    //    m_vetoUpsilon = true;
+    m_minMllMin = 15;
+    m_minMllMax = 25;
+    m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
   else if (m_sel=="VR1a") { 
-    TypSel(3,0,3,0,0,0);
+    //    TypSel(3,0,3,0,0,0);
+    TypSel(3,0,-1,0,0,0);
     m_nJetMin = 1;
     m_jetPtMin = 50;
     m_metMin = 30;
     m_metMax = 50;
-    m_selZ = false;
     m_vetoExtZ = true;
-    //    m_vetoUpsilon = true;
+    m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
   else if (m_sel=="VR1b") { 
-    TypSel(3,0,3,0,1,1);
+    //    TypSel(3,0,3,0,1,1);
+    TypSel(3,0,-1,0,1,1);
     m_nJetMin = 1;
     m_jetPtMin = 50;
     m_metMin = 50;
-    m_selZ = false;
     m_vetoExtZ = true;
-    //    m_vetoUpsilon = true;
+    m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
   else if (m_sel=="CRWZ") {
-    TypSel(3,0,3,0,0,0);
+    //    TypSel(3,0,3,0,0,0);
+    TypSel(3,0,-1,0,0,0);
     m_nJetMin = 1;
     m_jetPtMin = 50.;
     m_lepPtMin = 30.;
     m_metMin = 30.;
     m_metMax = 50.;
     m_selSFOS = true;
-    m_selZ = false;
     m_vetoExtZ = true;
     //    m_isoL3 = true;
   }
   else if (m_sel=="SR0a") {
-    TypSel(3,0,3,0,0,0);
+    //    TypSel(3,0,3,0,0,0);
+    TypSel(3,0,-1,0,0,0);
     m_jetPtMax = 50;
     m_lepPtMax = 30;
     m_metMin = 30;
     m_mtMax = 20;
     m_mlllMin = 30;
-    //    m_minMllMin = 4;
-    //    m_minMllMax = 15;
+    m_minMllMin = 4;
+    m_minMllMax = 15;
     m_mlllMax = 60;
     m_selSFOS = true;
-    //    m_vetoUpsilon = true;
+    m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
   else if (m_sel=="SR0b") {
-    TypSel(3,0,3,0,0,0);
+    //    TypSel(3,0,3,0,0,0);
+    TypSel(3,0,-1,0,0,0);
     m_jetPtMax = 50;
     m_lepPtMax = 30;
     m_metMin = 30;
     m_mlllMin = 30;
     m_mlllMax = 60;
-    //    m_minMllMin = 15;
-    //    m_minMllMax = 25;
+    m_minMllMin = 15;
+    m_minMllMax = 25;
     m_selSFOS = true;
-    //    m_vetoUpsilon = true;
+    m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
   else if (m_sel=="SR1a") {
-    TypSel(3,0,3,0,0,0);
+    //    TypSel(3,0,3,0,0,0);
+    TypSel(3,0,-1,0,0,0);
     m_nJetMin = 1;
     m_jetPtMin = 50;
     m_lepPtMax = 30;
     m_metMin = 50;
-    //    m_minMllMin = 5;
-    //    m_minMllMax = 15;
+    m_minMllMin = 5;
+    m_minMllMax = 15;
     //    m_rl1j1ptMax = 0.2;
     //    m_metj1dphiMin = 0.86;
-    //    m_vetoUpsilon = true;
+    m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
   else if (m_sel=="SR1b") {
-    TypSel(3,0,3,0,0,0);
+    //    TypSel(3,0,3,0,0,0);
+    TypSel(3,0,-1,0,0,0);
     m_nJetMin = 1;
     m_jetPtMin = 50;
     m_lepPtMax = 30;
     m_metMin = 50;
-    //    m_minMllMin = 15;
-    //    m_minMllMax = 25;
+    m_minMllMin = 15;
+    m_minMllMax = 25;
     //    m_metWZdphiMax = 0.7;
-    //    m_vetoUpsilon = true;
+    m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
   else{
@@ -625,7 +634,7 @@ bool EventSelector::selectObject()
     m_leadLeps     [id].SetPxPyPzE(0.,0.,0.,0.);
   }
   //For baseline leptons
-  //  std::cout<<"Baseline : elSize="<<m_vec_baseElectron->size()<<", muSize="<<m_vec_baseMuon->size()<<std::endl;
+  MyDebug("selectObject()",Form("Baseline : elSize=%d, muSize=%d",(int)m_vec_baseElectron->size(),(int)m_vec_baseMuon->size()));
   for(UInt_t elIndex=0; elIndex<m_vec_baseElectron->size(); elIndex++){
     Double_t elPt = m_vec_baseElectron->at(elIndex).pt();
     for(Int_t id=0; id<nAnaLep; id++){
@@ -665,7 +674,7 @@ bool EventSelector::selectObject()
     }
   }
   //For signal leptons
-  //  std::cout<<"Signal : elSize="<<m_vec_signalElectron->size()<<", muSize="<<m_vec_signalMuon->size()<<std::endl;
+  MyDebug("selectObject()",Form("Signal : elSize=%d, muSize=%d",(int)m_vec_signalElectron->size(),(int)m_vec_signalMuon->size()));
   for(UInt_t elIndex=0; elIndex<m_vec_signalElectron->size(); elIndex++){
     Double_t elPt = m_vec_signalElectron->at(elIndex).pt();
     for(Int_t id=0; id<nAnaLep; id++){
@@ -705,16 +714,18 @@ bool EventSelector::selectObject()
     }
   }
 
-  // //Check if well ordered by Pt
-  // Double_t prevPt=9999999.;
-  // for(Int_t id=0; id<nAnaLep; id++){
-  //   std::cout<<"Signal : LeptonPt = "<<m_leadLeps[id].Pt()<<", Flavor="<<m_leadLepFlavor[id]<<", Index="<<m_leadLepIndex[id]<<" (prevPt="<<prevPt<<")"<<std::endl;
-  //   if(prevPt<=m_leadLeps[id].Pt() && m_leadLepFlavor[id]!=-1){
-  //     std::cout<<"Not well ordered!!"<<std::endl;
-  //     getchar();
-  //   }
-  //   prevPt=m_leadLeps[id].Pt();
-  // }
+  //Check if well ordered by Pt
+  if(m_dbg<=MSG::DEBUG){
+    Double_t prevPt=9999999.;
+    for(Int_t id=0; id<nAnaLep; id++){
+      MyDebug("selectObject()",Form("Signal : LeptonPt=%f, Flavor=%d, Index=%d (prevPt=%f)",m_leadLeps[id].Pt(),m_leadLepFlavor[id],m_leadLepIndex[id],prevPt));
+      if(prevPt<=m_leadLeps[id].Pt() && m_leadLepFlavor[id]!=-1){
+        MyError("selectObject()","Lepton Pt is not well ordered!!");
+        getchar();
+      }
+      prevPt=m_leadLeps[id].Pt();
+    }
+  }
 
   m_nSignalLeps = m_vec_signalElectron->size()+m_vec_signalMuon->size();
   m_nBaselineLeps = m_vec_baseElectron->size()+m_vec_baseMuon->size();
@@ -740,12 +751,16 @@ bool EventSelector::selectEvent()
   //   // Event cleaning
   //   if(!passEventCleaning(preMuons, baseMuons, preJets, baseJets, met)) return false;
   n_pass_clean++;
+  MyDebug("selectEvent()","n_pass_clean++;");
   if(!passNBaseLepCut()) return false;
   n_pass_nBLep++;
+  MyDebug("selectEvent()","n_pass_nBLep++;");
   if(!passMllBaseCut()) return false;
   n_pass_mllBase++;
+  MyDebug("selectEvent()","n_pass_mllBase++;");
   if(!passNLepCut()) return false;
   n_pass_nLep++;
+  MyDebug("selectEvent()","n_pass_nLep++;");
   //   if(!passNTauCut(signalTaus, tightTaus)) return false;
   n_pass_nTau++;
 
@@ -756,42 +771,54 @@ bool EventSelector::selectEvent()
   n_pass_trig++;
   if(!passLepTruthCut()) return false;
   n_pass_truth++;
+  MyDebug("selectEvent()","n_pass_truth++;");
   if(!passFlavChargeCut()) return false;
   n_pass_sfos++;
+  MyDebug("selectEvent()","n_pass_sfos++;");
   //if(!passLooseZCut(mySigLeptons)) return false; // not used
   //n_pass_lz++;
   if(!passNJetCut()) return false;
   n_pass_jet++;
+  MyDebug("selectEvent()","n_pass_jet++;");
 
   if(!passVbfCut()) return false;
   n_pass_vbf++;
+  MyDebug("selectEvent()","n_pass_vbf++;");
 
   if(!passLepTauPtCuts()) return false;
   n_pass_lepPt++;
+  MyDebug("selectEvent()","n_pass_lepPt++;");
 
+  if(!passUpsilonCut()) return false;
   if(!passZCut()) return false;
   if(!passZeeSSCut()) return false;
   if(!passMllCut()) return false;
   if(!passMsfosCut()) return false;
+  if(!passMinMsfosCut()) return false;
   if(!passMlllCut()) return false;
   //   if(!passMltCut(mySigLeptons, signalTaus)) return false;
   //   if(!passMttCut(signalTaus)) return false;
   n_pass_z++;
+  MyDebug("selectEvent()","n_pass_z++;");
 
   if(!passLepDEtaCut()) return false;
   if(!passMinDPhiOSCut()) return false;
   n_pass_lepDR++;
+  MyDebug("selectEvent()","n_pass_lepDR++;");
 
   if(!passMetCut()) return false;
   if(!passMetRelCut()) return false;
   n_pass_met++;
+  MyDebug("selectEvent()","n_pass_met++;");
 
   if(!passMtCut()) return false;
   if(!passMaxMT2Cut()) return false;
   n_pass_mt++;
+  MyDebug("selectEvent()","n_pass_mt++;");
 
   if(!passMeffCut()) return false;
   n_pass_meff++;
+  MyDebug("selectEvent()","n_pass_meff++;");
 
   //if(!passMljjCut(mySigLeptons, signalJets)) return false;
   //n_pass_mljj++;
@@ -923,11 +950,11 @@ bool EventSelector::passNJetCut()
   }
 
   // 3-lepton b-jet
-  if(m_vetoB || m_selB){
-    bool hasB = hasBJet();
-    if(m_vetoB && hasB) return false;
-    if(m_selB && !hasB) return false;
-  }
+  // if(m_vetoB || m_selB){
+  //   bool hasB = hasBJet();
+  //   if(m_vetoB && hasB) return false;
+  //   if(m_selB && !hasB) return false;
+  // }
   if(m_nBJetMin >= 0 || m_nBJetMax >= 0){
     int nBJet = numBJets();
     if(m_nBJetMin>=0 && nBJet < m_nBJetMin) return false;
@@ -1161,6 +1188,15 @@ bool EventSelector::passZCut()
   return true;
 }
 /*--------------------------------------------------------------------------------*/
+bool EventSelector::passUpsilonCut()
+{
+  if(m_vetoUpsilon){
+    bool upsi = hasUpsilon();
+    if(m_vetoUpsilon && upsi) return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
 bool EventSelector::isLooseSoftEle(unsigned int id, bool isSignal)
 {
   // if(e->Pt() < 6.) return false;
@@ -1250,7 +1286,7 @@ bool EventSelector::passZeeSSCut()
         charge[1] = m_vec_signalElectron->at(iL2).charge();
         if(isSS(charge[0], charge[1])){
           leps[1] = m_vec_signalElectron->at(iL2).p4();
-          if(isInZWindow( (leps[0]+leps[1]).M()/1000., massWindow)) return false;
+          if(isInMassWindow( (leps[0]+leps[1]).M()/1000., MZ, massWindow)) return false;
         }
       }
     }
@@ -1291,9 +1327,25 @@ bool EventSelector::passMsfosCut()
     int index[2]={-1,-1};
     int flav=-1;
     Double_t msfos = findBestMSFOS(index[0],index[1],flav);
-    if( ((m_msfosMin >= 0) || (m_msfosMax >= 0)) && msfos<0) return false;
+    if( ((m_msfosMin >= 0) || (m_msfosMax >= 0)) && msfos<0) return false; //cannot find sfos pair
     if(m_msfosMin >= 0 && msfos < m_msfosMin) return false;
     if(m_msfosMax >= 0 && msfos > m_msfosMax) return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passMinMsfosCut()
+{
+  // Use the sfos pair with minimum mass for this cut.
+  // This is a little arbitrary when there are 2 sfos pairs, but
+  // apparently the sensitivity is better than considering all sfos pairs
+  if(m_msfosMin >= 0 || m_msfosMax >= 0){
+    int index[2]={-1,-1};
+    int flav=-1;
+    Double_t msfos = findBestMSFOS(index[0],index[1],flav,0.);//Finding min. M_SFOS
+    if( ((m_minMllMin >= 0) || (m_minMllMax >= 0)) && msfos<0) return false; //cannot find sfos pair
+    if(m_minMllMin >= 0 && msfos < m_minMllMin) return false;
+    if(m_minMllMax >= 0 && msfos > m_minMllMax) return false;
   }
   return true;
 }
@@ -1598,16 +1650,17 @@ bool EventSelector::passLepDEtaCut()
 bool EventSelector::passLepPtCut()
 {
   Double_t lepPt[2] = {-1.,-1.};//speciall treatment for 1st/2nd leptons.
-  for(uint id=0; id<2; id++) lepPt[id] = getFourVector(m_leadLepIndex[id], m_leadLepFlavor[id]).Pt();
+  if(m_leadLepIndex[0]!=-1) lepPt[0] = getFourVector(m_leadLepIndex[0], m_leadLepFlavor[0]).Pt();
+  if(m_leadLepIndex[1]!=-1) lepPt[1] = getFourVector(m_leadLepIndex[1], m_leadLepFlavor[1]).Pt();
   if(m_lep1PtMin > 0 && lepPt[0]/1000. < m_lep1PtMin) return false;
   if(m_lep2PtMin > 0 && lepPt[1]/1000. < m_lep2PtMin) return false;
   for(uint iL=0; iL<m_vec_signalElectron->size(); iL++){
-    Double_t lepPtInGeV = m_vec_signalElectron->at(m_leadLepIndex[iL]).pt()/1000.;
+    Double_t lepPtInGeV = m_vec_signalElectron->at(iL).pt()/1000.;
     if(m_lepPtMin > 0 && lepPtInGeV<m_lepPtMin) return false;
     if(m_lepPtMax > 0 && lepPtInGeV>m_lepPtMax) return false;
   }
   for(uint iL=0; iL<m_vec_signalMuon    ->size(); iL++){
-    Double_t lepPtInGeV = m_vec_signalMuon    ->at(m_leadLepIndex[iL]).pt()/1000.;
+    Double_t lepPtInGeV = m_vec_signalMuon    ->at(iL).pt()/1000.;
     if(m_lepPtMin > 0 && lepPtInGeV<m_lepPtMin) return false;
     if(m_lepPtMax > 0 && lepPtInGeV>m_lepPtMax) return false;
   }
@@ -1619,11 +1672,11 @@ bool EventSelector::passSumLepPtCut()
   if(m_sumLepPtMin > 0){
     float sumPt = 0;
     for(uint iL=0; iL<m_vec_signalElectron->size(); iL++){
-      Double_t lepPtInGeV = m_vec_signalElectron->at(m_leadLepIndex[iL]).pt()/1000.;
+      Double_t lepPtInGeV = m_vec_signalElectron->at(iL).pt()/1000.;
       sumPt += lepPtInGeV;
     }
     for(uint iL=0; iL<m_vec_signalMuon    ->size(); iL++){
-      Double_t lepPtInGeV = m_vec_signalMuon    ->at(m_leadLepIndex[iL]).pt()/1000.;
+      Double_t lepPtInGeV = m_vec_signalMuon    ->at(iL).pt()/1000.;
       sumPt += lepPtInGeV;
     }
     if(sumPt < m_sumLepPtMin) return false;
@@ -2213,71 +2266,56 @@ bool EventSelector::hasSS()
   return hasSS;
 }
 
-/*--------------------------------------------------------------------------------*/
-bool EventSelector::hasBJet()
-{
-  Bool_t hasBJet = kFALSE;
-  for(UInt_t cnt=0; cnt<m_vec_signalJet->size(); cnt++){
-    if((m_vec_signalJet->at(cnt)).auxdata<bool>("bjet")){
-      hasBJet = kTRUE;
-      break;
-    }
-  }
-  return hasBJet;
-}
+// /*--------------------------------------------------------------------------------*/
+// bool EventSelector::hasBJet()
+// {
+//   Bool_t hasBJet = kFALSE;
+//   for(UInt_t cnt=0; cnt<m_vec_signalJet->size(); cnt++){
+//     if((m_vec_signalJet->at(cnt)).auxdata<char>("bjet")){
+//       hasBJet = kTRUE;
+//       break;
+//     }
+//   }
+//   return hasBJet;
+// }
 /*--------------------------------------------------------------------------------*/
 int EventSelector::numBJets()
 {
   Int_t numBJets = 0;
   for(UInt_t cnt=0; cnt<m_vec_signalJet->size(); cnt++){
-    if((m_vec_signalJet->at(cnt)).auxdata<bool>("bjet")){
+    if((m_vec_signalJet->at(cnt)).auxdata<char>("bjet")){
       numBJets++;
     }
   }
   return numBJets;
 }
 /*--------------------------------------------------------------------------------*/
-bool EventSelector::isInZWindow(Double_t mass, Double_t window)
+bool EventSelector::isInMassWindow(Double_t mass, Double_t targetMass, Double_t window)
 {
   Bool_t inWindow = kFALSE;
-  if(fabs(mass-MZ)<window) inWindow = kTRUE;
+  if(fabs(mass-targetMass)<window) inWindow = kTRUE;
   return inWindow;
 }
-
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::hasUpsilon()
+{
+  //To find Upsilon candidate (same flavor, oppsite sign, close to Zmass)
+  Double_t massWindow = 1.;
+  int index[2]={-1,-1};
+  int flav=-1;
+  Double_t msfos = findBestMSFOS(index[0],index[1],flav,MUPSILON);
+  if(isInMassWindow(msfos, MUPSILON, massWindow)) return true;
+  return false;
+}
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::hasZ()
 {
   //To find Z candidate (same flavor, oppsite sign, close to Zmass)
   Double_t massWindow = 10.;
-  TLorentzVector leps[2];
-  Int_t          charge[2];
-  //Electron pair search
-  for(uint iL=0; iL<m_vec_signalElectron->size(); iL++){
-    leps[0] = m_vec_signalElectron->at(iL).p4();
-    charge[0] = m_vec_signalElectron->at(iL).charge();
-    for(uint iL2=0; iL2<m_vec_signalElectron->size(); iL2++){
-      if(iL2<=iL) continue;
-      charge[1] = m_vec_signalElectron->at(iL2).charge();
-      if(isOS(charge[0],charge[1])){
-        leps[1] = m_vec_signalElectron->at(iL2).p4();
-        if(isInZWindow( (leps[0]+leps[1]).M()/1000., massWindow)) return true;
-      }
-    }
-  }
-  //Muon pair search
-  for(uint iL=0; iL<m_vec_signalMuon->size(); iL++){
-    leps[0] = m_vec_signalMuon->at(iL).p4();
-    charge[0] = m_vec_signalMuon->at(iL).charge();
-    for(uint iL2=0; iL2<m_vec_signalMuon->size(); iL2++){
-      if(iL2<=iL) continue;
-      charge[1] = m_vec_signalMuon->at(iL2).charge();
-      if(isOS(charge[0],charge[1])){
-        leps[1] = m_vec_signalMuon->at(iL2).p4();
-        if(isInZWindow( (leps[0]+leps[1]).M()/1000., massWindow)) return true;
-      }
-    }
-  }
-
+  int index[2]={-1,-1};
+  int flav=-1;
+  Double_t msfos = findBestMSFOS(index[0],index[1],flav);
+  if(isInMassWindow(msfos, MZ, massWindow)) return true;
   return false;
 }
 /*--------------------------------------------------------------------------------*/
@@ -2300,12 +2338,12 @@ bool EventSelector::hasZlll()
         for(uint iL3=0; iL3<m_vec_signalElectron->size(); iL3++){
           if((iL3==iL) || (iL3==iL2)) continue;
           leps[2] = m_vec_signalElectron->at(iL3).p4();
-          if(isInZWindow( (leps[0]+leps[1]+leps[2]).M()/1000., massWindow)) return true;
+          if(isInMassWindow( (leps[0]+leps[1]+leps[2]).M()/1000., MZ, massWindow)) return true;
         }
         //Trying to add a muon
         for(uint iL3=0; iL3<m_vec_signalMuon->size(); iL3++){
           leps[2] = m_vec_signalMuon->at(iL3).p4();
-          if(isInZWindow( (leps[0]+leps[1]+leps[2]).M()/1000., massWindow)) return true;
+          if(isInMassWindow( (leps[0]+leps[1]+leps[2]).M()/1000., MZ, massWindow)) return true;
         }
       }
     }
@@ -2323,12 +2361,12 @@ bool EventSelector::hasZlll()
         for(uint iL3=0; iL3<m_vec_signalMuon->size(); iL3++){
           if((iL3==iL) || (iL3==iL2)) continue;
           leps[2] = m_vec_signalMuon->at(iL3).p4();
-          if(isInZWindow( (leps[0]+leps[1]+leps[2]).M()/1000., massWindow)) return true;
+          if(isInMassWindow( (leps[0]+leps[1]+leps[2]).M()/1000., MZ, massWindow)) return true;
         }
         //Trying to add a electron
         for(uint iL3=0; iL3<m_vec_signalElectron->size(); iL3++){
           leps[2] = m_vec_signalElectron->at(iL3).p4();
-          if(isInZWindow( (leps[0]+leps[1]+leps[2]).M()/1000., massWindow)) return true;
+          if(isInMassWindow( (leps[0]+leps[1]+leps[2]).M()/1000., MZ, massWindow)) return true;
         }
       }
     }
@@ -2363,7 +2401,7 @@ bool EventSelector::hasZllll()
             charge[3] = m_vec_signalElectron->at(iL4).charge();
             if(isOS(charge[2],charge[3])){
               leps[3] = m_vec_signalElectron->at(iL4).p4();
-              if(isInZWindow( (leps[0]+leps[1]+leps[2]+leps[3]).M()/1000., massWindow)) return true;
+              if(isInMassWindow( (leps[0]+leps[1]+leps[2]+leps[3]).M()/1000., MZ, massWindow)) return true;
             }
           }
         }
@@ -2376,7 +2414,7 @@ bool EventSelector::hasZllll()
             charge[3] = m_vec_signalMuon->at(iL4).charge();
             if(isOS(charge[2],charge[3])){
               leps[3] = m_vec_signalMuon->at(iL4).p4();
-              if(isInZWindow( (leps[0]+leps[1]+leps[2]+leps[3]).M()/1000., massWindow)) return true;
+              if(isInMassWindow( (leps[0]+leps[1]+leps[2]+leps[3]).M()/1000., MZ, massWindow)) return true;
             }
           }
         }
@@ -2402,7 +2440,7 @@ bool EventSelector::hasZllll()
             charge[3] = m_vec_signalMuon->at(iL4).charge();
             if(isOS(charge[2],charge[3])){
               leps[3] = m_vec_signalMuon->at(iL4).p4();
-              if(isInZWindow( (leps[0]+leps[1]+leps[2]+leps[3]).M()/1000., massWindow)) return true;
+              if(isInMassWindow( (leps[0]+leps[1]+leps[2]+leps[3]).M()/1000., MZ, massWindow)) return true;
             }
           }
         }
@@ -2415,7 +2453,7 @@ bool EventSelector::hasZllll()
             charge[3] = m_vec_signalElectron->at(iL4).charge();
             if(isOS(charge[2],charge[3])){
               leps[3] = m_vec_signalElectron->at(iL4).p4();
-              if(isInZWindow( (leps[0]+leps[1]+leps[2]+leps[3]).M()/1000., massWindow)) return true;
+              if(isInMassWindow( (leps[0]+leps[1]+leps[2]+leps[3]).M()/1000., MZ, massWindow)) return true;
             }
           }
         }
@@ -2426,10 +2464,10 @@ bool EventSelector::hasZllll()
   return false;
 }
 
-float EventSelector::findBestMSFOS(int& index1, int& index2, int& flav)
+float EventSelector::findBestMSFOS(int& index1, int& index2, int& flav, float mass)
 {
-  //To find Z candidate (same flavor, oppsite sign, close to Zmass)
-  Float_t bestZMass = -1.;
+  //Finding the best SFOS lepton pair with a mass closest to the target mass, and return the resulting mass
+  Float_t bestMsfosMass = -1.;
   TLorentzVector leps[2];
   Int_t          charge[2];
   //Electron pair search
@@ -2442,8 +2480,8 @@ float EventSelector::findBestMSFOS(int& index1, int& index2, int& flav)
       if(isOS(charge[0],charge[1])){
         leps[1] = m_vec_signalElectron->at(iL2).p4();
         Double_t mll = (leps[0]+leps[1]).M()/1000.;
-        if(bestZMass<0. || fabs(bestZMass-MZ)>fabs(mll-MZ)){
-          bestZMass = mll;
+        if(bestMsfosMass<0. || fabs(bestMsfosMass-mass)>fabs(mll-mass)){
+          bestMsfosMass = mll;
           index1 = iL;
           index2 = iL2;
           flav = 0; //means electron.
@@ -2461,8 +2499,8 @@ float EventSelector::findBestMSFOS(int& index1, int& index2, int& flav)
       if(isOS(charge[0],charge[1])){
         leps[1] = m_vec_signalMuon->at(iL2).p4();
         Double_t mll = (leps[0]+leps[1]).M()/1000.;
-        if(bestZMass<0. || fabs(bestZMass-MZ)>fabs(mll-MZ)){
-          bestZMass = mll;
+        if(bestMsfosMass<0. || fabs(bestMsfosMass-mass)>fabs(mll-mass)){
+          bestMsfosMass = mll;
           index1 = iL;
           index2 = iL2;
           flav = 1; //means muon.
@@ -2471,7 +2509,7 @@ float EventSelector::findBestMSFOS(int& index1, int& index2, int& flav)
     }
   }
 
-  return bestZMass;
+  return bestMsfosMass;
 }
 /*--------------------------------------------------------------------------------*/
 float EventSelector::getMetRel(bool useForward)
@@ -2577,8 +2615,8 @@ void EventSelector::TypSel(int nLep, int nTau, int nBaseLep, int nBaseTau, int n
   //  m_nBaseTauMin = m_nBaseTauMax = nBaseTau;
   m_nBJetMin = nBjetMin;
   m_nBJetMax = nBjetMax;
-  if (m_nBJetMax==0) m_selB = 0;
-  if (m_nBJetMin>=1) m_selB = 1;
+  //  if (m_nBJetMax==0) m_selB = false;
+  //  if (m_nBJetMin>=1) m_selB = true;
 }
 
 // /*--------------------------------------------------------------------------------*/
