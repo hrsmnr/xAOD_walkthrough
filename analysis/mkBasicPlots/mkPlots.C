@@ -340,6 +340,12 @@ Int_t BGTypeHistColors[nBGType] = {kAzure-3,kOrange-2};
 Int_t BGTypeFillColors[nBGType] = {kAzure-3,kOrange-2};
 Int_t BGStackOrder1[nBGType] = {WZ,ttbar};
 Int_t BGStackOrder2[nBGType] = {ttbar,WZ};
+// enum BGType{WZ,nBGType};
+// TString BGTypeNames[nBGType] = {"WZ"};
+// Int_t BGTypeHistColors[nBGType] = {kAzure-3};
+// Int_t BGTypeFillColors[nBGType] = {kAzure-3};
+// Int_t BGStackOrder1[nBGType] = {WZ};
+// Int_t BGStackOrder2[nBGType] = {WZ};
 // enum BGType{WZ,ZZ,ttW,ttZ,tPlusVs,Tribosons,Higgs,Zjets,Wjets,ttbar,OtherFake,nBGType};
 // TString BGTypeNames[nBGType] = {"WZ","ZZ","ttW","ttZ","tPlusVs","Tribosons","Higgs","Zjets","Wjets","ttbar","OtherFake"};
 // Int_t BGTypeHistColors[nBGType] = {kAzure-3,kAzure-4,kCyan-2,kCyan-1,kCyan,kMagenta,kBlack,kViolet-7,kViolet-9,kOrange-2,kGreen+2};
@@ -439,7 +445,7 @@ Int_t mkPlots(TString SelecReg){
       TString dsid = BGFileNames[bgtype]->at(bgfile).Data();
       TString includeflag = BGIncludeFlag[bgtype]->at(bgfile).Data();
       //      TString filename = filepath_prefix+dsid+"_00/"+SelecReg+".AnaHists.root";
-      TString filename = getHistFileName((filepath_prefix+dsid+"_00/").Data());
+      TString filename = getHistFileName((filepath_prefix+dsid+"_00_"+SelecReg+"/").Data());
       TFile *f_tmp = new TFile(filename.Data());
       vec_mcfiles->push_back(f_tmp);
       std::cout<<"**** DatasetID : "<<dsid.Data()<<", filename="<<filename.Data()<<", IncludeFlag="<<includeflag.Data()<<std::endl;
@@ -453,7 +459,7 @@ Int_t mkPlots(TString SelecReg){
     for(UInt_t signalfile=0; signalfile<nsamples; signalfile++){
       TString dsid = SignalFileNames[signaltype]->at(signalfile).Data();
       //      TString filename = filepath_prefix+dsid+"."+SelecReg+".AnaHists.root";
-      TString filename = getHistFileName((filepath_prefix+dsid+"_00/").Data());
+      TString filename = getHistFileName((filepath_prefix+dsid+"_00_"+SelecReg+"/").Data());
       TFile *f_tmp = new TFile(filename.Data());
       vec_signalfiles->push_back(f_tmp);
       std::cout<<"**** DatasetID : "<<dsid.Data()<<", filename="<<filename.Data()<<std::endl;
@@ -810,19 +816,19 @@ Int_t mkPlots(TString SelecReg){
     }
   }
 
-  //Plotting signal only distributions
-  for(Int_t fstype=0; fstype<nFSType; fstype++){
-    for(Int_t disttype=0; disttype<nDistType; disttype++){
-      for(Int_t signaltype=0; signaltype<nSignalType; signaltype++){
-        UInt_t nsamples = SignalFileNames[signaltype]->size();
-        for(UInt_t signalfile=0; signalfile<nsamples; signalfile++){
-          std::string option = (signaltype==0&&signalfile==0) ? "" : "same";
-          if(option=="") u->cdPad();
-          vec_dist_signal[fstype][signaltype][disttype]->at(signalfile)->Draw(option.c_str());
-        }
-      }
-    }
-  }
+  // //Plotting signal only distributions
+  // for(Int_t fstype=0; fstype<nFSType; fstype++){
+  //   for(Int_t disttype=0; disttype<nDistType; disttype++){
+  //     for(Int_t signaltype=0; signaltype<nSignalType; signaltype++){
+  //       UInt_t nsamples = SignalFileNames[signaltype]->size();
+  //       for(UInt_t signalfile=0; signalfile<nsamples; signalfile++){
+  //         std::string option = (signaltype==0&&signalfile==0) ? "" : "same";
+  //         if(option=="") u->cdPad();
+  //         vec_dist_signal[fstype][signaltype][disttype]->at(signalfile)->Draw(option.c_str());
+  //       }
+  //     }
+  //   }
+  // }
 
   //drawing legends again...
   u->SetPadNumXY(1,1);
