@@ -445,7 +445,8 @@ Int_t mkPlots(TString SelecReg){
       TString dsid = BGFileNames[bgtype]->at(bgfile).Data();
       TString includeflag = BGIncludeFlag[bgtype]->at(bgfile).Data();
       //      TString filename = filepath_prefix+dsid+"_00/"+SelecReg+".AnaHists.root";
-      TString filename = getHistFileName((filepath_prefix+dsid+"_00_"+SelecReg+"/").Data());
+      //      TString filename = getHistFileName((filepath_prefix+dsid+"_00_"+SelecReg+"/").Data());
+      TString filename = getHistFileName((filepath_prefix+dsid+"_00/").Data());
       TFile *f_tmp = new TFile(filename.Data());
       vec_mcfiles->push_back(f_tmp);
       std::cout<<"**** DatasetID : "<<dsid.Data()<<", filename="<<filename.Data()<<", IncludeFlag="<<includeflag.Data()<<std::endl;
@@ -459,7 +460,8 @@ Int_t mkPlots(TString SelecReg){
     for(UInt_t signalfile=0; signalfile<nsamples; signalfile++){
       TString dsid = SignalFileNames[signaltype]->at(signalfile).Data();
       //      TString filename = filepath_prefix+dsid+"."+SelecReg+".AnaHists.root";
-      TString filename = getHistFileName((filepath_prefix+dsid+"_00_"+SelecReg+"/").Data());
+      //      TString filename = getHistFileName((filepath_prefix+dsid+"_00_"+SelecReg+"/").Data());
+      TString filename = getHistFileName((filepath_prefix+dsid+"_00/").Data());
       TFile *f_tmp = new TFile(filename.Data());
       vec_signalfiles->push_back(f_tmp);
       std::cout<<"**** DatasetID : "<<dsid.Data()<<", filename="<<filename.Data()<<std::endl;

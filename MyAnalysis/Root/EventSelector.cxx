@@ -205,9 +205,12 @@ void EventSelector::initialize()
   else if(m_sel=="3lep"){
     m_applyTrig = false;
   }
+  else if(m_sel=="3lepBveto"){
+    TypSel(3,0,3,0,0,0);
+    m_applyTrig = false;
+  }
   else if (m_sel=="VR0a") {
-    //    TypSel(3,0,3,0,0,0);
-    TypSel(3,0,-1,0,0,0);
+    TypSel(3,0,3,0,0,0);
     m_jetPtMax = 50;
     m_metMax = 30;
     m_minMllMin = 4;
@@ -216,8 +219,7 @@ void EventSelector::initialize()
     //    m_isoL3 = true;
   }
   else if (m_sel=="VR0b") {
-    //    TypSel(3,0,3,0,1,1);
-    TypSel(3,0,-1,0,1,1);
+    TypSel(3,0,3,0,1,1);
     m_jetPtMax = 50;
     m_metMin = 30;
     m_minMllMin = 4;
@@ -225,8 +227,7 @@ void EventSelector::initialize()
     //    m_isoL3 = true;
   }
   else if (m_sel=="VR0c") {
-    //    TypSel(3,0,3,0,0,0);
-    TypSel(3,0,-1,0,0,0);
+    TypSel(3,0,3,0,0,0);
     m_jetPtMax = 50;
     m_lepPtMax = 30;
     m_selSFOS = true;
@@ -238,8 +239,7 @@ void EventSelector::initialize()
     //    m_isoL3 = true;
   }
   else if (m_sel=="VR1a") { 
-    //    TypSel(3,0,3,0,0,0);
-    TypSel(3,0,-1,0,0,0);
+    TypSel(3,0,3,0,0,0);
     m_nJetMin = 1;
     m_jetPtMin = 50;
     m_metMin = 30;
@@ -249,8 +249,7 @@ void EventSelector::initialize()
     //    m_isoL3 = true;
   }
   else if (m_sel=="VR1b") { 
-    //    TypSel(3,0,3,0,1,1);
-    TypSel(3,0,-1,0,1,1);
+    TypSel(3,0,3,0,1,1);
     m_nJetMin = 1;
     m_jetPtMin = 50;
     m_metMin = 50;
@@ -259,8 +258,7 @@ void EventSelector::initialize()
     //    m_isoL3 = true;
   }
   else if (m_sel=="CRWZ") {
-    //    TypSel(3,0,3,0,0,0);
-    TypSel(3,0,-1,0,0,0);
+    TypSel(3,0,3,0,0,0);
     m_nJetMin = 1;
     m_jetPtMin = 50.;
     m_lepPtMin = 30.;
@@ -271,8 +269,7 @@ void EventSelector::initialize()
     //    m_isoL3 = true;
   }
   else if (m_sel=="SR0a") {
-    //    TypSel(3,0,3,0,0,0);
-    TypSel(3,0,-1,0,0,0);
+    TypSel(3,0,3,0,0,0);
     m_jetPtMax = 50;
     m_lepPtMax = 30;
     m_metMin = 30;
@@ -286,8 +283,7 @@ void EventSelector::initialize()
     //    m_isoL3 = true;
   }
   else if (m_sel=="SR0b") {
-    //    TypSel(3,0,3,0,0,0);
-    TypSel(3,0,-1,0,0,0);
+    TypSel(3,0,3,0,0,0);
     m_jetPtMax = 50;
     m_lepPtMax = 30;
     m_metMin = 30;
@@ -300,8 +296,7 @@ void EventSelector::initialize()
     //    m_isoL3 = true;
   }
   else if (m_sel=="SR1a") {
-    //    TypSel(3,0,3,0,0,0);
-    TypSel(3,0,-1,0,0,0);
+    TypSel(3,0,3,0,0,0);
     m_nJetMin = 1;
     m_jetPtMin = 50;
     m_lepPtMax = 30;
@@ -314,8 +309,7 @@ void EventSelector::initialize()
     //    m_isoL3 = true;
   }
   else if (m_sel=="SR1b") {
-    //    TypSel(3,0,3,0,0,0);
-    TypSel(3,0,-1,0,0,0);
+    TypSel(3,0,3,0,0,0);
     m_nJetMin = 1;
     m_jetPtMin = 50;
     m_lepPtMax = 30;
