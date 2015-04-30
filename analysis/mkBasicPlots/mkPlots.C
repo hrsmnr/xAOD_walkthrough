@@ -293,12 +293,12 @@ void SetSignalType(void){
   DrawnSignalStyle = new std::vector<Int_t>();
   //Signal reference sample #1
   DrawnSignalType->push_back(SmplViaWZ);
-  DrawnSignalFile->push_back(SmplViaWZ_1);
+  DrawnSignalFile->push_back(SmplViaWZ_6);//M_N2=150, M_N1=100
   DrawnSignalColor->push_back(kRed);
   DrawnSignalStyle->push_back(kDotted);
   //Signal reference sample #2
   DrawnSignalType->push_back(SmplViaWZ);
-  DrawnSignalFile->push_back(SmplViaWZ_5);
+  DrawnSignalFile->push_back(SmplViaWZ_8);//M_N2=200, M_N1=150
   DrawnSignalColor->push_back(kBlue);
   DrawnSignalStyle->push_back(kDashDotted); //kDashDotted, kDashed
 
@@ -340,6 +340,12 @@ Int_t BGTypeHistColors[nBGType] = {kAzure-3,kOrange-2};
 Int_t BGTypeFillColors[nBGType] = {kAzure-3,kOrange-2};
 Int_t BGStackOrder1[nBGType] = {WZ,ttbar};
 Int_t BGStackOrder2[nBGType] = {ttbar,WZ};
+// enum BGType{WZ,nBGType};
+// TString BGTypeNames[nBGType] = {"WZ"};
+// Int_t BGTypeHistColors[nBGType] = {kAzure-3};
+// Int_t BGTypeFillColors[nBGType] = {kAzure-3};
+// Int_t BGStackOrder1[nBGType] = {WZ};
+// Int_t BGStackOrder2[nBGType] = {WZ};
 // enum BGType{WZ,ZZ,ttW,ttZ,tPlusVs,Tribosons,Higgs,Zjets,Wjets,ttbar,OtherFake,nBGType};
 // TString BGTypeNames[nBGType] = {"WZ","ZZ","ttW","ttZ","tPlusVs","Tribosons","Higgs","Zjets","Wjets","ttbar","OtherFake"};
 // Int_t BGTypeHistColors[nBGType] = {kAzure-3,kAzure-4,kCyan-2,kCyan-1,kCyan,kMagenta,kBlack,kViolet-7,kViolet-9,kOrange-2,kGreen+2};
@@ -368,15 +374,15 @@ void SetBGType(void){
   BGFileNames[WZ]->push_back("187166"); BGIncludeFlag[WZ]->push_back("01100");
   BGFileNames[WZ]->push_back("187167"); BGIncludeFlag[WZ]->push_back("00011");
   BGFileNames[WZ]->push_back("187168"); BGIncludeFlag[WZ]->push_back("01111");
-  // BGFileNames[WZ]->push_back("187170"); BGIncludeFlag[WZ]->push_back("01000");
-  // BGFileNames[WZ]->push_back("187171"); BGIncludeFlag[WZ]->push_back("00010");
-  // BGFileNames[WZ]->push_back("187172"); BGIncludeFlag[WZ]->push_back("01110");
-  // BGFileNames[WZ]->push_back("187173"); BGIncludeFlag[WZ]->push_back("00100");
-  // BGFileNames[WZ]->push_back("187174"); BGIncludeFlag[WZ]->push_back("00001");
-  // BGFileNames[WZ]->push_back("187175"); BGIncludeFlag[WZ]->push_back("00111");
-  // BGFileNames[WZ]->push_back("187176"); BGIncludeFlag[WZ]->push_back("01100");
-  // BGFileNames[WZ]->push_back("187177"); BGIncludeFlag[WZ]->push_back("00011");
-  // BGFileNames[WZ]->push_back("187178"); BGIncludeFlag[WZ]->push_back("01111");
+  BGFileNames[WZ]->push_back("187170"); BGIncludeFlag[WZ]->push_back("01000");
+  BGFileNames[WZ]->push_back("187171"); BGIncludeFlag[WZ]->push_back("00010");
+  BGFileNames[WZ]->push_back("187172"); BGIncludeFlag[WZ]->push_back("01110");
+  BGFileNames[WZ]->push_back("187173"); BGIncludeFlag[WZ]->push_back("00100");
+  BGFileNames[WZ]->push_back("187174"); BGIncludeFlag[WZ]->push_back("00001");
+  BGFileNames[WZ]->push_back("187175"); BGIncludeFlag[WZ]->push_back("00111");
+  BGFileNames[WZ]->push_back("187176"); BGIncludeFlag[WZ]->push_back("01100");
+  BGFileNames[WZ]->push_back("187177"); BGIncludeFlag[WZ]->push_back("00011");
+  BGFileNames[WZ]->push_back("187178"); BGIncludeFlag[WZ]->push_back("01111");
 
   //ttbar
   BGFileNames[ttbar]->push_back("110401"); BGIncludeFlag[ttbar]->push_back("01111");//no all-had
@@ -439,6 +445,7 @@ Int_t mkPlots(TString SelecReg){
       TString dsid = BGFileNames[bgtype]->at(bgfile).Data();
       TString includeflag = BGIncludeFlag[bgtype]->at(bgfile).Data();
       //      TString filename = filepath_prefix+dsid+"_00/"+SelecReg+".AnaHists.root";
+      //      TString filename = getHistFileName((filepath_prefix+dsid+"_00_"+SelecReg+"/").Data());
       TString filename = getHistFileName((filepath_prefix+dsid+"_00/").Data());
       TFile *f_tmp = new TFile(filename.Data());
       vec_mcfiles->push_back(f_tmp);
@@ -453,6 +460,7 @@ Int_t mkPlots(TString SelecReg){
     for(UInt_t signalfile=0; signalfile<nsamples; signalfile++){
       TString dsid = SignalFileNames[signaltype]->at(signalfile).Data();
       //      TString filename = filepath_prefix+dsid+"."+SelecReg+".AnaHists.root";
+      //      TString filename = getHistFileName((filepath_prefix+dsid+"_00_"+SelecReg+"/").Data());
       TString filename = getHistFileName((filepath_prefix+dsid+"_00/").Data());
       TFile *f_tmp = new TFile(filename.Data());
       vec_signalfiles->push_back(f_tmp);
@@ -810,19 +818,19 @@ Int_t mkPlots(TString SelecReg){
     }
   }
 
-  //Plotting signal only distributions
-  for(Int_t fstype=0; fstype<nFSType; fstype++){
-    for(Int_t disttype=0; disttype<nDistType; disttype++){
-      for(Int_t signaltype=0; signaltype<nSignalType; signaltype++){
-        UInt_t nsamples = SignalFileNames[signaltype]->size();
-        for(UInt_t signalfile=0; signalfile<nsamples; signalfile++){
-          std::string option = (signaltype==0&&signalfile==0) ? "" : "same";
-          if(option=="") u->cdPad();
-          vec_dist_signal[fstype][signaltype][disttype]->at(signalfile)->Draw(option.c_str());
-        }
-      }
-    }
-  }
+  // //Plotting signal only distributions
+  // for(Int_t fstype=0; fstype<nFSType; fstype++){
+  //   for(Int_t disttype=0; disttype<nDistType; disttype++){
+  //     for(Int_t signaltype=0; signaltype<nSignalType; signaltype++){
+  //       UInt_t nsamples = SignalFileNames[signaltype]->size();
+  //       for(UInt_t signalfile=0; signalfile<nsamples; signalfile++){
+  //         std::string option = (signaltype==0&&signalfile==0) ? "" : "same";
+  //         if(option=="") u->cdPad();
+  //         vec_dist_signal[fstype][signaltype][disttype]->at(signalfile)->Draw(option.c_str());
+  //       }
+  //     }
+  //   }
+  // }
 
   //drawing legends again...
   u->SetPadNumXY(1,1);

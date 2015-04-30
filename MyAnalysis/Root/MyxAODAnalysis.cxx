@@ -15,42 +15,11 @@
 #include"SUSYTools/SUSYCrossSection.h"
 
 #include"MyAnalysis/EventSelector.h"
-
+#include"TStopwatch.h"
 //end adding
 
 // this is needed to distribute the algorithm to the workers
 ClassImp(MyxAODAnalysis)
-
-/////////////////////////////
-// Histogram bins
-/////////////////////////////
-// My binning choices
-double lep1PtBins[] = {0, 10, 20, 30, 50, 75, 100, 125, 150, 200, 300, 400, 500};
-uint nLep1PtBins = 12;
-double lep2PtBins[] = {0, 10, 20, 30, 40, 50, 60, 80, 100, 120, 150, 200};
-uint nLep2PtBins = 11;
-double lep3PtBins[] = {0, 10, 20, 30, 40, 50, 60, 80, 100, 120, 150};
-uint nLep3PtBins = 10;
-double massBins[] = {0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500};
-uint nMassBins = 22;
-double meffBins[] = {0, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400};
-uint nMeffBins = 20; 
-double mljjFineBins[] = {10, 30, 50, 70, 90, 110, 130, 150, 170, 200, 230, 260, 300, 340, 380, 420, 460, 500};
-uint nMljjFineBins = 17;
-double jetPtBins[] = {0, 20, 30, 40, 50, 65, 80, 100, 120, 140, 165, 190, 220, 250, 285, 320, 360, 400, 450, 500};
-uint nJetPtBins = 19;
-
-// New Mt binnings for the SRs
-double mtCoarseBins[] = {110, 150, 200, 300};
-uint nMtCoarseBins = 3;
-double mtLowBins[] = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110};
-uint nMtLowBins = 10;
-
-// dR bins
-double dRBins[] = {0, 0.1, 0.2, 0.3, 0.4, 0.6, 0.8, 1.0, 1.3, 1.6, 2.0, 2.5, 3., 3.5, 4., 5., 6.};
-uint nDRBins = 16;
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 MyxAODAnalysis :: MyxAODAnalysis ()
 {
@@ -132,7 +101,6 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
 
   //Added by minoru
   m_event = wk()->xaodEvent();
-  m_sysId = 0;
 
   //as a check, let's see the number of events in our xAOD
   MyInfo("initialize()", "Number of events = %lli. %lli events will be processed.", m_event->getEntries(), m_maxEvent); //print in long long int
@@ -188,7 +156,6 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
 
   CHECK(m_susyObjTool->setProperty("DataSource",datasource) ) ;
 
-  CHECK(m_susyObjTool->setProperty("IsDerived",true) ) ; //??? need to check
   CHECK(m_susyObjTool->setProperty("Is8TeV", false) ) ;
   
   CHECK(m_susyObjTool->setProperty("EleId","TightLLH") );
@@ -197,8 +164,9 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   // CHECK(m_susyObjTool->setProperty("EleIdBaseline","Medium") );
   CHECK(m_susyObjTool->setProperty("TauId","Tight") );
 
+  CHECK(m_susyObjTool->setProperty("IsDerived",false) ) ; //??? need to check
   // Set to true for DxAOD, false for primary xAOD
-  CHECK(m_susyObjTool->setProperty("DoJetAreaCalib",true) );
+  CHECK(m_susyObjTool->setProperty("DoJetAreaCalib",true) ); //somehow "false" craches the process.
   // Set to false if not doing JetAreaCalib
   CHECK(m_susyObjTool->setProperty("DoJetGSCCalib",true) );
   
@@ -252,40 +220,69 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
       }
     }
   }
-  MyDebug("initialize()", Form("========================================= Considered #systematics = %d", (int)m_sysList.size()) );
+  MyDebug("initialize()", Form("================ Considered #systematics = %d", (int)m_sysList.size()) );
 
-  for(int eve=0; eve<nEveSelec; eve++){
-    for(int syst=0; syst<nSyst; syst++){
-      n_initial[eve][syst] = 0;
-      n_pass_hotSpot[eve][syst] = 0;
-      n_pass_badJet[eve][syst] = 0;
-      n_pass_feb[eve][syst] = 0;
-      n_pass_badMu[eve][syst] = 0;
-      n_pass_cosmic[eve][syst] = 0;
-      n_pass_clean[eve][syst] = 0;
-      n_pass_nBLep[eve][syst] = 0;
-      n_pass_mllBase[eve][syst] = 0;
-      n_pass_nLep[eve][syst] = 0;
-      n_pass_nTau[eve][syst] = 0;
-      n_pass_ssEmul[eve][syst] = 0;
-      n_pass_trig[eve][syst] = 0;
-      n_pass_truth[eve][syst] = 0;
-      n_pass_sfos[eve][syst] = 0;
-      n_pass_lz[eve][syst] = 0;
-      n_pass_z[eve][syst] = 0;
-      n_pass_met[eve][syst] = 0;
-      n_pass_vbf[eve][syst] = 0;
-      n_pass_jet[eve][syst] = 0;
-      n_pass_mt[eve][syst] = 0;
-      n_pass_mljj[eve][syst] = 0;
-      n_pass_meff[eve][syst] = 0;
-      n_pass_lepPt[eve][syst] = 0;
-      n_pass_lepDR[eve][syst] = 0;
-      n_pass_other[eve][syst] = 0;
+  //Preparing event counter
+#define MAKE_COUNTER_VEC(val)                                           \
+  n_ ## val = new std::vector<std::vector<int> >();                     \
+  for(UInt_t eveSelec=0; eveSelec<m_vec_eveSelec->size(); eveSelec++){  \
+    std::vector<int> tmp_ ## val ; n_ ## val ->push_back(tmp_ ## val ); \
+    for(uint syst=0; syst<m_sysList.size(); syst++){                  \
+      n_ ## val ->at(eveSelec).push_back(0);                            \
+    }                                                                   \
+  }                                                                     \
+  
+  MAKE_COUNTER_VEC(initial     );
+  MAKE_COUNTER_VEC(pass_hotSpot);
+  MAKE_COUNTER_VEC(pass_badJet );
+  MAKE_COUNTER_VEC(pass_feb    );
+  MAKE_COUNTER_VEC(pass_badMu  );
+  MAKE_COUNTER_VEC(pass_cosmic );
+  MAKE_COUNTER_VEC(pass_clean  );
+  MAKE_COUNTER_VEC(pass_nBLep  );
+  MAKE_COUNTER_VEC(pass_mllBase);
+  MAKE_COUNTER_VEC(pass_nLep   );
+  MAKE_COUNTER_VEC(pass_nTau   );
+  MAKE_COUNTER_VEC(pass_ssEmul );
+  MAKE_COUNTER_VEC(pass_trig   );
+  MAKE_COUNTER_VEC(pass_truth  );
+  MAKE_COUNTER_VEC(pass_sfos   );
+  MAKE_COUNTER_VEC(pass_lz     );
+  MAKE_COUNTER_VEC(pass_z      );
+  MAKE_COUNTER_VEC(pass_met    );
+  MAKE_COUNTER_VEC(pass_vbf    );
+  MAKE_COUNTER_VEC(pass_jet    );
+  MAKE_COUNTER_VEC(pass_mt     );
+  MAKE_COUNTER_VEC(pass_mljj   );
+  MAKE_COUNTER_VEC(pass_meff   );
+  MAKE_COUNTER_VEC(pass_lepPt  );
+  MAKE_COUNTER_VEC(pass_lepDR  );
+  MAKE_COUNTER_VEC(pass_other  );
+ 
+#undef MAKE_COUNTER_VEC
+
+  //Preparing plotter and stopwatch for each event selection region and systematic variation
+  m_vec_plotter = new std::vector<std::vector<Plotter*> >();
+  m_vec_watch = new std::vector<std::vector<TStopwatch*> >();
+  for(UInt_t eveSelec=0; eveSelec<m_vec_eveSelec->size(); eveSelec++){
+    std::vector<Plotter*> tmp_vec_plotter;
+    m_vec_plotter->push_back(tmp_vec_plotter);
+    std::vector<TStopwatch*> tmp_vec_watch;
+    m_vec_watch->push_back(tmp_vec_watch);
+    size_t isys=0;
+    std::vector<CP::SystematicSet>::const_iterator sysListItr;
+    for(sysListItr = m_sysList.begin(); sysListItr != m_sysList.end(); ++sysListItr){
+      std::string eveSelecName = m_vec_eveSelec->at(eveSelec);
+      std::string systName     = sysListItr->name();
+      Plotter* tmp_plotter = new Plotter(eveSelecName.c_str(), systName.c_str(), m_debugMode);
+      m_vec_plotter->at(eveSelec).push_back(tmp_plotter);
+      m_vec_plotter->at(eveSelec).at(isys)->initialize(m_outputDir.c_str(),m_dsid,m_crossSection);
+      TStopwatch* tmp_watch = new TStopwatch();
+      m_vec_watch->at(eveSelec).push_back(tmp_watch);
+      if(m_noSyst) break; //break if NoSyst flag is true;
+      isys++;
     }
   }
-
-  BookHistograms(); //This has to be called after m_sysList has been set.
 
   //end adding
 
@@ -303,7 +300,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 
   //Added by minoru
   if(m_eventCounter==0) MyInfo("execute()", "Starting event by event processing.");
-  // print every 100 events, so we know where we are:
+  // print every 5000 events, so we know where we are:
   if(m_eventCounter%5000==0) MyAlways("execute()", Form("Event number = %lli", m_eventCounter));
   m_eventCounter++; //Incrementing here since event might be rejected by some quality checks below.
   if( m_maxEvent>=0 && 
@@ -344,7 +341,13 @@ EL::StatusCode MyxAODAnalysis :: execute ()
       MyError("execute()",Form("mcChannelNumber(%d) by EventInfo is different from the one in testRun arugument(%d).",mcChannelNumber,m_dsid));
     }
   }
-  h_nEve->Fill(0.,m_eventWeight);
+
+  //Filling event into h_nEve.
+  for(uint eve=0; eve<m_vec_eveSelec->size(); eve++){
+    for(uint syst=0; syst<m_sysList.size(); syst++){
+      if(m_noSyst==false || syst==0) m_vec_plotter->at(eve).at(syst)->FillNEvent(m_eventWeight);
+    }
+  }
 
   if(not PassPreSelection(eventInfo)) return EL::StatusCode::SUCCESS;
   MyInfo( "initialize()", "Preselection : Done.");
@@ -357,15 +360,15 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   /////////////////////////////////////////////////////////////////////////
   // Now loop over all the systematic variations and event selections
   /////////////////////////////////////////////////////////////////////////
-  size_t isys=0;
-  m_sysId = 0;
   std::vector<CP::SystematicSet>::const_iterator sysListItr;
   for(UInt_t eveSelec=0; eveSelec<m_vec_eveSelec->size(); eveSelec++){
     std::string eveSelecName = m_vec_eveSelec->at(eveSelec);
     //Systematic loop should be nested in the event selection loop.
     //This is due to the fact that we have to clear m_store after executing one set of systematic loop.
     ////////////////////////////
+    size_t isys=0;
     for(sysListItr = m_sysList.begin(); sysListItr != m_sysList.end(); ++sysListItr){
+      m_vec_watch->at(eveSelec).at(isys)->Start(kFALSE);
       MyInfo("execute()", ">>>> Working on variation: sys=%i, \"%s\"", (int)isys, (sysListItr->name()).c_str());
       // Tell the SUSYObjDef_xAOD which variation to apply
       if(m_susyObjTool->applySystematicVariation(*sysListItr) != CP::SystematicCode::Ok){
@@ -380,15 +383,15 @@ EL::StatusCode MyxAODAnalysis :: execute ()
       myEveSelec->setStore(&m_store);
       myEveSelec->selectObject();
       Bool_t passSelec = myEveSelec->selectEvent();
-      if(passSelec) FillHistograms(myEveSelec);
+      if(passSelec) m_vec_plotter->at(eveSelec).at(isys)->FillHistograms(myEveSelec,m_eventWeight);
       SetEventCounter(myEveSelec,eveSelec,isys);
       myEveSelec->finalize();
       delete myEveSelec;
 
       m_susyObjTool->resetSystematics();
+      m_vec_watch->at(eveSelec).at(isys)->Stop();
       if(m_noSyst) break; //break if NoSyst flag is true;
       ++isys;
-      m_sysId = isys;
     }
 
     
@@ -400,7 +403,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 
   }
     
-  if(m_debugMode<=MSG::DEBUG){
+  if(m_debugMode<=MSG::VERBOSE){
     std::cout<<"Hit enter to proceed to the next event."<<std::endl;
     getchar();
   }
@@ -451,6 +454,18 @@ EL::StatusCode MyxAODAnalysis :: finalize ()
     delete m_grl;
     m_grl = 0;
   }
+
+  for(uint eve=0; eve<m_vec_eveSelec->size(); eve++){
+    for(uint syst=0; syst<m_sysList.size(); syst++){
+      if(m_noSyst==false || syst==0){
+        m_vec_plotter->at(eve).at(syst)->finalize();
+        delete m_vec_plotter->at(eve).at(syst);
+        delete m_vec_watch->at(eve).at(syst);
+      }
+    }
+  }
+  delete m_vec_plotter;
+  delete m_vec_watch;
   //end adding
 
   return EL::StatusCode::SUCCESS;
@@ -526,230 +541,34 @@ bool MyxAODAnalysis::IsConsideredSyst(TString sysBasename){
   return retval;
 }
 
-bool MyxAODAnalysis::BookHistograms(){
-
-  if(m_sysList.size()!=nSyst){
-    MyError("BookHistograms()", "The number of considered systematics is not the expected value!! Exiting.");
-    exit(1);
-  }
-
-  std::vector<std::string> vec_chan; vec_chan.clear();
-  vec_chan.push_back("all");
-  vec_chan.push_back("eee");
-  vec_chan.push_back("eem");
-  vec_chan.push_back("emm");
-  vec_chan.push_back("mmm");
-
-  // Preprocessor convenience                                                                                 
-  // make a histogram by name (leave off the "h_") and binning
-#define NEWHIST(name, xLbl, nbin, min, max)                             \
-  h_ ## name[iCh][wSys] = new TH1F((chanName+"_"+#name).c_str(), #name ";" xLbl, nbin, min, max); \
-  wk()->addOutput(h_ ## name[iCh][wSys])
-#define NEWVARHIST(name, xLbl, nbin, bins)                              \
-  h_ ## name[iCh][wSys] = new TH1F((chanName+"_"+#name).c_str(), #name ";" xLbl, nbin, bins); \
-  wk()->addOutput(h_ ## name[iCh][wSys])
-  // shorthand way to set bin labels, since it is kind of gross                                               
-#define SETBINLABEL(name, bin, label)                         \
-  h_ ## name[iCh][wSys]->GetXaxis()->SetBinLabel(bin, label)
-  // Variable binning for lep1Pt
-#define PT1HIST(name, xLbl) NEWVARHIST(name, xLbl, nLep1PtBins, lep1PtBins)
-  // MY choice of binnings                                                                                    
-#define ETAHIST(name, xLbl) NEWHIST(name, xLbl, 10, -2.5, 2.5)
-#define PTHIST(name, xLbl) NEWHIST(name, xLbl, 25, 0., 500.)
-#define DRHIST(name, xLbl) NEWVARHIST(name, xLbl, nDRBins, dRBins)
-#define DPHIHIST(name, xLbl) NEWHIST(name, xLbl, 10, 0., 3.1416)
-#define MASSHIST(name, xLbl) NEWHIST(name, xLbl, 25, 0., 500.)
-#define ZMASSHIST(name, xLbl) NEWHIST(name, xLbl, 25, 1.2, 501.2) // shifted for Z window 
-
-  ///////////////////////////////////////////////////////////////
-  //Defining histograms
-  ///////////////////////////////////////////////////////////////
-
-  // Histogram to store the MC cross section
-  h_xsec = new TH1F("h_xsec","h_xsec;;MC cross-section[pb]",1,0.,1.);
-  h_nEve = new TH1F("h_nEve","h_nEve;;Events"              ,1,0.,1.);
-  wk()->addOutput(h_xsec);
-  wk()->addOutput(h_nEve);
-  h_xsec->SetBinContent(h_xsec->FindBin(0.),m_crossSection); //set cross-section
-
-  // lepton channel / systematics loop
-  for(uint wSys=0; wSys<nSyst; wSys++){
-    // Lepton channel histo, only defined for the 'all' channel
-    h_lepChan       [Ch_all][wSys] = new TH1F("all_lepChan"       ,
-                                              "all_lepChan;Unordered lepton channel;Events", nChan, 0, nChan);
-    wk()->addOutput(h_lepChan       [Ch_all][wSys]);
-    for(uint iCh=0; iCh<nChan; iCh++){
-      std::string chanName = vec_chan.at(iCh);
-      h_lepChan[Ch_all][wSys]->GetXaxis()->SetBinLabel(iCh+1, chanName.c_str());
-      // Single bin event count                                                                                   
-      NEWHIST( all, ";Events", 1, 0, 1 );
-      // lep pt - my choice of binning                                                                            
-      NEWVARHIST( lep1Pt, "Leading lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
-      NEWVARHIST( lep2Pt, "Second lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-      NEWVARHIST( lep3Pt, "Third lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
-      NEWVARHIST( el1Pt, "Leading lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
-      NEWVARHIST( el2Pt, "Second lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-      NEWVARHIST( el3Pt, "Third lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
-      NEWVARHIST( mu1Pt, "Leading lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
-      NEWVARHIST( mu2Pt, "Second lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-      NEWVARHIST( mu3Pt, "Third lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
-
-      ETAHIST( lep1Eta, "Leading lepton #eta;Events" );
-      ETAHIST( lep2Eta, "Second lepton #eta;Events" );
-      ETAHIST( lep3Eta, "Third lepton #eta;Events" );
-    }
-  }
-  //  h_jetPt = new TH1F("h_jetPt", "h_jetPt", 100, 0, 500); // jet pt [GeV]
-  //  wk()->addOutput(h_jetPt);
-
-#undef PT1HIST
-#undef ETAHIST
-#undef PTHIST
-#undef DRHIST
-#undef DPHIHIST
-#undef MASSHIST
-#undef ZMASSHIST
-#undef NEWHIST
-#undef NEWVARHIST
-#undef SETBINLABEL
-  
-  return true;
-}
-
-bool MyxAODAnalysis::FillHistograms(EventSelector *EveSelec){
-
-  MyDebug("FillHistograms()", "Filling histogram ...");
-
-  //Retrieving objects via EventSelector
-  std::vector< xAOD::Electron >* vec_signalElectron = EveSelec->GetSignalElectron();
-  // std::vector< xAOD::Electron >* vec_baseElectron   = EveSelec->GetBaseElectron  ();
-  std::vector< xAOD::Muon >*     vec_signalMuon     = EveSelec->GetSignalMuon    ();
-  // std::vector< xAOD::Muon >*     vec_baseMuon       = EveSelec->GetBaseMuon      ();
-  // std::vector< xAOD::Jet >*      vec_signalJet      = EveSelec->GetSignalJet     ();
-  // std::vector< xAOD::Jet >*      vec_baseJet        = EveSelec->GetBaseJet       ();
-  // std::vector< xAOD::Jet >*      vec_preJet         = EveSelec->GetPreJet        ();
-  //  TVector2                       met                = EveSelec->GetMEt           ();
-  
-  // std::cout<<"elSize="<<vec_signalElectron->size()<<", muSize="<<vec_signalMuon->size()<<std::endl;
-  // for(UInt_t el=0; el<vec_signalElectron->size(); el++){
-  //   std::cout<<"el="<<el<<", address ="<<&(vec_signalElectron->at(el))<<std::endl;
-  //   std::cout<<"pt ="<<vec_signalElectron->at(el).pt()<<std::endl;
-  //   std::cout<<"eta="<<vec_signalElectron->at(el).eta()<<std::endl;
-  //   std::cout<<"phi="<<vec_signalElectron->at(el).phi()<<std::endl;
-  //   const xAOD::TrackParticle* track = vec_signalElectron->at(el).trackParticle();
-  //   double el_d0 = track->d0();
-  //   std::cout<<"d0="<<el_d0<<std::endl;
-  // }
-  // for(UInt_t mu=0; mu<vec_signalMuon->size(); mu++){
-  //   std::cout<<"mu="<<mu<<", address ="<<&(vec_signalMuon->at(mu))<<std::endl;
-  //   std::cout<<"pt ="<<vec_signalMuon->at(mu).pt()<<std::endl;
-  //   std::cout<<"eta="<<vec_signalMuon->at(mu).eta()<<std::endl;
-  //   std::cout<<"phi="<<vec_signalMuon->at(mu).phi()<<std::endl;
-  //   const xAOD::TrackParticle* track = vec_signalMuon->at(mu).primaryTrackParticle();
-  //   double mu_d0 = track->d0();
-  //   std::cout<<"d0="<<mu_d0<<std::endl;
-  // }
-
-  Int_t chan = EveSelec->getChan();
-  //  std::cout<<"Analized channel : "<<chan<<std::endl;
-
-  //Prepare 1st-3rd leading lepton's four-vector
-  Int_t leadLepIndex[3];
-  Int_t leadLepFlavor[3];
-  TLorentzVector leadLep[3];
-  for(Int_t id=0; id<3; id++){
-    leadLepIndex [id] = EveSelec->getLeadLepIndex (id);
-    leadLepFlavor[id] = EveSelec->getLeadLepFlavor(id);
-    leadLep      [id] = EveSelec->getLeadLep      (id);
-  }
-
-  //===========================================================================
-  Double_t weight=m_eventWeight*EveSelec->getTotalSF();
-
-  // Preprocessor convenience
-  // All this does is append the corrent indices to the histo for sys and channel
-  // It also fills the all-channel histo 
-#define FillChanHist( h, val, weight )          \
-  do{                                           \
-    h[Ch_all][m_sysId]->Fill(val,weight);       \
-    h[chan][m_sysId]->Fill(val,weight);         \
-  } while(0)
-#define FillChanHist2D( h, xVal, yVal, weight )   \
-  do{                                             \
-    h[Ch_all][m_sysId]->Fill(xVal, yVal, weight); \
-    h[chan][m_sysId]->Fill(xVal, yVal, weight);   \
-  } while(0)
-#define FillElHist( index, h, val, weight )                           \
-  do{                                                                 \
-    if(leadLepFlavor[index]==0) h[Ch_all][m_sysId]->Fill(val,weight); \
-    if(leadLepFlavor[index]==0) h[chan][m_sysId]->Fill(val,weight);   \
-  } while(0)
-#define FillMuHist( index, h, val, weight )                           \
-  do{                                                                 \
-    if(leadLepFlavor[index]==1) h[Ch_all][m_sysId]->Fill(val,weight); \
-    if(leadLepFlavor[index]==1) h[chan][m_sysId]->Fill(val,weight);   \
-  } while(0)
-  //Fill lepChan histograms
-  h_lepChan       [Ch_all][m_sysId]->Fill(Ch_all,weight);
-  h_lepChan       [Ch_all][m_sysId]->Fill(chan,weight);
-
-  //Fill lepton Pt
-  FillChanHist( h_lep1Pt, leadLep[0].Pt()/1000., weight );
-  FillChanHist( h_lep2Pt, leadLep[1].Pt()/1000., weight );
-  FillChanHist( h_lep3Pt, leadLep[2].Pt()/1000., weight );
-  FillElHist( 0, h_el1Pt, vec_signalElectron->at(leadLepIndex[0]).pt()/1000., weight );
-  FillMuHist( 0, h_mu1Pt, vec_signalMuon    ->at(leadLepIndex[0]).pt()/1000., weight );
-  FillElHist( 1, h_el2Pt, vec_signalElectron->at(leadLepIndex[1]).pt()/1000., weight );
-  FillMuHist( 1, h_mu2Pt, vec_signalMuon    ->at(leadLepIndex[1]).pt()/1000., weight );
-  FillElHist( 2, h_el3Pt, vec_signalElectron->at(leadLepIndex[2]).pt()/1000., weight );
-  FillMuHist( 2, h_mu3Pt, vec_signalMuon    ->at(leadLepIndex[2]).pt()/1000., weight );
-
-  //Fill lepton Eta
-  FillChanHist( h_lep1Eta, leadLep[0].Eta(), weight );
-  FillChanHist( h_lep2Eta, leadLep[1].Eta(), weight );
-  FillChanHist( h_lep3Eta, leadLep[2].Eta(), weight );
-
-  // getchar();
-  // std::cout<<"MEt="<<met.Mod()<<", Phi="<<met.Phi()<<std::endl;
-  // std::cout<<"Px="<<met.Px()<<", Py="<<met.Py()<<std::endl;
-  // std::cout<<"End: event selection ..."<<std::endl;
-
-#undef FillChanHist
-#undef FillChanHist2D
-#undef FillElHist
-#undef FillMuHist
-
-  return true;
-}
-
 /*--------------------------------------------------------------------------------*/
 void MyxAODAnalysis::SetEventCounter(EventSelector *EveSelec, int eveSelec, int sys){
-  n_initial     [eveSelec][sys] += EveSelec->Get_initial     ();
-  n_pass_hotSpot[eveSelec][sys] += EveSelec->Get_pass_hotSpot();
-  n_pass_badJet [eveSelec][sys] += EveSelec->Get_pass_badJet ();
-  n_pass_feb    [eveSelec][sys] += EveSelec->Get_pass_feb    ();
-  n_pass_badMu  [eveSelec][sys] += EveSelec->Get_pass_badMu  ();
-  n_pass_cosmic [eveSelec][sys] += EveSelec->Get_pass_cosmic ();
-  n_pass_clean  [eveSelec][sys] += EveSelec->Get_pass_clean  ();
-  n_pass_nBLep  [eveSelec][sys] += EveSelec->Get_pass_nBLep  ();
-  n_pass_mllBase[eveSelec][sys] += EveSelec->Get_pass_mllBase();
-  n_pass_nLep   [eveSelec][sys] += EveSelec->Get_pass_nLep   ();
-  n_pass_nTau   [eveSelec][sys] += EveSelec->Get_pass_nTau   ();
-  n_pass_ssEmul [eveSelec][sys] += EveSelec->Get_pass_ssEmul ();
-  n_pass_trig   [eveSelec][sys] += EveSelec->Get_pass_trig   ();
-  n_pass_truth  [eveSelec][sys] += EveSelec->Get_pass_truth  ();
-  n_pass_sfos   [eveSelec][sys] += EveSelec->Get_pass_sfos   ();
-  n_pass_lz     [eveSelec][sys] += EveSelec->Get_pass_lz     ();
-  n_pass_z      [eveSelec][sys] += EveSelec->Get_pass_z      ();
-  n_pass_met    [eveSelec][sys] += EveSelec->Get_pass_met    ();
-  n_pass_vbf    [eveSelec][sys] += EveSelec->Get_pass_vbf    ();
-  n_pass_jet    [eveSelec][sys] += EveSelec->Get_pass_jet    ();
-  n_pass_mt     [eveSelec][sys] += EveSelec->Get_pass_mt     ();
-  n_pass_mljj   [eveSelec][sys] += EveSelec->Get_pass_mljj   ();
-  n_pass_meff   [eveSelec][sys] += EveSelec->Get_pass_meff   ();
-  n_pass_lepPt  [eveSelec][sys] += EveSelec->Get_pass_lepPt  ();
-  n_pass_lepDR  [eveSelec][sys] += EveSelec->Get_pass_lepDR  ();
-  n_pass_other  [eveSelec][sys] += EveSelec->Get_pass_other  ();
+  n_initial     ->at(eveSelec).at(sys) += EveSelec->Get_initial     ();
+  n_pass_hotSpot->at(eveSelec).at(sys) += EveSelec->Get_pass_hotSpot();
+  n_pass_badJet ->at(eveSelec).at(sys) += EveSelec->Get_pass_badJet ();
+  n_pass_feb    ->at(eveSelec).at(sys) += EveSelec->Get_pass_feb    ();
+  n_pass_badMu  ->at(eveSelec).at(sys) += EveSelec->Get_pass_badMu  ();
+  n_pass_cosmic ->at(eveSelec).at(sys) += EveSelec->Get_pass_cosmic ();
+  n_pass_clean  ->at(eveSelec).at(sys) += EveSelec->Get_pass_clean  ();
+  n_pass_nBLep  ->at(eveSelec).at(sys) += EveSelec->Get_pass_nBLep  ();
+  n_pass_mllBase->at(eveSelec).at(sys) += EveSelec->Get_pass_mllBase();
+  n_pass_nLep   ->at(eveSelec).at(sys) += EveSelec->Get_pass_nLep   ();
+  n_pass_nTau   ->at(eveSelec).at(sys) += EveSelec->Get_pass_nTau   ();
+  n_pass_ssEmul ->at(eveSelec).at(sys) += EveSelec->Get_pass_ssEmul ();
+  n_pass_trig   ->at(eveSelec).at(sys) += EveSelec->Get_pass_trig   ();
+  n_pass_truth  ->at(eveSelec).at(sys) += EveSelec->Get_pass_truth  ();
+  n_pass_sfos   ->at(eveSelec).at(sys) += EveSelec->Get_pass_sfos   ();
+  n_pass_lz     ->at(eveSelec).at(sys) += EveSelec->Get_pass_lz     ();
+  n_pass_z      ->at(eveSelec).at(sys) += EveSelec->Get_pass_z      ();
+  n_pass_met    ->at(eveSelec).at(sys) += EveSelec->Get_pass_met    ();
+  n_pass_vbf    ->at(eveSelec).at(sys) += EveSelec->Get_pass_vbf    ();
+  n_pass_jet    ->at(eveSelec).at(sys) += EveSelec->Get_pass_jet    ();
+  n_pass_mt     ->at(eveSelec).at(sys) += EveSelec->Get_pass_mt     ();
+  n_pass_mljj   ->at(eveSelec).at(sys) += EveSelec->Get_pass_mljj   ();
+  n_pass_meff   ->at(eveSelec).at(sys) += EveSelec->Get_pass_meff   ();
+  n_pass_lepPt  ->at(eveSelec).at(sys) += EveSelec->Get_pass_lepPt  ();
+  n_pass_lepDR  ->at(eveSelec).at(sys) += EveSelec->Get_pass_lepDR  ();
+  n_pass_other  ->at(eveSelec).at(sys) += EveSelec->Get_pass_other  ();
 
   return;
 }
@@ -760,35 +579,42 @@ void MyxAODAnalysis::SetEventCounter(EventSelector *EveSelec, int eveSelec, int 
 void MyxAODAnalysis::dumpEventCounters()
 {
   for(UInt_t eveSelec=0; eveSelec<m_vec_eveSelec->size(); eveSelec++){
-    std::string eveSelecName = m_vec_eveSelec->at(eveSelec);
-    std::cout << std::endl;
-    std::cout << "Event selection counters for " << eveSelecName.c_str() << std::endl;
+    size_t isys=0;
+    std::vector<CP::SystematicSet>::const_iterator sysListItr;
+    for(sysListItr = m_sysList.begin(); sysListItr != m_sysList.end(); ++sysListItr){
+      std::string eveSelecName = m_vec_eveSelec->at(eveSelec);
+      std::string systName     = sysListItr->name();
+      std::cout << std::endl;
+      std::cout << "Event selection counters for " << eveSelecName.c_str() << ", " << systName.c_str() << std::endl;
+      std::cout << "  initial:      " << n_initial      ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass hotSpot: " << n_pass_hotSpot ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass badJet:  " << n_pass_badJet  ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass FEB:     " << n_pass_feb     ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass badMu:   " << n_pass_badMu   ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass cosmic:  " << n_pass_cosmic  ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass clean:   " << n_pass_clean   ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass nBLep:   " << n_pass_nBLep   ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass mllBase: " << n_pass_mllBase ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass nLep:    " << n_pass_nLep    ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass nTau:    " << n_pass_nTau    ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass trig:    " << n_pass_trig    ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass truth:   " << n_pass_truth   ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass flavQ:   " << n_pass_sfos    ->at(eveSelec).at(isys)<< std::endl;
+      //std::cout << "  pass loose Z: " << n_pass_lz      ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass jet:     " << n_pass_jet     ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass vbf:     " << n_pass_vbf     ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass lepPt:   " << n_pass_lepPt   ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass z:       " << n_pass_z       ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass lep dR:  " << n_pass_lepDR   ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass met:     " << n_pass_met     ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass mt:      " << n_pass_mt      ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass meff:    " << n_pass_meff    ->at(eveSelec).at(isys)<< std::endl;
+      //std::cout << "  pass mljj:    " << n_pass_mljj    ->at(eveSelec).at(isys)<< std::endl;
+      //std::cout << "  pass other:   " << n_pass_other   ->at(eveSelec).at(isys)<< std::endl;
+      m_vec_watch->at(eveSelec).at(isys)->Print();
+      if(m_noSyst) break; //break if NoSyst flag is true;
+      isys++;
+    }
 
-    std::cout << "  initial:      " << n_initial      [eveSelec][0]<< std::endl;
-    std::cout << "  pass hotSpot: " << n_pass_hotSpot [eveSelec][0]<< std::endl;
-    std::cout << "  pass badJet:  " << n_pass_badJet  [eveSelec][0]<< std::endl;
-    std::cout << "  pass FEB:     " << n_pass_feb     [eveSelec][0]<< std::endl;
-    std::cout << "  pass badMu:   " << n_pass_badMu   [eveSelec][0]<< std::endl;
-    std::cout << "  pass cosmic:  " << n_pass_cosmic  [eveSelec][0]<< std::endl;
-    std::cout << "  pass clean:   " << n_pass_clean   [eveSelec][0]<< std::endl;
-    std::cout << "  pass nBLep:   " << n_pass_nBLep   [eveSelec][0]<< std::endl;
-    std::cout << "  pass mllBase: " << n_pass_mllBase [eveSelec][0]<< std::endl;
-    std::cout << "  pass nLep:    " << n_pass_nLep    [eveSelec][0]<< std::endl;
-    std::cout << "  pass nTau:    " << n_pass_nTau    [eveSelec][0]<< std::endl;
-    std::cout << "  pass trig:    " << n_pass_trig    [eveSelec][0]<< std::endl;
-    std::cout << "  pass truth:   " << n_pass_truth   [eveSelec][0]<< std::endl;
-    std::cout << "  pass flavQ:   " << n_pass_sfos    [eveSelec][0]<< std::endl;
-    //std::cout << "  pass loose Z: " << n_pass_lz      [eveSelec][0]<< std::endl;
-    std::cout << "  pass jet:     " << n_pass_jet     [eveSelec][0]<< std::endl;
-    std::cout << "  pass vbf:     " << n_pass_vbf     [eveSelec][0]<< std::endl;
-    std::cout << "  pass lepPt:   " << n_pass_lepPt   [eveSelec][0]<< std::endl;
-    std::cout << "  pass z:       " << n_pass_z       [eveSelec][0]<< std::endl;
-    std::cout << "  pass lep dR:  " << n_pass_lepDR   [eveSelec][0]<< std::endl;
-    std::cout << "  pass met:     " << n_pass_met     [eveSelec][0]<< std::endl;
-    std::cout << "  pass mt:      " << n_pass_mt      [eveSelec][0]<< std::endl;
-    std::cout << "  pass meff:    " << n_pass_meff    [eveSelec][0]<< std::endl;
-    //std::cout << "  pass mljj:    " << n_pass_mljj    [eveSelec][0]<< std::endl;
-    //std::cout << "  pass other:   " << n_pass_other   [eveSelec][0]<< std::endl;
   }
-
 }
