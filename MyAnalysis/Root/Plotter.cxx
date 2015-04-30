@@ -8,19 +8,29 @@
 #include<iostream>
 #include"MyAnalysis/Plotter.h"
 
+#include"TFile.h"
+
 /*--------------------------------------------------------------------------------*/
 // Plotter Constructor
 /*--------------------------------------------------------------------------------*/
 Plotter::Plotter(std::string sel, std::string sys, MSG::Level dbg) : 
-  m_dbg(dbg)
+  m_dbg(dbg),
+  m_sel(sel),
+  m_sys(sys)
 {}
 
 /*--------------------------------------------------------------------------------*/
 // Initialize the plotter
 /*--------------------------------------------------------------------------------*/
-void Plotter::initialize()
+void Plotter::initialize(const char* path, int dsid)
 {
   MyDebug("initialize()","Plotter::initialize()");
+
+  // Preparing TFile
+  m_filename = Form("%s/%d.%s.%s.AnaHists.root",path,dsid,m_sel.c_str(),m_sys.c_str());
+  m_rootfile = new TFile(m_filename.c_str(),"RECREATE");
+  MyInfo("initialize()",Form("Output TFile for \"%s\", \"%s\" was created at %s.",
+                             m_sel.c_str(), m_sys.c_str(), m_filename.c_str()) );
 
   // Booking histograms
   BookHistograms();
@@ -34,8 +44,9 @@ void Plotter::finalize()
 {
   MyDebug("finalize()","Plotter::finalize()");
 
+  m_rootfile->Close();
+  delete m_rootfile;
 }
-
 /*--------------------------------------------------------------------------------*/
 bool Plotter::BookHistograms()
 {
@@ -43,7 +54,6 @@ bool Plotter::BookHistograms()
 
   return true;
 }
-
 /*--------------------------------------------------------------------------------*/
 bool Plotter::FillHistograms(EventSelector *EveSelec)
 {

@@ -294,6 +294,8 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
       std::string eveSelecName = m_vec_eveSelec->at(eve);
       std::string systName     = sysListItr->name();
       m_plotter[eve][syst] = new Plotter(eveSelecName.c_str(), systName.c_str(), m_debugMode);
+      m_plotter[eve][syst]->initialize(m_outputDir.c_str(),m_dsid);
+      if(m_noSyst) break; //break if NoSyst flag is true;
       syst++;
     }
   }
@@ -467,7 +469,10 @@ EL::StatusCode MyxAODAnalysis :: finalize ()
 
   for(int eve=0; eve<nEveSelec; eve++){
     for(int syst=0; syst<nSyst; syst++){
-      delete m_plotter[eve][syst];
+      if(m_noSyst==false || syst==0){
+        m_plotter[eve][syst]->finalize();
+        delete m_plotter[eve][syst];
+      }
     }
   }
   //end adding

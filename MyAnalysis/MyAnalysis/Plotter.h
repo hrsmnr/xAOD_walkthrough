@@ -9,13 +9,15 @@
 
 #include"MyAnalysis/EventSelector.h"
 
+class TFile;
+
 class Plotter : public TObject
 {
  public:
   Plotter(std::string sel="none", std::string sys="none", MSG::Level dbg=MSG::ERROR);
   virtual ~Plotter(){};
 
-  virtual void initialize();
+  virtual void initialize(const char* path, int dsid);
   virtual void finalize();
 
   bool FillHistograms(EventSelector *EveSelec);
@@ -24,6 +26,10 @@ class Plotter : public TObject
 
  protected:
   MSG::Level m_dbg; // debug level
+  std::string m_sel;
+  std::string m_sys;
+  std::string m_filename;
+  TFile *m_rootfile;
 
   bool BookHistograms();
 
