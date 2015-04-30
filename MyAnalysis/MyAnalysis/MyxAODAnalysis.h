@@ -77,6 +77,9 @@ public:
   GoodRunsListSelectionTool *m_grl; //!
 #endif // not __CINT__
 
+  std::vector<std::vector<Plotter*> > *m_vec_plotter; //!
+  std::vector<std::vector<TStopwatch*> > *m_vec_watch; //!
+
   bool IsConsideredSyst(TString sysBasename);
   void SetEventCounter(EventSelector *EveSelec, int eveSelec, int sys);
   bool PassPreSelection(const xAOD::EventInfo* eventInfo);
