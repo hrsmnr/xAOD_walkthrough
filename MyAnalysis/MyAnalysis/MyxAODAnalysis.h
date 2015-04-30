@@ -14,13 +14,10 @@
 #include "PATInterfaces/SystematicRegistry.h"
 #include "PATInterfaces/SystematicCode.h"
 
+#include"MyAnalysis/Plotter.h"
+
 #include<string>
 #include<vector>
-#include"TH1F.h"
-
-#define nSyst 23
-#define nEveSelec 1
-#define nChan 5
 
 namespace ST{
   class SUSYObjDef_xAOD;
@@ -37,6 +34,7 @@ namespace CP{
 }
 class GoodRunsListSelectionTool;
 class EventSelector;
+class TStopwatch;
 //end adding
 
 class MyxAODAnalysis : public EL::Algorithm
@@ -44,15 +42,11 @@ class MyxAODAnalysis : public EL::Algorithm
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  // float cutValue;
-  Int_t m_sysId;
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the //!)
 public:
-  // Tree *myTree; //!
-  // TH1 *myHist; //!
 
   //Added by minoru
   //Variables which are initialized in initialize();
@@ -75,6 +69,7 @@ public:
   int m_dsid;
   long long int m_nSkipNum;
   std::vector<std::string> *m_vec_eveSelec;
+  std::string m_outputDir;
 
 #ifndef __CINT__
   ST::SUSYObjDef_xAOD *m_susyObjTool; //!
@@ -82,27 +77,11 @@ public:
   GoodRunsListSelectionTool *m_grl; //!
 #endif // not __CINT__
 
-  TH1F *h_xsec; //!
-  TH1F *h_nEve; //!
-  TH1F *h_lepChan[nChan][nSyst]; //!
-  TH1F *h_all[nChan][nSyst]; //!
-  TH1F *h_lep1Pt[nChan][nSyst]; //!
-  TH1F *h_lep2Pt[nChan][nSyst]; //!
-  TH1F *h_lep3Pt[nChan][nSyst]; //!
-  TH1F *h_el1Pt[nChan][nSyst]; //!
-  TH1F *h_el2Pt[nChan][nSyst]; //!
-  TH1F *h_el3Pt[nChan][nSyst]; //!
-  TH1F *h_mu1Pt[nChan][nSyst]; //!
-  TH1F *h_mu2Pt[nChan][nSyst]; //!
-  TH1F *h_mu3Pt[nChan][nSyst]; //!
-  TH1F *h_lep1Eta[nChan][nSyst]; //!
-  TH1F *h_lep2Eta[nChan][nSyst]; //!
-  TH1F *h_lep3Eta[nChan][nSyst]; //!
+  std::vector<std::vector<Plotter*> > *m_vec_plotter; //!
+  std::vector<std::vector<TStopwatch*> > *m_vec_watch; //!
 
   bool IsConsideredSyst(TString sysBasename);
-  bool BookHistograms();
   void SetEventCounter(EventSelector *EveSelec, int eveSelec, int sys);
-  bool FillHistograms(EventSelector *EveSelec);
   bool PassPreSelection(const xAOD::EventInfo* eventInfo);
   void dumpEventCounters();
 
@@ -110,9 +89,39 @@ public:
   void SetDebugMode(MSG::Level debugMode=MSG::ERROR){m_debugMode = debugMode;};
   void SetMaxEvent(long long int maxEvent=-1){m_maxEvent = maxEvent;};
   void SetNoSyst(bool nosyst=true){m_noSyst = nosyst;};
-  void SetDSID(long long int dsid){m_dsid = dsid;};
+  void SetDSID(int dsid){m_dsid = dsid;};
   void SetSkipNum(long long int nskip){m_nSkipNum = nskip;};
   void SetSelectionRegion(const char* selec){m_vec_eveSelec->push_back(selec);};
+  void SetOutputDir(const char* path){m_outputDir = path;};
+
+  // Event counters
+  // First index is for selection regions and second for systematic variation.
+  std::vector<std::vector<int> > *n_initial; //!
+  std::vector<std::vector<int> > *n_pass_hotSpot; //!
+  std::vector<std::vector<int> > *n_pass_badJet; //!
+  std::vector<std::vector<int> > *n_pass_feb; //!
+  std::vector<std::vector<int> > *n_pass_badMu; //!
+  std::vector<std::vector<int> > *n_pass_cosmic; //!
+  std::vector<std::vector<int> > *n_pass_clean; //!
+  std::vector<std::vector<int> > *n_pass_nBLep; //!
+  std::vector<std::vector<int> > *n_pass_mllBase; //!
+  std::vector<std::vector<int> > *n_pass_nLep; //!
+  std::vector<std::vector<int> > *n_pass_nTau; //!
+  std::vector<std::vector<int> > *n_pass_ssEmul; //!
+  std::vector<std::vector<int> > *n_pass_trig; //!
+  std::vector<std::vector<int> > *n_pass_truth; //!
+  std::vector<std::vector<int> > *n_pass_sfos; //!
+  std::vector<std::vector<int> > *n_pass_lz; //!
+  std::vector<std::vector<int> > *n_pass_z; //!
+  std::vector<std::vector<int> > *n_pass_met; //!
+  std::vector<std::vector<int> > *n_pass_vbf; //!
+  std::vector<std::vector<int> > *n_pass_jet; //!
+  std::vector<std::vector<int> > *n_pass_mt; //!
+  std::vector<std::vector<int> > *n_pass_mljj; //!
+  std::vector<std::vector<int> > *n_pass_meff; //!
+  std::vector<std::vector<int> > *n_pass_lepPt; //!
+  std::vector<std::vector<int> > *n_pass_lepDR; //!
+  std::vector<std::vector<int> > *n_pass_other; //!
 
   //end adding
 
@@ -129,34 +138,6 @@ public:
   virtual EL::StatusCode postExecute ();
   virtual EL::StatusCode finalize ();
   virtual EL::StatusCode histFinalize ();
-
-  // Event counters
-  int n_initial[nEveSelec][nSyst];
-  int n_pass_hotSpot[nEveSelec][nSyst];
-  int n_pass_badJet[nEveSelec][nSyst];
-  int n_pass_feb[nEveSelec][nSyst];
-  int n_pass_badMu[nEveSelec][nSyst];
-  int n_pass_cosmic[nEveSelec][nSyst];
-  int n_pass_clean[nEveSelec][nSyst];
-  int n_pass_nBLep[nEveSelec][nSyst];
-  int n_pass_mllBase[nEveSelec][nSyst];
-  int n_pass_nLep[nEveSelec][nSyst];
-  int n_pass_nTau[nEveSelec][nSyst];
-  int n_pass_ssEmul[nEveSelec][nSyst];
-  int n_pass_trig[nEveSelec][nSyst];
-  int n_pass_truth[nEveSelec][nSyst];
-  int n_pass_sfos[nEveSelec][nSyst];
-  int n_pass_lz[nEveSelec][nSyst];
-  int n_pass_z[nEveSelec][nSyst];
-  int n_pass_met[nEveSelec][nSyst];
-  int n_pass_vbf[nEveSelec][nSyst];
-  int n_pass_jet[nEveSelec][nSyst];
-  int n_pass_mt[nEveSelec][nSyst];
-  int n_pass_mljj[nEveSelec][nSyst];
-  int n_pass_meff[nEveSelec][nSyst];
-  int n_pass_lepPt[nEveSelec][nSyst];
-  int n_pass_lepDR[nEveSelec][nSyst];
-  int n_pass_other[nEveSelec][nSyst];
 
   // this is needed to distribute the algorithm to the workers
   ClassDef(MyxAODAnalysis, 1);

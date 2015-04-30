@@ -735,53 +735,45 @@ bool EventSelector::selectObject()
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::selectEvent()
 {
+#define PRINT_STEP(val) n_ ## val++; MyDebug("selectEvent()","n_"#val"++;");
   if(m_objReady==false){
     MyError("selectEvents()","EventSelector::selectEvent() was called before selectObject().");
     exit(1);
   }
-  n_initial++;
+  PRINT_STEP(initial);
   //   if(!passHfor()) return false;
   //   if(!passPeriod()) return false;
   //   // Event cleaning
   //   if(!passEventCleaning(preMuons, baseMuons, preJets, baseJets, met)) return false;
-  n_pass_clean++;
-  MyDebug("selectEvent()","n_pass_clean++;");
+  PRINT_STEP(pass_clean);
   if(!passNBaseLepCut()) return false;
-  n_pass_nBLep++;
-  MyDebug("selectEvent()","n_pass_nBLep++;");
+  PRINT_STEP(pass_nBLep);
   if(!passMllBaseCut()) return false;
-  n_pass_mllBase++;
-  MyDebug("selectEvent()","n_pass_mllBase++;");
+  PRINT_STEP(pass_mllBase);
   if(!passNLepCut()) return false;
-  n_pass_nLep++;
-  MyDebug("selectEvent()","n_pass_nLep++;");
+  PRINT_STEP(pass_nLep);
   //   if(!passNTauCut(signalTaus, tightTaus)) return false;
-  n_pass_nTau++;
+  PRINT_STEP(pass_nTau);
 
   //   // Optionally treat base leptons as signal leptons 
   //   const LeptonVector& mySigLeptons = m_useBaseLeps? baseLeps : signalLeptons;
 
   //   if(!passTrigger(mySigLeptons, signalTaus, met)) return false;
-  n_pass_trig++;
+  PRINT_STEP(pass_trig);
   if(!passLepTruthCut()) return false;
-  n_pass_truth++;
-  MyDebug("selectEvent()","n_pass_truth++;");
+  PRINT_STEP(pass_truth);
   if(!passFlavChargeCut()) return false;
-  n_pass_sfos++;
-  MyDebug("selectEvent()","n_pass_sfos++;");
+  PRINT_STEP(pass_sfos);
   //if(!passLooseZCut(mySigLeptons)) return false; // not used
   //n_pass_lz++;
   if(!passNJetCut()) return false;
-  n_pass_jet++;
-  MyDebug("selectEvent()","n_pass_jet++;");
+  PRINT_STEP(pass_jet);
 
   if(!passVbfCut()) return false;
-  n_pass_vbf++;
-  MyDebug("selectEvent()","n_pass_vbf++;");
+  PRINT_STEP(pass_vbf);
 
   if(!passLepTauPtCuts()) return false;
-  n_pass_lepPt++;
-  MyDebug("selectEvent()","n_pass_lepPt++;");
+  PRINT_STEP(pass_lepPt);
 
   if(!passUpsilonCut()) return false;
   if(!passZCut()) return false;
@@ -792,32 +784,29 @@ bool EventSelector::selectEvent()
   if(!passMlllCut()) return false;
   //   if(!passMltCut(mySigLeptons, signalTaus)) return false;
   //   if(!passMttCut(signalTaus)) return false;
-  n_pass_z++;
-  MyDebug("selectEvent()","n_pass_z++;");
+  PRINT_STEP(pass_z);
 
   if(!passLepDEtaCut()) return false;
   if(!passMinDPhiOSCut()) return false;
-  n_pass_lepDR++;
-  MyDebug("selectEvent()","n_pass_lepDR++;");
+  PRINT_STEP(pass_lepDR);
 
   if(!passMetCut()) return false;
   if(!passMetRelCut()) return false;
-  n_pass_met++;
-  MyDebug("selectEvent()","n_pass_met++;");
+  PRINT_STEP(pass_met);
 
   if(!passMtCut()) return false;
   if(!passMaxMT2Cut()) return false;
-  n_pass_mt++;
-  MyDebug("selectEvent()","n_pass_mt++;");
+  PRINT_STEP(pass_mt);
 
   if(!passMeffCut()) return false;
-  n_pass_meff++;
-  MyDebug("selectEvent()","n_pass_meff++;");
+  PRINT_STEP(pass_meff);
 
   //if(!passMljjCut(mySigLeptons, signalJets)) return false;
-  //n_pass_mljj++;
+  // PRINT_STEP(pass_mljj);
   //if(!passMtllCut(mySigLeptons, met)) return false;
-  //n_pass_other++;
+  // PRINT_STEP(pass_other);
+
+#undef PRINT_STEP
 
   return true;
 }
