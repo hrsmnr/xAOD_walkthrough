@@ -1,5 +1,6 @@
 #include <MyAnalysis/MyxAODAnalysis.h>
 #include <MyAnalysis/EventSelector.h>
+#include <MyAnalysis/Plotter.h>
 
 #ifdef __CINT__
 
@@ -13,4 +14,5 @@
 #ifdef __CINT__
 #pragma link C++ class MyxAODAnalysis+;
 #pragma link C++ class EventSelector+;
+#pragma link C++ class Plotter+;
 #endif

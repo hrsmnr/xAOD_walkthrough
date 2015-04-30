@@ -37,6 +37,7 @@ namespace CP{
 }
 class GoodRunsListSelectionTool;
 class EventSelector;
+class Plotter;
 //end adding
 
 class MyxAODAnalysis : public EL::Algorithm
@@ -81,6 +82,8 @@ public:
   SUSY::CrossSectionDB *m_XSDB; //!
   GoodRunsListSelectionTool *m_grl; //!
 #endif // not __CINT__
+
+  Plotter *m_plotter[nChan][nSyst]; //!
 
   TH1F *h_xsec; //!
   TH1F *h_nEve; //!

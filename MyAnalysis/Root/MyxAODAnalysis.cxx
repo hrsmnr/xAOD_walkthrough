@@ -15,6 +15,7 @@
 #include"SUSYTools/SUSYCrossSection.h"
 
 #include"MyAnalysis/EventSelector.h"
+#include"MyAnalysis/Plotter.h"
 
 //end adding
 
@@ -285,6 +286,18 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
     }
   }
 
+  //Preparing plotter for each event selection region and systematic variation
+  for(int eve=0; eve<nEveSelec; eve++){
+    std::vector<CP::SystematicSet>::const_iterator sysListItr;
+    Int_t syst = 0;
+    for(sysListItr = m_sysList.begin(); sysListItr != m_sysList.end(); ++sysListItr){
+      std::string eveSelecName = m_vec_eveSelec->at(eve);
+      std::string systName     = sysListItr->name();
+      m_plotter[eve][syst] = new Plotter(eveSelecName.c_str(), systName.c_str(), m_debugMode);
+      syst++;
+    }
+  }
+
   BookHistograms(); //This has to be called after m_sysList has been set.
 
   //end adding
@@ -450,6 +463,12 @@ EL::StatusCode MyxAODAnalysis :: finalize ()
   if(m_grl){
     delete m_grl;
     m_grl = 0;
+  }
+
+  for(int eve=0; eve<nEveSelec; eve++){
+    for(int syst=0; syst<nSyst; syst++){
+      delete m_plotter[eve][syst];
+    }
   }
   //end adding
 
