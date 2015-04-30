@@ -10,6 +10,9 @@
 #include"MyAnalysis/EventSelector.h"
 
 class TFile;
+class TH1F;
+
+#define nChan 5
 
 class Plotter : public TObject
 {
@@ -17,10 +20,11 @@ class Plotter : public TObject
   Plotter(std::string sel="none", std::string sys="none", MSG::Level dbg=MSG::ERROR);
   virtual ~Plotter(){};
 
-  virtual void initialize(const char* path, int dsid);
+  virtual void initialize(const char* path, int dsid, double XS=0.);
   virtual void finalize();
 
-  bool FillHistograms(EventSelector *EveSelec);
+  bool FillHistograms(EventSelector *EveSelec, double weight);
+  bool FillNEvent(double weight);
 
   ClassDef(Plotter, 1);
 
@@ -29,9 +33,27 @@ class Plotter : public TObject
   std::string m_sel;
   std::string m_sys;
   std::string m_filename;
+  double m_crossSection;
   TFile *m_rootfile;
 
   bool BookHistograms();
+
+  // Declaration of histograms
+  TH1F *h_xsec;
+  TH1F *h_nEve;
+  TH1F *h_lepChan[nChan];
+  TH1F *h_lep1Pt[nChan];
+  TH1F *h_lep2Pt[nChan];
+  TH1F *h_lep3Pt[nChan];
+  TH1F *h_el1Pt[nChan];
+  TH1F *h_el2Pt[nChan];
+  TH1F *h_el3Pt[nChan];
+  TH1F *h_mu1Pt[nChan];
+  TH1F *h_mu2Pt[nChan];
+  TH1F *h_mu3Pt[nChan];
+  TH1F *h_lep1Eta[nChan];
+  TH1F *h_lep2Eta[nChan];
+  TH1F *h_lep3Eta[nChan];
 
 };
 #endif
