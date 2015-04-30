@@ -15,7 +15,7 @@
 #include"SUSYTools/SUSYCrossSection.h"
 
 #include"MyAnalysis/EventSelector.h"
-
+#include"TStopwatch.h"
 //end adding
 
 // this is needed to distribute the algorithm to the workers
@@ -220,18 +220,15 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
       }
     }
   }
-  MyDebug("initialize()", Form("========================================= Considered #systematics = %d", (int)m_sysList.size()) );
+  MyDebug("initialize()", Form("================ Considered #systematics = %d", (int)m_sysList.size()) );
 
   //Preparing event counter
 #define MAKE_COUNTER_VEC(val)                                           \
   n_ ## val = new std::vector<std::vector<int> >();                     \
   for(UInt_t eveSelec=0; eveSelec<m_vec_eveSelec->size(); eveSelec++){  \
     std::vector<int> tmp_ ## val ; n_ ## val ->push_back(tmp_ ## val ); \
-    size_t isys=0;                                                      \
-    std::vector<CP::SystematicSet>::const_iterator sysListItr;          \
-    for(sysListItr = m_sysList.begin(); sysListItr != m_sysList.end(); ++sysListItr){ \
+    for(uint syst=0; syst<m_sysList.size(); syst++){                  \
       n_ ## val ->at(eveSelec).push_back(0);                            \
-      isys++;                                                           \
     }                                                                   \
   }                                                                     \
   
@@ -265,14 +262,23 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
 #undef MAKE_COUNTER_VEC
 
   //Preparing plotter for each event selection region and systematic variation
+  m_vec_plotter = new std::vector<std::vector<Plotter*> >();
+  m_vec_watch = new std::vector<std::vector<TStopwatch*> >();
   for(UInt_t eveSelec=0; eveSelec<m_vec_eveSelec->size(); eveSelec++){
+    std::vector<Plotter*> tmp_vec_plotter;
+    m_vec_plotter->push_back(tmp_vec_plotter);
+    std::vector<TStopwatch*> tmp_vec_watch;
+    m_vec_watch->push_back(tmp_vec_watch);
     size_t isys=0;
     std::vector<CP::SystematicSet>::const_iterator sysListItr;
     for(sysListItr = m_sysList.begin(); sysListItr != m_sysList.end(); ++sysListItr){
       std::string eveSelecName = m_vec_eveSelec->at(eveSelec);
       std::string systName     = sysListItr->name();
-      m_plotter[eveSelec][isys] = new Plotter(eveSelecName.c_str(), systName.c_str(), m_debugMode);
-      m_plotter[eveSelec][isys]->initialize(m_outputDir.c_str(),m_dsid,m_crossSection);
+      Plotter* tmp_plotter = new Plotter(eveSelecName.c_str(), systName.c_str(), m_debugMode);
+      m_vec_plotter->at(eveSelec).push_back(tmp_plotter);
+      m_vec_plotter->at(eveSelec).at(isys)->initialize(m_outputDir.c_str(),m_dsid,m_crossSection);
+      TStopwatch* tmp_watch = new TStopwatch();
+      m_vec_watch->at(eveSelec).push_back(tmp_watch);
       if(m_noSyst) break; //break if NoSyst flag is true;
       isys++;
     }
@@ -294,7 +300,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 
   //Added by minoru
   if(m_eventCounter==0) MyInfo("execute()", "Starting event by event processing.");
-  // print every 100 events, so we know where we are:
+  // print every 5000 events, so we know where we are:
   if(m_eventCounter%5000==0) MyAlways("execute()", Form("Event number = %lli", m_eventCounter));
   m_eventCounter++; //Incrementing here since event might be rejected by some quality checks below.
   if( m_maxEvent>=0 && 
@@ -339,7 +345,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   //Filling event into h_nEve.
   for(uint eve=0; eve<m_vec_eveSelec->size(); eve++){
     for(uint syst=0; syst<m_sysList.size(); syst++){
-      if(m_noSyst==false || syst==0) m_plotter[eve][syst]->FillNEvent(m_eventWeight);
+      if(m_noSyst==false || syst==0) m_vec_plotter->at(eve).at(syst)->FillNEvent(m_eventWeight);
     }
   }
 
@@ -354,14 +360,15 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   /////////////////////////////////////////////////////////////////////////
   // Now loop over all the systematic variations and event selections
   /////////////////////////////////////////////////////////////////////////
-  size_t isys=0;
   std::vector<CP::SystematicSet>::const_iterator sysListItr;
   for(UInt_t eveSelec=0; eveSelec<m_vec_eveSelec->size(); eveSelec++){
     std::string eveSelecName = m_vec_eveSelec->at(eveSelec);
     //Systematic loop should be nested in the event selection loop.
     //This is due to the fact that we have to clear m_store after executing one set of systematic loop.
     ////////////////////////////
+    size_t isys=0;
     for(sysListItr = m_sysList.begin(); sysListItr != m_sysList.end(); ++sysListItr){
+      m_vec_watch->at(eveSelec).at(isys)->Start(kFALSE);
       MyInfo("execute()", ">>>> Working on variation: sys=%i, \"%s\"", (int)isys, (sysListItr->name()).c_str());
       // Tell the SUSYObjDef_xAOD which variation to apply
       if(m_susyObjTool->applySystematicVariation(*sysListItr) != CP::SystematicCode::Ok){
@@ -376,12 +383,13 @@ EL::StatusCode MyxAODAnalysis :: execute ()
       myEveSelec->setStore(&m_store);
       myEveSelec->selectObject();
       Bool_t passSelec = myEveSelec->selectEvent();
-      if(passSelec) m_plotter[eveSelec][isys]->FillHistograms(myEveSelec,m_eventWeight);
+      if(passSelec) m_vec_plotter->at(eveSelec).at(isys)->FillHistograms(myEveSelec,m_eventWeight);
       SetEventCounter(myEveSelec,eveSelec,isys);
       myEveSelec->finalize();
       delete myEveSelec;
 
       m_susyObjTool->resetSystematics();
+      m_vec_watch->at(eveSelec).at(isys)->Stop();
       if(m_noSyst) break; //break if NoSyst flag is true;
       ++isys;
     }
@@ -450,11 +458,14 @@ EL::StatusCode MyxAODAnalysis :: finalize ()
   for(uint eve=0; eve<m_vec_eveSelec->size(); eve++){
     for(uint syst=0; syst<m_sysList.size(); syst++){
       if(m_noSyst==false || syst==0){
-        m_plotter[eve][syst]->finalize();
-        delete m_plotter[eve][syst];
+        m_vec_plotter->at(eve).at(syst)->finalize();
+        delete m_vec_plotter->at(eve).at(syst);
+        delete m_vec_watch->at(eve).at(syst);
       }
     }
   }
+  delete m_vec_plotter;
+  delete m_vec_watch;
   //end adding
 
   return EL::StatusCode::SUCCESS;
@@ -568,35 +579,42 @@ void MyxAODAnalysis::SetEventCounter(EventSelector *EveSelec, int eveSelec, int 
 void MyxAODAnalysis::dumpEventCounters()
 {
   for(UInt_t eveSelec=0; eveSelec<m_vec_eveSelec->size(); eveSelec++){
-    std::string eveSelecName = m_vec_eveSelec->at(eveSelec);
-    std::cout << std::endl;
-    std::cout << "Event selection counters for " << eveSelecName.c_str() << std::endl;
+    size_t isys=0;
+    std::vector<CP::SystematicSet>::const_iterator sysListItr;
+    for(sysListItr = m_sysList.begin(); sysListItr != m_sysList.end(); ++sysListItr){
+      std::string eveSelecName = m_vec_eveSelec->at(eveSelec);
+      std::string systName     = sysListItr->name();
+      std::cout << std::endl;
+      std::cout << "Event selection counters for " << eveSelecName.c_str() << ", " << systName.c_str() << std::endl;
+      std::cout << "  initial:      " << n_initial      ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass hotSpot: " << n_pass_hotSpot ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass badJet:  " << n_pass_badJet  ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass FEB:     " << n_pass_feb     ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass badMu:   " << n_pass_badMu   ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass cosmic:  " << n_pass_cosmic  ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass clean:   " << n_pass_clean   ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass nBLep:   " << n_pass_nBLep   ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass mllBase: " << n_pass_mllBase ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass nLep:    " << n_pass_nLep    ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass nTau:    " << n_pass_nTau    ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass trig:    " << n_pass_trig    ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass truth:   " << n_pass_truth   ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass flavQ:   " << n_pass_sfos    ->at(eveSelec).at(isys)<< std::endl;
+      //std::cout << "  pass loose Z: " << n_pass_lz      ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass jet:     " << n_pass_jet     ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass vbf:     " << n_pass_vbf     ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass lepPt:   " << n_pass_lepPt   ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass z:       " << n_pass_z       ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass lep dR:  " << n_pass_lepDR   ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass met:     " << n_pass_met     ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass mt:      " << n_pass_mt      ->at(eveSelec).at(isys)<< std::endl;
+      std::cout << "  pass meff:    " << n_pass_meff    ->at(eveSelec).at(isys)<< std::endl;
+      //std::cout << "  pass mljj:    " << n_pass_mljj    ->at(eveSelec).at(isys)<< std::endl;
+      //std::cout << "  pass other:   " << n_pass_other   ->at(eveSelec).at(isys)<< std::endl;
+      m_vec_watch->at(eveSelec).at(isys)->Print();
+      if(m_noSyst) break; //break if NoSyst flag is true;
+      isys++;
+    }
 
-    std::cout << "  initial:      " << n_initial      ->at(eveSelec).at(0)<< std::endl;
-    std::cout << "  pass hotSpot: " << n_pass_hotSpot ->at(eveSelec).at(0)<< std::endl;
-    std::cout << "  pass badJet:  " << n_pass_badJet  ->at(eveSelec).at(0)<< std::endl;
-    std::cout << "  pass FEB:     " << n_pass_feb     ->at(eveSelec).at(0)<< std::endl;
-    std::cout << "  pass badMu:   " << n_pass_badMu   ->at(eveSelec).at(0)<< std::endl;
-    std::cout << "  pass cosmic:  " << n_pass_cosmic  ->at(eveSelec).at(0)<< std::endl;
-    std::cout << "  pass clean:   " << n_pass_clean   ->at(eveSelec).at(0)<< std::endl;
-    std::cout << "  pass nBLep:   " << n_pass_nBLep   ->at(eveSelec).at(0)<< std::endl;
-    std::cout << "  pass mllBase: " << n_pass_mllBase ->at(eveSelec).at(0)<< std::endl;
-    std::cout << "  pass nLep:    " << n_pass_nLep    ->at(eveSelec).at(0)<< std::endl;
-    std::cout << "  pass nTau:    " << n_pass_nTau    ->at(eveSelec).at(0)<< std::endl;
-    std::cout << "  pass trig:    " << n_pass_trig    ->at(eveSelec).at(0)<< std::endl;
-    std::cout << "  pass truth:   " << n_pass_truth   ->at(eveSelec).at(0)<< std::endl;
-    std::cout << "  pass flavQ:   " << n_pass_sfos    ->at(eveSelec).at(0)<< std::endl;
-    //std::cout << "  pass loose Z: " << n_pass_lz      ->at(eveSelec).at(0)<< std::endl;
-    std::cout << "  pass jet:     " << n_pass_jet     ->at(eveSelec).at(0)<< std::endl;
-    std::cout << "  pass vbf:     " << n_pass_vbf     ->at(eveSelec).at(0)<< std::endl;
-    std::cout << "  pass lepPt:   " << n_pass_lepPt   ->at(eveSelec).at(0)<< std::endl;
-    std::cout << "  pass z:       " << n_pass_z       ->at(eveSelec).at(0)<< std::endl;
-    std::cout << "  pass lep dR:  " << n_pass_lepDR   ->at(eveSelec).at(0)<< std::endl;
-    std::cout << "  pass met:     " << n_pass_met     ->at(eveSelec).at(0)<< std::endl;
-    std::cout << "  pass mt:      " << n_pass_mt      ->at(eveSelec).at(0)<< std::endl;
-    std::cout << "  pass meff:    " << n_pass_meff    ->at(eveSelec).at(0)<< std::endl;
-    //std::cout << "  pass mljj:    " << n_pass_mljj    ->at(eveSelec).at(0)<< std::endl;
-    //std::cout << "  pass other:   " << n_pass_other   ->at(eveSelec).at(0)<< std::endl;
   }
-
 }

@@ -19,8 +19,6 @@
 #include<string>
 #include<vector>
 
-#define nSyst 23
-
 namespace ST{
   class SUSYObjDef_xAOD;
 }
@@ -36,6 +34,7 @@ namespace CP{
 }
 class GoodRunsListSelectionTool;
 class EventSelector;
+class TStopwatch;
 //end adding
 
 class MyxAODAnalysis : public EL::Algorithm
@@ -78,7 +77,8 @@ public:
   GoodRunsListSelectionTool *m_grl; //!
 #endif // not __CINT__
 
-  Plotter *m_plotter[nChan][nSyst]; //!
+  std::vector<std::vector<Plotter*> > *m_vec_plotter; //!
+  std::vector<std::vector<TStopwatch*> > *m_vec_watch; //!
 
   bool IsConsideredSyst(TString sysBasename);
   void SetEventCounter(EventSelector *EveSelec, int eveSelec, int sys);
