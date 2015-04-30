@@ -95,9 +95,14 @@ public:
   TH1F *h_mu1Pt[nChan][nSyst]; //!
   TH1F *h_mu2Pt[nChan][nSyst]; //!
   TH1F *h_mu3Pt[nChan][nSyst]; //!
+  TH1F *h_fakeleadlepPt[nChan][nSyst]; //!
+  TH1F *h_fakebaselepPt[nChan][nSyst]; //!
   TH1F *h_lep1Eta[nChan][nSyst]; //!
   TH1F *h_lep2Eta[nChan][nSyst]; //!
   TH1F *h_lep3Eta[nChan][nSyst]; //!
+  TH1F *h_baselep1Eta[nChan][nSyst]; //!
+  TH1F *h_baselep2Eta[nChan][nSyst]; //!
+  TH1F *h_baselep3Eta[nChan][nSyst]; //!
 
   bool IsConsideredSyst(TString sysBasename);
   bool BookHistograms();
