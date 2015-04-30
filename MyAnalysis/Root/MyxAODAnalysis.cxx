@@ -156,7 +156,6 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
 
   CHECK(m_susyObjTool->setProperty("DataSource",datasource) ) ;
 
-  CHECK(m_susyObjTool->setProperty("IsDerived",true) ) ; //??? need to check
   CHECK(m_susyObjTool->setProperty("Is8TeV", false) ) ;
   
   CHECK(m_susyObjTool->setProperty("EleId","TightLLH") );
@@ -165,8 +164,9 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   // CHECK(m_susyObjTool->setProperty("EleIdBaseline","Medium") );
   CHECK(m_susyObjTool->setProperty("TauId","Tight") );
 
+  CHECK(m_susyObjTool->setProperty("IsDerived",false) ) ; //??? need to check
   // Set to true for DxAOD, false for primary xAOD
-  CHECK(m_susyObjTool->setProperty("DoJetAreaCalib",true) );
+  CHECK(m_susyObjTool->setProperty("DoJetAreaCalib",true) ); //somehow "false" craches the process.
   // Set to false if not doing JetAreaCalib
   CHECK(m_susyObjTool->setProperty("DoJetGSCCalib",true) );
   
@@ -261,7 +261,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
  
 #undef MAKE_COUNTER_VEC
 
-  //Preparing plotter for each event selection region and systematic variation
+  //Preparing plotter and stopwatch for each event selection region and systematic variation
   m_vec_plotter = new std::vector<std::vector<Plotter*> >();
   m_vec_watch = new std::vector<std::vector<TStopwatch*> >();
   for(UInt_t eveSelec=0; eveSelec<m_vec_eveSelec->size(); eveSelec++){
