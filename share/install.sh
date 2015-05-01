@@ -10,3 +10,4 @@ rc checkout_pkg atlasoff/Reconstruction/Jet/JetUncertainties/tags/JetUncertainti
 rc checkout_pkg atlasoff/Event/xAOD/xAODMuon/tags/xAODMuon-00-09-02-01
 rc checkout_pkg svn+ssh://svn.cern.ch/reps/atlasphys/Physics/SUSY/Tools/CalcGenericMT2
 rc checkout_pkg atlasoff/PhysicsAnalysis/MCTruthClassifier/tags/MCTruthClassifier-00-01-31
+ln -sf $ROOTCOREBIN/../share/CrossSection/CrossSections_13TeV.txt RootCoreBin/data/SUSYTools/

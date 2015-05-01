@@ -100,7 +100,7 @@ done
 
 maxEve=-1
 echo Starting testRun for DSID=$runnum '('$DatasetDir')'...
-echo 'bsub -q 12h -o ./lsfoutput/'$runnum'_00.log testRun -n '$maxEve' --FileDirBase '$TARGETDS' -D '$DatasetDir' -o result/'$runnum'_00 '$TARGETSELECREG
-bsub -q 12h -o ./lsfoutput/${runnum}_00.log testRun -n $maxEve --FileDirBase $TARGETDS -D $DatasetDir -o result/${runnum}_00 $TARGETSELECREG
+echo 'bsub -q 1d -o ./lsfoutput/'$runnum'_00.log testRun -n '$maxEve' --FileDirBase '$TARGETDS' -D '$DatasetDir' -o result/'$runnum'_00 '$TARGETSELECREG
+bsub -q 1d -o ./lsfoutput/${runnum}_00.log testRun -n $maxEve --FileDirBase $TARGETDS -D $DatasetDir -o result/${runnum}_00 $TARGETSELECREG
 echo ''
 done

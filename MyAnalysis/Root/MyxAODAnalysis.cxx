@@ -113,7 +113,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   // GRL tool initialization
   m_grl = new GoodRunsListSelectionTool("GoodRunsListSelectionTool");
   std::vector<std::string> vecStringGRL;
-  vecStringGRL.push_back("./share/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml");
+  vecStringGRL.push_back("./share/GRL/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml");
   CHECK(m_grl->setProperty("GoodRunsListVec", vecStringGRL));
   CHECK(m_grl->setProperty("PassThrough", false)); // if true (default) will ignore result of GRL and will just pass all events
   if (!m_grl->initialize().isSuccess()) { // check this isSuccess
@@ -186,7 +186,8 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
     MyInfo( "initialize()", "SUSYObjDef_xAOD initialized... " );
   }
 
-  m_XSDB = new SUSY::CrossSectionDB("susy_crosssections_13TeV.txt");
+  std::string xsecFileName  = gSystem->ExpandPathName("./RootCoreBin/data/SUSYTools");
+  m_XSDB = new SUSY::CrossSectionDB(xsecFileName);
   if(isData) m_crossSection = 0.;
   else       m_crossSection = m_XSDB->xsectTimesEff(m_dsid);
   MyInfo("initialize()", Form("Cross section times filter efficiency for DSID #%i: %f pb", m_dsid, m_crossSection));
