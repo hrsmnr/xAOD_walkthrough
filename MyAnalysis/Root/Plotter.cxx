@@ -44,7 +44,7 @@ uint nDRBins = 16;
 /*--------------------------------------------------------------------------------*/
 // Plotter Constructor
 /*--------------------------------------------------------------------------------*/
-Plotter::Plotter(std::string sel, std::string sys, MSG::Level dbg) : 
+Plotter::Plotter(const std::string& sel, const std::string& sys, const MSG::Level& dbg) : 
   m_dbg(dbg),
   m_sel(sel),
   m_sys(sys),

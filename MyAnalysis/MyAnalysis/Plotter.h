@@ -17,7 +17,7 @@ class TH1F;
 class Plotter : public TObject
 {
  public:
-  Plotter(std::string sel="none", std::string sys="none", MSG::Level dbg=MSG::ERROR);
+  Plotter(const std::string& sel, const std::string& sys, const MSG::Level& dbg);
   virtual ~Plotter(){};
 
   virtual void initialize(const char* path, int dsid, double XS=0.);

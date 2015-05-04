@@ -16,6 +16,8 @@
 
 #include"MyAnalysis/EventSelector.h"
 #include"TStopwatch.h"
+
+#include <string>
 //end adding
 
 // this is needed to distribute the algorithm to the workers
@@ -186,7 +188,10 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
     MyInfo( "initialize()", "SUSYObjDef_xAOD initialized... " );
   }
 
-  m_XSDB = new SUSY::CrossSectionDB("susy_crosssections_13TeV.txt");
+  // m_XSDB = new SUSY::CrossSectionDB("susy_crosssections_13TeV.txt");
+  // std::string xsecFileName  = gSystem->ExpandPathName("$ROOTCOREBIN/data/SUSYTools/susy_crosssections_13TeV.txt");
+  std::string xsecFileName  = gSystem->ExpandPathName("share/susy_crosssections_13TeV.txt");
+  m_XSDB = new SUSY::CrossSectionDB(xsecFileName);
   if(isData) m_crossSection = 0.;
   else       m_crossSection = m_XSDB->xsectTimesEff(m_dsid);
   MyInfo("initialize()", Form("Cross section times filter efficiency for DSID #%i: %f pb", m_dsid, m_crossSection));
