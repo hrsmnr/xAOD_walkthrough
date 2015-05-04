@@ -32,7 +32,7 @@ const float MUON_Z0_SINTHETA_CUT        = 1.0;//0.2;
 class EventSelector : public TObject
 {
  public:
-  EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string &sel, const std::string &sys, const int &isMC, const MSG::Level &dbg);
+  EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string &sel="none", const std::string &sys="none", const int &isMC=1, const MSG::Level &dbg=MSG::ERROR);
   virtual ~EventSelector(){};
 
   // Initialization
