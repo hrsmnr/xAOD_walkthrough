@@ -2562,13 +2562,35 @@ TLorentzVector EventSelector::getFourVector(int index, int flav)
 /*--------------------------------------------------------------------------------*/
 int EventSelector::getCharge(int index, int flav)
 {
-  //method to retrieve four vector by m_leadLepIndex;
+  //method to retrieve charge by m_leadLepIndex;
   Int_t charge = 0;
   if(index!=-1){
     if     (flav==0) charge = (m_vec_signalElectron->at(index)).charge();
     else if(flav==1) charge = (m_vec_signalMuon    ->at(index)).charge();
   }
   return charge;
+}
+/*--------------------------------------------------------------------------------*/
+float EventSelector::getIsolationValue(int index, int flav, xAOD::Iso::IsolationType type)
+{
+  //method to retrieve isolation value by m_leadLepIndex;
+  float iso = 0.;
+  if(index!=-1){
+    if     (flav==0) iso = (m_vec_signalElectron->at(index)).isolationValue(iso,type);
+    else if(flav==1) iso = (m_vec_signalMuon    ->at(index)).isolation     (iso,type);
+  }
+  return iso;
+}
+/*--------------------------------------------------------------------------------*/
+xAOD::TrackParticle* EventSelector::getTrack(int index, int flav)
+{
+  //method to retrieve track object by m_leadLepIndex;
+  xAOD::TrackParticle* track = 0;
+  if(index!=-1){
+    if     (flav==0) track = const_cast<xAOD::TrackParticle*>((m_vec_signalElectron->at(index)).trackParticle());
+    else if(flav==1) track = const_cast<xAOD::TrackParticle*>((m_vec_signalMuon    ->at(index)).primaryTrackParticle());
+  }
+  return track;
 }
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::isOS(int charge1, int charge2)

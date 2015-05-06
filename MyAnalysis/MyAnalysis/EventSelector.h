@@ -7,9 +7,10 @@
 #include<TObject.h>
 #include"TVector2.h"
 #include"TLorentzVector.h"
-#include"xAODMuon/Muon.h"
 #include"xAODEgamma/Electron.h"
+#include"xAODMuon/Muon.h"
 #include"xAODJet/Jet.h"
+#include"xAODPrimitives/IsolationType.h"
 #include"AsgTools/MsgLevel.h"
 
 namespace ST{
@@ -88,6 +89,7 @@ class EventSelector : public TObject
   // Preparing objects
   ///////////////////////////////////////////////
 #ifndef __CINT__
+  ST::SUSYObjDef_xAOD* getSUSYTools(){return m_susyObjTool;};
   /* virtual bool IsMyBaselineElectron(xAOD::Electron el); */
   /* virtual bool IsMySignalElectron  (xAOD::Electron el); */
   /* virtual bool IsMyBaselineMuon    (const xAOD::Muon& mu); */
@@ -261,6 +263,8 @@ class EventSelector : public TObject
   virtual float getMljj();
   virtual TLorentzVector getFourVector(int index, int flav);
   virtual int getCharge(int index, int flav);
+  virtual float getIsolationValue(int index, int flav, xAOD::Iso::IsolationType type);
+  virtual xAOD::TrackParticle* getTrack(int index, int flav);
   virtual bool isOS(int charge1, int charge2);
   virtual bool isSS(int charge1, int charge2);
   virtual void TypSel(int nLep, int nTau, int nBaseLep, int nBaseTau, int nBjetMin, int nBjetMax);

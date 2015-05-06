@@ -35,6 +35,7 @@ class Plotter : public TObject
   std::string m_sys;
   std::string m_filename;
   double m_crossSection;
+  Bool_t m_isMC;
   TFile *m_rootfile;
 
   bool BookHistograms();
@@ -180,16 +181,13 @@ class Plotter : public TObject
   // Mass hists
   TH1F *h_mll       [nChan]; // leading dilepton mass, no charge/flav requirement
   TH1F *h_msfos     [nChan]; // sfos inv mass closest to Z
+  TH1F *h_minMsfos  [nChan]; // minimum sfos inv mass
   TH1F *h_msfss     [nChan]; // sfss inv mass, all pairs
   TH1F *h_mlll      [nChan]; // trilepton mass
   TH1F *h_mt        [nChan]; // transverse mass from best non-Z lepton and MET
-  TH1F *h_mtFine    [nChan]; // transverse mass from best non-Z lepton and MET
-  TH1F *h_mtCoarse  [nChan]; // transverse mass from best non-Z lepton and MET
-  TH1F *h_mtLow     [nChan]; // transverse mass from best non-Z lepton and MET
   TH1F *h_mtL1      [nChan]; // transverse using leading lepton
   TH1F *h_mtL2      [nChan]; // transverse using sub-leading lepton
-  TH1F *h_mt2Max    [nChan]; // maximum MT2 of all object combinations
-  TH1F *h_mt2MaxFine[nChan]; // maximum MT2 of all object combinations
+  TH1F *h_mt2       [nChan]; // maximum MT2 of all object combinations
   TH1F *h_mjj       [nChan]; // dijet mass closest to the W
   TH1F *h_mlljj     [nChan]; // inv mass of sfos leptons and 2 jets closest to ZZ
   TH1F *h_mlt       [nChan]; // inv mass of OS lepton+tau
