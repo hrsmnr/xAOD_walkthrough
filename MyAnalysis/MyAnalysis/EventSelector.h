@@ -38,7 +38,7 @@ class EventSelector : public TObject
   virtual ~EventSelector(){};
 
   // Initialization
-  virtual void initialize();
+  virtual bool initialize();
   virtual void finalize();
   virtual void setStore(xAOD::TStore* store){m_store=store;};
 

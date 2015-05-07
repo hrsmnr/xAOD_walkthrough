@@ -43,6 +43,7 @@ done
 ###########################################################
 for TXT in `ls $TARGETDS`
 do
+lenFilelistDirName=${#TXT}
 #extension check (should be .txt)
 extensionStartPos=`expr $lenFilelistDirName - 3`
 extensionEndPos=`expr $lenFilelistDirName`

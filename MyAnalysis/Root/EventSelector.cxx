@@ -186,7 +186,7 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD* SUSYObjDef, std::string sel, s
 /*--------------------------------------------------------------------------------*/
 // Initialize the event selection
 /*--------------------------------------------------------------------------------*/
-void EventSelector::initialize()
+bool EventSelector::initialize()
 {
   MyDebug("initialize()","EventSelector::initialize()");
   //////////////////////////////////////////////
@@ -331,7 +331,7 @@ void EventSelector::initialize()
   }
   else{
     MyError("initialize()",Form("EventSelector ERROR - selection %s not supported!!",m_sel.c_str()));
-    abort();
+    return false;
   }
 
   m_vec_signalElectron = new std::vector<xAOD::Electron>();
@@ -348,6 +348,8 @@ void EventSelector::initialize()
   m_vec_signalJet->clear();
   m_vec_baseJet  ->clear();
   m_vec_preJet   ->clear();
+
+  return true;
 
 }
 
