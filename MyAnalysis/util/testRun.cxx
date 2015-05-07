@@ -25,10 +25,10 @@ int main( int argc, char* argv[] ) {
   long long int nEvt = -1;
   long long int nSkip = 0;
   MSG::Level dbg = MSG::ERROR;
-  //  std::string sample = "";
   std::vector<std::string> sels;
   std::string file = "";
   std::string fileDir = "";
+  std::string filelist = "";
   std::string fileDirBase = "/home/hirose/atlas/data/DC14/mc14_13TeV";
   std::string outputDir = "result/submitDir";
   bool doSys = false;
@@ -46,12 +46,12 @@ int main( int argc, char* argv[] ) {
       file = argv[++i];
     else if (strcmp(argv[i], "-D") == 0)
       fileDir = argv[++i];
+    else if (strcmp(argv[i], "--filelist") == 0)
+      filelist = argv[++i];
     else if (strcmp(argv[i], "--FileDirBase") == 0)
       fileDirBase = argv[++i];
     else if (strcmp(argv[i], "-o") == 0)
       outputDir = argv[++i];
-    //    else if (strcmp(argv[i], "-s") == 0)
-    //      sample = argv[++i];
     else if (strcmp(argv[i], "-S") == 0)
       sels.push_back(argv[++i]);
     else if (strcmp(argv[i], "--sys") == 0)
@@ -64,16 +64,7 @@ int main( int argc, char* argv[] ) {
     else help();
   }
 
-  // If no input is specified, return with message.
-  if(fileDir.empty()){
-    std::cout << "Please specify the input sample by the option \"-D\"" <<std::endl;
-    std::cout << "When you specify \"test\", SUSY signal sample written below will be used." <<std::endl;
-    std::cout << "-- mc14_13TeV.205048.Herwigpp_UEEE4_CTEQ6L1_sM_wA_WZ_C1_100_N1_0.merge.AOD.e3479_a266_a265_r5853_tid04786763_00" << std::endl;
-    return 0;
-  }
-
   std::cout << "flags:" << std::endl;
-  //  std::cout << "  sample  " << sample   << std::endl;
   std::cout <<Form("  outDir   : %s"  , outputDir.c_str()  ) << std::endl;
   std::cout <<Form("  nEvt     : %lli", nEvt               ) << std::endl;
   std::cout <<Form("  nSkip    : %lli", nSkip              ) << std::endl;
@@ -81,23 +72,68 @@ int main( int argc, char* argv[] ) {
   if(!fileDirBase.empty()) std::cout << Form("  DataPath : %s", fileDirBase.c_str()) << std::endl;
   if(!fileDir    .empty()) std::cout << Form("  inputDir : %s", fileDir    .c_str()) << std::endl;
   if(!file       .empty()) std::cout << Form("  file     : %s", file       .c_str()) << std::endl;
+  if(!filelist   .empty()) std::cout << Form("  filelist : %s", filelist   .c_str()) << std::endl;
   std::cout << std::endl;
+
+  // If no input is specified, return with message.
+  if(fileDir.empty() && filelist.empty()){
+    std::cout << "Please specify the input sample by the option \"-D\" or \"--filelist\"" <<std::endl;
+    std::cout << "When you specify \"-D test\", SUSY signal sample written below will be used." <<std::endl;
+    std::cout << "-- mc14_13TeV.205048.Herwigpp_UEEE4_CTEQ6L1_sM_wA_WZ_C1_100_N1_0.merge.AOD.e3479_a266_a265_r5853_tid04786763_00" << std::endl;
+    return 0;
+  }
+
+  // Aborting if filelist and file directory are given at the same time.
+  if(!fileDir.empty() && !filelist.empty()){
+    std::cout<<"Please do not use the options -D and --filelist at the same time."<<std::endl;
+    return 0;
+  }
 
   std::cout << "selections: ";
   for(uint i=0; i<sels.size(); i++) std::cout << "\"" << sels[i] << "\" ";
   std::cout << std::endl;
   std::cout << std::endl;
 
-  //Check if input file path is existing.
-  std::string dirFullPath = "";
-  if(fileDir=="test") fileDir = "mc14_13TeV.205048.Herwigpp_UEEE4_CTEQ6L1_sM_wA_WZ_C1_100_N1_0.merge.AOD.e3479_a266_a265_r5853_tid04786763_00"; //Default dataset for testing.
-  dirFullPath = fileDirBase+"/"+fileDir;
-  if(!gSystem->AccessPathName(dirFullPath.c_str())){
-    //    std::cout<<"InputPath Existing : "<<dirFullPath.c_str()<<std::endl;    
+  // Set up the job for xAOD access:
+  xAOD::Init().ignore();
+
+  // Construct the samples to run on:
+  SH::SampleHandler sh;
+  Bool_t useDir = kTRUE;
+  if(fileDir.empty()) useDir = kFALSE;
+  if(useDir){
+    //Check if input file path is existing.
+    std::string dirFullPath = "";
+    if(fileDir=="test") fileDir = "mc14_13TeV.205048.Herwigpp_UEEE4_CTEQ6L1_sM_wA_WZ_C1_100_N1_0.merge.AOD.e3479_a266_a265_r5853_tid04786763_00"; //Default dataset for testing.
+    dirFullPath = fileDirBase+"/"+fileDir;
+    if(!gSystem->AccessPathName(dirFullPath.c_str())){
+      //    std::cout<<"InputPath Existing : "<<dirFullPath.c_str()<<std::endl;    
+    }else{
+      std::cout<<"Cannot find the input file path : "<<dirFullPath.c_str()<<std::endl;    
+      std::cout<<"Exitting ..."<<std::endl;    
+      exit(1);
+    }
+
+    std::cout<<"DatasetName  : "<<fileDir.c_str()    <<std::endl;;
+    std::cout<<"DataFullPath : "<<dirFullPath.c_str()<<std::endl;;
+    if(!file.empty()){
+      FileStat_t info;
+      if(gSystem->GetPathInfo((dirFullPath+"/"+file).c_str(), info)!=0) {
+        std::cout<<"cannot find the input file in the specified directory."<<std::endl;
+        std::cout<<"filename : "<<file.c_str()<<std::endl;
+        exit(1);
+      }else{
+        std::cout<<"Found "<<file.c_str()<<" in the specified directory. "<<std::endl;
+      }
+      SH::DiskListLocal list(fileDirBase.c_str());
+      SH::scanDir(sh, list, file.c_str()); // specifying one particular data file for testing 
+    }else{
+      SH::DiskListLocal list(dirFullPath.c_str());
+      SH::scanSingleDir(sh, fileDir.c_str(), list);
+    }
   }else{
-    std::cout<<"Cannot find the input file path : "<<dirFullPath.c_str()<<std::endl;    
-    std::cout<<"Exitting ..."<<std::endl;    
-    exit(1);
+    std::string filelistFullPath = fileDirBase+"/"+filelist;
+    SH::readFileList(sh, "sample", filelistFullPath);
   }
 
   // Cloning output directory when it already exists.
@@ -108,34 +144,16 @@ int main( int argc, char* argv[] ) {
     gSystem->Rename(olddir,olddir+"~");
   }
 
-  // Set up the job for xAOD access:
-  xAOD::Init().ignore();
-
-  // Construct the samples to run on:
-  SH::SampleHandler sh;
-  std::cout<<"DatasetName  : "<<fileDir.c_str()    <<std::endl;;
-  std::cout<<"DataFullPath : "<<dirFullPath.c_str()<<std::endl;;
-  if(!file.empty()){
-    FileStat_t info;
-    if(gSystem->GetPathInfo((dirFullPath+"/"+file).c_str(), info)!=0) {
-      std::cout<<"cannot find the input file in the specified directory."<<std::endl;
-      std::cout<<"filename : "<<file.c_str()<<std::endl;
-      exit(1);
-    }else{
-      std::cout<<"Found "<<file.c_str()<<" in the specified directory. "<<std::endl;
-    }
-    SH::DiskListLocal list(fileDirBase.c_str());
-    SH::scanDir(sh, list, file.c_str()); // specifying one particular data file for testing 
-  }else{
-    SH::DiskListLocal list(dirFullPath.c_str());
-    SH::scanSingleDir (sh, fileDir.c_str(), list);
-  }
-
   // Obtain DSID/RunNumber from file directory name
   int dsid = -1;
-  if     (fileDir.substr(0,10)=="mc14_13TeV"  ) dsid = atoi(fileDir.substr(11,6).c_str());
-  else if(fileDir.substr(0, 9)=="mc14_8TeV"   ) dsid = atoi(fileDir.substr(10,6).c_str());
-  else if(fileDir.substr(0,12)=="data14_13TeV") dsid = atoi(fileDir.substr(13,6).c_str());
+  if(useDir){
+    if     (fileDir.substr(0,10)=="mc14_13TeV"  ) dsid = atoi(fileDir.substr(11,6).c_str());
+    else if(fileDir.substr(0, 9)=="mc14_8TeV"   ) dsid = atoi(fileDir.substr(10,6).c_str());
+    else if(fileDir.substr(0,12)=="data14_13TeV") dsid = atoi(fileDir.substr(13,6).c_str());
+  }else{
+    std::cout<<filelist.substr(0,6).c_str()<<std::endl;
+    dsid = atoi(filelist.substr(0,6).c_str());
+  }
 
   // Set the name of the input TTree. It's always "CollectionTree" for xAOD files.
   sh.setMetaString( "nc_tree", "CollectionTree" );
@@ -183,14 +201,14 @@ void help()
   std::cout << "  -F name of single input file"      << std::endl;
   std::cout << "     defaults: ''"                   << std::endl;
 
+  std::cout << "  -filelist name of the input filelist" << std::endl;
+  std::cout << "     defaults: ''"                   << std::endl;
+
   std::cout << "  -o output file directory"          << std::endl;
   std::cout << "     defaults: result/submitDir"     << std::endl;
 
   std::cout << "  -d debug printout level"           << std::endl;
   std::cout << "     defaults: MSG::ERROR"           << std::endl;
-
-  //  std::cout << "  -s sample name, for naming files"  << std::endl;
-  //  std::cout << "     defaults: ntuple sample name"   << std::endl;
 
   std::cout << "  -S adds a selection region"        << std::endl;
   std::cout << "     each usage adds one region"     << std::endl;
