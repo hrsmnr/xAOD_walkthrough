@@ -329,10 +329,10 @@ bool Plotter::BookHistograms()
     NEWHIST( lep1Z0, "Leading lepton |z0| [mm];Events", 20, 0, 0.5 );
     NEWHIST( lep2Z0, "Second lepton |z0| [mm];Events", 20, 0, 0.5 );
     NEWHIST( lep3Z0, "Third lepton |z0| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lepD0Sig, "Lepton |d0/#sigma_{d0}|;Events", 20, 0, 0.5 );
-    NEWHIST( lep1D0Sig, "Leading lepton |d0/#sigma_{d0}|;Events", 20, 0, 0.5 );
-    NEWHIST( lep2D0Sig, "Second lepton |d0/#sigma_{d0}|;Events", 20, 0, 0.5 );
-    NEWHIST( lep3D0Sig, "Third lepton |d0/#sigma_{d0}|;Events", 20, 0, 0.5 );
+    NEWHIST( lepD0Sig, "Lepton |d0/#sigma_{d0}|;Events", 20, 0, 3.0 );
+    NEWHIST( lep1D0Sig, "Leading lepton |d0/#sigma_{d0}|;Events", 20, 0, 3.0 );
+    NEWHIST( lep2D0Sig, "Second lepton |d0/#sigma_{d0}|;Events", 20, 0, 3.0 );
+    NEWHIST( lep3D0Sig, "Third lepton |d0/#sigma_{d0}|;Events", 20, 0, 3.0 );
     NEWHIST( lepZ0SinTheta, "Lepton |z0sin#theta| [mm];Events", 20, 0, 0.5 );
     NEWHIST( lep1Z0SinTheta, "Leading lepton |z0sin#theta| [mm];Events", 20, 0, 0.5 );
     NEWHIST( lep2Z0SinTheta, "Second lepton |z0sin#theta| [mm];Events", 20, 0, 0.5 );
@@ -808,7 +808,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   // FillChanHist( h_mt, , w);
   // FillChanHist( h_mtL1, , w);
   // FillChanHist( h_mtL2, , w);
-  FillChanHist( h_mt2, EveSelec->getMaxMT2(), w);
+  FillChanHist( h_mt2, EveSelec->getMaxMT2()/1000., w);
   // FillChanHist( h_mjj, , w);
   // FillChanHist( h_mlljj, , w);
   // FillChanHist( h_mlt, , w);

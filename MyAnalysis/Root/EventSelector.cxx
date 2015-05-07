@@ -2585,8 +2585,8 @@ float EventSelector::getIsolationValue(int index, int flav, xAOD::Iso::Isolation
   //method to retrieve isolation value by m_leadLepIndex;
   float iso = 0.;
   if(index!=-1){
-    if     (flav==0) iso = (m_vec_signalElectron->at(index)).isolationValue(iso,type);
-    else if(flav==1) iso = (m_vec_signalMuon    ->at(index)).isolation     (iso,type);
+    if     (flav==0) (m_vec_signalElectron->at(index)).isolationValue(iso,type);
+    else if(flav==1) (m_vec_signalMuon    ->at(index)).isolation     (iso,type);
   }
   return iso;
 }
