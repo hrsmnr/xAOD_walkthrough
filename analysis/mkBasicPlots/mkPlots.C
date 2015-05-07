@@ -673,16 +673,6 @@ Int_t mkPlots(TString SelecReg){
   leg->AddEntry(dist_totalbg[0][0],"Total SM","l");
   leg->AddEntry(dist_totalbgErr[0][0],"Unct. for SM ","f");
   const Int_t nDrawnSignal = DrawnSignalType->size();
-  TH1F *h_sig[nDrawnSignal];
-  for(Int_t cnt=0; cnt<nDrawnSignal; cnt++){
-    h_sig[cnt] = vec_dist_signal[0][DrawnSignalType->at(cnt)][0]->at(DrawnSignalFile->at(cnt));
-    h_sig[cnt]->SetLineColor(DrawnSignalColor->at(cnt));
-    h_sig[cnt]->SetMarkerColor(DrawnSignalColor->at(cnt));
-    h_sig[cnt]->SetFillColor(0);
-    h_sig[cnt]->SetLineStyle(DrawnSignalStyle->at(cnt));
-    h_sig[cnt]->Draw("samehist");
-    leg->AddEntry(h_sig[cnt],DrawnSignalLegend->at(cnt).c_str(),"l");
-  }
 
   ////////////////////////////////////////////////////
   // histograms definition end.
@@ -751,7 +741,15 @@ Int_t mkPlots(TString SelecReg){
         u->Draw(dist_totalbg   [fstype][disttype],"samehist"); //should be drawn after the error histogram.
         // dist_data[fstype][disttype]->Draw("sameE");
         u->Draw(dist_totalbgErr[fstype][disttype],"sameE2");
-        for(Int_t cnt=0; cnt<nDrawnSignal; cnt++) h_sig[cnt]->Draw("samehist");
+        TH1F *h_sig[nDrawnSignal];
+        for(Int_t cnt=0; cnt<nDrawnSignal; cnt++){
+          h_sig[cnt] = vec_dist_signal[fstype][DrawnSignalType->at(cnt)][disttype]->at(DrawnSignalFile->at(cnt));
+          h_sig[cnt]->SetLineColor(DrawnSignalColor->at(cnt));
+          h_sig[cnt]->SetMarkerColor(DrawnSignalColor->at(cnt));
+          h_sig[cnt]->SetFillColor(0);
+          h_sig[cnt]->SetLineStyle(DrawnSignalStyle->at(cnt));
+          h_sig[cnt]->Draw("samehist");
+        }
         //////////////////////////////////////////////////////////////
         // Log version
         //////////////////////////////////////////////////////////////
