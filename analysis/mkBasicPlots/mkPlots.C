@@ -19,251 +19,145 @@
 #include"TUtil.cc"
 #include"AtlasUtils.cc"
 
-enum DistType{
-  //  all,
-  lep1Pt,
-  lep2Pt,
-  lep3Pt,
-  el1Pt,
-  el2Pt,
-  el3Pt,
-  mu1Pt,
-  mu2Pt,
-  mu3Pt,
-  lep1Eta,
-  lep2Eta,
-  lep3Eta,
-  //  sumLepPt,
-  //  sumLepPtMet,
-  //  dPhiWZ,
-  //  nMuComb,
-  // elPtcone30,
-  // elEtcone30,
-  // muPtcone30,
-  // muEtcone30,
-  // lepD0,
-  // lep1D0,
-  // lep2D0,
-  // lep3D0,
-  // lepZ0,
-  // lep1Z0,
-  // lep2Z0,
-  // lep3Z0,
-  // lepClass,
-  // lep1Class,
-  // lep2Class,
-  // lep3Class,
-  // hasSS,
-  // nTau,
-  // tauPt,
-  // tau1Pt,
-  // tau2Pt,
-  // tau1Eta,
-  // tau2Eta,
-  // dPhiTauTau,
-  // tauProng,
-  // tauClass,
-  // tau1Class,
-  // tau2Class,
-  // minDRLepLep,
-  // dPhiLep1Met,
-  // dPhiLep2Met,
-  // dPhiLep3Met,
-  // dPhiLLMet,
-  // dPhiJet1Met,
-  // dPhiJet2Met,
-  // dPhiJJMet,
-  // minDPhiLepLep,
-  // minDPhiLepMet,
-  // minDPhiJetJet,
-  // minDPhiJetMet,
-  // minDPhiTauMet,
-  // minDRLepJet,
-  // maxDPhiLepLep,
-  // maxDPhiLepMet,
-  // maxDPhiJetJet,
-  // maxDPhiJetMet,
-  // maxDRLepJet,
-  // dEtaLL,
-  // dEtaJetJet,
-  // maxDEtaJetJet,
-  // minDEtaJetJet,
-  // msfos,
-  // msfss,
-  // mlll,
-  // mtFine,
-  // mtCoarse,
-  // mtLow,
-  // mt2Max,
-  // mt2MaxFine,
-  // meff,
-  // meffNoMet,
-  // mjj,
-  // mlljj,
-  // mlt,
-  // mtt,
-  // mbb,
-  // mljj,
-  // mljjFine,
-  // mtll,
-  // met,
-  // metLow,
-  // metMid,
-  // metHigh,
-  // metEle,
-  // metMuo,
-  // metJet,
-  // metCell,
-  // metRel,
-  // nJet,
-  // nBJet,
-  // jet1Pt,
-  // jet2Pt,
-  // jet3Pt,
-  // jetPt,
-  // bJetPt,
-  // bJet1Pt,
-  // bJet2Pt,
-  // bJet3Pt,
-  // jetEta,
-  // bJetEta,
-  // bJet1Eta,
-  // bJet2Eta,
-  // bJet3Eta,
-  // jetPhi,
-  // jetMV1,
-  // jetJVF,
-  // bJetJVF,
-  // jetDPhi,
-  // jetDEta,
-  // dijetM,
-  // productEta1Eta2,
-  // nVtx,
-  // mu,
-  nDistType
-};
-TString DistTypeNames[nDistType] = {
-  // "all",
-  "lep1Pt",
-  "lep2Pt",
-  "lep3Pt",
-  "el1Pt",
-  "el2Pt",
-  "el3Pt",
-  "mu1Pt",
-  "mu2Pt",
-  "mu3Pt",
-  "lep1Eta",
-  "lep2Eta",
-  "lep3Eta" //Attention, no comma at end.
-  // "sumLepPt",
-  // "sumLepPtMet",
-  // "dPhiWZ",
-  // "nMuComb",
-  // "elPtcone30",
-  // "elEtcone30",
-  // "muPtcone30",
-  // "muEtcone30",
-  // "lepD0",
-  // "lep1D0",
-  // "lep2D0",
-  // "lep3D0",
-  // "lepZ0",
-  // "lep1Z0",
-  // "lep2Z0",
-  // "lep3Z0",
-  // "lepClass",
-  // "lep1Class",
-  // "lep2Class",
-  // "lep3Class",
-  // "hasSS",
-  // "nTau",
-  // "tauPt",
-  // "tau1Pt",
-  // "tau2Pt",
-  // "tau1Eta",
-  // "tau2Eta",
-  // "dPhiTauTau",
-  // "tauProng",
-  // "tauClass",
-  // "tau1Class",
-  // "tau2Class",
-  // "minDRLepLep",
-  // "dPhiLep1Met",
-  // "dPhiLep2Met",
-  // "dPhiLep3Met",
-  // "dPhiLLMet",
-  // "dPhiJet1Met",
-  // "dPhiJet2Met",
-  // "dPhiJJMet",
-  // "minDPhiLepLep",
-  // "minDPhiLepMet",
-  // "minDPhiJetJet",
-  // "minDPhiJetMet",
-  // "minDPhiTauMet",
-  // "minDRLepJet",
-  // "maxDPhiLepLep",
-  // "maxDPhiLepMet",
-  // "maxDPhiJetJet",
-  // "maxDPhiJetMet",
-  // "maxDRLepJet",
-  // "dEtaLL",
-  // "dEtaJetJet",
-  // "maxDEtaJetJet",
-  // "minDEtaJetJet",
-  // "msfos",
-  // "msfss",
-  // "mlll",
-  // "mtFine",
-  // "mtCoarse",
-  // "mtLow",
-  // "mt2Max",
-  // "mt2MaxFine",
-  // "meff",
-  // "meffNoMet",
-  // "mjj",
-  // "mlljj",
-  // "mlt",
-  // "mtt",
-  // "mbb",
-  // "mljj",
-  // "mljjFine",
-  // "mtll",
-  // "met",
-  // "metLow",
-  // "metMid",
-  // "metHigh",
-  // "metEle",
-  // "metMuo",
-  // "metJet",
-  // "metCell",
-  // "metRel",
-  // "nJet",
-  // "nBJet",
-  // "jet1Pt",
-  // "jet2Pt",
-  // "jet3Pt",
-  // "jetPt",
-  // "bJetPt",
-  // "bJet1Pt",
-  // "bJet2Pt",
-  // "bJet3Pt",
-  // "jetEta",
-  // "bJetEta",
-  // "bJet1Eta",
-  // "bJet2Eta",
-  // "bJet3Eta",
-  // "jetPhi",
-  // "jetMV1",
-  // "jetJVF",
-  // "bJetJVF",
-  // "jetDPhi",
-  // "jetDEta",
-  // "dijetM",
-  // "productEta1Eta2",
-  // "nVtx",
-  // "mu"
-};
+std::vector<TString> *DistTypeNames;
+void SetDistType(void){
+  DistTypeNames = new std::vector<TString>();
+  //  DistTypeNames->push_back("lepChan"); //cannot draw this with this macro.
+  DistTypeNames->push_back("lep1Pt");
+  DistTypeNames->push_back("lep2Pt");
+  DistTypeNames->push_back("lep3Pt");
+  DistTypeNames->push_back("el1Pt");
+  DistTypeNames->push_back("el2Pt");
+  DistTypeNames->push_back("el3Pt");
+  DistTypeNames->push_back("mu1Pt");
+  DistTypeNames->push_back("mu2Pt");
+  DistTypeNames->push_back("mu3Pt");
+  DistTypeNames->push_back("lep1Eta");
+  DistTypeNames->push_back("lep2Eta");
+  DistTypeNames->push_back("lep3Eta");
+  DistTypeNames->push_back("el1Eta");
+  DistTypeNames->push_back("el2Eta");
+  DistTypeNames->push_back("el3Eta");
+  DistTypeNames->push_back("mu1Eta");
+  DistTypeNames->push_back("mu2Eta");
+  DistTypeNames->push_back("mu3Eta");
+  DistTypeNames->push_back("llPt");
+  DistTypeNames->push_back("sumLepPt");
+  DistTypeNames->push_back("sumLepPtMet");
+  DistTypeNames->push_back("dPhiWZ");
+  DistTypeNames->push_back("nMuComb");
+  DistTypeNames->push_back("elPtcone30");
+  DistTypeNames->push_back("elEtcone30");
+  DistTypeNames->push_back("muPtcone30");
+  DistTypeNames->push_back("muEtcone30");
+  DistTypeNames->push_back("lepD0");
+  DistTypeNames->push_back("lep1D0");
+  DistTypeNames->push_back("lep2D0");
+  DistTypeNames->push_back("lep3D0");
+  DistTypeNames->push_back("lepZ0");
+  DistTypeNames->push_back("lep1Z0");
+  DistTypeNames->push_back("lep2Z0");
+  DistTypeNames->push_back("lep3Z0");
+  DistTypeNames->push_back("lepD0Sig");
+  DistTypeNames->push_back("lep1D0Sig");
+  DistTypeNames->push_back("lep2D0Sig");
+  DistTypeNames->push_back("lep3D0Sig");
+  DistTypeNames->push_back("lepZ0SinTheta");
+  DistTypeNames->push_back("lep1Z0SinTheta");
+  DistTypeNames->push_back("lep2Z0SinTheta");
+  DistTypeNames->push_back("lep3Z0SinTheta");
+  DistTypeNames->push_back("lepOrigin");
+  DistTypeNames->push_back("lep1Origin");
+  DistTypeNames->push_back("lep2Origin");
+  DistTypeNames->push_back("lep3Origin");
+  DistTypeNames->push_back("lepClass");
+  DistTypeNames->push_back("lep1Class");
+  DistTypeNames->push_back("lep2Class");
+  DistTypeNames->push_back("lep3Class");
+  DistTypeNames->push_back("hasSS");
+  DistTypeNames->push_back("nTau");
+  DistTypeNames->push_back("tauPt");
+  DistTypeNames->push_back("tau1Pt");
+  DistTypeNames->push_back("tau2Pt");
+  DistTypeNames->push_back("tau1Eta");
+  DistTypeNames->push_back("tau2Eta");
+  DistTypeNames->push_back("tauProng");
+  DistTypeNames->push_back("dPhiTauTau");
+  DistTypeNames->push_back("tauClass");
+  DistTypeNames->push_back("tau1Class");
+  DistTypeNames->push_back("tau2Class");
+  DistTypeNames->push_back("minDRLepLep");
+  DistTypeNames->push_back("dPhiLep1Met");
+  DistTypeNames->push_back("dPhiLep2Met");
+  DistTypeNames->push_back("dPhiLep3Met");
+  DistTypeNames->push_back("dPhiLLMet");
+  DistTypeNames->push_back("dPhiJet1Met");
+  DistTypeNames->push_back("dPhiJet2Met");
+  DistTypeNames->push_back("dPhiJJMet");
+  DistTypeNames->push_back("minDPhiLepLep");
+  DistTypeNames->push_back("minDPhiLepMet");
+  DistTypeNames->push_back("minDPhiJetJet");
+  DistTypeNames->push_back("minDPhiJetMet");
+  DistTypeNames->push_back("minDPhiTauMet");
+  DistTypeNames->push_back("minDRLepJet");
+  DistTypeNames->push_back("maxDPhiLepLep");
+  DistTypeNames->push_back("maxDPhiLepMet");
+  DistTypeNames->push_back("maxDPhiJetJet");
+  DistTypeNames->push_back("maxDPhiJetMet");
+  DistTypeNames->push_back("maxDRLepJet");
+  DistTypeNames->push_back("dEtaLL");
+  DistTypeNames->push_back("dEtaJetJet");
+  DistTypeNames->push_back("maxDEtaJetJet");
+  DistTypeNames->push_back("minDEtaJetJet");
+  DistTypeNames->push_back("met");
+  DistTypeNames->push_back("meff");
+  DistTypeNames->push_back("meffNoMet");
+  DistTypeNames->push_back("metEle");
+  DistTypeNames->push_back("metMuo");
+  DistTypeNames->push_back("metJet");
+  DistTypeNames->push_back("metCell");
+  DistTypeNames->push_back("metRel");
+  DistTypeNames->push_back("nJet");
+  DistTypeNames->push_back("nBJet");
+  DistTypeNames->push_back("jetPt");
+  DistTypeNames->push_back("jet1Pt");
+  DistTypeNames->push_back("jet2Pt");
+  DistTypeNames->push_back("jet3Pt");
+  DistTypeNames->push_back("bJetPt");
+  DistTypeNames->push_back("bJet1Pt");
+  DistTypeNames->push_back("bJet2Pt");
+  DistTypeNames->push_back("bJet3Pt");
+  DistTypeNames->push_back("jetEta");
+  DistTypeNames->push_back("bJetEta");
+  DistTypeNames->push_back("bJet1Eta");
+  DistTypeNames->push_back("bJet2Eta");
+  DistTypeNames->push_back("bJet3Eta");
+  DistTypeNames->push_back("jetPhi");
+  DistTypeNames->push_back("jetMV1");
+  DistTypeNames->push_back("jetJVF");
+  DistTypeNames->push_back("bJetJVF");
+  DistTypeNames->push_back("dijetM");
+  DistTypeNames->push_back("productEta1Eta2");
+  DistTypeNames->push_back("mll");
+  DistTypeNames->push_back("msfos");
+  DistTypeNames->push_back("minMsfos");
+  DistTypeNames->push_back("msfss");
+  DistTypeNames->push_back("mlll");
+  DistTypeNames->push_back("mt");
+  DistTypeNames->push_back("mtL1");
+  DistTypeNames->push_back("mtL2");
+  DistTypeNames->push_back("mt2");
+  DistTypeNames->push_back("mjj");
+  DistTypeNames->push_back("mlljj");
+  DistTypeNames->push_back("mlt");
+  DistTypeNames->push_back("mtt");
+  DistTypeNames->push_back("mbb");
+  DistTypeNames->push_back("mljj");
+  DistTypeNames->push_back("mljjFine");
+  DistTypeNames->push_back("mtll");
+  DistTypeNames->push_back("nVtx");
+  DistTypeNames->push_back("mu");
+}
 
 enum FSType{allchan,eee,eem,emm,mmm,nFSType};
 TString FSTypeNames[nFSType] = {"all","eee","eem","emm","mmm"};
@@ -275,32 +169,51 @@ enum SignalType{
 TString SignalTypeNames[nSignalType] = {"SmplViaWZ"};
 enum SimplifiedModelType{
   SmplViaWZ_1 , SmplViaWZ_2 , SmplViaWZ_3 , SmplViaWZ_4 , SmplViaWZ_5 ,
-  SmplViaWZ_6 , SmplViaWZ_7 , SmplViaWZ_8 , SmplViaWZ_9 , nSimplifiedModelType};
+  SmplViaWZ_6 , SmplViaWZ_7 , SmplViaWZ_8 , SmplViaWZ_9 , SmplViaWZ_10,
+  SmplViaWZ_11, SmplViaWZ_12, SmplViaWZ_13, nSimplifiedModelType};
 Int_t SmplViaWZHistColors[nSimplifiedModelType] = {kAzure,kAzure-1,kAzure-2,kAzure-3,kAzure-4,
-                                                   kCyan-2,kCyan-3,kCyan-4,kCyan-5};
+                                                   kCyan-2,kCyan-3,kCyan-4,kCyan-5,
+                                                   kRed-2,kRed-1,kRed,kMagenta};
 Int_t SmplViaWZLineStyle [nSimplifiedModelType] = {kDotted,kDotted,kDotted,kDotted,kDotted,
-                                                   kDotted,kDotted,kDotted,kDotted};
+                                                   kDotted,kDotted,kDotted,kDotted,kDotted,
+                                                   kDotted,kDotted,kDotted};
 std::vector<TString> *SignalFileNames[nSignalType];
 std::vector<Int_t> *DrawnSignalType;
 std::vector<Int_t> *DrawnSignalFile;
 std::vector<Int_t> *DrawnSignalColor;
 std::vector<Int_t> *DrawnSignalStyle;
+std::vector<std::string> *DrawnSignalLegend;
 
 void SetSignalType(void){
   DrawnSignalType  = new std::vector<Int_t>();
   DrawnSignalFile  = new std::vector<Int_t>();
   DrawnSignalColor = new std::vector<Int_t>();
   DrawnSignalStyle = new std::vector<Int_t>();
+  DrawnSignalLegend= new std::vector<std::string>();
   //Signal reference sample #1
   DrawnSignalType->push_back(SmplViaWZ);
   DrawnSignalFile->push_back(SmplViaWZ_6);//M_N2=150, M_N1=100
   DrawnSignalColor->push_back(kRed);
-  DrawnSignalStyle->push_back(kDotted);
+  DrawnSignalStyle->push_back(kDashDotted+2);
+  DrawnSignalLegend->push_back("M_N2=150,M_N1=100");
   //Signal reference sample #2
   DrawnSignalType->push_back(SmplViaWZ);
   DrawnSignalFile->push_back(SmplViaWZ_8);//M_N2=200, M_N1=150
   DrawnSignalColor->push_back(kBlue);
-  DrawnSignalStyle->push_back(kDashDotted); //kDashDotted, kDashed
+  DrawnSignalStyle->push_back(kDashDotted+2);
+  DrawnSignalLegend->push_back("M_N2=200,M_N1=150");
+  //Signal reference sample #3
+  DrawnSignalType->push_back(SmplViaWZ);
+  DrawnSignalFile->push_back(SmplViaWZ_10);//M_N2=125, M_N1=100
+  DrawnSignalColor->push_back(kRed);
+  DrawnSignalStyle->push_back(kDashed);
+  DrawnSignalLegend->push_back("M_N2=125,M_N1=100");
+  //Signal reference sample #4
+  DrawnSignalType->push_back(SmplViaWZ);
+  DrawnSignalFile->push_back(SmplViaWZ_13);//M_N2=125, M_N1=112.5
+  DrawnSignalColor->push_back(kBlue);
+  DrawnSignalStyle->push_back(kDashed);
+  DrawnSignalLegend->push_back("M_N2=125,M_N1=112.5");
 
   for(Int_t signaltype=0; signaltype<nSignalType; signaltype++){
     SignalFileNames[signaltype] = new std::vector<TString>();
@@ -316,6 +229,10 @@ void SetSignalType(void){
   SignalFileNames[SmplViaWZ]->push_back("205054");
   SignalFileNames[SmplViaWZ]->push_back("205055");
   SignalFileNames[SmplViaWZ]->push_back("205056");
+  SignalFileNames[SmplViaWZ]->push_back("205128");
+  SignalFileNames[SmplViaWZ]->push_back("205129");
+  SignalFileNames[SmplViaWZ]->push_back("205130");
+  SignalFileNames[SmplViaWZ]->push_back("205131");
 
 }
 
@@ -334,12 +251,12 @@ void SetDataType(void){
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
-enum BGType{WZ,ttbar,nBGType};
-TString BGTypeNames[nBGType] = {"WZ","ttbar"};
-Int_t BGTypeHistColors[nBGType] = {kAzure-3,kOrange-2};
-Int_t BGTypeFillColors[nBGType] = {kAzure-3,kOrange-2};
-Int_t BGStackOrder1[nBGType] = {WZ,ttbar};
-Int_t BGStackOrder2[nBGType] = {ttbar,WZ};
+enum BGType{WZ,ZZ,ttV,Higgs,ttbar,nBGType};
+TString BGTypeNames[nBGType] = {"WZ","ZZ","ttV","Higgs","ttbar"};
+Int_t BGTypeHistColors[nBGType] = {kAzure-3,kAzure-4,kCyan-2,kBlack,kOrange-2};
+Int_t BGTypeFillColors[nBGType] = {kAzure-3,kAzure-4,kCyan-2,kWhite,kOrange-2};
+Int_t BGStackOrder1[nBGType] = {WZ,ZZ,ttV,Higgs,ttbar};
+Int_t BGStackOrder2[nBGType] = {ttbar,Higgs,ttV,ZZ,WZ};
 // enum BGType{WZ,nBGType};
 // TString BGTypeNames[nBGType] = {"WZ"};
 // Int_t BGTypeHistColors[nBGType] = {kAzure-3};
@@ -384,17 +301,55 @@ void SetBGType(void){
   BGFileNames[WZ]->push_back("187177"); BGIncludeFlag[WZ]->push_back("00011");
   BGFileNames[WZ]->push_back("187178"); BGIncludeFlag[WZ]->push_back("01111");
 
+  //ZZ files
+  BGFileNames[ZZ]->push_back("187180"); BGIncludeFlag[ZZ]->push_back("01000");
+  BGFileNames[ZZ]->push_back("187181"); BGIncludeFlag[ZZ]->push_back("00110");
+  BGFileNames[ZZ]->push_back("187182"); BGIncludeFlag[ZZ]->push_back("01110");
+  BGFileNames[ZZ]->push_back("187183"); BGIncludeFlag[ZZ]->push_back("00001");
+  BGFileNames[ZZ]->push_back("187184"); BGIncludeFlag[ZZ]->push_back("00111");
+  BGFileNames[ZZ]->push_back("187185"); BGIncludeFlag[ZZ]->push_back("01111");
+  BGFileNames[ZZ]->push_back("187186"); BGIncludeFlag[ZZ]->push_back("01111");
+  BGFileNames[ZZ]->push_back("187187"); BGIncludeFlag[ZZ]->push_back("01111");
+  BGFileNames[ZZ]->push_back("187188"); BGIncludeFlag[ZZ]->push_back("01111");
+
+  //ttV files
+  BGFileNames[ttV]->push_back("119353"); BGIncludeFlag[ttV]->push_back("01111");//ttW
+  BGFileNames[ttV]->push_back("119355"); BGIncludeFlag[ttV]->push_back("01111");//ttZ
+  BGFileNames[ttV]->push_back("119583"); BGIncludeFlag[ttV]->push_back("01111");//ttWW
+
+  //Higgs
+  BGFileNames[Higgs]->push_back("161105"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->WW(lnulnu)
+  BGFileNames[Higgs]->push_back("161155"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->WW(lnulnu)
+  BGFileNames[Higgs]->push_back("161305"); BGIncludeFlag[Higgs]->push_back("01111");//ttH:H->WW(incl.)
+  //  BGFileNames[Higgs]->push_back("160755"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->ZZ(llnunu)
+  //  BGFileNames[Higgs]->push_back("160805"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->ZZ(llnunu)
+  //  BGFileNames[Higgs]->push_back("169072"); BGIncludeFlag[Higgs]->push_back("01111");//ttH:H->ZZ(incl.)
+  //  BGFileNames[Higgs]->push_back("160155"); BGIncludeFlag[Higgs]->push_back("01111");//ggF:H->ZZ(4l)
+  //  BGFileNames[Higgs]->push_back("160205"); BGIncludeFlag[Higgs]->push_back("01111");//VBF:H->ZZ(4l)
+  //  BGFileNames[Higgs]->push_back("160255"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->ZZ(4l)
+  //  BGFileNames[Higgs]->push_back("160305"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->ZZ(4l)
+  //  BGFileNames[Higgs]->push_back("160505"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->ZZ(llqq)
+  //  BGFileNames[Higgs]->push_back("160555"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->ZZ(llqq)
+  //  BGFileNames[Higgs]->push_back("XXXXXX"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->tautau(ll) ???
+  //  BGFileNames[Higgs]->push_back("161675"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->tautau(ll)
+  //  BGFileNames[Higgs]->push_back("161708"); BGIncludeFlag[Higgs]->push_back("01111");//ttH:H->tautau(ll)
+  //  BGFileNames[Higgs]->push_back("161686"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->tautau(lhad)
+  //  BGFileNames[Higgs]->push_back("161719"); BGIncludeFlag[Higgs]->push_back("01111");//ttH:H->tautau(lhad)
+  //  BGFileNames[Higgs]->push_back("XXXXXX"); BGIncludeFlag[Higgs]->push_back("00011");//WH:H->mumu ???
+  //  BGFileNames[Higgs]->push_back("167418"); BGIncludeFlag[Higgs]->push_back("00111");//ZH:H->mumu
+
   //ttbar
   BGFileNames[ttbar]->push_back("110401"); BGIncludeFlag[ttbar]->push_back("01111");//no all-had
 
+
 }
 
-TString getHistFileName(std::string path){
-  TString strFileName = gSystem->GetFromPipe(("ls "+path+"hist*.root").c_str());
+TString getHistFileName(std::string fileKeyWord){
+  TString strFileName = gSystem->GetFromPipe(("ls "+fileKeyWord).c_str());
   //  std::cout << "-- result" << std::endl;
   //  std::cout << strFileName.Data() << std::endl;
   if(strFileName==""){
-    std::cout<<"Cannnot find output histogram in "<<path.c_str()<<std::endl;
+    std::cout<<"Cannnot find output histogram in "<<fileKeyWord.c_str()<<std::endl;
     exit(1);
   }
   return strFileName;
@@ -423,6 +378,9 @@ Int_t mkPlots(TString SelecReg){
   SetDataType();
   SetBGType();
   SetSignalType();
+  SetDistType();
+
+  const Int_t nDistType = DistTypeNames->size();
 
   TString filepath_prefix = "$ROOTCOREBIN/../result/";
 
@@ -431,10 +389,10 @@ Int_t mkPlots(TString SelecReg){
   //   std::cout<<"Now processing for the real data : "<<DataTypeNames[datatype].Data()<<std::endl;
   //   TString dsid = DataFileNames->at(datatype).Data();
   //   TString filename = filepath_prefix+dsid+"."+SelecReg+".AnaHists.root";
+  //   std::cout<<"**** DatasetID : "<<dsid.Data()<<", filename="<<filename.Data()<<std::endl;
   //   TFile *f_tmp = new TFile(filename.Data());
   //   f_tmp->cd("nom");
   //   vec_datafiles->push_back(f_tmp);
-  //   std::cout<<"**** DatasetID : "<<dsid.Data()<<", filename="<<filename.Data()<<std::endl;
   // }
 
   //Background Files
@@ -444,12 +402,10 @@ Int_t mkPlots(TString SelecReg){
     for(UInt_t bgfile=0; bgfile<nsamples; bgfile++){
       TString dsid = BGFileNames[bgtype]->at(bgfile).Data();
       TString includeflag = BGIncludeFlag[bgtype]->at(bgfile).Data();
-      //      TString filename = filepath_prefix+dsid+"_00/"+SelecReg+".AnaHists.root";
-      //      TString filename = getHistFileName((filepath_prefix+dsid+"_00_"+SelecReg+"/").Data());
-      TString filename = getHistFileName((filepath_prefix+dsid+"_00/").Data());
+      TString filename = getHistFileName((filepath_prefix+dsid+"_00/"+dsid+"*."+SelecReg+"..*.root").Data());
+      std::cout<<"**** DatasetID : "<<dsid.Data()<<", filename=\""<<filename.Data()<<"\", IncludeFlag="<<includeflag.Data()<<std::endl;
       TFile *f_tmp = new TFile(filename.Data());
       vec_mcfiles->push_back(f_tmp);
-      std::cout<<"**** DatasetID : "<<dsid.Data()<<", filename="<<filename.Data()<<", IncludeFlag="<<includeflag.Data()<<std::endl;
     }
   }
 
@@ -461,10 +417,10 @@ Int_t mkPlots(TString SelecReg){
       TString dsid = SignalFileNames[signaltype]->at(signalfile).Data();
       //      TString filename = filepath_prefix+dsid+"."+SelecReg+".AnaHists.root";
       //      TString filename = getHistFileName((filepath_prefix+dsid+"_00_"+SelecReg+"/").Data());
-      TString filename = getHistFileName((filepath_prefix+dsid+"_00/").Data());
+      TString filename = getHistFileName((filepath_prefix+dsid+"_00/"+dsid+"*."+SelecReg+"..*.root").Data());
+      std::cout<<"**** DatasetID : "<<dsid.Data()<<", filename=\""<<filename.Data()<<"\""<<std::endl;
       TFile *f_tmp = new TFile(filename.Data());
       vec_signalfiles->push_back(f_tmp);
-      std::cout<<"**** DatasetID : "<<dsid.Data()<<", filename="<<filename.Data()<<std::endl;
     }
   }
 
@@ -483,7 +439,7 @@ Int_t mkPlots(TString SelecReg){
   //  std::cout<<vec_mcfiles->at(0)->GetName()<<std::endl;
   for(Int_t fstype=0; fstype<nFSType; fstype++){
     for(Int_t disttype=0; disttype<nDistType; disttype++){
-      std::string distname = DistTypeNames[disttype].Data();
+      std::string distname = DistTypeNames->at(disttype).Data();
       TFile *f_tmp = vec_signalfiles->at(0);
       TH1F *h_tmp = (TH1F*)(f_tmp->Get(Form("all_%s;1",distname.c_str())));
       //     //Real data
@@ -525,8 +481,9 @@ Int_t mkPlots(TString SelecReg){
   //     std::cout<<"Adding histograms in "<<DataFileNames->at(datafile)<<" to "<<FSTypeNames[fstype]<<" histograms..."<<std::endl;
   //     for(Int_t disttype=0; disttype<nDistType; disttype++){
   //       //Getting the histogram to add.
-  //       std::string distname = DistTypeNames[disttype].Data();
+  //       std::string distname = DistTypeNames->at(disttype).Data();
   //       std::string histname = Form("%s_%s;1",fsname.c_str(),distname.c_str());
+  //       std::cout<<"Accessing "<<histname<<" : "<<distname<<std::endl;
   //       TFile *f_tmp = vec_datafiles->at(datafile);
   //       TH1F *h_tmp = (TH1F*)(f_tmp->Get(histname.c_str()));
   //       dist_data[fstype][disttype]->Add(h_tmp);
@@ -556,8 +513,9 @@ Int_t mkPlots(TString SelecReg){
           Double_t scale = getMCScale(f_tmp);
           for(Int_t disttype=0; disttype<nDistType; disttype++){
             //Getting the histogram to add.
-            std::string distname = DistTypeNames[disttype].Data();
+            std::string distname = DistTypeNames->at(disttype).Data();
             std::string histname = Form("%s_%s;1",fsname.c_str(),distname.c_str());
+            std::cout<<"Accessing "<<histname<<" : "<<distname<<std::endl;
             TH1F *h_tmp = (TH1F*)(f_tmp->Get(histname.c_str()));
             if(h_tmp->Integral()<0.){
               std::cout<<"FileIdx : "<<fileidx<<", "<<h_tmp->Integral()<<std::endl;
@@ -589,9 +547,10 @@ Int_t mkPlots(TString SelecReg){
         Double_t scale = getMCScale(f_tmp);
         for(Int_t disttype=0; disttype<nDistType; disttype++){
           //Getting the histogram to add.
-          std::string distname = DistTypeNames[disttype].Data();
+          std::string distname = DistTypeNames->at(disttype).Data();
           std::string histname = Form("%s_%s;1",fsname.c_str(),distname.c_str());
           TH1F *h_tmp = (TH1F*)(f_tmp->Get(histname.c_str()));
+          std::cout<<"Accessing "<<histname<<" : "<<distname<<std::endl;
           vec_dist_signal[fstype][signaltype][disttype]->at(signalfile)->Add(h_tmp,scale);
           vec_dist_signal[fstype][signaltype][disttype]->at(signalfile)->SetTitle(FSTypeNames[fstype]+":"+SignalTypeNames[signaltype]);
           Int_t color = kBlack;
@@ -642,7 +601,7 @@ Int_t mkPlots(TString SelecReg){
       dist_totalbgErr[fstype][disttype]->SetMarkerStyle(0);
       dist_totalbgErr[fstype][disttype]->SetFillStyle(3454);
       //Creating SM stuck histogram
-      std::string distname = DistTypeNames[disttype].Data();
+      std::string distname = DistTypeNames->at(disttype).Data();
       std::cout<<"Preparing THStack for "<<FSTypeNames[fstype]<<" based on "<<Form("all_%s;1",distname.c_str())<<"."<<std::endl;
       hs_bg[fstype][disttype] = new THStack(Form("hs_bg_%d_%d",fstype,disttype),FSTypeNames[fstype]+":Total");
       for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
@@ -700,21 +659,30 @@ Int_t mkPlots(TString SelecReg){
   leg->SetTextSize(0.05);
   // leg->AddEntry(dist_data[0][0],"Data","lp");
   leg->AddEntry(dist_bg[0][WZ][0],"WZ","f");
-  // leg->AddEntry(dist_bg[0][ZZ][0],"ZZ","f");
-  // leg->AddEntry(dist_bg[0][ttW][0],"t#bar{t}W","f");
-  // leg->AddEntry(dist_bg[0][ttZ][0],"t#bar{t}Z","f");
+  leg->AddEntry(dist_bg[0][ZZ][0],"ZZ","f");
+  leg->AddEntry(dist_bg[0][ttV][0],"t#bar{t}V","f");
   // leg->AddEntry(dist_bg[0][Tribosons][0],"Tribosons","f");
-  // //For Higgs histograms, special treatment is needed to make it visible.
-  // TH1F* h_higgs4leg = (TH1F*)dist_bg[0][Higgs][0]->Clone("h_higgs4leg");
-  // h_higgs4leg->SetLineColor(kBlack);
-  // leg->AddEntry(h_higgs4leg,"Higgs","f");
+  //For Higgs histograms, special treatment is needed to make it visible.
+  TH1F* h_higgs4leg = (TH1F*)dist_bg[0][Higgs][0]->Clone("h_higgs4leg");
+  h_higgs4leg->SetLineColor(kBlack);
+  leg->AddEntry(h_higgs4leg,"Higgs","f");
   // leg->AddEntry(dist_bg[0][Zjets][0],"Z/#gamma^{*}+jets","f");
   // leg->AddEntry(dist_bg[0][Wjets][0],"W+jets","f");
   leg->AddEntry(dist_bg[0][ttbar][0],"t#bar{t}","f");
   // leg->AddEntry(dist_bg[0][OtherFake][0],"Other BG with fakes","f");
-  // leg->AddEntry(dist_totalbg[0][0],"Total SM","l");
-  // leg->AddEntry(dist_totalbgErr[0][0],"Unct. for SM ","f");
-
+  leg->AddEntry(dist_totalbg[0][0],"Total SM","l");
+  leg->AddEntry(dist_totalbgErr[0][0],"Unct. for SM ","f");
+  const Int_t nDrawnSignal = DrawnSignalType->size();
+  TH1F *h_sig[nDrawnSignal];
+  for(Int_t cnt=0; cnt<nDrawnSignal; cnt++){
+    h_sig[cnt] = vec_dist_signal[0][DrawnSignalType->at(cnt)][0]->at(DrawnSignalFile->at(cnt));
+    h_sig[cnt]->SetLineColor(DrawnSignalColor->at(cnt));
+    h_sig[cnt]->SetMarkerColor(DrawnSignalColor->at(cnt));
+    h_sig[cnt]->SetFillColor(0);
+    h_sig[cnt]->SetLineStyle(DrawnSignalStyle->at(cnt));
+    h_sig[cnt]->Draw("samehist");
+    leg->AddEntry(h_sig[cnt],DrawnSignalLegend->at(cnt).c_str(),"l");
+  }
 
   ////////////////////////////////////////////////////
   // histograms definition end.
@@ -723,6 +691,10 @@ Int_t mkPlots(TString SelecReg){
   Bool_t debugPlot = kTRUE;
   TUtil *u = new TUtil(("plots/"+SelecReg+".ps").Data(),("plots/"+SelecReg+".root").Data(),debugPlot);
   
+  u->SetPadNumXY(1,1);
+  u->cdPad();
+  leg->Draw();
+
   // for(Int_t disttype=0; disttype<nDistType; disttype++){
   //   for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
   //     u->Draw(dist_bg[allchan][bgtype][disttype],"E");
@@ -758,7 +730,7 @@ Int_t mkPlots(TString SelecReg){
 
       Double_t entry = dist_totalbg[fstype][disttype]->GetEntries();
       Double_t integral = dist_totalbg[fstype][disttype]->Integral();
-      if(fstype==0 && DistTypeNames[disttype]=="nJet"){
+      if(fstype==0 && DistTypeNames->at(disttype)=="nJet"){
         std::cout<<"*********************************************"<<std::endl;
         std::cout<<"Total BG : "<<integral<<std::endl;
         std::cout<<"*********************************************"<<std::endl;
@@ -779,18 +751,7 @@ Int_t mkPlots(TString SelecReg){
         u->Draw(dist_totalbg   [fstype][disttype],"samehist"); //should be drawn after the error histogram.
         // dist_data[fstype][disttype]->Draw("sameE");
         u->Draw(dist_totalbgErr[fstype][disttype],"sameE2");
-        TH1F *h_sig1 = vec_dist_signal[fstype][DrawnSignalType->at(0)][disttype]->at(DrawnSignalFile->at(0));
-        TH1F *h_sig2 = vec_dist_signal[fstype][DrawnSignalType->at(1)][disttype]->at(DrawnSignalFile->at(1));
-        h_sig1->SetLineColor(DrawnSignalColor->at(0));
-        h_sig2->SetLineColor(DrawnSignalColor->at(1));
-        h_sig1->SetMarkerColor(DrawnSignalColor->at(0));
-        h_sig2->SetMarkerColor(DrawnSignalColor->at(1));
-        h_sig1->SetFillColor(0);
-        h_sig2->SetFillColor(0);
-        h_sig1->SetLineStyle(DrawnSignalStyle->at(0));
-        h_sig2->SetLineStyle(DrawnSignalStyle->at(1));
-        h_sig1->Draw("samehist");
-        h_sig2->Draw("samehist");
+        for(Int_t cnt=0; cnt<nDrawnSignal; cnt++) h_sig[cnt]->Draw("samehist");
         //////////////////////////////////////////////////////////////
         // Log version
         //////////////////////////////////////////////////////////////
@@ -802,8 +763,7 @@ Int_t mkPlots(TString SelecReg){
         u->Draw(dist_totalbg   [fstype][disttype],"samehist");
         // dist_data[fstype][disttype]->Draw("sameE");
         u->Draw(dist_totalbgErr[fstype][disttype],"sameE2");
-        h_sig1->Draw("samehist");
-        // h_sig2->Draw("samehist");
+        for(Int_t cnt=0; cnt<nDrawnSignal; cnt++) h_sig[cnt]->Draw("samehist");
         gPad->SetLogy();
       }
       //Ratio plot
@@ -834,10 +794,7 @@ Int_t mkPlots(TString SelecReg){
 
   //drawing legends again...
   u->SetPadNumXY(1,1);
-  leg->AddEntry(vec_dist_signal[0][DrawnSignalType->at(0)][0]->at(DrawnSignalFile->at(0)),"SUSY Ref1","l");
-  leg->AddEntry(vec_dist_signal[0][DrawnSignalType->at(1)][0]->at(DrawnSignalFile->at(1)),"SUSY Ref2","l");
   leg->Draw();
-
 
   delete vec_datafiles;
   delete vec_signalfiles;

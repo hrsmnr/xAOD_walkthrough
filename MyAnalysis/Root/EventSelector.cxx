@@ -203,10 +203,19 @@ void EventSelector::initialize()
   }
   // 3 signal leptons, that's all
   else if(m_sel=="3lep"){
+    TypSel(3,0,3,0,-1,-1);
     m_applyTrig = false;
   }
   else if(m_sel=="3lepBveto"){
     TypSel(3,0,3,0,0,0);
+    m_applyTrig = false;
+  }
+  else if(m_sel=="3lepNoBaseReq"){
+    TypSel(3,0,-1,0,-1,-1);
+    m_applyTrig = false;
+  }
+  else if(m_sel=="3lepBvetoNoBaseReq"){
+    TypSel(3,0,-1,0,0,0);
     m_applyTrig = false;
   }
   else if (m_sel=="VR0a") {
