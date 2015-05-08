@@ -29,14 +29,26 @@ echo Target DS directory     = $TARGETDS
 echo Target selection region = $TARGETSELECREG
 
 ###########################################################
-# Deleting old logfiles in ./lsfoutput
+# Finding new output directory (result/hXXX/)
 ###########################################################
-\rm -f lsfoutput/*.log~* #delete logfiles with "~" first
-for logfile in `ls ./lsfoutput`
+for OUTDIR in `ls result | grep h`
 do
-    \cp -p --force lsfoutput/$logfile lsfoutput/$logfile~
-    \rm -f lsfoutput/$logfile
+    maxTagNum=0
+    if [ `echo $OUTDIR | cut -c 1` = 'h' ]; then
+        num=`echo $OUTDIR | cut -c 2-5`
+        expr "$num" + 1 >/dev/null 2>&1
+        if [ $? -lt 2 ]; then #checking if $num is numeric or not
+            if [ $num -gt $maxTagNum ]; then
+                maxTagNum=`expr $num`
+            fi
+        fi
+    fi
 done
+tagNum4ThisTime=`expr $maxTagNum + 1`
+tagNum=`printf "%04d" $tagNum4ThisTime` #zero padding
+echo h$tagNum
+\mkdir lsfoutput/h${tagNum}
+\mkdir result/h${tagNum}
 
 ###########################################################
 # Submitting jobs to the dataset in the target directory 
@@ -58,11 +70,11 @@ fi
 #extracting run number
 if [ $lenFilelistDirName -eq 10 ]; then
     startPos=`expr $lenFilelistDirName - 9`
-    runnumEndPos=`expr $lenFilelistDirName - 6`
+    runnumEndPos=`expr $startPos + 5`
     outputDirEndPos=`expr $lenFilelistDirName - 4`
 elif [ $lenFilelistDirName -gt 10 ]; then
     startPos=1
-    runnumEndPos=`expr $lenFilelistDirName - 6`
+    runnumEndPos=`expr $startPos + 5`
     outputDirEndPos=`expr $lenFilelistDirName - 4`
 fi
 outputDir=`echo $TXT | cut -c $startPos-$outputDirEndPos`
@@ -72,7 +84,7 @@ runnum=`echo $TXT | cut -c $startPos-$runnumEndPos`
 
 ######################################################
 # Waiting for #submitted jobs to be less than maxJobs
-maxJobs=150
+maxJobs=800
 while [ $(bjobs | wc -l) -gt $maxJobs  ]
 do
     echo Currently $(bjobs | wc -l) jobs are runnning. Wait for 10 seconds to keep less running jobs...
@@ -82,7 +94,13 @@ done
 
 maxEve=-1
 echo Starting testRun for DSID=$runnum ...
-echo 'bsub -q 12h -o ./lsfoutput/'${outputDir}'.log testRun -n '$maxEve' --FileDirBase '$TARGETDS' --filelist '$TXT' -o result/'$outputDir' '$TARGETSELECREG
-bsub -q 12h -o ./lsfoutput/{$outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/$outputDir $TARGETSELECREG
+echo bsub -q 12h -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG
+bsub -q 12h -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG
 echo ''
 done
+
+echo =================================================
+echo Tag=h${tagNum} was used for this submission. 
+echo Output files will appear in result/h${tagNum}.
+echo Log files will appear in lsfoutput/h${tagNum}.
+echo =================================================

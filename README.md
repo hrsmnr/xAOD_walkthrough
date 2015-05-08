@@ -20,3 +20,12 @@ $rc compile
 $testRun -D test -n 10
 $source share/runOnLocal.sh [Dataset directory] [Signal selection]
 $source share/runOnLSF.sh [Dataset directory] [Signal selection]
+$python share/mkFileList.py [optionally target directory]
+$source share/runOnLSFSplitDS.sh [Dataset directory] [Signal selection]
+$source share/mergeRootFiles.sh [tag(e.g. h0001)]
+$bkill -u [your account] -b 0 #kill all your jobs on LSF
+$bjobs -l
+$bjobs -u all
+$bjobs -a
+$bhosts
+$bqueues
