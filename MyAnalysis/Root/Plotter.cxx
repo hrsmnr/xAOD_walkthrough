@@ -48,7 +48,7 @@ uint nDRBins = 16;
 /*--------------------------------------------------------------------------------*/
 // Plotter Constructor
 /*--------------------------------------------------------------------------------*/
-Plotter::Plotter(std::string sel, std::string sys, MSG::Level dbg) : 
+Plotter::Plotter(const std::string& sel, const std::string& sys, const MSG::Level& dbg) : 
   m_dbg(dbg),
   m_sel(sel),
   m_sys(sys),
@@ -89,6 +89,7 @@ void Plotter::finalize()
   h_xsec->Write();
   h_nEve->Write();
   h_lepChan[Ch_all]->Write();
+  h_baselepChan[Ch_all]->Write();
   for(uint iCh=0; iCh<nChan; iCh++){
     h_lep1Pt[iCh]->Write();
     h_lep2Pt[iCh]->Write();
@@ -108,6 +109,18 @@ void Plotter::finalize()
     h_mu1Eta[iCh]->Write();
     h_mu2Eta[iCh]->Write();
     h_mu3Eta[iCh]->Write();
+    h_baselep1Pt[iCh]->Write();
+    h_baselep2Pt[iCh]->Write();
+    h_baselep3Pt[iCh]->Write();
+    h_baseel1Pt[iCh]->Write();
+    h_baseel2Pt[iCh]->Write();
+    h_baseel3Pt[iCh]->Write();
+    h_basemu1Pt[iCh]->Write();
+    h_basemu2Pt[iCh]->Write();
+    h_basemu3Pt[iCh]->Write();
+    h_baselep1Eta[iCh]->Write();
+    h_baselep2Eta[iCh]->Write();
+    h_baselep3Eta[iCh]->Write();
     h_llPt[iCh]->Write();
     h_sumLepPt[iCh]->Write();
     h_sumLepPtMet[iCh]->Write();
@@ -275,10 +288,12 @@ bool Plotter::BookHistograms()
 
   // Lepton channel histo, only defined for the 'all' channel
   h_lepChan       [Ch_all] = new TH1F("all_lepChan"       ,"all_lepChan;Unordered lepton channel;Events", nChan, 0, nChan);
+  h_baselepChan       [Ch_all] = new TH1F("all_baselepChan"       ,"all_baselepChan;Unordered lepton channel;Events", nChan, 0, nChan);
   // lepton channel loop
   for(uint iCh=0; iCh<nChan; iCh++){
     std::string chanName = vec_chan.at(iCh);
     h_lepChan[Ch_all]->GetXaxis()->SetBinLabel(iCh+1, chanName.c_str());
+    h_baselepChan[Ch_all]->GetXaxis()->SetBinLabel(iCh+1, chanName.c_str());
     // lep pt - my choice of binning                                                                            
     NEWVARHIST( lep1Pt, "Leading lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
     NEWVARHIST( lep2Pt, "Second lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
@@ -300,6 +315,22 @@ bool Plotter::BookHistograms()
     ETAHIST( mu1Eta, "Leading muon #eta;Events" );
     ETAHIST( mu2Eta, "Second muon #eta;Events" );
     ETAHIST( mu3Eta, "Third muon #eta;Events" );
+
+    // baseline lep pt
+    NEWVARHIST( baselep1Pt, "Leading baseline lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
+    NEWVARHIST( baselep2Pt, "Second baseline lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( baselep3Pt, "Third baseline lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
+    NEWVARHIST( baseel1Pt, "Leading baseline electron_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
+    NEWVARHIST( baseel2Pt, "Second baseline electron_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( baseel3Pt, "Third baseline electron_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
+    NEWVARHIST( basemu1Pt, "Leading baseline muon_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
+    NEWVARHIST( basemu2Pt, "Second baseline muon_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( basemu3Pt, "Third baseline muon_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
+
+    // baseline lep eta
+    ETAHIST( baselep1Eta, "Leading baseline lepton #eta;Events" );
+    ETAHIST( baselep2Eta, "Second baseline lepton #eta;Events" );
+    ETAHIST( baselep3Eta, "Third baseline lepton #eta;Events" );
 
     // lepton system pt
     NEWVARHIST( llPt, "P_{T}(lep,lep) [GeV];Events", nLep1PtBins, lep1PtBins );
@@ -507,9 +538,9 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
 
   //Retrieving objects via EventSelector
   std::vector< xAOD::Electron >* vec_signalElectron = EveSelec->GetSignalElectron();
-  // std::vector< xAOD::Electron >* vec_baseElectron   = EveSelec->GetBaseElectron  ();
+  std::vector< xAOD::Electron >* vec_baseElectron   = EveSelec->GetBaseElectron  ();
   std::vector< xAOD::Muon >*     vec_signalMuon     = EveSelec->GetSignalMuon    ();
-  // std::vector< xAOD::Muon >*     vec_baseMuon       = EveSelec->GetBaseMuon      ();
+  std::vector< xAOD::Muon >*     vec_baseMuon       = EveSelec->GetBaseMuon      ();
   std::vector< xAOD::Jet >*      vec_signalJet      = EveSelec->GetSignalJet     ();
   // std::vector< xAOD::Jet >*      vec_baseJet        = EveSelec->GetBaseJet       ();
   // std::vector< xAOD::Jet >*      vec_preJet         = EveSelec->GetPreJet        ();
@@ -549,6 +580,15 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
     leadLep      [id] = EveSelec->getLeadLep      (id);
   }
 
+  //Prepare 1st-3rd base lepton's four-vector
+  Int_t baseLepIndex[3];
+  Int_t baseLepFlavor[3];
+  TLorentzVector baseLep[3];
+  for(Int_t id=0; id<3; id++){
+    baseLepIndex [id] = EveSelec->getBaseLepIndex (id);
+    baseLepFlavor[id] = EveSelec->getBaseLepFlavor(id);
+    baseLep      [id] = EveSelec->getBaseLep      (id);
+  }
   //===========================================================================
   Double_t w = weight*EveSelec->getTotalSF();
 
@@ -575,9 +615,23 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
     if(leadLepFlavor[index]==1) h[Ch_all]->Fill(val,w); \
     if(leadLepFlavor[index]==1) h[chan]->Fill(val,w);   \
   } while(0)
+#define FillBaseElHist( index, h, val, w )                  \
+  do{                                                   \
+    if(baseLepFlavor[index]==0) h[Ch_all]->Fill(val,w); \
+    if(baseLepFlavor[index]==0) h[chan]->Fill(val,w);   \
+  } while(0)
+#define FillBaseMuHist( index, h, val, w )                  \
+  do{                                                   \
+    if(baseLepFlavor[index]==1) h[Ch_all]->Fill(val,w); \
+    if(baseLepFlavor[index]==1) h[chan]->Fill(val,w);   \
+  } while(0)
   //Fill lepChan histograms
   h_lepChan       [Ch_all]->Fill(Ch_all,w);
   h_lepChan       [Ch_all]->Fill(chan,w);
+
+  //Fill baselepChan histograms
+  h_baselepChan       [Ch_all]->Fill(Ch_all,w);
+  h_baselepChan       [Ch_all]->Fill(chan,w);
 
   //Fill lepton Pt
   FillChanHist( h_lep1Pt, leadLep[0].Pt()/1000., w );
@@ -600,6 +654,22 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   FillMuHist( 1, h_mu2Eta, vec_signalMuon    ->at(leadLepIndex[1]).eta(), w );
   FillElHist( 2, h_el3Eta, vec_signalElectron->at(leadLepIndex[2]).eta(), w );
   FillMuHist( 2, h_mu3Eta, vec_signalMuon    ->at(leadLepIndex[2]).eta(), w );
+
+  //Fill base lepton Pt
+  FillChanHist( h_baselep1Pt, baseLep[0].Pt()/1000., w );
+  FillChanHist( h_baselep2Pt, baseLep[1].Pt()/1000., w );
+  FillChanHist( h_baselep3Pt, baseLep[2].Pt()/1000., w );
+  FillBaseElHist( 0, h_baseel1Pt, vec_baseElectron->at(baseLepIndex[0]).pt()/1000., w );
+  FillBaseMuHist( 0, h_basemu1Pt, vec_baseMuon    ->at(baseLepIndex[0]).pt()/1000., w );
+  FillBaseElHist( 1, h_baseel2Pt, vec_baseElectron->at(baseLepIndex[1]).pt()/1000., w );
+  FillBaseMuHist( 1, h_basemu2Pt, vec_baseMuon    ->at(baseLepIndex[1]).pt()/1000., w );
+  FillBaseElHist( 2, h_baseel3Pt, vec_baseElectron->at(baseLepIndex[2]).pt()/1000., w );
+  FillBaseMuHist( 2, h_basemu3Pt, vec_baseMuon    ->at(baseLepIndex[2]).pt()/1000., w );
+
+  // Fill base lepton Eta
+  FillChanHist( h_baselep1Eta, baseLep[0].Eta(), w );
+  FillChanHist( h_baselep2Eta, baseLep[1].Eta(), w );
+  FillChanHist( h_baselep3Eta, baseLep[2].Eta(), w );
 
   //Fill lepton system, sum Pt
   FillChanHist( h_llPt, (leadLep[0]+leadLep[1]).Pt()/1000., w );
