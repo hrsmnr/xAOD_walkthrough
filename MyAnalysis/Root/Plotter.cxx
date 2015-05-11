@@ -7,9 +7,13 @@
 
 #include<iostream>
 #include"MyAnalysis/Plotter.h"
+#include"SUSYTools/SUSYObjDef_xAOD.h"
+#include"xAODEgamma/EgammaxAODHelpers.h"
+#include"../MCTruthClassifier/MCTruthClassifier/MCTruthClassifierDefs.h"//not prepared for rootcore
 
 #include"TFile.h"
 #include"TH1F.h"
+#include"TH2F.h"
 
 /////////////////////////////
 // Histogram bins
@@ -49,7 +53,8 @@ Plotter::Plotter(std::string sel, std::string sys, MSG::Level dbg) :
   m_sel(sel),
   m_sys(sys),
   m_filename(""),
-  m_crossSection(0.)
+  m_crossSection(0.),
+  m_isMC(kFALSE)
 {}
 
 /*--------------------------------------------------------------------------------*/
@@ -60,6 +65,7 @@ void Plotter::initialize(const char* path, int dsid, double XS)
   MyDebug("initialize()","Plotter::initialize()");
 
   m_crossSection = XS;
+  if(m_crossSection>0.) m_isMC = kTRUE;
 
   // Preparing TFile
   m_filename = Form("%s/%d.%s.%s.AnaHists.root",path,dsid,m_sel.c_str(),m_sys.c_str());
@@ -84,18 +90,141 @@ void Plotter::finalize()
   h_nEve->Write();
   h_lepChan[Ch_all]->Write();
   for(uint iCh=0; iCh<nChan; iCh++){
-    h_lep1Pt [iCh]->Write();
-    h_lep2Pt [iCh]->Write();
-    h_lep3Pt [iCh]->Write();
-    h_el1Pt  [iCh]->Write();
-    h_el2Pt  [iCh]->Write();
-    h_el3Pt  [iCh]->Write();
-    h_mu1Pt  [iCh]->Write();
-    h_mu2Pt  [iCh]->Write();
-    h_mu3Pt  [iCh]->Write();
+    h_lep1Pt[iCh]->Write();
+    h_lep2Pt[iCh]->Write();
+    h_lep3Pt[iCh]->Write();
+    h_el1Pt[iCh]->Write();
+    h_el2Pt[iCh]->Write();
+    h_el3Pt[iCh]->Write();
+    h_mu1Pt[iCh]->Write();
+    h_mu2Pt[iCh]->Write();
+    h_mu3Pt[iCh]->Write();
     h_lep1Eta[iCh]->Write();
     h_lep2Eta[iCh]->Write();
     h_lep3Eta[iCh]->Write();
+    h_el1Eta[iCh]->Write();
+    h_el2Eta[iCh]->Write();
+    h_el3Eta[iCh]->Write();
+    h_mu1Eta[iCh]->Write();
+    h_mu2Eta[iCh]->Write();
+    h_mu3Eta[iCh]->Write();
+    h_llPt[iCh]->Write();
+    h_sumLepPt[iCh]->Write();
+    h_sumLepPtMet[iCh]->Write();
+    h_dPhiWZ[iCh]->Write();
+    h_nMuComb[iCh]->Write();
+    h_elPtcone30[iCh]->Write();
+    h_elEtcone30[iCh]->Write();
+    h_muPtcone30[iCh]->Write();
+    h_muEtcone30[iCh]->Write();
+    h_lepD0[iCh]->Write();
+    h_lep1D0[iCh]->Write();
+    h_lep2D0[iCh]->Write();
+    h_lep3D0[iCh]->Write();
+    h_lepZ0[iCh]->Write();
+    h_lep1Z0[iCh]->Write();
+    h_lep2Z0[iCh]->Write();
+    h_lep3Z0[iCh]->Write();
+    h_lepD0Sig[iCh]->Write();
+    h_lep1D0Sig[iCh]->Write();
+    h_lep2D0Sig[iCh]->Write();
+    h_lep3D0Sig[iCh]->Write();
+    h_lepZ0SinTheta[iCh]->Write();
+    h_lep1Z0SinTheta[iCh]->Write();
+    h_lep2Z0SinTheta[iCh]->Write();
+    h_lep3Z0SinTheta[iCh]->Write();
+    h_lepOrigin[iCh]->Write();
+    h_lep1Origin[iCh]->Write();
+    h_lep2Origin[iCh]->Write();
+    h_lep3Origin[iCh]->Write();
+    h_lepClass[iCh]->Write();
+    h_lep1Class[iCh]->Write();
+    h_lep2Class[iCh]->Write();
+    h_lep3Class[iCh]->Write();
+    h_hasSS[iCh]->Write();
+    h_nTau[iCh]->Write();
+    h_tauPt[iCh]->Write();
+    h_tau1Pt[iCh]->Write();
+    h_tau2Pt[iCh]->Write();
+    h_tau1Eta[iCh]->Write();
+    h_tau2Eta[iCh]->Write();
+    h_tauProng[iCh]->Write();
+    h_dPhiTauTau[iCh]->Write();
+    h_tauClass[iCh]->Write();
+    h_tau1Class[iCh]->Write();
+    h_tau2Class[iCh]->Write();
+    h_minDRLepLep[iCh]->Write();
+    h_dPhiLep1Met[iCh]->Write();
+    h_dPhiLep2Met[iCh]->Write();
+    h_dPhiLep3Met[iCh]->Write();
+    h_dPhiLLMet[iCh]->Write();
+    h_dPhiJet1Met[iCh]->Write();
+    h_dPhiJet2Met[iCh]->Write();
+    h_dPhiJJMet[iCh]->Write();
+    h_minDPhiLepLep[iCh]->Write();
+    h_minDPhiLepMet[iCh]->Write();
+    h_minDPhiJetJet[iCh]->Write();
+    h_minDPhiJetMet[iCh]->Write();
+    h_minDPhiTauMet[iCh]->Write();
+    h_minDRLepJet[iCh]->Write();
+    h_maxDPhiLepLep[iCh]->Write();
+    h_maxDPhiLepMet[iCh]->Write();
+    h_maxDPhiJetJet[iCh]->Write();
+    h_maxDPhiJetMet[iCh]->Write();
+    h_maxDRLepJet[iCh]->Write();
+    h_dEtaLL[iCh]->Write();
+    h_dEtaJetJet[iCh]->Write();
+    h_maxDEtaJetJet[iCh]->Write();
+    h_minDEtaJetJet[iCh]->Write();
+    h_met[iCh]->Write();
+    h_meff[iCh]->Write();
+    h_meffNoMet[iCh]->Write();
+    h_metEle[iCh]->Write();
+    h_metMuo[iCh]->Write();
+    h_metJet[iCh]->Write();
+    h_metCell[iCh]->Write();
+    h_metRel[iCh]->Write();
+    h_nJet[iCh]->Write();
+    h_nBJet[iCh]->Write();
+    h_jetPt[iCh]->Write();
+    h_jet1Pt[iCh]->Write();
+    h_jet2Pt[iCh]->Write();
+    h_jet3Pt[iCh]->Write();
+    h_bJetPt[iCh]->Write();
+    h_bJet1Pt[iCh]->Write();
+    h_bJet2Pt[iCh]->Write();
+    h_bJet3Pt[iCh]->Write();
+    h_jetEta[iCh]->Write();
+    h_bJetEta[iCh]->Write();
+    h_bJet1Eta[iCh]->Write();
+    h_bJet2Eta[iCh]->Write();
+    h_bJet3Eta[iCh]->Write();
+    h_jetPhi[iCh]->Write();
+    h_jetMV1[iCh]->Write();
+    h_jetJVF[iCh]->Write();
+    h_bJetJVF[iCh]->Write();
+    h_dijetM[iCh]->Write();
+    h_productEta1Eta2[iCh]->Write();
+    h_mll[iCh]->Write();
+    h_msfos[iCh]->Write();
+    h_minMsfos[iCh]->Write();
+    h_msfss[iCh]->Write();
+    h_mlll[iCh]->Write();
+    h_mt[iCh]->Write();
+    h_mtL1[iCh]->Write();
+    h_mtL2[iCh]->Write();
+    h_mt2[iCh]->Write();
+    h_mjj[iCh]->Write();
+    h_mlljj[iCh]->Write();
+    h_mlt[iCh]->Write();
+    h_mtt[iCh]->Write();
+    h_mbb[iCh]->Write();
+    h_mljj[iCh]->Write();
+    h_mljjFine[iCh]->Write();
+    h_mtll[iCh]->Write();
+    h_mtll_mt[iCh]->Write();
+    h_nVtx[iCh]->Write();
+    h_mu[iCh]->Write();
   }
 
   m_rootfile->Close();
@@ -120,6 +249,8 @@ bool Plotter::BookHistograms()
   h_ ## name[iCh] = new TH1F((chanName+"_"+#name).c_str(), #name ";" xLbl, nbin, min, max);
 #define NEWVARHIST(name, xLbl, nbin, bins)                              \
   h_ ## name[iCh] = new TH1F((chanName+"_"+#name).c_str(), #name ";" xLbl, nbin, bins);
+#define NEWVARHIST2D(name, lbl, nXbin, xBins, nYBin, yBins) \
+  h_ ## name[iCh] = new TH2F((chanName+"_"+#name).c_str(), #name ";" lbl, nXbin, xBins, nYBin, yBins);
   // shorthand way to set bin labels, since it is kind of gross                                               
 #define SETBINLABEL(name, bin, label)                         \
   h_ ## name[iCh]->GetXaxis()->SetBinLabel(bin, label)
@@ -159,9 +290,201 @@ bool Plotter::BookHistograms()
     NEWVARHIST( mu2Pt, "Second muon_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
     NEWVARHIST( mu3Pt, "Third muon_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
 
+    // lep eta
     ETAHIST( lep1Eta, "Leading lepton #eta;Events" );
     ETAHIST( lep2Eta, "Second lepton #eta;Events" );
     ETAHIST( lep3Eta, "Third lepton #eta;Events" );
+    ETAHIST( el1Eta, "Leading electron #eta;Events" );
+    ETAHIST( el2Eta, "Second electron #eta;Events" );
+    ETAHIST( el3Eta, "Third electron #eta;Events" );
+    ETAHIST( mu1Eta, "Leading muon #eta;Events" );
+    ETAHIST( mu2Eta, "Second muon #eta;Events" );
+    ETAHIST( mu3Eta, "Third muon #eta;Events" );
+
+    // lepton system pt
+    NEWVARHIST( llPt, "P_{T}(lep,lep) [GeV];Events", nLep1PtBins, lep1PtBins );
+
+    // sum of lepton pt and MET
+    NEWVARHIST( sumLepPt, "#Sigma |lepton P_{T}| [GeV];Events", nMeffBins, meffBins );
+    NEWVARHIST( sumLepPtMet, "#Sigma |lepton_{} P_{T}| + |MET| [GeV];Events", nMeffBins, meffBins );
+
+    // dPhi WZ
+    DPHIHIST( dPhiWZ, "dPhi(SFOS,l);Events" );
+
+    // combined muons
+    NEWHIST( nMuComb, "Number of combined muons;Events", 4, -0.5, 3.5 );
+
+    // isolation vars
+    NEWHIST( elPtcone30, "Electron ptcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( elEtcone30, "Electron topo etcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( muPtcone30, "Muon ptcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( muEtcone30, "Muon etcone30 [GeV];Events", 50, 0, 50 );
+
+    // impact parameters
+    NEWHIST( lepD0, "Lepton |d0| [mm];Events", 20, 0, 0.5 );
+    NEWHIST( lep1D0, "Leading lepton |d0| [mm];Events", 20, 0, 0.5 );
+    NEWHIST( lep2D0, "Second lepton |d0| [mm];Events", 20, 0, 0.5 );
+    NEWHIST( lep3D0, "Third lepton |d0| [mm];Events", 20, 0, 0.5 );
+    NEWHIST( lepZ0, "Lepton |z0| [mm];Events", 20, 0, 0.5 );
+    NEWHIST( lep1Z0, "Leading lepton |z0| [mm];Events", 20, 0, 0.5 );
+    NEWHIST( lep2Z0, "Second lepton |z0| [mm];Events", 20, 0, 0.5 );
+    NEWHIST( lep3Z0, "Third lepton |z0| [mm];Events", 20, 0, 0.5 );
+    NEWHIST( lepD0Sig, "Lepton |d0/#sigma_{d0}|;Events", 20, 0, 3.0 );
+    NEWHIST( lep1D0Sig, "Leading lepton |d0/#sigma_{d0}|;Events", 20, 0, 3.0 );
+    NEWHIST( lep2D0Sig, "Second lepton |d0/#sigma_{d0}|;Events", 20, 0, 3.0 );
+    NEWHIST( lep3D0Sig, "Third lepton |d0/#sigma_{d0}|;Events", 20, 0, 3.0 );
+    NEWHIST( lepZ0SinTheta, "Lepton |z0sin#theta| [mm];Events", 20, 0, 0.5 );
+    NEWHIST( lep1Z0SinTheta, "Leading lepton |z0sin#theta| [mm];Events", 20, 0, 0.5 );
+    NEWHIST( lep2Z0SinTheta, "Second lepton |z0sin#theta| [mm];Events", 20, 0, 0.5 );
+    NEWHIST( lep3Z0SinTheta, "Third lepton |z0sin#theta| [mm];Events", 20, 0, 0.5 );
+
+    // lepton truth matching
+    NEWHIST( lepOrigin, "Lepton truth origin;Leptons", PARTICLETYPES, 0, PARTICLETYPES );
+    NEWHIST( lep1Origin, "Leading lepton truth origin;Events", PARTICLETYPES, 0, PARTICLETYPES );
+    NEWHIST( lep2Origin, "Second lepton truth origin;Events", PARTICLETYPES, 0, PARTICLETYPES );
+    NEWHIST( lep3Origin, "Third lepton truth origin;Events", PARTICLETYPES, 0, PARTICLETYPES );
+    NEWHIST( lepClass, "Lepton truth classification;Leptons", 5, 0, 5 );
+    NEWHIST( lep1Class, "Leading lepton truth classification;Events", 5, 0, 5 );
+    NEWHIST( lep2Class, "Second lepton truth classification;Events", 5, 0, 5 );
+    NEWHIST( lep3Class, "Third lepton truth classification;Events", 5, 0, 5 );
+    SETBINLABEL( lepClass, 1, "PR" ); 
+    SETBINLABEL( lep1Class, 1, "PR" ); 
+    SETBINLABEL( lep2Class, 1, "PR" );
+    SETBINLABEL( lep3Class, 1, "PR" );
+    SETBINLABEL( lepClass, 2, "CO" ); 
+    SETBINLABEL( lep1Class, 2, "CO" ); 
+    SETBINLABEL( lep2Class, 2, "CO" );
+    SETBINLABEL( lep3Class, 2, "CO" );
+    SETBINLABEL( lepClass, 3, "HF" ); 
+    SETBINLABEL( lep1Class, 3, "HF" ); 
+    SETBINLABEL( lep2Class, 3, "HF" );
+    SETBINLABEL( lep3Class, 3, "HF" );
+    SETBINLABEL( lepClass, 4, "LF" ); 
+    SETBINLABEL( lep1Class, 4, "LF" ); 
+    SETBINLABEL( lep2Class, 4, "LF" );
+    SETBINLABEL( lep3Class, 4, "LF" );
+    SETBINLABEL( lepClass, 5, "UK" ); 
+    SETBINLABEL( lep1Class, 5, "UK" ); 
+    SETBINLABEL( lep2Class, 5, "UK" );
+    SETBINLABEL( lep3Class, 5, "UK" );
+
+    NEWHIST( hasSS, "has SS light leptons;Events", 2, 0, 2 );
+
+    // tau kinematics
+    NEWHIST( nTau, "Number of taus;Events", 6, -0.5, 5.5 );
+    NEWVARHIST( tauPt, "Tau P_{T} [GeV];Taus", nLep1PtBins, lep1PtBins );
+    NEWVARHIST( tau1Pt, "Leading tau_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
+    NEWVARHIST( tau2Pt, "Second tau_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    ETAHIST( tau1Eta, "Leading tau #eta;Events" );
+    ETAHIST( tau2Eta, "Second tau #eta;Events" );
+    DPHIHIST( dPhiTauTau, "dPhi(tau1, tau2);Events" );
+    NEWHIST( tauProng, "Tau prong;Taus", 2, 0, 2 );
+    SETBINLABEL( tauProng, 1, "1" );
+    SETBINLABEL( tauProng, 2, "3" );
+    NEWHIST( tauClass, "Tau truth classification;Taus", 5, 0, 5 );
+    NEWHIST( tau1Class, "Leading tau truth classification;Taus", 5, 0, 5 );
+    NEWHIST( tau2Class, "Second tau truth classification;Taus", 5, 0, 5 );
+    SETBINLABEL( tauClass, 1, "PR" ); 
+    SETBINLABEL( tau1Class, 1, "PR" ); 
+    SETBINLABEL( tau2Class, 1, "PR" );
+    SETBINLABEL( tauClass, 2, "CO" ); 
+    SETBINLABEL( tau1Class, 2, "CO" ); 
+    SETBINLABEL( tau2Class, 2, "CO" );
+    SETBINLABEL( tauClass, 3, "HF" ); 
+    SETBINLABEL( tau1Class, 3, "HF" ); 
+    SETBINLABEL( tau2Class, 3, "HF" );
+    SETBINLABEL( tauClass, 4, "LF" ); 
+    SETBINLABEL( tau1Class, 4, "LF" ); 
+    SETBINLABEL( tau2Class, 4, "LF" );
+    SETBINLABEL( tauClass, 5, "UK" ); 
+    SETBINLABEL( tau1Class, 5, "UK" ); 
+    SETBINLABEL( tau2Class, 5, "UK" );
+
+    // dR, dPhi plots
+    DRHIST( minDRLepLep, "min dR(lep, lep);Events" );
+    DPHIHIST( dPhiLep1Met, "dPhi(lep1, MET);Events" );
+    DPHIHIST( dPhiLep2Met, "dPhi(lep2, MET);Events" );
+    DPHIHIST( dPhiLep3Met, "dPhi(lep3, MET);Events" );
+    DPHIHIST( dPhiLLMet, "dPhi(lep1+lep2, MET);Events" );
+    DPHIHIST( dPhiJet1Met, "dPhi(jet1, MET);Events" );
+    DPHIHIST( dPhiJet2Met, "dPhi(jet2, MET);Events" );
+    DPHIHIST( dPhiJJMet, "dPhi(jet1+jet2, MET);Events" );
+    DPHIHIST( minDPhiLepLep, "min dPhi(lep, lep);Events" );
+    DPHIHIST( minDPhiLepMet, "min dPhi(lep, MET);Events" );
+    DPHIHIST( minDPhiJetJet, "min dPhi(jet, jet);Events" );
+    DPHIHIST( minDPhiJetMet, "min dPhi(jet, MET);Events" );
+    DPHIHIST( minDPhiTauMet, "min dPhi(tau, MET);Events" );
+    DRHIST( minDRLepJet, "min dR(lep, Jet);Events" );
+    DPHIHIST( maxDPhiLepLep, "max dPhi(lep, lep);Events" );
+    DPHIHIST( maxDPhiLepMet, "max dPhi(lep, MET);Events" );
+    DPHIHIST( maxDPhiJetJet, "max dPhi(jet, jet);Events" );
+    DPHIHIST( maxDPhiJetMet, "max dPhi(jet, MET);Events" );
+    DRHIST( maxDRLepJet, "max dR(lep, Jet);Events" );
+    NEWHIST( dEtaLL, "#Delta#eta(lep, lep);Events", 30, 0, 3 );
+    NEWHIST( dEtaJetJet, "#Delta#eta(jet, jet);Events", 20, 0, 8 );
+    NEWHIST( maxDEtaJetJet, "max #Delta#eta(jet, jet);Events", 20, 0, 8 );
+    NEWHIST( minDEtaJetJet, "min #Delta#eta(jet, jet);Events", 20, 0, 8 );
+
+    // mass plots
+    NEWHIST( mll, "M_{ll} [GeV];Events", 50, 50, 150 );
+    ZMASSHIST( msfos, "M_{SFOS} [GeV];Events" );
+    NEWHIST( minMsfos, "min M_{SFOS} [GeV];Events", 50, 0., 150 );
+    NEWHIST( msfss, "M_{SFSS} [GeV];SFSS lepton pairs", 50, 0, 500 );
+    NEWVARHIST( mlll, "M_{lll} [GeV];Events", nMassBins, massBins );
+    //NEWHIST( mlll, "M_{lll} [GeV];Events", 50, 0, 1000 );
+    NEWVARHIST( mt, "M_{T} [GeV];Events", nMassBins, massBins );
+    NEWVARHIST( mtL1, "M_{T}(lep1, MET) [GeV];Events", nMassBins, massBins );
+    NEWVARHIST( mtL2, "M_{T}(lep2, MET) [GeV];Events", nMassBins, massBins );
+    NEWVARHIST( mt2, "M_{T2} [GeV];Events", nMassBins, massBins );
+    NEWVARHIST( meff, "M_{eff} [GeV];Events", nMeffBins, meffBins );
+    NEWVARHIST( meffNoMet, "M_{eff} (No MET) [GeV];Events", nMeffBins, meffBins );
+    NEWVARHIST( mjj, "M_{jj} [GeV];Events", nMassBins, massBins );
+    NEWHIST( mlljj, "M_{lljj} [GeV];Events", 40, 0, 1000 );
+    NEWVARHIST( mlt, "M_{l#tau} [GeV];Lepton-tau pairs", nMassBins, massBins );
+    NEWVARHIST( mtt, "M_{#tau#tau} [GeV];Events", nMassBins, massBins );
+    NEWVARHIST( mbb, "M_{bb} [GeV];Events", nMassBins, massBins );
+    NEWVARHIST( mljj, "M_{ljj} [GeV];Events", nMeffBins, meffBins );
+    NEWVARHIST( mljjFine, "M_{ljj} [GeV];Events", nMljjFineBins, mljjFineBins );
+    NEWVARHIST( mtll, "M_{T}^{WW} [GeV];Events", nMassBins, massBins );
+    NEWVARHIST2D( mtll_mt, "M_{T}^{WW} [GeV];M_{T} [GeV];Events", nMassBins, massBins, nMassBins, massBins );
+
+    // MET
+    //NEWVARHIST( met, "MET [GeV];Events", nMetBins, metBins );
+    NEWHIST( met, "MET [GeV];Events", 30, 0, 450 );
+    NEWHIST( metEle, "MET RefElectron [GeV];Events", 20, 0, 200 );
+    NEWHIST( metMuo, "MET Muon [GeV];Events", 20, 0, 200 );
+    NEWHIST( metJet, "MET RefJet [GeV];Events", 20, 0, 200 );
+    NEWHIST( metCell, "MET CellOut [GeV];Events", 20, 0, 200 );
+    NEWHIST( metRel, "MET rel [GeV];Events", 30, 0, 450 );
+
+    // Jets
+    NEWHIST( nJet, "Number of jets;Events", 17, -0.5, 16.5 );
+    NEWHIST( nBJet, "Number of b jets;Events", 17, -0.5, 16.5 );
+
+    PTHIST( jet1Pt, "Leading jet_{} P_{T} [GeV];Events" );
+    PTHIST( jet2Pt, "Second jet_{} P_{T} [GeV];Events" );
+    PTHIST( jet3Pt, "Third jet_{} P_{T} [GeV];Events" );
+    NEWVARHIST( jetPt, "Jet P_{T} [GeV];Jets", nJetPtBins, jetPtBins );
+    NEWVARHIST( bJetPt, "B Jet P_{T} [GeV];Jets", nJetPtBins, jetPtBins );
+    NEWVARHIST( bJet1Pt, "Leading B Jet P_{T} [GeV];Events", nJetPtBins, jetPtBins );
+    NEWVARHIST( bJet2Pt, "Second B Jet P_{T} [GeV];Events", nJetPtBins, jetPtBins );
+    NEWVARHIST( bJet3Pt, "Third B Jet P_{T} [GeV];Events", nJetPtBins, jetPtBins );
+    ETAHIST( jetEta, "Jet #eta;Jets" );
+    ETAHIST( bJetEta, "B Jet #eta;Jets" );
+    ETAHIST( bJet1Eta, "Leading B Jet #eta;Events" );
+    ETAHIST( bJet2Eta, "Second B Jet #eta;Events" );
+    ETAHIST( bJet3Eta, "Third B Jet #eta;Events" );
+    NEWHIST( jetPhi, "Jet phi;Jets", 10, -3.1416, 3.1416 );
+    NEWHIST( jetMV1, "Jet MV1;Jets", 20, 0., 1. );
+    NEWHIST( jetJVF, "Jet JVF;Jets", 20, -1., 1. );
+    NEWHIST( bJetJVF, "B Jet JVF;B Jets", 20, -1., 1. );
+    NEWHIST( dijetM, "Mjj [GeV];Events", 20, 0, 1200 );
+    NEWHIST( productEta1Eta2, "Eta1*Eta2;Events", 30, -10, 5. );
+
+    // Pileup hists
+    NEWHIST( nVtx, "Number of good vertices;Events", 40, 0, 40 );
+    NEWHIST( mu, "Avg interactions per bunch crossing;Events", 40, 0, 40 );
+
   }
 
 #undef PT1HIST
@@ -187,10 +510,10 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   // std::vector< xAOD::Electron >* vec_baseElectron   = EveSelec->GetBaseElectron  ();
   std::vector< xAOD::Muon >*     vec_signalMuon     = EveSelec->GetSignalMuon    ();
   // std::vector< xAOD::Muon >*     vec_baseMuon       = EveSelec->GetBaseMuon      ();
-  // std::vector< xAOD::Jet >*      vec_signalJet      = EveSelec->GetSignalJet     ();
+  std::vector< xAOD::Jet >*      vec_signalJet      = EveSelec->GetSignalJet     ();
   // std::vector< xAOD::Jet >*      vec_baseJet        = EveSelec->GetBaseJet       ();
   // std::vector< xAOD::Jet >*      vec_preJet         = EveSelec->GetPreJet        ();
-  // TVector2                       met                = EveSelec->GetMEt           ();
+  TVector2                       met                = EveSelec->GetMEt           ();
 
   // std::cout<<"elSize="<<vec_signalElectron->size()<<", muSize="<<vec_signalMuon->size()<<std::endl;
   // for(UInt_t el=0; el<vec_signalElectron->size(); el++){
@@ -271,11 +594,232 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   FillChanHist( h_lep1Eta, leadLep[0].Eta(), w );
   FillChanHist( h_lep2Eta, leadLep[1].Eta(), w );
   FillChanHist( h_lep3Eta, leadLep[2].Eta(), w );
+  FillElHist( 0, h_el1Eta, vec_signalElectron->at(leadLepIndex[0]).eta(), w );
+  FillMuHist( 0, h_mu1Eta, vec_signalMuon    ->at(leadLepIndex[0]).eta(), w );
+  FillElHist( 1, h_el2Eta, vec_signalElectron->at(leadLepIndex[1]).eta(), w );
+  FillMuHist( 1, h_mu2Eta, vec_signalMuon    ->at(leadLepIndex[1]).eta(), w );
+  FillElHist( 2, h_el3Eta, vec_signalElectron->at(leadLepIndex[2]).eta(), w );
+  FillMuHist( 2, h_mu3Eta, vec_signalMuon    ->at(leadLepIndex[2]).eta(), w );
 
-  // getchar();
-  // std::cout<<"MEt="<<met.Mod()<<", Phi="<<met.Phi()<<std::endl;
-  // std::cout<<"Px="<<met.Px()<<", Py="<<met.Py()<<std::endl;
-  // std::cout<<"End: event selection ..."<<std::endl;
+  //Fill lepton system, sum Pt
+  FillChanHist( h_llPt, (leadLep[0]+leadLep[1]).Pt()/1000., w );
+  FillChanHist( h_sumLepPt, (leadLep[0].Pt()+leadLep[1].Pt()+leadLep[2].Pt())/1000., w );
+  FillChanHist( h_sumLepPtMet, (leadLep[0].Pt()+leadLep[1].Pt()+leadLep[2].Pt()+met.Mod())/1000., w );
+
+  // FillChanHist( h_dPhiWZ, , w);
+  // FillChanHist( h_nMuComb, , w);
+
+  //Fill isolation values
+  for(Int_t id=0; id<3; id++){
+    float ptcone30 = EveSelec->getIsolationValue(leadLepIndex[id], leadLepFlavor[id], xAOD::Iso::ptcone30);
+    float etcone30 = EveSelec->getIsolationValue(leadLepIndex[id], leadLepFlavor[id], xAOD::Iso::etcone30);
+    if(leadLepFlavor[id]==0){
+      FillChanHist( h_elPtcone30, ptcone30/1000., w);
+      FillChanHist( h_elEtcone30, etcone30/1000., w);
+    }else{
+      FillChanHist( h_muPtcone30, ptcone30/1000., w);
+      FillChanHist( h_muEtcone30, etcone30/1000., w);
+    }
+  }
+
+  //Fill lepton track variables
+  for(Int_t id=0; id<3; id++){
+    const xAOD::TrackParticle* track = EveSelec->getTrack(leadLepIndex[id], leadLepFlavor[id]);
+    Double_t d0         = 0.;
+    Double_t d0sig      = 0.;
+    Double_t z0         = 0.;
+    Double_t z0sinTheta = 0.;
+    if(track){
+      //track d0
+      d0 = TMath::Abs(track->d0());
+      FillChanHist( h_lepD0, d0, w);
+      if     (leadLepIndex[id]==0) FillChanHist( h_lep1D0, d0, w);
+      else if(leadLepIndex[id]==1) FillChanHist( h_lep2D0, d0, w);
+      else if(leadLepIndex[id]==2) FillChanHist( h_lep3D0, d0, w);
+      //track z0
+      const xAOD::Vertex* pv = EveSelec->getSUSYTools()->GetPrimVtx();
+      double primvertex_z = pv ? pv->z() : 0;
+      z0 = TMath::Abs(track->z0() + track->vz() - primvertex_z);
+      FillChanHist( h_lepZ0, z0, w);
+      if     (leadLepIndex[id]==0) FillChanHist( h_lep1Z0, z0, w);
+      else if(leadLepIndex[id]==1) FillChanHist( h_lep2Z0, z0, w);
+      else if(leadLepIndex[id]==2) FillChanHist( h_lep3Z0, z0, w);
+      //track d0/sigma(d0)
+      Double_t vard0 = track->definingParametersCovMatrix()(0,0);
+      if(vard0 > 0){
+        Double_t d0error = 0.;
+        d0error=TMath::Sqrt(vard0);
+        d0sig  = d0/d0error;
+        FillChanHist( h_lepD0Sig, d0sig, w);
+        if     (leadLepIndex[id]==0) FillChanHist( h_lep1D0Sig, d0sig, w);
+        else if(leadLepIndex[id]==1) FillChanHist( h_lep2D0Sig, d0sig, w);
+        else if(leadLepIndex[id]==2) FillChanHist( h_lep3D0Sig, d0sig, w);
+      }
+      //track z0*sinTheta
+      Double_t theta = track->theta();
+      z0sinTheta = z0*TMath::Sin(theta);
+      FillChanHist( h_lepZ0SinTheta, z0sinTheta, w);
+      if     (leadLepIndex[id]==0) FillChanHist( h_lep1Z0SinTheta, z0sinTheta, w);
+      else if(leadLepIndex[id]==1) FillChanHist( h_lep2Z0SinTheta, z0sinTheta, w);
+      else if(leadLepIndex[id]==2) FillChanHist( h_lep3Z0SinTheta, z0sinTheta, w);
+    }
+  }
+
+  //Fill lepton truth infomation
+  if(m_isMC){
+    for(Int_t id=0; id<3; id++){
+      if(leadLepIndex[id]==-1) return false;
+      else{
+        Int_t type   = -1;
+        Int_t origin = -1;
+        if(leadLepFlavor[id]==0){
+          type   = xAOD::EgammaHelpers::getParticleTruthType  (&(vec_signalElectron->at(leadLepIndex[id])));
+          origin = xAOD::EgammaHelpers::getParticleTruthOrigin(&(vec_signalElectron->at(leadLepIndex[id])));
+        }else{
+          const xAOD::TrackParticle* trackParticle = (&(vec_signalMuon->at(leadLepIndex[id])))->primaryTrackParticle();
+          if(trackParticle){
+            static SG::AuxElement::Accessor<int> acc_truthType  ("truthType"  );
+            static SG::AuxElement::Accessor<int> acc_truthOrigin("truthOrigin");
+            if(acc_truthType  .isAvailable(*trackParticle)) type   = acc_truthType  (*trackParticle);
+            if(acc_truthOrigin.isAvailable(*trackParticle)) origin = acc_truthOrigin(*trackParticle);
+          }
+        }
+        //For origin
+        FillChanHist( h_lepOrigin, type, w);
+        if     (id==0) FillChanHist( h_lep1Origin, type, w);
+        else if(id==1) FillChanHist( h_lep2Origin, type, w);
+        else if(id==2) FillChanHist( h_lep3Origin, type, w);
+        //Classification of Primary/Comversion/HeavyFlavor/LightFlavor/Unknown
+        if(origin==12 || origin==13 || origin==22){
+          FillChanHist( h_lepClass, 0., w);
+          if     (id==0) FillChanHist( h_lep1Class, 0., w);
+          else if(id==1) FillChanHist( h_lep2Class, 0., w);
+          else if(id==2) FillChanHist( h_lep3Class, 0., w);
+        }
+        else if(origin==5){
+          FillChanHist( h_lepClass, 1., w);
+          if     (id==0) FillChanHist( h_lep1Class, 1., w);
+          else if(id==1) FillChanHist( h_lep2Class, 1., w);
+          else if(id==2) FillChanHist( h_lep3Class, 1., w);
+        }
+        else if(origin==25 || origin==26 || origin==27 ||
+                origin==29 || origin==32 || origin==33 ){
+          FillChanHist( h_lepClass, 2., w);
+          if     (id==0) FillChanHist( h_lep1Class, 2., w);
+          else if(id==1) FillChanHist( h_lep2Class, 2., w);
+          else if(id==2) FillChanHist( h_lep3Class, 2., w);
+        }
+        else if(origin==23 || origin==24 || origin==30 ||
+                origin==31 || origin==34 || origin==35 || 
+                origin==41 || origin==45 ){
+          FillChanHist( h_lepClass, 3., w);
+          if     (id==0) FillChanHist( h_lep1Class, 3., w);
+          else if(id==1) FillChanHist( h_lep2Class, 3., w);
+          else if(id==2) FillChanHist( h_lep3Class, 3., w);
+        }else{
+          FillChanHist( h_lepClass, 4., w);
+          if     (id==0) FillChanHist( h_lep1Class, 4., w);
+          else if(id==1) FillChanHist( h_lep2Class, 4., w);
+          else if(id==2) FillChanHist( h_lep3Class, 4., w);
+        }
+      }
+    }
+  }
+
+  FillChanHist( h_hasSS, (EveSelec->hasSS()?1.:0.), w);
+  // FillChanHist( h_nTau, , w);
+  // FillChanHist( h_tauPt, , w);
+  // FillChanHist( h_tau1Pt, , w);
+  // FillChanHist( h_tau2Pt, , w);
+  // FillChanHist( h_tau1Eta, , w);
+  // FillChanHist( h_tau2Eta, , w);
+  // FillChanHist( h_tauProng, , w);
+  // FillChanHist( h_dPhiTauTau, , w);
+  // FillChanHist( h_tauClass, , w);
+  // FillChanHist( h_tau1Class, , w);
+  // FillChanHist( h_tau2Class, , w);
+  // FillChanHist( h_minDRLepLep, , w);
+  // FillChanHist( h_dPhiLep1Met, , w);
+  // FillChanHist( h_dPhiLep2Met, , w);
+  // FillChanHist( h_dPhiLep3Met, , w);
+  // FillChanHist( h_dPhiLLMet, , w);
+  // FillChanHist( h_dPhiJet1Met, , w);
+  // FillChanHist( h_dPhiJet2Met, , w);
+  // FillChanHist( h_dPhiJJMet, , w);
+  // FillChanHist( h_minDPhiLepLep, , w);
+  // FillChanHist( h_minDPhiLepMet, , w);
+  // FillChanHist( h_minDPhiJetJet, , w);
+  // FillChanHist( h_minDPhiJetMet, , w);
+  // FillChanHist( h_minDPhiTauMet, , w);
+  // FillChanHist( h_minDRLepJet, , w);
+  // FillChanHist( h_maxDPhiLepLep, , w);
+  // FillChanHist( h_maxDPhiLepMet, , w);
+  // FillChanHist( h_maxDPhiJetJet, , w);
+  // FillChanHist( h_maxDPhiJetMet, , w);
+  // FillChanHist( h_maxDRLepJet, , w);
+  // FillChanHist( h_dEtaLL, , w);
+  // FillChanHist( h_dEtaJetJet, , w);
+  // FillChanHist( h_maxDEtaJetJet, , w);
+  // FillChanHist( h_minDEtaJetJet, , w);
+  FillChanHist( h_met      , met.Mod()/1000., w);
+  FillChanHist( h_meff     , EveSelec->getMeff(40.,true )/1000., w);
+  FillChanHist( h_meffNoMet, EveSelec->getMeff(40.,false)/1000., w);
+  // FillChanHist( h_metEle, , w);
+  // FillChanHist( h_metMuo, , w);
+  // FillChanHist( h_metJet, , w);
+  // FillChanHist( h_metCell, , w);
+  FillChanHist( h_metRel, EveSelec->getMetRel()/1000., w);
+  FillChanHist( h_nJet , vec_signalJet->size(), w);
+  FillChanHist( h_nBJet, EveSelec->numBJets(), w);
+  for(uint ij=0; ij<vec_signalJet->size(); ++ij){
+    FillChanHist( h_jetPt , vec_signalJet->at(ij).p4().Pt()/1000., w);
+    FillChanHist( h_jetEta, vec_signalJet->at(ij).p4().Eta()     , w);
+    FillChanHist( h_jetPhi, vec_signalJet->at(ij).p4().Phi()     , w);
+    if((vec_signalJet->at(ij)).auxdata<char>("bjet")){
+      FillChanHist( h_bJetPt , vec_signalJet->at(ij).p4().Pt ()/1000., w);
+      FillChanHist( h_bJetEta, vec_signalJet->at(ij).p4().Eta()      , w);
+    }
+  }
+  // FillChanHist( h_jet1Pt, , w);
+  // FillChanHist( h_jet2Pt, , w);
+  // FillChanHist( h_jet3Pt, , w);
+  // FillChanHist( h_bJet1Pt, , w);
+  // FillChanHist( h_bJet2Pt, , w);
+  // FillChanHist( h_bJet3Pt, , w);
+  // FillChanHist( h_bJet1Eta, , w);
+  // FillChanHist( h_bJet2Eta, , w);
+  // FillChanHist( h_bJet3Eta, , w);
+  // FillChanHist( h_jetMV1, , w);
+  // FillChanHist( h_jetJVF, , w);
+  // FillChanHist( h_bJetJVF, , w);
+  // FillChanHist( h_dijetM, , w);
+  // FillChanHist( h_productEta1Eta2, , w);
+  // FillChanHist( h_mll, , w);
+  Int_t sfosIndex[2]={-1,-1};
+  Int_t sfosFlav=-1;
+  Double_t msfos = EveSelec->findBestMSFOS(sfosIndex[0],sfosIndex[1],sfosFlav,MZ);
+  FillChanHist( h_msfos, msfos/1000., w);
+  Int_t minSfosIndex[2]={-1,-1};
+  Int_t minSfosFlav=-1;
+  Double_t minMsfos = EveSelec->findBestMSFOS(minSfosIndex[0],minSfosIndex[1],minSfosFlav,-1.);
+  FillChanHist( h_minMsfos, minMsfos/1000., w);
+  // FillChanHist( h_msfss, , w);
+  // FillChanHist( h_mlll, , w);
+  // FillChanHist( h_mt, , w);
+  // FillChanHist( h_mtL1, , w);
+  // FillChanHist( h_mtL2, , w);
+  FillChanHist( h_mt2, EveSelec->getMaxMT2()/1000., w);
+  // FillChanHist( h_mjj, , w);
+  // FillChanHist( h_mlljj, , w);
+  // FillChanHist( h_mlt, , w);
+  // FillChanHist( h_mtt, , w);
+  // FillChanHist( h_mbb, , w);
+  FillChanHist( h_mljj, EveSelec->getMljj()/1000., w);
+  // FillChanHist( h_mljjFine, , w);
+  // FillChanHist( h_mtll, , w);
+  // FillChanHist( h_mtll_mt, , w);
+  // FillChanHist( h_nVtx, , w);
+  // FillChanHist( h_mu, , w);
 
 #undef FillChanHist
 #undef FillChanHist2D

@@ -186,7 +186,7 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD* SUSYObjDef, std::string sel, s
 /*--------------------------------------------------------------------------------*/
 // Initialize the event selection
 /*--------------------------------------------------------------------------------*/
-void EventSelector::initialize()
+bool EventSelector::initialize()
 {
   MyDebug("initialize()","EventSelector::initialize()");
   //////////////////////////////////////////////
@@ -203,10 +203,19 @@ void EventSelector::initialize()
   }
   // 3 signal leptons, that's all
   else if(m_sel=="3lep"){
+    TypSel(3,0,3,0,-1,-1);
     m_applyTrig = false;
   }
   else if(m_sel=="3lepBveto"){
     TypSel(3,0,3,0,0,0);
+    m_applyTrig = false;
+  }
+  else if(m_sel=="3lepNoBaseReq"){
+    TypSel(3,0,-1,0,-1,-1);
+    m_applyTrig = false;
+  }
+  else if(m_sel=="3lepBvetoNoBaseReq"){
+    TypSel(3,0,-1,0,0,0);
     m_applyTrig = false;
   }
   else if (m_sel=="VR0a") {
@@ -322,7 +331,7 @@ void EventSelector::initialize()
   }
   else{
     MyError("initialize()",Form("EventSelector ERROR - selection %s not supported!!",m_sel.c_str()));
-    abort();
+    return false;
   }
 
   m_vec_signalElectron = new std::vector<xAOD::Electron>();
@@ -339,6 +348,8 @@ void EventSelector::initialize()
   m_vec_signalJet->clear();
   m_vec_baseJet  ->clear();
   m_vec_preJet   ->clear();
+
+  return true;
 
 }
 
@@ -1309,7 +1320,7 @@ bool EventSelector::passMsfosCut()
   if(m_msfosMin >= 0 || m_msfosMax >= 0){
     int index[2]={-1,-1};
     int flav=-1;
-    Double_t msfos = findBestMSFOS(index[0],index[1],flav);
+    Double_t msfos = findBestMSFOS(index[0],index[1],flav)/1000.;
     if( ((m_msfosMin >= 0) || (m_msfosMax >= 0)) && msfos<0) return false; //cannot find sfos pair
     if(m_msfosMin >= 0 && msfos < m_msfosMin) return false;
     if(m_msfosMax >= 0 && msfos > m_msfosMax) return false;
@@ -1325,7 +1336,7 @@ bool EventSelector::passMinMsfosCut()
   if(m_msfosMin >= 0 || m_msfosMax >= 0){
     int index[2]={-1,-1};
     int flav=-1;
-    Double_t msfos = findBestMSFOS(index[0],index[1],flav,0.);//Finding min. M_SFOS
+    Double_t msfos = findBestMSFOS(index[0],index[1],flav,0.)/1000.;//Finding min. M_SFOS
     if( ((m_minMllMin >= 0) || (m_minMllMax >= 0)) && msfos<0) return false; //cannot find sfos pair
     if(m_minMllMin >= 0 && msfos < m_minMllMin) return false;
     if(m_minMllMax >= 0 && msfos > m_minMllMax) return false;
@@ -2286,7 +2297,7 @@ bool EventSelector::hasUpsilon()
   Double_t massWindow = 1.;
   int index[2]={-1,-1};
   int flav=-1;
-  Double_t msfos = findBestMSFOS(index[0],index[1],flav,MUPSILON);
+  Double_t msfos = findBestMSFOS(index[0],index[1],flav,MUPSILON)/1000.;
   if(isInMassWindow(msfos, MUPSILON, massWindow)) return true;
   return false;
 }
@@ -2297,7 +2308,7 @@ bool EventSelector::hasZ()
   Double_t massWindow = 10.;
   int index[2]={-1,-1};
   int flav=-1;
-  Double_t msfos = findBestMSFOS(index[0],index[1],flav);
+  Double_t msfos = findBestMSFOS(index[0],index[1],flav)/1000.;
   if(isInMassWindow(msfos, MZ, massWindow)) return true;
   return false;
 }
@@ -2462,7 +2473,7 @@ float EventSelector::findBestMSFOS(int& index1, int& index2, int& flav, float ma
       charge[1] = m_vec_signalElectron->at(iL2).charge();
       if(isOS(charge[0],charge[1])){
         leps[1] = m_vec_signalElectron->at(iL2).p4();
-        Double_t mll = (leps[0]+leps[1]).M()/1000.;
+        Double_t mll = (leps[0]+leps[1]).M();
         if(bestMsfosMass<0. || fabs(bestMsfosMass-mass)>fabs(mll-mass)){
           bestMsfosMass = mll;
           index1 = iL;
@@ -2481,7 +2492,7 @@ float EventSelector::findBestMSFOS(int& index1, int& index2, int& flav, float ma
       charge[1] = m_vec_signalMuon->at(iL2).charge();
       if(isOS(charge[0],charge[1])){
         leps[1] = m_vec_signalMuon->at(iL2).p4();
-        Double_t mll = (leps[0]+leps[1]).M()/1000.;
+        Double_t mll = (leps[0]+leps[1]).M();
         if(bestMsfosMass<0. || fabs(bestMsfosMass-mass)>fabs(mll-mass)){
           bestMsfosMass = mll;
           index1 = iL;
@@ -2562,13 +2573,35 @@ TLorentzVector EventSelector::getFourVector(int index, int flav)
 /*--------------------------------------------------------------------------------*/
 int EventSelector::getCharge(int index, int flav)
 {
-  //method to retrieve four vector by m_leadLepIndex;
+  //method to retrieve charge by m_leadLepIndex;
   Int_t charge = 0;
   if(index!=-1){
     if     (flav==0) charge = (m_vec_signalElectron->at(index)).charge();
     else if(flav==1) charge = (m_vec_signalMuon    ->at(index)).charge();
   }
   return charge;
+}
+/*--------------------------------------------------------------------------------*/
+float EventSelector::getIsolationValue(int index, int flav, xAOD::Iso::IsolationType type)
+{
+  //method to retrieve isolation value by m_leadLepIndex;
+  float iso = 0.;
+  if(index!=-1){
+    if     (flav==0) (m_vec_signalElectron->at(index)).isolationValue(iso,type);
+    else if(flav==1) (m_vec_signalMuon    ->at(index)).isolation     (iso,type);
+  }
+  return iso;
+}
+/*--------------------------------------------------------------------------------*/
+xAOD::TrackParticle* EventSelector::getTrack(int index, int flav)
+{
+  //method to retrieve track object by m_leadLepIndex;
+  xAOD::TrackParticle* track = 0;
+  if(index!=-1){
+    if     (flav==0) track = const_cast<xAOD::TrackParticle*>((m_vec_signalElectron->at(index)).trackParticle());
+    else if(flav==1) track = const_cast<xAOD::TrackParticle*>((m_vec_signalMuon    ->at(index)).primaryTrackParticle());
+  }
+  return track;
 }
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::isOS(int charge1, int charge2)
