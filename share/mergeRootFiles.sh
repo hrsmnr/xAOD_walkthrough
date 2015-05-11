@@ -1,6 +1,6 @@
 TAG=$1
 if [ $# -lt 1 ]; then
-  echo 'Specify a target tag (e.g. n0145, n0150...)'
+  echo 'Specify a target tag (e.g. h0001, h0002...)'
   return 1
 fi
 DSID=("110302" "110305" #single top

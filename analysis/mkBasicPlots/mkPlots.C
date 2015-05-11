@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////
 // Scripts to make various plots.
 // Usage : 
-// root -q -b 'mkPlots.C+O("none")'
-// root -q -b 'mkPlots.C+O("3lep")'
+// root -q -b 'mkPlots.C+O("h0001","none")'
+// root -q -b 'mkPlots.C+O("h0002","3lep")'
 // etc...
 //////////////////////////////////////////////////////
 #define IntLumi 10000. //Integrated luminosity to normalize MC in pico-barn
@@ -364,7 +364,7 @@ Double_t getMCScale(TFile *file){
   return scale;
 }
 
-Int_t mkPlots(TString SelecReg){
+Int_t mkPlots(TString Tag, TString SelecReg){
 
   std::cout<<"Making plots for the region \""<<SelecReg.Data()<<"\"."<<std::endl;
 
@@ -402,7 +402,7 @@ Int_t mkPlots(TString SelecReg){
     for(UInt_t bgfile=0; bgfile<nsamples; bgfile++){
       TString dsid = BGFileNames[bgtype]->at(bgfile).Data();
       TString includeflag = BGIncludeFlag[bgtype]->at(bgfile).Data();
-      TString filename = getHistFileName((filepath_prefix+dsid+"_00/"+dsid+"*."+SelecReg+"..*.root").Data());
+      TString filename = getHistFileName((filepath_prefix+"/"+Tag+"/"+dsid+"."+SelecReg+"..AnaHists.root").Data());
       std::cout<<"**** DatasetID : "<<dsid.Data()<<", filename=\""<<filename.Data()<<"\", IncludeFlag="<<includeflag.Data()<<std::endl;
       TFile *f_tmp = new TFile(filename.Data());
       vec_mcfiles->push_back(f_tmp);
@@ -415,9 +415,7 @@ Int_t mkPlots(TString SelecReg){
     std::cout<<"Now processing for the signal : "<<SignalTypeNames[signaltype].Data()<<" ("<<nsamples<<" files)"<<std::endl;
     for(UInt_t signalfile=0; signalfile<nsamples; signalfile++){
       TString dsid = SignalFileNames[signaltype]->at(signalfile).Data();
-      //      TString filename = filepath_prefix+dsid+"."+SelecReg+".AnaHists.root";
-      //      TString filename = getHistFileName((filepath_prefix+dsid+"_00_"+SelecReg+"/").Data());
-      TString filename = getHistFileName((filepath_prefix+dsid+"_00/"+dsid+"*."+SelecReg+"..*.root").Data());
+      TString filename = getHistFileName((filepath_prefix+"/"+Tag+"/"+dsid+"."+SelecReg+"..AnaHists.root").Data());
       std::cout<<"**** DatasetID : "<<dsid.Data()<<", filename=\""<<filename.Data()<<"\""<<std::endl;
       TFile *f_tmp = new TFile(filename.Data());
       vec_signalfiles->push_back(f_tmp);
