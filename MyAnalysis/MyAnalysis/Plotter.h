@@ -18,7 +18,7 @@ class TH2F;
 class Plotter : public TObject
 {
  public:
-  Plotter(std::string sel="none", std::string sys="none", MSG::Level dbg=MSG::ERROR);
+  Plotter(const std::string& sel="none", const std::string& sys="none", const MSG::Level& dbg=MSG::ERROR);
   virtual ~Plotter(){};
 
   virtual void initialize(const char* path, int dsid, double XS=0.);
@@ -63,6 +63,20 @@ class Plotter : public TObject
   TH1F *h_mu1Eta [nChan]; //1st muon Eta
   TH1F *h_mu2Eta [nChan]; //2nd muon Eta
   TH1F *h_mu3Eta [nChan]; //3rd muon Eta
+
+  TH1F *h_baselepChan[nChan];
+  TH1F *h_baselep1Pt[nChan];
+  TH1F *h_baselep2Pt[nChan];
+  TH1F *h_baselep3Pt[nChan];
+  TH1F *h_baseel1Pt[nChan];
+  TH1F *h_baseel2Pt[nChan];
+  TH1F *h_baseel3Pt[nChan];
+  TH1F *h_basemu1Pt[nChan];
+  TH1F *h_basemu2Pt[nChan];
+  TH1F *h_basemu3Pt[nChan];
+  TH1F *h_baselep1Eta[nChan];
+  TH1F *h_baselep2Eta[nChan];
+  TH1F *h_baselep3Eta[nChan];
 
   TH1F *h_llPt[nChan]; //Dilepton system Pt
 

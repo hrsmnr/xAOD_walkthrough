@@ -18,8 +18,7 @@
 /*--------------------------------------------------------------------------------*/
 // EventSelector Constructor
 /*--------------------------------------------------------------------------------*/
-//EventSelector::EventSelector(SusyNtObject* nt, string sample, string sel, int dbg) :
-EventSelector::EventSelector(ST::SUSYObjDef_xAOD* SUSYObjDef, std::string sel, std::string sys, int isMC, MSG::Level dbg) :
+EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string &sel, const std::string &sys, const int &isMC, const MSG::Level &dbg) : 
   m_susyObjTool(SUSYObjDef),
   m_objReady(false),
   m_nSignalLeps(-1),
