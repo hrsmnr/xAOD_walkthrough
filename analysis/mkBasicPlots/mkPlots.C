@@ -195,25 +195,25 @@ void SetSignalType(void){
   DrawnSignalFile->push_back(SmplViaWZ_6);//M_N2=150, M_N1=100
   DrawnSignalColor->push_back(kRed);
   DrawnSignalStyle->push_back(kDashDotted+2);
-  DrawnSignalLegend->push_back("M_N2=150,M_N1=100");
+  DrawnSignalLegend->push_back(Form("M_{#tilde{#chi}_{2}^{0}}=%dGeV, M_{#tilde{#chi}_{1}^{0}}=%dGeV",150,100));
   //Signal reference sample #2
   DrawnSignalType->push_back(SmplViaWZ);
   DrawnSignalFile->push_back(SmplViaWZ_8);//M_N2=200, M_N1=150
   DrawnSignalColor->push_back(kBlue);
   DrawnSignalStyle->push_back(kDashDotted+2);
-  DrawnSignalLegend->push_back("M_N2=200,M_N1=150");
+  DrawnSignalLegend->push_back(Form("M_{#tilde{#chi}_{2}^{0}}=%dGeV, M_{#tilde{#chi}_{1}^{0}}=%dGeV",200,150));
   //Signal reference sample #3
   DrawnSignalType->push_back(SmplViaWZ);
   DrawnSignalFile->push_back(SmplViaWZ_10);//M_N2=125, M_N1=100
   DrawnSignalColor->push_back(kRed);
   DrawnSignalStyle->push_back(kDashed);
-  DrawnSignalLegend->push_back("M_N2=125,M_N1=100");
+  DrawnSignalLegend->push_back(Form("M_{#tilde{#chi}_{2}^{0}}=%dGeV, M_{#tilde{#chi}_{1}^{0}}=%dGeV",125,100));
   //Signal reference sample #4
   DrawnSignalType->push_back(SmplViaWZ);
   DrawnSignalFile->push_back(SmplViaWZ_13);//M_N2=125, M_N1=112.5
   DrawnSignalColor->push_back(kBlue);
   DrawnSignalStyle->push_back(kDashed);
-  DrawnSignalLegend->push_back("M_N2=125,M_N1=112.5");
+  DrawnSignalLegend->push_back(Form("M_{#tilde{#chi}_{2}^{0}}=%dGeV, M_{#tilde{#chi}_{1}^{0}}=%4.1fGeV",125,112.5));
 
   for(Int_t signaltype=0; signaltype<nSignalType; signaltype++){
     SignalFileNames[signaltype] = new std::vector<TString>();
@@ -715,6 +715,7 @@ Int_t mkPlots(TString Tag, TString SelecReg){
       Double_t linMax = TMath::Max(dist_totalbg[fstype][disttype]->GetMaximum(),-1.);
       logMax *= 1.3E0*TMath::Log10(logMax);
       linMax *= 1.3E0;
+      if(logMax<=1.) logMax=2.;
 
       Double_t entry = dist_totalbg[fstype][disttype]->GetEntries();
       Double_t integral = dist_totalbg[fstype][disttype]->Integral();
@@ -747,6 +748,7 @@ Int_t mkPlots(TString Tag, TString SelecReg){
           h_sig[cnt]->SetFillColor(0);
           h_sig[cnt]->SetLineStyle(DrawnSignalStyle->at(cnt));
           h_sig[cnt]->Draw("samehist");
+          if(fstype==0&&disttype==0) leg->AddEntry(h_sig[cnt],DrawnSignalLegend->at(cnt).c_str(),"l");
         }
         //////////////////////////////////////////////////////////////
         // Log version

@@ -768,7 +768,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   // FillChanHist( h_metMuo, , w);
   // FillChanHist( h_metJet, , w);
   // FillChanHist( h_metCell, , w);
-  FillChanHist( h_metRel, EveSelec->getMetRel(), w);
+  FillChanHist( h_metRel, EveSelec->getMetRel()/1000., w);
   FillChanHist( h_nJet , vec_signalJet->size(), w);
   FillChanHist( h_nBJet, EveSelec->numBJets(), w);
   for(uint ij=0; ij<vec_signalJet->size(); ++ij){
