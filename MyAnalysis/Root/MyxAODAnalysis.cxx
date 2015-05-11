@@ -16,8 +16,6 @@
 
 #include"MyAnalysis/EventSelector.h"
 #include"TStopwatch.h"
-
-#include <string>
 //end adding
 
 // this is needed to distribute the algorithm to the workers

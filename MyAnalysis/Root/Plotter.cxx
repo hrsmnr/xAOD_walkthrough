@@ -287,8 +287,8 @@ bool Plotter::BookHistograms()
   h_xsec->SetBinContent(h_xsec->FindBin(0.),m_crossSection); //set cross-section
 
   // Lepton channel histo, only defined for the 'all' channel
-  h_lepChan       [Ch_all] = new TH1F("all_lepChan"       ,"all_lepChan;Unordered lepton channel;Events", nChan, 0, nChan);
-  h_baselepChan       [Ch_all] = new TH1F("all_baselepChan"       ,"all_baselepChan;Unordered lepton channel;Events", nChan, 0, nChan);
+  h_lepChan    [Ch_all] = new TH1F("all_lepChan"    ,"all_lepChan;Unordered lepton channel;Events", nChan, 0, nChan);
+  h_baselepChan[Ch_all] = new TH1F("all_baselepChan","all_baselepChan;Unordered lepton channel;Events", nChan, 0, nChan);
   // lepton channel loop
   for(uint iCh=0; iCh<nChan; iCh++){
     std::string chanName = vec_chan.at(iCh);
@@ -626,12 +626,10 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
     if(baseLepFlavor[index]==1) h[chan]->Fill(val,w);   \
   } while(0)
   //Fill lepChan histograms
-  h_lepChan       [Ch_all]->Fill(Ch_all,w);
-  h_lepChan       [Ch_all]->Fill(chan,w);
-
-  //Fill baselepChan histograms
-  h_baselepChan       [Ch_all]->Fill(Ch_all,w);
-  h_baselepChan       [Ch_all]->Fill(chan,w);
+  h_lepChan    [Ch_all]->Fill(Ch_all,w);
+  h_lepChan    [Ch_all]->Fill(chan,w);
+  h_baselepChan[Ch_all]->Fill(Ch_all,w);
+  h_baselepChan[Ch_all]->Fill(chan,w);
 
   //Fill lepton Pt
   FillChanHist( h_lep1Pt, leadLep[0].Pt()/1000., w );
