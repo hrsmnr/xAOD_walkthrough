@@ -14,6 +14,8 @@ kinit [your account]@CERN.CH #not necessary but recommended
 ./share/install.sh #setting up RootCore and installing all necessary packages  
 
 ## Tips / example -----
+$git clone git://github.com/hrsmnr/xAOD_walkthrough.git [destination]  
+$git remote add origin https://hrsmnr@github.com/hrsmnr/xAOD_walkthrough.git  
 $source rcSetup.sh  
 $rc find_packages  
 $rc compile  
