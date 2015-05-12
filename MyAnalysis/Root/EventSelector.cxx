@@ -425,9 +425,10 @@ bool EventSelector::selectObject()
   ///////////////////////////////////////////////////
   // Get Electrons from the event
   ///////////////////////////////////////////////////
+  Double_t elPtCut=7000.;
   xAOD::ElectronContainer   *electrons_copy(0);
   xAOD::ShallowAuxContainer *electrons_copyaux(0);
-  if(m_susyObjTool->GetElectrons(electrons_copy, electrons_copyaux)==EL::StatusCode::FAILURE){
+  if(m_susyObjTool->GetElectrons(electrons_copy, electrons_copyaux, false, elPtCut)==EL::StatusCode::FAILURE){
     MyError("selectObject()","Failing to retrieve ElectronContainer.");
     rtrvFail = true;
   }
@@ -445,9 +446,10 @@ bool EventSelector::selectObject()
   ///////////////////////////////////////////////////
   // Get the Muons from the event:
   ///////////////////////////////////////////////////
+  Double_t muPtCut=5000.;
   xAOD::MuonContainer       *muons_copy(0);
   xAOD::ShallowAuxContainer *muons_copyaux(0);
-  if(m_susyObjTool->GetMuons(muons_copy,muons_copyaux)==EL::StatusCode::FAILURE){
+  if(m_susyObjTool->GetMuons(muons_copy,muons_copyaux, false, muPtCut)==EL::StatusCode::FAILURE){
     MyError("selectObject()","Failing to retrieve MuonContainer.");
     rtrvFail = true;
   }
@@ -522,7 +524,7 @@ bool EventSelector::selectObject()
     xAOD::Electron el = **el_itr;
     m_vec_baseElectron->push_back(el);
     //    Bool_t isSignalElectron = m_susyObjTool->IsSignalElectronExp(el, ST::SignalIsoExp::TightIso);
-    Bool_t isSignalElectron = m_susyObjTool->IsSignalElectron(el, 10000.);
+    Bool_t isSignalElectron = m_susyObjTool->IsSignalElectron(el, elPtCut);
     if(isSignalElectron) m_vec_signalElectron->push_back(el);
     iEl++;
   }
@@ -547,7 +549,7 @@ bool EventSelector::selectObject()
     m_vec_baseMuon->at(nBaselineMuon).makePrivateStore(**mu_itr);
     nBaselineMuon++;
     //    Bool_t isSignalMuon = m_susyObjTool->IsSignalMuonExp(**mu_itr, ST::SignalIsoExp::TightIso);
-    Bool_t isSignalMuon = m_susyObjTool->IsSignalMuon(**mu_itr, 10000.);
+    Bool_t isSignalMuon = m_susyObjTool->IsSignalMuon(**mu_itr, muPtCut);
     if(isSignalMuon){
       m_vec_signalMuon->at(nSignalMuon).makePrivateStore(**mu_itr);
       nSignalMuon++;
