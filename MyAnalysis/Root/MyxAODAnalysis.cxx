@@ -135,16 +135,24 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
 
   int isData = 0;
   int isAtlFast = 0;
-  if(dsname.BeginsWith("data")){
-    isData    = 1;
-    isAtlFast = 0;
-  }else if(dsname.BeginsWith("mc")){
-    isData    = 0;
-    if(dstag.Contains("_a")) isAtlFast = 1;
-    else                     isAtlFast = 0;
+  if(m_useFAX){
+    if(sample_name.Contains("data15_13TeV:")){
+      isData    = 1;
+    }else if(sample_name.Contains("mc14_13TeV:")){
+      isData    = 0;
+    }
   }else{
-    MyError("initialize()", "Dataset seems not like any expected categories. Exiting.");
-    return EL::StatusCode::FAILURE;
+    if(dsname.BeginsWith("data")){
+      isData    = 1;
+      isAtlFast = 0;
+    }else if(dsname.BeginsWith("mc")){
+      isData    = 0;
+      if(dstag.Contains("_a")) isAtlFast = 1;
+      else                     isAtlFast = 0;
+    }else{
+      MyError("initialize()", "Dataset seems not like any expected categories. Exiting.");
+      return EL::StatusCode::FAILURE;
+    }
   }
 
   int datasource = isData ? ST::Data : (isAtlFast ? ST::AtlfastII : ST::FullSim);
@@ -159,9 +167,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   CHECK(m_susyObjTool->setProperty("Is8TeV", false) ) ;
   
   CHECK(m_susyObjTool->setProperty("EleId","TightLLH") );
-  CHECK(m_susyObjTool->setProperty("EleIdBaseline","LooseLLH") );
-  // CHECK(m_susyObjTool->setProperty("EleId","Tight") );
-  // CHECK(m_susyObjTool->setProperty("EleIdBaseline","Medium") );
+  CHECK(m_susyObjTool->setProperty("EleIdBaseline","MediumLLH") );
   CHECK(m_susyObjTool->setProperty("TauId","Tight") );
 
   CHECK(m_susyObjTool->setProperty("IsDerived",false) ) ; //??? need to check

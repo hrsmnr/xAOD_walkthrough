@@ -32,6 +32,7 @@ int main( int argc, char* argv[] ) {
   std::string fileDirBase = "/home/hirose/atlas/data/DC14/mc14_13TeV";
   std::string outputDir = "result/submitDir";
   bool doSys = false;
+  bool useFAX = false;
   //  bool limitTree = false;
   
   /** Read inputs to program */  
@@ -56,6 +57,8 @@ int main( int argc, char* argv[] ) {
       sels.push_back(argv[++i]);
     else if (strcmp(argv[i], "--sys") == 0)
       doSys = true;
+    else if (strcmp(argv[i], "--useFAX") == 0)
+      useFAX = true;
     //    else if (strcmp(argv[i], "--limitTree") == 0)
     //      limitTree = true;
     //else if (strcmp(argv[i], "--sigCut") == 0)
@@ -73,11 +76,19 @@ int main( int argc, char* argv[] ) {
   if(!fileDir    .empty()) std::cout << Form("  inputDir : %s", fileDir    .c_str()) << std::endl;
   if(!file       .empty()) std::cout << Form("  file     : %s", file       .c_str()) << std::endl;
   if(!filelist   .empty()) std::cout << Form("  filelist : %s", filelist   .c_str()) << std::endl;
+  std::cout <<Form("  useFAX   : %s"  , (useFAX?"true":"false")) << std::endl;
+  std::cout <<Form("  doSys    : %s"  , (doSys ?"true":"false")) << std::endl;
   std::cout << std::endl;
+
+  // Aborting if useFAX but filelist was not specified
+  if(useFAX && filelist.empty()){
+    std::cout<<"Error: Please specify input filelist by --filelist when you use \"--useFAX\"."<<std::endl;
+    return 0;
+  }
 
   // If no input is specified, return with message.
   if(fileDir.empty() && filelist.empty()){
-    std::cout << "Please specify the input sample by the option \"-D\" or \"--filelist\"" <<std::endl;
+    std::cout << "Error: Please specify the input sample by the option \"-D\" or \"--filelist\"" <<std::endl;
     std::cout << "When you specify \"-D test\", SUSY signal sample written below will be used." <<std::endl;
     std::cout << "-- mc14_13TeV.205048.Herwigpp_UEEE4_CTEQ6L1_sM_wA_WZ_C1_100_N1_0.merge.AOD.e3479_a266_a265_r5853_tid04786763_00" << std::endl;
     return 0;
@@ -85,7 +96,7 @@ int main( int argc, char* argv[] ) {
 
   // Aborting if filelist and file directory are given at the same time.
   if(!fileDir.empty() && !filelist.empty()){
-    std::cout<<"Please do not use the options -D and --filelist at the same time."<<std::endl;
+    std::cout<<"Error: Please do not use the options -D and --filelist at the same time."<<std::endl;
     return 0;
   }
 
@@ -171,6 +182,7 @@ int main( int argc, char* argv[] ) {
   alg->SetDSID(dsid);
   alg->SetSkipNum(nSkip);
   alg->SetOutputDir(submitDir.c_str());
+  alg->SetupFAX(useFAX);
   for(uint i=0; i<sels.size(); i++) alg->SetSelectionRegion(sels.at(i).c_str());
   job.algsAdd( alg );
 
@@ -192,7 +204,7 @@ void help()
   std::cout << "  -k number of events to skip"       << std::endl;
   std::cout << "     defaults: 0"                    << std::endl;
 
-  std::cout << "  --FileDirBase : input file dir location" << std::endl;
+  std::cout << "  --FileDirBase : input file directory or filelist location" << std::endl;
   std::cout << "     defaults: '/home/hirose/atlas/data/DC14/mc14_13TeV'" << std::endl;
 
   std::cout << "  -D : name of input dataset directory" << std::endl;
@@ -201,8 +213,10 @@ void help()
   std::cout << "  -F name of single input file"      << std::endl;
   std::cout << "     defaults: ''"                   << std::endl;
 
-  std::cout << "  -filelist name of the input filelist" << std::endl;
+  std::cout << "  --filelist name of the input filelist" << std::endl;
   std::cout << "     defaults: ''"                   << std::endl;
+
+  std::cout << "  --useFAX will use FAX as an input source" << std::endl;
 
   std::cout << "  -o output file directory"          << std::endl;
   std::cout << "     defaults: result/submitDir"     << std::endl;
