@@ -45,6 +45,15 @@ for dirid in range(ndirs):
         dsid = dirlist[dirid][dsidStartPos+len(projectName):dsidStartPos+len(projectName)+6]
         isData = 0
 
+    #checking if dataset is a AtlFast sample or not.
+    aTagPos = dirlist[dirid].find('_a')
+    if aTagPos==-1: #case of full sim sample
+        print 'FullSim sample'
+        isAFII = ''
+    else:
+        print 'AFII sample'
+        isAFII = '_AtlFast'
+
     #checking if this is a new dataset
     if preDsid==dsid:
         isNewDsid = 0
@@ -64,12 +73,12 @@ for dirid in range(ndirs):
         nthFile+=1
         nAddedFiles = 0
         if isNewDsid==1: processedDSIDs.append(dsid)
-        if ToBeSplit==1: filelistFileName = targetDir+"/"+dsid+'_'+str(nthFile)+".txt"
+        if ToBeSplit==1: filelistFileName = targetDir+"/"+dsid+isAFII+'_'+str(nthFile)+".txt"
         else: filelistFileName = targetDir+"/"+dsid+".txt"
         filelistFile = open(filelistFileName,"w")
         print 'Create a new filelist file : '+filelistFileName
     else:
-        if ToBeSplit==1: filelistFileName = targetDir+"/"+dsid+'_'+str(nthFile)+".txt"
+        if ToBeSplit==1: filelistFileName = targetDir+"/"+dsid+isAFII+'_'+str(nthFile)+".txt"
         else: filelistFileName = targetDir+"/"+dsid+".txt"
         filelistFile = open(filelistFileName,"a")
         print 'Appending to the existing file : '+filelistFileName
