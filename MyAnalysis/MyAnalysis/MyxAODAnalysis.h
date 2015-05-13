@@ -66,7 +66,6 @@ public:
   long long int m_maxEvent;
   MSG::Level m_debugMode;
   bool m_noSyst;
-  bool m_useFAX;
   int m_dsid;
   long long int m_nSkipNum;
   std::vector<std::string> *m_vec_eveSelec;
@@ -90,7 +89,6 @@ public:
   void SetDebugMode(MSG::Level debugMode=MSG::ERROR){m_debugMode = debugMode;};
   void SetMaxEvent(long long int maxEvent=-1){m_maxEvent = maxEvent;};
   void SetNoSyst(bool nosyst=true){m_noSyst = nosyst;};
-  void SetupFAX(bool useFAX){m_useFAX = useFAX;};
   void SetDSID(int dsid){m_dsid = dsid;};
   void SetSkipNum(long long int nskip){m_nSkipNum = nskip;};
   void SetSelectionRegion(const char* selec){m_vec_eveSelec->push_back(selec);};

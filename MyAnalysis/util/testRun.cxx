@@ -170,6 +170,17 @@ int main( int argc, char* argv[] ) {
   sh.setMetaString( "nc_tree", "CollectionTree" );
   sh.print(); // Print what we found:
 
+  // Set meta-data for the given sample.
+  if(!filelist.empty()){
+    TString tmpListName = filelist.c_str();
+    sh.setMetaString("SampleType", (dsid<900000?"MC":"data"));//DSID==999999(egamma), 999998(muon)
+    sh.setMetaString("MCType"    , (tmpListName.Contains("AtlFast")?"AtlFast":"FullSim"));
+  }else{
+    TString tmpDirName = fileDir.c_str();
+    sh.setMetaString("SampleType", (tmpDirName.Contains("mc")?"MC"     :"data"   ));
+    sh.setMetaString("MCType"    , (tmpDirName.Contains("_a")?"AtlFast":"FullSim"));
+  }
+
   // Create an EventLoop job:
   EL::Job job;
   job.sampleHandler( sh );
@@ -182,7 +193,6 @@ int main( int argc, char* argv[] ) {
   alg->SetDSID(dsid);
   alg->SetSkipNum(nSkip);
   alg->SetOutputDir(submitDir.c_str());
-  alg->SetupFAX(useFAX);
   for(uint i=0; i<sels.size(); i++) alg->SetSelectionRegion(sels.at(i).c_str());
   job.algsAdd( alg );
 

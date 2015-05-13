@@ -133,27 +133,11 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   TString dsname = tmpname(posSecondLastSlash+1,tmpname.Length()-posSecondLastSlash-1);
   MyInfo( "initialize()", "Dataset Name : %s", dsname.Data());
 
-  int isData = 0;
-  int isAtlFast = 0;
-  if(m_useFAX){
-    if(sample_name.Contains("data15_13TeV:")){
-      isData    = 1;
-    }else if(sample_name.Contains("mc14_13TeV:")){
-      isData    = 0;
-    }
-  }else{
-    if(dsname.BeginsWith("data")){
-      isData    = 1;
-      isAtlFast = 0;
-    }else if(dsname.BeginsWith("mc")){
-      isData    = 0;
-      if(dstag.Contains("_a")) isAtlFast = 1;
-      else                     isAtlFast = 0;
-    }else{
-      MyError("initialize()", "Dataset seems not like any expected categories. Exiting.");
-      return EL::StatusCode::FAILURE;
-    }
-  }
+  std::string SampleType = wk()->metaData()->getString("SampleType");
+  std::string MCType     = wk()->metaData()->getString("MCType"    );
+  int isData    = (SampleType=="data"   ?1:0);
+  int isAtlFast = (MCType    =="AtlFast"?1:0);
+  MyInfo( "initialize()", Form("SampleType=%s, MCType=%s",SampleType.c_str(),MCType.c_str()));
 
   int datasource = isData ? ST::Data : (isAtlFast ? ST::AtlfastII : ST::FullSim);
 
