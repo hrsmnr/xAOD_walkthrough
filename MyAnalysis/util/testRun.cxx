@@ -182,8 +182,10 @@ int main( int argc, char* argv[] ) {
     sh.setMetaString("MCType"    , (tmpListName.Contains("AtlFast")?"AtlFast":"FullSim"));
   }else{
     TString tmpDirName = fileDir.c_str();
-    sh.setMetaString("SampleType", (tmpDirName.Contains("mc")?"MC"     :"data"   ));
-    sh.setMetaString("MCType"    , (tmpDirName.Contains("_a")?"AtlFast":"FullSim"));
+    Ssiz_t aodPos = tmpDirName.Index("AOD");
+    TString tmpTagName = tmpDirName(aodPos+4,tmpDirName.Length()-aodPos);
+    sh.setMetaString("SampleType", (tmpDirName.BeginsWith("mc")?"MC"     :"data"   ));
+    sh.setMetaString("MCType"    , (tmpDirName.Contains  ("_a")?"AtlFast":"FullSim"));
   }
 
   // Create an EventLoop job:
