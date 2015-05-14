@@ -108,6 +108,11 @@ int main( int argc, char* argv[] ) {
   // Set up the job for xAOD access:
   xAOD::Init().ignore();
 
+  // Preparing your GRID certificate
+  if(useFAX){
+    gSystem->Exec("cat ${ROOTCOREBIN}/../share/pfile.txt | voms-proxy-init -voms atlas -valid 48:00");
+  }
+
   // Construct the samples to run on:
   SH::SampleHandler sh;
   Bool_t useDir = kTRUE;
