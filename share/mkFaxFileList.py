@@ -1,14 +1,18 @@
-###########################################################
+###################################################################################
 # Usage:
-# $python share/mkFileList.py [Path to the datasets]
-###########################################################
+# $python share/mkFaxFileList.py [Path to the dataset list] [filelist destination]
+###################################################################################
 import os,sys,commands
 
-print 'Making filelist for testRun...'
+print 'Making filelist with FAX for testRun...'
+
+#defining the target DSID list
+dsidList = '${ROOTCOREBIN}/../share/mc14_13TeV/share/datasets.txt'
+if len(sys.argv)==2: dsidList = os.path.abspath(sys.argv[1])
 
 #defining the target directory
-targetDir = '/home/hirose/atlas/data/DC14/mc14_13TeV'
-if len(sys.argv)==2: targetDir = os.path.abspath(sys.argv[1])
+targetDir = '/home/hirose/atlas/data/DC14/mc14_13TeV/FAX'
+if len(sys.argv)==3: targetDir = os.path.abspath(sys.argv[2])
 
 #checking if the specified target is a directory
 isDir = os.path.isdir(targetDir)
@@ -17,9 +21,9 @@ if not isDir:
     exit(1)
 
 #deleting filelist existing before
-os.system('rm -f '+targetDir+"/Local/*.txt")
+os.system('rm -f '+targetDir+"/*.txt")
 
-directory = commands.getoutput('ls '+targetDir)
+directory = commands.getoutput('cat '+dsidList)
 dirlist = directory.split('\n')
 
 #Loop for the directory list
@@ -31,10 +35,7 @@ nAddedFiles = 0
 nthFile = 0
 nMaxFiles = 20
 for dirid in range(ndirs):
-    isDir = os.path.isdir(targetDir+'/'+dirlist[dirid])
-    if not isDir: continue
-    if len(dirlist[dirid])<10: continue
-    print 'For directory of ...', dirlist[dirid]
+    print 'For dataset of ...', dirlist[dirid]
     projectName = 'mc14_13TeV.'
     dsidStartPos = dirlist[dirid].find(projectName)
     if dsidStartPos==-1: #case of the real data
@@ -76,18 +77,18 @@ for dirid in range(ndirs):
         nthFile+=1
         nAddedFiles = 0
         if isNewDsid==1: processedDSIDs.append(dsid)
-        if ToBeSplit==1: filelistFileName = targetDir+"/Local/"+dsid+isAFII+'_'+str(nthFile)+".txt"
+        if ToBeSplit==1: filelistFileName = targetDir+"/"+dsid+isAFII+'_FAX_'+str(nthFile)+".txt"
         else: filelistFileName = targetDir+"/"+dsid+".txt"
         filelistFile = open(filelistFileName,"w")
         print 'Create a new filelist file : '+filelistFileName
     else:
-        if ToBeSplit==1: filelistFileName = targetDir+"/Local/"+dsid+isAFII+'_'+str(nthFile)+".txt"
+        if ToBeSplit==1: filelistFileName = targetDir+"/"+dsid+isAFII+'_FAX_'+str(nthFile)+".txt"
         else: filelistFileName = targetDir+"/"+dsid+".txt"
         filelistFile = open(filelistFileName,"a")
         print 'Appending to the existing file : '+filelistFileName
 
 #Loop for the file list
-    files = commands.getoutput('ls '+targetDir+'/'+dirlist[dirid])
+    files = commands.getoutput('fax-get-gLFNs '+dirlist[dirid])
     filelist = files.split('\n')
     nfiles = len(filelist)
     for fileid in range(nfiles):
@@ -96,13 +97,13 @@ for dirid in range(ndirs):
             if ToBeSplit==1 and nAddedFiles>=nMaxFiles:
                 nthFile+=1
                 nAddedFiles = 0
-                filelistFileName = targetDir+"/Local/"+dsid+isAFII+'_'+str(nthFile)+".txt"
+                filelistFileName = targetDir+"/"+dsid+isAFII+'_FAX_'+str(nthFile)+".txt"
                 filelistFile.close()
                 filelistFile = open(filelistFileName,"w")
                 print 'Create a new filelist file : '+filelistFileName
             nAddedFiles+=1
             print 'Adding '+filelist[fileid]+' to the filelist... ('+str(nAddedFiles)+')'
-            filelistFile.write(targetDir+'/'+dirlist[dirid]+'/'+filelist[fileid]+'\n')
+            filelistFile.write(filelist[fileid]+'\n')
     print ''
 
 print 'File lists for DSIDs below are generated...'

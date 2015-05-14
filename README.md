@@ -22,12 +22,23 @@ $rc compile
 $testRun -D test -n 10  
 $source share/runOnLocal.sh [Dataset directory] [Signal selection]  
 $source share/runOnLSF.sh [Dataset directory] [Signal selection]  
-$python share/mkFileList.py [optionally target directory]  
+$python share/mkFileList.py [optionally: target directory]  
 $source share/runOnLSFSplitDS.sh [Dataset directory] [Signal selection]  
 $source share/mergeRootFiles.sh [tag(e.g. h0001)]  
+$root -q -b 'mkPlots.C+O("h0015","3lep")' 
 $bkill -u [your account] -b 0 #kill all your jobs on LSF  
 $bjobs -l  
 $bjobs -u all  
 $bjobs -a  
 $bhosts  
 $bqueues  
+
+## To use FAX as an input of the analysis  
+$setupATLAS  
+$localSetupFAX  
+$voms-proxy-init --voms atlas:/atlas/jp  
+$source rcSetup.sh  
+$python share/mkFaxFileList.py [optionally: target dataset list]  
+## Submitting jobs with FAX to LSF  
+## Make your GRID passward file as ./share/pfile.txt
+## Attention: make sure no access right for others!! (chmod 0600 ./share/pfile.txt)
