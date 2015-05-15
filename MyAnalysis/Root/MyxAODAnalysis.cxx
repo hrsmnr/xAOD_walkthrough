@@ -359,7 +359,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
     ////////////////////////////
     size_t isys=0;
     for(sysListItr = m_sysList.begin(); sysListItr != m_sysList.end(); ++sysListItr){
-      m_vec_watch->at(eveSelec).at(isys)->Start(kFALSE);
+      m_vec_watch->at(eveSelec).at(isys)->Start(m_processedEvents==1?kTRUE:kFALSE);
       MyInfo("execute()", ">>>> Working on variation: sys=%i, \"%s\"", (int)isys, (sysListItr->name()).c_str());
       // Tell the SUSYObjDef_xAOD which variation to apply
       if(m_susyObjTool->applySystematicVariation(*sysListItr) != CP::SystematicCode::Ok){
