@@ -93,9 +93,10 @@ done
 ######################################################
 
 maxEve=-1
+queue=1d
 echo Starting testRun for DSID=$runnum ...
-echo bsub -q 12h -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir --useFAX $TARGETSELECREG
-bsub -q 12h -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir --useFAX $TARGETSELECREG
+echo bsub -q ${queue} -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir --useFAX $TARGETSELECREG
+bsub -q ${queue} -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir --useFAX $TARGETSELECREG
 echo ''
 done
 
