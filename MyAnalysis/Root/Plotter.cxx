@@ -286,7 +286,7 @@ bool Plotter::BookHistograms()
   h_xsec = new TH1F("h_xsec","h_xsec;;MC cross-section[pb]",1,0.,1.);
   h_nEve = new TH1F("h_nEve","h_nEve;;Events"              ,1,0.,1.);
   h_xsec->SetBinContent(h_xsec->FindBin(0.),m_crossSection); //set cross-section
-  h_nSigBaseLep = new TH2F("h_nSigBaseLep","h_nSigBaseLep;#Baseline Lep.;#Signal Lep.;Events",6,0.-0.5,6.-0.5,6,0.-0.5,6.-0.5);
+  h_nSigBaseLep = new TH2F("h_nSigBaseLep","h_nSigBaseLep;#Baseline Lep.;#Signal Lep.;Events",8,0.-0.5,8.-0.5,8,0.-0.5,8.-0.5);
 
   // Lepton channel histo, only defined for the 'all' channel
   h_lepChan    [Ch_all] = new TH1F("all_lepChan"    ,"all_lepChan;Unordered lepton channel;Events", nChan, 0, nChan);
