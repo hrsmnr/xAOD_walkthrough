@@ -8,11 +8,11 @@ print 'Making filelist with FAX for testRun...'
 
 #defining the target DSID list
 dsidList = '${ROOTCOREBIN}/../share/mc14_13TeV/share/datasets.txt'
-if len(sys.argv)==2: dsidList = os.path.abspath(sys.argv[1])
+if len(sys.argv)>=2: dsidList = os.path.abspath(sys.argv[1])
 
 #defining the target directory
 targetDir = '/home/hirose/atlas/data/DC14/mc14_13TeV/FAX'
-if len(sys.argv)==3: targetDir = os.path.abspath(sys.argv[2])
+if len(sys.argv)>=3: targetDir = os.path.abspath(sys.argv[2])
 
 #checking if the specified target is a directory
 isDir = os.path.isdir(targetDir)

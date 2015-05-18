@@ -88,6 +88,7 @@ void Plotter::finalize()
   m_rootfile->cd();
   h_xsec->Write();
   h_nEve->Write();
+  h_nSigBaseLep->Write();
   h_lepChan[Ch_all]->Write();
   h_baselepChan[Ch_all]->Write();
   for(uint iCh=0; iCh<nChan; iCh++){
@@ -285,6 +286,7 @@ bool Plotter::BookHistograms()
   h_xsec = new TH1F("h_xsec","h_xsec;;MC cross-section[pb]",1,0.,1.);
   h_nEve = new TH1F("h_nEve","h_nEve;;Events"              ,1,0.,1.);
   h_xsec->SetBinContent(h_xsec->FindBin(0.),m_crossSection); //set cross-section
+  h_nSigBaseLep = new TH2F("h_nSigBaseLep","h_nSigBaseLep;#Signal Lep.;#Baseline Lep.;Events",6,0.-0.5,6.-0.5,6,0.-0.5,6.-0.5);
 
   // Lepton channel histo, only defined for the 'all' channel
   h_lepChan    [Ch_all] = new TH1F("all_lepChan"    ,"all_lepChan;Unordered lepton channel;Events", nChan, 0, nChan);
@@ -529,6 +531,17 @@ bool Plotter::BookHistograms()
 #undef NEWVARHIST
 #undef SETBINLABEL
   
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool Plotter::FillHistoPreSelec(EventSelector *EveSelec, double weight)
+{
+  MyDebug("FillHistoPreSelec()","Plotter::FillHistoPreSelec()");
+
+  Double_t w = weight*EveSelec->getTotalSF();
+
+  h_nSigBaseLep->Fill(EveSelec->nBaselineLeps(),EveSelec->nSignalLeps(),w);
+
   return true;
 }
 /*--------------------------------------------------------------------------------*/

@@ -24,6 +24,7 @@ class Plotter : public TObject
   virtual void initialize(const char* path, int dsid, double XS=0.);
   virtual void finalize();
 
+  bool FillHistoPreSelec(EventSelector *EveSelec, double weight);
   bool FillHistograms(EventSelector *EveSelec, double weight);
   bool FillNEvent(double weight);
 
@@ -43,6 +44,7 @@ class Plotter : public TObject
   // Declaration of histograms
   TH1F *h_xsec; //cross section for the processed sample (for data, 0. is filled.)
   TH1F *h_nEve; //#processed events to make histograms (not #events for whole dataset)
+  TH2F *h_nSigBaseLep; // #signal vs #baseline leptons
   TH1F *h_lepChan[nChan]; //count entries for each final state
   //Lepton kinematics
   TH1F *h_lep1Pt [nChan]; //1st lepton Pt

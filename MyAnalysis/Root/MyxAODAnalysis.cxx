@@ -377,6 +377,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
       }
       myEveSelec->setStore(&m_store);
       myEveSelec->selectObject();
+      m_vec_plotter->at(eveSelec).at(isys)->FillHistoPreSelec(myEveSelec,m_eventWeight);
       Bool_t passSelec = myEveSelec->selectEvent();
       if(passSelec) m_vec_plotter->at(eveSelec).at(isys)->FillHistograms(myEveSelec,m_eventWeight);
       SetEventCounter(myEveSelec,eveSelec,isys);
