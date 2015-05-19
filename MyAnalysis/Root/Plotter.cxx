@@ -330,21 +330,21 @@ bool Plotter::BookHistograms()
     NEWVARHIST( mu2Pt, "Second muon_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
     NEWVARHIST( mu3Pt, "Third muon_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
 
-    NEWVARHIST( PRlep1Pt, "Leading PRlepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
-    NEWVARHIST( PRlep2Pt,  "Second PRlepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( PRlep3Pt,   "Third PRlepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
-    NEWVARHIST( COlep1Pt, "Leading COlepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
-    NEWVARHIST( COlep2Pt,  "Second COlepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( COlep3Pt,   "Third COlepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
-    NEWVARHIST( HFlep1Pt, "Leading HFlepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
-    NEWVARHIST( HFlep2Pt,  "Second HFlepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( HFlep3Pt,   "Third HFlepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
-    NEWVARHIST( LFlep1Pt, "Leading LFlepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
-    NEWVARHIST( LFlep2Pt,  "Second LFlepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( LFlep3Pt,   "Third LFlepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
-    NEWVARHIST( UKlep1Pt, "Leading UKlepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
-    NEWVARHIST( UKlep2Pt,  "Second UKlepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( UKlep3Pt,   "Third UKlepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
+    NEWVARHIST( PRlep1Pt, "Leading PR lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
+    NEWVARHIST( PRlep2Pt,  "Second PR lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( PRlep3Pt,   "Third PR lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
+    NEWVARHIST( COlep1Pt, "Leading CO lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
+    NEWVARHIST( COlep2Pt,  "Second CO lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( COlep3Pt,   "Third CO lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
+    NEWVARHIST( HFlep1Pt, "Leading HF lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
+    NEWVARHIST( HFlep2Pt,  "Second HF lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( HFlep3Pt,   "Third HF lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
+    NEWVARHIST( LFlep1Pt, "Leading LF lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
+    NEWVARHIST( LFlep2Pt,  "Second LF lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( LFlep3Pt,   "Third LF lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
+    NEWVARHIST( UKlep1Pt, "Leading UK lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
+    NEWVARHIST( UKlep2Pt,  "Second UK lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( UKlep3Pt,   "Third UK lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
 
     // lep eta
     ETAHIST( lep1Eta, "Leading lepton #eta;Events" );
