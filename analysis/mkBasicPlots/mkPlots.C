@@ -11,6 +11,7 @@
 #include<vector>
 #include<string>
 
+#include"TH2F.h"
 #include"TFile.h"
 #include"TString.h"
 #include"THStack.h"
@@ -178,6 +179,8 @@ Int_t SmplViaWZLineStyle [nSimplifiedModelType] = {kDotted,kDotted,kDotted,kDott
                                                    kDotted,kDotted,kDotted,kDotted,kDotted,
                                                    kDotted,kDotted,kDotted};
 std::vector<TString> *SignalFileNames[nSignalType];
+std::vector<TString> *SignalMN2[nSignalType];
+std::vector<TString> *SignalMN1[nSignalType];
 std::vector<Int_t> *DrawnSignalType;
 std::vector<Int_t> *DrawnSignalFile;
 std::vector<Int_t> *DrawnSignalColor;
@@ -217,22 +220,25 @@ void SetSignalType(void){
 
   for(Int_t signaltype=0; signaltype<nSignalType; signaltype++){
     SignalFileNames[signaltype] = new std::vector<TString>();
+    SignalMN2[signaltype] = new std::vector<TString>();
+    SignalMN1[signaltype] = new std::vector<TString>();
   }
   //Do not change the push_back order!!
   //Simplified Model with WZ
-  SignalFileNames[SmplViaWZ]->push_back("205048");
-  SignalFileNames[SmplViaWZ]->push_back("205049");
-  SignalFileNames[SmplViaWZ]->push_back("205050");
-  SignalFileNames[SmplViaWZ]->push_back("205051");
-  SignalFileNames[SmplViaWZ]->push_back("205052");
-  SignalFileNames[SmplViaWZ]->push_back("205053");
-  SignalFileNames[SmplViaWZ]->push_back("205054");
-  SignalFileNames[SmplViaWZ]->push_back("205055");
-  SignalFileNames[SmplViaWZ]->push_back("205056");
-  SignalFileNames[SmplViaWZ]->push_back("205128");
-  SignalFileNames[SmplViaWZ]->push_back("205129");
-  SignalFileNames[SmplViaWZ]->push_back("205130");
-  SignalFileNames[SmplViaWZ]->push_back("205131");
+  
+  SignalFileNames[SmplViaWZ]->push_back("205048"); SignalMN2[SmplViaWZ]->push_back("100"); SignalMN1[SmplViaWZ]->push_back("0");
+  SignalFileNames[SmplViaWZ]->push_back("205049"); SignalMN2[SmplViaWZ]->push_back("200"); SignalMN1[SmplViaWZ]->push_back("0");
+  SignalFileNames[SmplViaWZ]->push_back("205050"); SignalMN2[SmplViaWZ]->push_back("300"); SignalMN1[SmplViaWZ]->push_back("0");
+  SignalFileNames[SmplViaWZ]->push_back("205051"); SignalMN2[SmplViaWZ]->push_back("400"); SignalMN1[SmplViaWZ]->push_back("0");
+  SignalFileNames[SmplViaWZ]->push_back("205052"); SignalMN2[SmplViaWZ]->push_back("500"); SignalMN1[SmplViaWZ]->push_back("0");
+  SignalFileNames[SmplViaWZ]->push_back("205053"); SignalMN2[SmplViaWZ]->push_back("150"); SignalMN1[SmplViaWZ]->push_back("100");
+  SignalFileNames[SmplViaWZ]->push_back("205054"); SignalMN2[SmplViaWZ]->push_back("200"); SignalMN1[SmplViaWZ]->push_back("100");
+  SignalFileNames[SmplViaWZ]->push_back("205055"); SignalMN2[SmplViaWZ]->push_back("200"); SignalMN1[SmplViaWZ]->push_back("150");
+  SignalFileNames[SmplViaWZ]->push_back("205056"); SignalMN2[SmplViaWZ]->push_back("300"); SignalMN1[SmplViaWZ]->push_back("200");
+  SignalFileNames[SmplViaWZ]->push_back("205128"); SignalMN2[SmplViaWZ]->push_back("125"); SignalMN1[SmplViaWZ]->push_back("100");
+  SignalFileNames[SmplViaWZ]->push_back("205129"); SignalMN2[SmplViaWZ]->push_back("150"); SignalMN1[SmplViaWZ]->push_back("125");
+  SignalFileNames[SmplViaWZ]->push_back("205130"); SignalMN2[SmplViaWZ]->push_back("175"); SignalMN1[SmplViaWZ]->push_back("150");
+  SignalFileNames[SmplViaWZ]->push_back("205131"); SignalMN2[SmplViaWZ]->push_back("125"); SignalMN1[SmplViaWZ]->push_back("112.5");
 
 }
 
@@ -677,7 +683,8 @@ Int_t mkPlots(TString Tag, TString SelecReg){
   ////////////////////////////////////////////////////
 
   Bool_t debugPlot = kTRUE;
-  TUtil *u = new TUtil(("plots/"+SelecReg+".ps").Data(),("plots/"+SelecReg+".root").Data(),debugPlot);
+  TUtil *u = new TUtil(("plots/"+Tag+"."+SelecReg+".ps").Data(),("plots/"+Tag+"."+SelecReg+".root").Data(),debugPlot);
+  gStyle->SetPalette(1);
   
   u->SetPadNumXY(1,1);
   u->cdPad();
@@ -773,6 +780,27 @@ Int_t mkPlots(TString Tag, TString SelecReg){
       // //      dist_ratio[fstype][disttype]->SetMarkerColor(kBlack);
       // u->Draw(dist_ratio[fstype][disttype],"E");
       // u->Draw(dist_ratioErr[fstype][disttype],"sameE2");
+    }
+  }
+
+  //Plotting #signal vs #baseline leptons
+  fileidx=0;
+  u->Update();
+  for(Int_t signaltype=0; signaltype<nSignalType; signaltype++){
+    UInt_t nsamples = SignalFileNames[signaltype]->size();
+    for(UInt_t signalfile=0; signalfile<nsamples; signalfile++){
+      TFile *f_tmp = vec_signalfiles->at(fileidx);
+      TH2F *h2_tmp = (TH2F*)(f_tmp->Get("h_nSigBaseLep"));
+      h2_tmp->SetStats(0);
+      h2_tmp->SetMarkerSize(2.0);
+      h2_tmp->GetZaxis()->SetTitle("Events in 10k");
+      u->cdPad();
+      h2_tmp->DrawNormalized("colztext",10000)->GetZaxis()->SetRangeUser(0,1000);
+      myText(0.18,0.78,kBlack,
+             Form("MN2=%s,MN1=%s",
+                  SignalMN2[signaltype]->at(signalfile).Data(),
+                  SignalMN1[signaltype]->at(signalfile).Data()), 0.1);
+      fileidx++;
     }
   }
 
