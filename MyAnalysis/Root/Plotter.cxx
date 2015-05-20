@@ -110,6 +110,21 @@ void Plotter::finalize()
     h_mu1Eta[iCh]->Write();
     h_mu2Eta[iCh]->Write();
     h_mu3Eta[iCh]->Write();
+    h_PRlep1Pt[iCh]->Write();
+    h_PRlep2Pt[iCh]->Write();
+    h_PRlep3Pt[iCh]->Write();
+    h_COlep1Pt[iCh]->Write();
+    h_COlep2Pt[iCh]->Write();
+    h_COlep3Pt[iCh]->Write();
+    h_HFlep1Pt[iCh]->Write();
+    h_HFlep2Pt[iCh]->Write();
+    h_HFlep3Pt[iCh]->Write();
+    h_LFlep1Pt[iCh]->Write();
+    h_LFlep2Pt[iCh]->Write();
+    h_LFlep3Pt[iCh]->Write();
+    h_UKlep1Pt[iCh]->Write();
+    h_UKlep2Pt[iCh]->Write();
+    h_UKlep3Pt[iCh]->Write();
     h_baselep1Pt[iCh]->Write();
     h_baselep2Pt[iCh]->Write();
     h_baselep3Pt[iCh]->Write();
@@ -156,6 +171,14 @@ void Plotter::finalize()
     h_lep2Class[iCh]->Write();
     h_lep3Class[iCh]->Write();
     h_hasSS[iCh]->Write();
+    h_baselepOrigin[iCh]->Write();
+    h_baselep1Origin[iCh]->Write();
+    h_baselep2Origin[iCh]->Write();
+    h_baselep3Origin[iCh]->Write();
+    h_baselepClass[iCh]->Write();
+    h_baselep1Class[iCh]->Write();
+    h_baselep2Class[iCh]->Write();
+    h_baselep3Class[iCh]->Write();
     h_nTau[iCh]->Write();
     h_tauPt[iCh]->Write();
     h_tau1Pt[iCh]->Write();
@@ -307,6 +330,22 @@ bool Plotter::BookHistograms()
     NEWVARHIST( mu2Pt, "Second muon_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
     NEWVARHIST( mu3Pt, "Third muon_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
 
+    NEWVARHIST( PRlep1Pt, "Leading PR lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
+    NEWVARHIST( PRlep2Pt,  "Second PR lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( PRlep3Pt,   "Third PR lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
+    NEWVARHIST( COlep1Pt, "Leading CO lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
+    NEWVARHIST( COlep2Pt,  "Second CO lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( COlep3Pt,   "Third CO lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
+    NEWVARHIST( HFlep1Pt, "Leading HF lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
+    NEWVARHIST( HFlep2Pt,  "Second HF lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( HFlep3Pt,   "Third HF lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
+    NEWVARHIST( LFlep1Pt, "Leading LF lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
+    NEWVARHIST( LFlep2Pt,  "Second LF lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( LFlep3Pt,   "Third LF lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
+    NEWVARHIST( UKlep1Pt, "Leading UK lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
+    NEWVARHIST( UKlep2Pt,  "Second UK lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( UKlep3Pt,   "Third UK lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
+
     // lep eta
     ETAHIST( lep1Eta, "Leading lepton #eta;Events" );
     ETAHIST( lep2Eta, "Second lepton #eta;Events" );
@@ -402,6 +441,36 @@ bool Plotter::BookHistograms()
     SETBINLABEL( lep3Class, 5, "UK" );
 
     NEWHIST( hasSS, "has SS light leptons;Events", 2, 0, 2 );
+
+    // lepton truth matching
+    NEWHIST( baselepOrigin, "Base lepton truth origin;Leptons", PARTICLETYPES, 0, PARTICLETYPES );
+    NEWHIST( baselep1Origin, "Leading base lepton truth origin;Events", PARTICLETYPES, 0, PARTICLETYPES );
+    NEWHIST( baselep2Origin, "Second base lepton truth origin;Events", PARTICLETYPES, 0, PARTICLETYPES );
+    NEWHIST( baselep3Origin, "Third base lepton truth origin;Events", PARTICLETYPES, 0, PARTICLETYPES );
+    NEWHIST( baselepClass, "Base lepton truth classification;Leptons", 5, 0, 5 );
+    NEWHIST( baselep1Class, "Leading base lepton truth classification;Events", 5, 0, 5 );
+    NEWHIST( baselep2Class, "Second base lepton truth classification;Events", 5, 0, 5 );
+    NEWHIST( baselep3Class, "Third base lepton truth classification;Events", 5, 0, 5 );
+    SETBINLABEL( baselepClass, 1, "PR" ); 
+    SETBINLABEL( baselep1Class, 1, "PR" ); 
+    SETBINLABEL( baselep2Class, 1, "PR" );
+    SETBINLABEL( baselep3Class, 1, "PR" );
+    SETBINLABEL( baselepClass, 2, "CO" ); 
+    SETBINLABEL( baselep1Class, 2, "CO" ); 
+    SETBINLABEL( baselep2Class, 2, "CO" );
+    SETBINLABEL( baselep3Class, 2, "CO" );
+    SETBINLABEL( baselepClass, 3, "HF" ); 
+    SETBINLABEL( baselep1Class, 3, "HF" ); 
+    SETBINLABEL( baselep2Class, 3, "HF" );
+    SETBINLABEL( baselep3Class, 3, "HF" );
+    SETBINLABEL( baselepClass, 4, "LF" ); 
+    SETBINLABEL( baselep1Class, 4, "LF" ); 
+    SETBINLABEL( baselep2Class, 4, "LF" );
+    SETBINLABEL( baselep3Class, 4, "LF" );
+    SETBINLABEL( baselepClass, 5, "UK" ); 
+    SETBINLABEL( baselep1Class, 5, "UK" ); 
+    SETBINLABEL( baselep2Class, 5, "UK" );
+    SETBINLABEL( baselep3Class, 5, "UK" );
 
     // tau kinematics
     NEWHIST( nTau, "Number of taus;Events", 6, -0.5, 5.5 );
@@ -771,37 +840,102 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
         else if(id==1) FillChanHist( h_lep2Origin, type, w);
         else if(id==2) FillChanHist( h_lep3Origin, type, w);
         //Classification of Primary/Comversion/HeavyFlavor/LightFlavor/Unknown
+        // Primary
         if(origin==12 || origin==13 || origin==22){
           FillChanHist( h_lepClass, 0., w);
-          if     (id==0) FillChanHist( h_lep1Class, 0., w);
-          else if(id==1) FillChanHist( h_lep2Class, 0., w);
-          else if(id==2) FillChanHist( h_lep3Class, 0., w);
+          if     (id==0){ FillChanHist( h_lep1Class, 0., w); FillChanHist( h_PRlep1Pt, leadLep[0].Pt()/1000., w );}
+          else if(id==1){ FillChanHist( h_lep2Class, 0., w); FillChanHist( h_PRlep1Pt, leadLep[1].Pt()/1000., w );}
+          else if(id==2){ FillChanHist( h_lep3Class, 0., w); FillChanHist( h_PRlep1Pt, leadLep[2].Pt()/1000., w );}
         }
+        // Conversion
         else if(origin==5){
           FillChanHist( h_lepClass, 1., w);
-          if     (id==0) FillChanHist( h_lep1Class, 1., w);
-          else if(id==1) FillChanHist( h_lep2Class, 1., w);
-          else if(id==2) FillChanHist( h_lep3Class, 1., w);
+          if     (id==0){ FillChanHist( h_lep1Class, 1., w); FillChanHist( h_COlep1Pt, leadLep[0].Pt()/1000., w );}
+          else if(id==1){ FillChanHist( h_lep2Class, 1., w); FillChanHist( h_COlep1Pt, leadLep[1].Pt()/1000., w );}
+          else if(id==2){ FillChanHist( h_lep3Class, 1., w); FillChanHist( h_COlep1Pt, leadLep[2].Pt()/1000., w );}
         }
+        // Heavy Flavor
         else if(origin==25 || origin==26 || origin==27 ||
                 origin==29 || origin==32 || origin==33 ){
           FillChanHist( h_lepClass, 2., w);
-          if     (id==0) FillChanHist( h_lep1Class, 2., w);
-          else if(id==1) FillChanHist( h_lep2Class, 2., w);
-          else if(id==2) FillChanHist( h_lep3Class, 2., w);
+          if     (id==0){ FillChanHist( h_lep1Class, 2., w); FillChanHist( h_HFlep1Pt, leadLep[0].Pt()/1000., w );}
+          else if(id==1){ FillChanHist( h_lep2Class, 2., w); FillChanHist( h_HFlep1Pt, leadLep[1].Pt()/1000., w );}
+          else if(id==2){ FillChanHist( h_lep3Class, 2., w); FillChanHist( h_HFlep1Pt, leadLep[2].Pt()/1000., w );}
         }
+        // LightFlavor
         else if(origin==23 || origin==24 || origin==30 ||
                 origin==31 || origin==34 || origin==35 || 
                 origin==41 || origin==45 ){
           FillChanHist( h_lepClass, 3., w);
-          if     (id==0) FillChanHist( h_lep1Class, 3., w);
-          else if(id==1) FillChanHist( h_lep2Class, 3., w);
-          else if(id==2) FillChanHist( h_lep3Class, 3., w);
+          if     (id==0){ FillChanHist( h_lep1Class, 3., w); FillChanHist( h_LFlep1Pt, leadLep[0].Pt()/1000., w );}
+          else if(id==1){ FillChanHist( h_lep2Class, 3., w); FillChanHist( h_LFlep1Pt, leadLep[1].Pt()/1000., w );}
+          else if(id==2){ FillChanHist( h_lep3Class, 3., w); FillChanHist( h_LFlep1Pt, leadLep[2].Pt()/1000., w );}
+        // Unknown
         }else{
           FillChanHist( h_lepClass, 4., w);
-          if     (id==0) FillChanHist( h_lep1Class, 4., w);
-          else if(id==1) FillChanHist( h_lep2Class, 4., w);
-          else if(id==2) FillChanHist( h_lep3Class, 4., w);
+          if     (id==0){ FillChanHist( h_lep1Class, 4., w); FillChanHist( h_UKlep1Pt, leadLep[0].Pt()/1000., w );}
+          else if(id==1){ FillChanHist( h_lep2Class, 4., w); FillChanHist( h_UKlep1Pt, leadLep[1].Pt()/1000., w );}
+          else if(id==2){ FillChanHist( h_lep3Class, 4., w); FillChanHist( h_UKlep1Pt, leadLep[2].Pt()/1000., w );}
+        }
+        }
+    }
+  }
+  //Fill base lepton truth infomation
+  if(m_isMC){
+    for(Int_t id=0; id<3; id++){
+      if(baseLepIndex[id]==-1) return false;
+      else{
+        Int_t type   = -1;
+        Int_t origin = -1;
+        if(baseLepFlavor[id]==0){
+          type   = xAOD::EgammaHelpers::getParticleTruthType  (&(vec_signalElectron->at(baseLepIndex[id])));
+          origin = xAOD::EgammaHelpers::getParticleTruthOrigin(&(vec_signalElectron->at(baseLepIndex[id])));
+        }else{
+          const xAOD::TrackParticle* trackParticle = (&(vec_signalMuon->at(baseLepIndex[id])))->primaryTrackParticle();
+          if(trackParticle){
+            static SG::AuxElement::Accessor<int> acc_truthType  ("truthType"  );
+            static SG::AuxElement::Accessor<int> acc_truthOrigin("truthOrigin");
+            if(acc_truthType  .isAvailable(*trackParticle)) type   = acc_truthType  (*trackParticle);
+            if(acc_truthOrigin.isAvailable(*trackParticle)) origin = acc_truthOrigin(*trackParticle);
+          }
+        }
+        //For origin
+        FillChanHist( h_baselepOrigin, type, w);
+        if     (id==0) FillChanHist( h_baselep1Origin, type, w);
+        else if(id==1) FillChanHist( h_baselep2Origin, type, w);
+        else if(id==2) FillChanHist( h_baselep3Origin, type, w);
+        //Classification of Primary/Comversion/HeavyFlavor/LightFlavor/Unknown
+        if(origin==12 || origin==13 || origin==22){
+          FillChanHist( h_baselepClass, 0., w);
+          if     (id==0) FillChanHist( h_baselep1Class, 0., w);
+          else if(id==1) FillChanHist( h_baselep2Class, 0., w);
+          else if(id==2) FillChanHist( h_baselep3Class, 0., w);
+        }
+        else if(origin==5){
+          FillChanHist( h_baselepClass, 1., w);
+          if     (id==0) FillChanHist( h_baselep1Class, 1., w);
+          else if(id==1) FillChanHist( h_baselep2Class, 1., w);
+          else if(id==2) FillChanHist( h_baselep3Class, 1., w);
+        }
+        else if(origin==25 || origin==26 || origin==27 ||
+                origin==29 || origin==32 || origin==33 ){
+          FillChanHist( h_baselepClass, 2., w);
+          if     (id==0) FillChanHist( h_baselep1Class, 2., w);
+          else if(id==1) FillChanHist( h_baselep2Class, 2., w);
+          else if(id==2) FillChanHist( h_baselep3Class, 2., w);
+        }
+        else if(origin==23 || origin==24 || origin==30 ||
+                origin==31 || origin==34 || origin==35 || 
+                origin==41 || origin==45 ){
+          FillChanHist( h_baselepClass, 3., w);
+          if     (id==0) FillChanHist( h_baselep1Class, 3., w);
+          else if(id==1) FillChanHist( h_baselep2Class, 3., w);
+          else if(id==2) FillChanHist( h_baselep3Class, 3., w);
+        }else{
+          FillChanHist( h_baselepClass, 4., w);
+          if     (id==0) FillChanHist( h_baselep1Class, 4., w);
+          else if(id==1) FillChanHist( h_baselep2Class, 4., w);
+          else if(id==2) FillChanHist( h_baselep3Class, 4., w);
         }
       }
     }

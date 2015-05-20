@@ -65,6 +65,21 @@ class Plotter : public TObject
   TH1F *h_mu1Eta [nChan]; //1st muon Eta
   TH1F *h_mu2Eta [nChan]; //2nd muon Eta
   TH1F *h_mu3Eta [nChan]; //3rd muon Eta
+  TH1F *h_PRlep1Pt[nChan]; // 1st PR lepton Pt
+  TH1F *h_PRlep2Pt[nChan]; // 2st PR lepton Pt
+  TH1F *h_PRlep3Pt[nChan]; // 3st PR lepton Pt
+  TH1F *h_COlep1Pt[nChan]; // 1st CO lepton Pt
+  TH1F *h_COlep2Pt[nChan]; // 2st CO lepton Pt
+  TH1F *h_COlep3Pt[nChan]; // 3st CO lepton Pt
+  TH1F *h_HFlep1Pt[nChan]; // 1st HF lepton Pt
+  TH1F *h_HFlep2Pt[nChan]; // 2st HF lepton Pt
+  TH1F *h_HFlep3Pt[nChan]; // 3st HF lepton Pt
+  TH1F *h_LFlep1Pt[nChan]; // 1st LF lepton Pt
+  TH1F *h_LFlep2Pt[nChan]; // 2st LF lepton Pt
+  TH1F *h_LFlep3Pt[nChan]; // 3st LF lepton Pt
+  TH1F *h_UKlep1Pt[nChan]; // 1st UnKnown lepton Pt
+  TH1F *h_UKlep2Pt[nChan]; // 2st UnKnown lepton Pt
+  TH1F *h_UKlep3Pt[nChan]; // 3st UnKnown lepton Pt
 
   TH1F *h_baselepChan[nChan];
   TH1F *h_baselep1Pt[nChan];
@@ -122,6 +137,16 @@ class Plotter : public TObject
   TH1F *h_lep3Class[nChan]; // truth classifcation from LeptonTruthTools
 
   TH1F *h_hasSS[nChan];     // event has SS leptons
+
+  // Base lepton truth classification
+  TH1F *h_baselepOrigin [nChan];// Lepton origin from McTruthClassifier
+  TH1F *h_baselep1Origin[nChan];// Lepton origin from McTruthClassifier
+  TH1F *h_baselep2Origin[nChan];// Lepton origin from McTruthClassifier
+  TH1F *h_baselep3Origin[nChan];// Lepton origin from McTruthClassifier
+  TH1F *h_baselepClass [nChan]; // truth classifcation from LeptonTruthTools
+  TH1F *h_baselep1Class[nChan]; // truth classifcation from LeptonTruthTools
+  TH1F *h_baselep2Class[nChan]; // truth classifcation from LeptonTruthTools
+  TH1F *h_baselep3Class[nChan]; // truth classifcation from LeptonTruthTools
 
   // Tau kinematics
   TH1F *h_nTau      [nChan]; // number of signal taus
