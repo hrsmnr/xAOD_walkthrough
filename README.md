@@ -26,7 +26,7 @@ $source share/runOnLSF.sh [Dataset directory] [Signal selection]
 $python share/mkFileList.py [optionally: target directory]  
 $source share/runOnLSFSplitDS.sh [Dataset directory] [Signal selection]  
 $source share/mergeRootFiles.sh [tag(e.g. h0001)]  
-$root -q -b 'mkPlots.C+O("h0015","3lep")' 
+$root -q -b 'mkPlots.C+O("h0015","3lep")'  
 $bkill -u [your account] -b 0 #kill all your jobs on LSF  
 $bjobs -l  
 $bjobs -u all  
