@@ -16,6 +16,7 @@ kinit [your account]@CERN.CH #not necessary but recommended
 ## Tips / example -----
 $git clone git://github.com/hrsmnr/xAOD_walkthrough.git [destination]  
 $git remote add origin https://hrsmnr@github.com/hrsmnr/xAOD_walkthrough.git  
+$git log --branches --not --remotes  
 $source rcSetup.sh  
 $rc find_packages  
 $rc compile  
