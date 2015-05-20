@@ -7,7 +7,8 @@ import os,sys,commands
 print 'Making filelist for testRun...'
 
 #defining the target directory
-targetDir = '/gpfs/fs2001/dhdaiki/MM3L/FAX/DC14/mc14_13TeV'
+targetDir = '/home/hirose/atlas/data/DC14/mc14_13TeV'
+# targetDir = '/gpfs/fs2001/dhdaiki/MM3L/FAX/DC14/mc14_13TeV'
 if len(sys.argv)==2: targetDir = os.path.abspath(sys.argv[1])
 
 #checking if the specified target is a directory
