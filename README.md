@@ -41,5 +41,5 @@ $voms-proxy-init --voms atlas:/atlas/jp
 $source rcSetup.sh  
 $python share/mkFaxFileList.py [optionally: target dataset list]  
 ## Submitting jobs with FAX to LSF  
-## Make your GRID passward file as ./share/pfile.txt
-## Attention: make sure no access right for others!! (chmod 0600 ./share/pfile.txt)
+-- Make your GRID passward file as ./share/pfile.txt
+-- Attention: make sure no access right for others!! (chmod 0600 ./share/pfile.txt)

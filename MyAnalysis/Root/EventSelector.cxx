@@ -30,6 +30,7 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   m_totalSF(1.),
   m_sel(sel),
   m_sys(sys),
+  m_is3SigLepSel(true),
   // m_selFlag(0),
   // m_doWeightSys(false),
   // m_objSys(ObjSys::nom),
@@ -217,6 +218,30 @@ bool EventSelector::initialize()
     TypSel(3,0,-1,0,0,0);
     m_applyTrig = false;
   }
+  //New idea to loosen the selection
+  else if(m_sel=="2Sig3Base"){
+    TypSel(2,0,3,0,-1,-1);
+    m_applyTrig = false;
+  }
+  else if(m_sel=="2Sig3BaseBveto"){
+    TypSel(2,0,3,0,0,0);
+    m_applyTrig = false;
+  }
+  else if(m_sel=="3Sig4Base"){
+    TypSel(3,0,4,0,-1,-1);
+    m_applyTrig = false;
+  }
+  else if(m_sel=="3Sig4BaseBveto"){
+    TypSel(3,0,4,0,0,0);
+    m_applyTrig = false;
+  }
+  else if(m_sel=="2S3BZvetoBvetoMet"){
+    TypSel(3,0,3,0,0,0);
+    m_metMin = 50;
+    m_vetoExtZ = true;
+    m_applyTrig = false;
+  }
+  //Used for the legacy paper
   else if (m_sel=="VR0a") {
     TypSel(3,0,3,0,0,0);
     m_jetPtMax = 50;
@@ -332,6 +357,7 @@ bool EventSelector::initialize()
     MyError("initialize()",Form("EventSelector ERROR - selection %s not supported!!",m_sel.c_str()));
     return false;
   }
+  if(m_nLepMin!=3 || m_nLepMin!=3) m_is3SigLepSel = false;
 
   m_vec_signalElectron = new std::vector<xAOD::Electron>();
   m_vec_baseElectron   = new std::vector<xAOD::Electron>();
@@ -425,7 +451,7 @@ bool EventSelector::selectObject()
   ///////////////////////////////////////////////////
   // Get Electrons from the event
   ///////////////////////////////////////////////////
-  Double_t elPtCut=7000.;
+  Double_t elPtCut=5000.;
   xAOD::ElectronContainer   *electrons_copy(0);
   xAOD::ShallowAuxContainer *electrons_copyaux(0);
   if(m_susyObjTool->GetElectrons(electrons_copy, electrons_copyaux, false, elPtCut)==EL::StatusCode::FAILURE){
@@ -1273,14 +1299,15 @@ bool EventSelector::passZeeSSCut()
     Double_t massWindow = 10.;
     TLorentzVector leps[2];
     Int_t          charge[2];
-    for(uint iL=0; iL<m_vec_signalElectron->size(); iL++){
-      leps[0] = m_vec_signalElectron->at(iL).p4();
-      charge[0] = m_vec_signalElectron->at(iL).charge();
-      for(uint iL2=0; iL2<m_vec_signalElectron->size(); iL2++){
+    std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
+    for(uint iL=0; iL<vec_electron->size(); iL++){
+      leps[0] = vec_electron->at(iL).p4();
+      charge[0] = vec_electron->at(iL).charge();
+      for(uint iL2=0; iL2<vec_electron->size(); iL2++){
         if(iL2<=iL) continue;
-        charge[1] = m_vec_signalElectron->at(iL2).charge();
+        charge[1] = vec_electron->at(iL2).charge();
         if(isSS(charge[0], charge[1])){
-          leps[1] = m_vec_signalElectron->at(iL2).p4();
+          leps[1] = vec_electron->at(iL2).p4();
           if(isInMassWindow( (leps[0]+leps[1]).M()/1000., MZ, massWindow)) return false;
         }
       }
@@ -1349,7 +1376,9 @@ bool EventSelector::passMlllCut()
 {
   if( nSignalLeps()>=3 && (m_mlllMin >= 0 || m_mlllMax >= 0) ){
     TLorentzVector lep[3];
-    for(uint id=0; id<3; id++) lep[id] = getFourVector(m_leadLepIndex[id],m_leadLepFlavor[id]);
+    Int_t* lepIndex  = m_is3SigLepSel ? m_leadLepIndex  : m_baseLepIndex ;
+    Int_t* lepFlavor = m_is3SigLepSel ? m_leadLepFlavor : m_baseLepFlavor;
+    for(uint id=0; id<3; id++) lep[id] = getFourVector(lepIndex[id],lepFlavor[id]);
     float mlll = (lep[0]+lep[1]+lep[2]).M()/1000.;
     if(m_mlllMin >= 0 && mlll < m_mlllMin) return false;
     if(m_mlllMax >= 0 && mlll > m_mlllMax) return false;
@@ -1420,6 +1449,8 @@ bool EventSelector::passMtCut()
   if(m_mtMin > 0 || m_mtMax > 0){
     uint nLep = nSignalLeps();
     // Find the best Z candidate pair, use remaining lepton to form Mt
+    Int_t* lepIndex  = m_is3SigLepSel ? m_leadLepIndex  : m_baseLepIndex ;
+    Int_t* lepFlavor = m_is3SigLepSel ? m_leadLepFlavor : m_baseLepFlavor;
     if(nLep==3){
       int index[2]={-1,-1};
       int flav=-1;
@@ -1430,7 +1461,7 @@ bool EventSelector::passMtCut()
         if     (index[0]==0 && index[1]==1) lepWIndex=2;
         else if(index[0]==0 && index[1]==2) lepWIndex=1;
         else if(index[0]==1 && index[1]==2) lepWIndex=0;
-        TLorentzVector lep = getFourVector(m_leadLepIndex[lepWIndex], m_leadLepFlavor[lepWIndex]);
+        TLorentzVector lep = getFourVector(lepIndex[lepWIndex], lepFlavor[lepWIndex]);
         float mt = getMt(lep,m_met);
         if(m_mtMin > 0 && mt < m_mtMin) return false;
         if(m_mtMax > 0 && mt > m_mtMax) return false;
@@ -1439,20 +1470,22 @@ bool EventSelector::passMtCut()
     // For 2 leptons, use maximum mt
     else if(nLep==2){
       TLorentzVector lep[2];
-      for(uint id=0; id<2; id++) lep[id] = getFourVector(m_leadLepIndex[id], m_leadLepFlavor[id]);
+      for(uint id=0; id<2; id++) lep[id] = getFourVector(lepIndex[id], lepFlavor[id]);
       float mt = TMath::Max(getMt(lep[0], m_met), getMt(lep[1], m_met));
       if(m_mtMin > 0 && mt < m_mtMin) return false;
       if(m_mtMax > 0 && mt > m_mtMax) return false;
     }
     // General case, use all leptons
     else{
-      for(uint iL=0; iL<m_vec_signalElectron->size(); iL++){
-        float mt = getMt(m_vec_signalElectron->at(iL).p4(),m_met);
+      std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
+      std::vector< xAOD::Muon >*     vec_muon     = m_is3SigLepSel ? m_vec_signalMuon     : m_vec_baseMuon;
+      for(uint iL=0; iL<vec_electron->size(); iL++){
+        float mt = getMt(vec_electron->at(iL).p4(),m_met);
         if(m_mtMin > 0 && mt < m_mtMin) return false;
         if(m_mtMax > 0 && mt > m_mtMax) return false;
       }
-      for(uint iL=0; iL<m_vec_signalMuon    ->size(); iL++){
-        float mt = getMt(m_vec_signalMuon->at(iL).p4(),m_met);
+      for(uint iL=0; iL<vec_muon    ->size(); iL++){
+        float mt = getMt(vec_muon->at(iL).p4(),m_met);
         if(m_mtMin > 0 && mt < m_mtMin) return false;
         if(m_mtMax > 0 && mt > m_mtMax) return false;
       }
@@ -1493,9 +1526,11 @@ float EventSelector::getMaxMT2()
   //   mT2L1T2 = getMT2(leptons[0], taus[1], met);
   // if(nLep >=1 && nTau >=1)
   //   mT2L1T1 = getMT2(leptons[0], taus[0], met);
+  Int_t* lepIndex  = m_is3SigLepSel ? m_leadLepIndex  : m_baseLepIndex ;
+  Int_t* lepFlavor = m_is3SigLepSel ? m_leadLepFlavor : m_baseLepFlavor;
   if(nLep >=2){
-    ComputeMT2 mt2class = ComputeMT2(getFourVector(m_leadLepIndex[0], m_leadLepFlavor[0]),
-                                     getFourVector(m_leadLepIndex[1], m_leadLepFlavor[1]),
+    ComputeMT2 mt2class = ComputeMT2(getFourVector(lepIndex[0], lepFlavor[0]),
+                                     getFourVector(lepIndex[1], lepFlavor[1]),
                                      metp,invismassA,invismassB);// for ss exploration and os
     mT2LL = mt2class.Compute();
   }
@@ -1574,38 +1609,40 @@ bool EventSelector::passMinDPhiOSCut()
     float minDPhi = -1.;
     TLorentzVector leps[2];
     Int_t    charge[2];
-    for(uint iL=0; iL<m_vec_signalElectron->size(); iL++){
-      leps[0] = m_vec_signalElectron->at(iL).p4();
-      charge[0] = m_vec_signalElectron->at(iL).charge();
+    std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
+    std::vector< xAOD::Muon >*     vec_muon     = m_is3SigLepSel ? m_vec_signalMuon     : m_vec_baseMuon;
+    for(uint iL=0; iL<vec_electron->size(); iL++){
+      leps[0] = vec_electron->at(iL).p4();
+      charge[0] = vec_electron->at(iL).charge();
       //For electron-electron
-      for(uint iL2=0; iL2<m_vec_signalElectron->size(); iL2++){
+      for(uint iL2=0; iL2<vec_electron->size(); iL2++){
         if(iL2<=iL) continue;
-        charge[1] = m_vec_signalElectron->at(iL2).charge();
+        charge[1] = vec_electron->at(iL2).charge();
         if(isOS(charge[0], charge[1])){
-          leps[1] = m_vec_signalElectron->at(iL2).p4();
+          leps[1] = vec_electron->at(iL2).p4();
           Double_t dphi = fabs(leps[0].DeltaPhi(leps[1]));
           if(minDPhi<0 || dphi<minDPhi) minDPhi = dphi;
         }
       }
       //For electron-muon
-      for(uint iL2=0; iL2<m_vec_signalMuon->size(); iL2++){
-        charge[1] = m_vec_signalMuon->at(iL2).charge();
+      for(uint iL2=0; iL2<vec_muon->size(); iL2++){
+        charge[1] = vec_muon->at(iL2).charge();
         if(isOS(charge[0], charge[1])){
-          leps[1] = m_vec_signalMuon->at(iL2).p4();
+          leps[1] = vec_muon->at(iL2).p4();
           Double_t dphi = fabs(leps[0].DeltaPhi(leps[1]));
           if(minDPhi<0 || dphi<minDPhi) minDPhi = dphi;
         }
       }
     }
     // for muon-muon
-    for(uint iL=0; iL<m_vec_signalMuon->size(); iL++){
-      leps[0] = m_vec_signalMuon->at(iL).p4();
-      charge[0] = m_vec_signalMuon->at(iL).charge();
-      for(uint iL2=0; iL2<m_vec_signalMuon->size(); iL2++){
+    for(uint iL=0; iL<vec_muon->size(); iL++){
+      leps[0] = vec_muon->at(iL).p4();
+      charge[0] = vec_muon->at(iL).charge();
+      for(uint iL2=0; iL2<vec_muon->size(); iL2++){
         if(iL2<=iL) continue;
-        charge[1] = m_vec_signalMuon->at(iL2).charge();
+        charge[1] = vec_muon->at(iL2).charge();
         if(isOS(charge[0], charge[1])){
-          leps[1] = m_vec_signalMuon->at(iL2).p4();
+          leps[1] = vec_muon->at(iL2).p4();
           Double_t dphi = fabs(leps[0].DeltaPhi(leps[1]));
           if(minDPhi<0 || dphi<minDPhi) minDPhi = dphi;
         }
@@ -1624,7 +1661,9 @@ bool EventSelector::passLepDEtaCut()
   // Just use the leading two leptons for now
   if(m_lepDEtaMax > 0 && nSignalLeps()>=2){
     Double_t eta[2];
-    for(uint id=0; id<2; id++) eta[id] = getFourVector(m_leadLepIndex[id], m_leadLepFlavor[id]).Eta();
+    Int_t* lepIndex  = m_is3SigLepSel ? m_leadLepIndex  : m_baseLepIndex ;
+    Int_t* lepFlavor = m_is3SigLepSel ? m_leadLepFlavor : m_baseLepFlavor;
+    for(uint id=0; id<2; id++) eta[id] = getFourVector(lepIndex[id], lepFlavor[id]).Eta();
     float dEta = fabs(eta[0]-eta[1]);
     if(dEta > m_lepDEtaMax) return false;
   }
@@ -1645,17 +1684,21 @@ bool EventSelector::passLepDEtaCut()
 bool EventSelector::passLepPtCut()
 {
   Double_t lepPt[2] = {-1.,-1.};//speciall treatment for 1st/2nd leptons.
-  if(m_leadLepIndex[0]!=-1) lepPt[0] = getFourVector(m_leadLepIndex[0], m_leadLepFlavor[0]).Pt();
-  if(m_leadLepIndex[1]!=-1) lepPt[1] = getFourVector(m_leadLepIndex[1], m_leadLepFlavor[1]).Pt();
+  Int_t* lepIndex  = m_is3SigLepSel ? m_leadLepIndex  : m_baseLepIndex ;
+  Int_t* lepFlavor = m_is3SigLepSel ? m_leadLepFlavor : m_baseLepFlavor;
+  if(lepIndex[0]!=-1) lepPt[0] = getFourVector(lepIndex[0], lepFlavor[0]).Pt();
+  if(lepIndex[1]!=-1) lepPt[1] = getFourVector(lepIndex[1], lepFlavor[1]).Pt();
   if(m_lep1PtMin > 0 && lepPt[0]/1000. < m_lep1PtMin) return false;
   if(m_lep2PtMin > 0 && lepPt[1]/1000. < m_lep2PtMin) return false;
-  for(uint iL=0; iL<m_vec_signalElectron->size(); iL++){
-    Double_t lepPtInGeV = m_vec_signalElectron->at(iL).pt()/1000.;
+  std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
+  std::vector< xAOD::Muon >*     vec_muon     = m_is3SigLepSel ? m_vec_signalMuon     : m_vec_baseMuon;
+  for(uint iL=0; iL<vec_electron->size(); iL++){
+    Double_t lepPtInGeV = vec_electron->at(iL).pt()/1000.;
     if(m_lepPtMin > 0 && lepPtInGeV<m_lepPtMin) return false;
     if(m_lepPtMax > 0 && lepPtInGeV>m_lepPtMax) return false;
   }
-  for(uint iL=0; iL<m_vec_signalMuon    ->size(); iL++){
-    Double_t lepPtInGeV = m_vec_signalMuon    ->at(iL).pt()/1000.;
+  for(uint iL=0; iL<vec_muon    ->size(); iL++){
+    Double_t lepPtInGeV = vec_muon    ->at(iL).pt()/1000.;
     if(m_lepPtMin > 0 && lepPtInGeV<m_lepPtMin) return false;
     if(m_lepPtMax > 0 && lepPtInGeV>m_lepPtMax) return false;
   }
@@ -1666,12 +1709,14 @@ bool EventSelector::passSumLepPtCut()
 {
   if(m_sumLepPtMin > 0){
     float sumPt = 0;
-    for(uint iL=0; iL<m_vec_signalElectron->size(); iL++){
-      Double_t lepPtInGeV = m_vec_signalElectron->at(iL).pt()/1000.;
+    std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
+    std::vector< xAOD::Muon >*     vec_muon     = m_is3SigLepSel ? m_vec_signalMuon     : m_vec_baseMuon;
+    for(uint iL=0; iL<vec_electron->size(); iL++){
+      Double_t lepPtInGeV = vec_electron->at(iL).pt()/1000.;
       sumPt += lepPtInGeV;
     }
-    for(uint iL=0; iL<m_vec_signalMuon    ->size(); iL++){
-      Double_t lepPtInGeV = m_vec_signalMuon    ->at(iL).pt()/1000.;
+    for(uint iL=0; iL<vec_muon    ->size(); iL++){
+      Double_t lepPtInGeV = vec_muon    ->at(iL).pt()/1000.;
       sumPt += lepPtInGeV;
     }
     if(sumPt < m_sumLepPtMin) return false;
@@ -1716,12 +1761,12 @@ bool EventSelector::passLepTruthCut()
   if(m_isMC && m_selRealLeps){
     for(uint i=0; i<3; i++){
       if(isFakeLepton(i)) return false;
-      if(m_leadLepFlavor[i]==0){
+      if(m_is3SigLepSel ? m_leadLepFlavor[i]==0 : m_baseLepFlavor[i]==0){
         if(isChargeFlipElectron(i)) return false;
       }
     }
   }
-  if(m_isMC && nSignalLeps() > 0){
+  if(m_isMC && (m_is3SigLepSel ? nSignalLeps() > 0 : nBaselineLeps() > 0)){
     bool lep1Real = isRealLepton(0);
     if(m_vetoRealLep1 && lep1Real) return false;
   }
@@ -2044,11 +2089,15 @@ void EventSelector::dumpEventCounters()
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::isRealLepton(unsigned int id)
 {
-  if(m_leadLepIndex[id]==-1) return false;
+  Int_t* lepIndex  = m_is3SigLepSel ? m_leadLepIndex  : m_baseLepIndex ;
+  Int_t* lepFlavor = m_is3SigLepSel ? m_leadLepFlavor : m_baseLepFlavor;
+  std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
+  std::vector< xAOD::Muon >*     vec_muon     = m_is3SigLepSel ? m_vec_signalMuon     : m_vec_baseMuon;
+  if(lepIndex[id]==-1) return false;
   else{
-    if(m_leadLepFlavor[id]==0){
-      Int_t type   = xAOD::EgammaHelpers::getParticleTruthType  (&(m_vec_signalElectron->at(m_leadLepIndex[id])));
-      //      Int_t origin = xAOD::EgammaHelpers::getParticleTruthOrigin(&(m_vec_signalElectron->at(m_leadLepIndex[id])));
+    if(lepFlavor[id]==0){
+      Int_t type   = xAOD::EgammaHelpers::getParticleTruthType  (&(vec_electron->at(lepIndex[id])));
+      //      Int_t origin = xAOD::EgammaHelpers::getParticleTruthOrigin(&(vec_electron->at(lepIndex[id])));
       //      std::cout<<Form("Electron type %d origin %d", type, origin)<<std::endl;
       if(type==MCTruthPartClassifier::IsoElectron) return true;
       //      const xAOD::TruthParticle* truthEle = xAOD::EgammaHelpers::getTruthParticle(&el);
@@ -2060,7 +2109,7 @@ bool EventSelector::isRealLepton(unsigned int id)
     }else{
       int muonTruthType   = 0;
       //      int muonTruthOrigin = 0;
-      const xAOD::TrackParticle* trackParticle = (&(m_vec_signalMuon->at(m_leadLepIndex[id])))->primaryTrackParticle();
+      const xAOD::TrackParticle* trackParticle = (&(vec_muon->at(lepIndex[id])))->primaryTrackParticle();
       if(trackParticle){
         static SG::AuxElement::Accessor<int> acc_truthType  ("truthType"  );
         //        static SG::AuxElement::Accessor<int> acc_truthOrigin("truthOrigin");
@@ -2089,9 +2138,11 @@ bool EventSelector::isFakeLepton(unsigned int id)
 bool EventSelector::isChargeFlipElectron(unsigned int id)
 {
   //Assuming lepton[id] is electron and true isolated electron.
-  const xAOD::TruthParticle* truthEle = xAOD::EgammaHelpers::getTruthParticle(&(m_vec_signalElectron->at(m_leadLepIndex[id])));
+  Int_t* lepIndex  = m_is3SigLepSel ? m_leadLepIndex  : m_baseLepIndex ;
+  std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
+  const xAOD::TruthParticle* truthEle = xAOD::EgammaHelpers::getTruthParticle(&(vec_electron->at(lepIndex[id])));
   Int_t trueCharge = truthEle->charge();
-  Int_t recoCharge = (m_vec_signalElectron->at(m_leadLepIndex[id])).charge();
+  Int_t recoCharge = (vec_electron->at(lepIndex[id])).charge();
   if(isSS(trueCharge, recoCharge)) return false;
   else return false;
 }
@@ -2156,8 +2207,13 @@ int EventSelector::getChan()
   Int_t nEl=0;
   Int_t nMu=0;
   for(Int_t id=0; id<3; id++){
-    if     (m_leadLepFlavor[id]==0) nEl++;
-    else if(m_leadLepFlavor[id]==1) nMu++;
+    if(m_is3SigLepSel){
+      if     (m_leadLepFlavor[id]==0) nEl++;
+      else if(m_leadLepFlavor[id]==1) nMu++;
+    }else{
+      if     (m_baseLepFlavor[id]==0) nEl++;
+      else if(m_baseLepFlavor[id]==1) nMu++;
+    }
   }
   if(nEl+nMu!=3) return -1; //Do not plot anything.
   else if(nEl==3 && nMu==0) chan = Ch_eee;
@@ -2171,13 +2227,15 @@ int EventSelector::getChan()
 bool EventSelector::hasSFOS()
 {
   Int_t recoCharge[3]={0,0,0};
-  for(Int_t id=0; id<3; id++) recoCharge[id] = getCharge(m_leadLepIndex[id], m_leadLepFlavor[id]);
+  Int_t* lepIndex  = m_is3SigLepSel ? m_leadLepIndex  : m_baseLepIndex ;
+  Int_t* lepFlavor = m_is3SigLepSel ? m_leadLepFlavor : m_baseLepFlavor;
+  for(Int_t id=0; id<3; id++) recoCharge[id] = getCharge(lepIndex[id], lepFlavor[id]);
   Bool_t hasSFOS = kFALSE;
   for(Int_t id1=0; id1<3; id1++){
-    if(m_leadLepIndex[id1]==-1) continue;
+    if(lepIndex[id1]==-1) continue;
     for(Int_t id2=0; id2<3; id2++){
-      if(m_leadLepIndex[id2]==-1) continue;
-      if(m_leadLepFlavor[id1]==m_leadLepFlavor[id2] && 
+      if(lepIndex[id2]==-1) continue;
+      if(lepFlavor[id1]==lepFlavor[id2] && 
          recoCharge     [id1]!=recoCharge     [id2] ){
         hasSFOS = kTRUE;
         break;
@@ -2190,13 +2248,15 @@ bool EventSelector::hasSFOS()
 bool EventSelector::hasSFSS()
 {
   Int_t recoCharge[3]={0,0,0};
-  for(Int_t id=0; id<3; id++) recoCharge[id] = getCharge(m_leadLepIndex[id], m_leadLepFlavor[id]);
+  Int_t* lepIndex  = m_is3SigLepSel ? m_leadLepIndex  : m_baseLepIndex ;
+  Int_t* lepFlavor = m_is3SigLepSel ? m_leadLepFlavor : m_baseLepFlavor;
+  for(Int_t id=0; id<3; id++) recoCharge[id] = getCharge(lepIndex[id], lepFlavor[id]);
   Bool_t hasSFSS = kFALSE;
   for(Int_t id1=0; id1<3; id1++){
-    if(m_leadLepIndex[id1]==-1) continue;
+    if(lepIndex[id1]==-1) continue;
     for(Int_t id2=0; id2<3; id2++){
-      if(m_leadLepIndex[id2]==-1) continue;
-      if(m_leadLepFlavor[id1]==m_leadLepFlavor[id2] && 
+      if(lepIndex[id2]==-1) continue;
+      if(lepFlavor[id1]==lepFlavor[id2] && 
          recoCharge     [id1]==recoCharge     [id2] ){
         hasSFSS = kTRUE;
         break;
@@ -2209,13 +2269,15 @@ bool EventSelector::hasSFSS()
 bool EventSelector::hasOFOS()
 {
   Int_t recoCharge[3]={0,0,0};
-  for(Int_t id=0; id<3; id++) recoCharge[id] = getCharge(m_leadLepIndex[id], m_leadLepFlavor[id]);
+  Int_t* lepIndex  = m_is3SigLepSel ? m_leadLepIndex  : m_baseLepIndex ;
+  Int_t* lepFlavor = m_is3SigLepSel ? m_leadLepFlavor : m_baseLepFlavor;
+  for(Int_t id=0; id<3; id++) recoCharge[id] = getCharge(lepIndex[id], lepFlavor[id]);
   Bool_t hasOFOS = kFALSE;
   for(Int_t id1=0; id1<3; id1++){
-    if(m_leadLepIndex[id1]==-1) continue;
+    if(lepIndex[id1]==-1) continue;
     for(Int_t id2=0; id2<3; id2++){
-      if(m_leadLepIndex[id2]==-1) continue;
-      if(m_leadLepFlavor[id1]!=m_leadLepFlavor[id2] && 
+      if(lepIndex[id2]==-1) continue;
+      if(lepFlavor[id1]!=lepFlavor[id2] && 
          recoCharge     [id1]!=recoCharge     [id2] ){
         hasOFOS = kTRUE;
         break;
@@ -2228,12 +2290,14 @@ bool EventSelector::hasOFOS()
 bool EventSelector::hasOS()
 {
   Int_t recoCharge[3]={0,0,0};
-  for(Int_t id=0; id<3; id++) recoCharge[id] = getCharge(m_leadLepIndex[id], m_leadLepFlavor[id]);
+  Int_t* lepIndex  = m_is3SigLepSel ? m_leadLepIndex  : m_baseLepIndex ;
+  Int_t* lepFlavor = m_is3SigLepSel ? m_leadLepFlavor : m_baseLepFlavor;
+  for(Int_t id=0; id<3; id++) recoCharge[id] = getCharge(lepIndex[id], lepFlavor[id]);
   Bool_t hasOS = kFALSE;
   for(Int_t id1=0; id1<3; id1++){
-    if(m_leadLepIndex[id1]==-1) continue;
+    if(lepIndex[id1]==-1) continue;
     for(Int_t id2=0; id2<3; id2++){
-      if(m_leadLepIndex[id2]==-1) continue;
+      if(lepIndex[id2]==-1) continue;
       if(recoCharge[id1]!=recoCharge[id2]){
         hasOS = kTRUE;
         break;
@@ -2246,12 +2310,14 @@ bool EventSelector::hasOS()
 bool EventSelector::hasSS()
 {
   Int_t recoCharge[3]={0,0,0};
-  for(Int_t id=0; id<3; id++) recoCharge[id] = getCharge(m_leadLepIndex[id], m_leadLepFlavor[id]);
+  Int_t* lepIndex  = m_is3SigLepSel ? m_leadLepIndex  : m_baseLepIndex ;
+  Int_t* lepFlavor = m_is3SigLepSel ? m_leadLepFlavor : m_baseLepFlavor;
+  for(Int_t id=0; id<3; id++) recoCharge[id] = getCharge(lepIndex[id], lepFlavor[id]);
   Bool_t hasSS = kFALSE;
   for(Int_t id1=0; id1<3; id1++){
-    if(m_leadLepIndex[id1]==-1) continue;
+    if(lepIndex[id1]==-1) continue;
     for(Int_t id2=0; id2<3; id2++){
-      if(m_leadLepIndex[id2]==-1) continue;
+      if(lepIndex[id2]==-1) continue;
       if(recoCharge[id1]==recoCharge[id2]){
         hasSS = kTRUE;
         break;
@@ -2320,47 +2386,49 @@ bool EventSelector::hasZlll()
   Double_t massWindow = 10.;
   TLorentzVector leps[3];
   Int_t          charge[3];
+  std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
+  std::vector< xAOD::Muon >*     vec_muon     = m_is3SigLepSel ? m_vec_signalMuon     : m_vec_baseMuon;
   //Electron pair search
-  for(uint iL=0; iL<m_vec_signalElectron->size(); iL++){
-    leps[0] = m_vec_signalElectron->at(iL).p4();
-    charge[0] = m_vec_signalElectron->at(iL).charge();
-    for(uint iL2=0; iL2<m_vec_signalElectron->size(); iL2++){
+  for(uint iL=0; iL<vec_electron->size(); iL++){
+    leps[0] = vec_electron->at(iL).p4();
+    charge[0] = vec_electron->at(iL).charge();
+    for(uint iL2=0; iL2<vec_electron->size(); iL2++){
       if(iL2<=iL) continue;
-      charge[1] = m_vec_signalElectron->at(iL2).charge();
+      charge[1] = vec_electron->at(iL2).charge();
       if(isOS(charge[0],charge[1])){
-        leps[1] = m_vec_signalElectron->at(iL2).p4();
+        leps[1] = vec_electron->at(iL2).p4();
         //Trying to add one more electron
-        for(uint iL3=0; iL3<m_vec_signalElectron->size(); iL3++){
+        for(uint iL3=0; iL3<vec_electron->size(); iL3++){
           if((iL3==iL) || (iL3==iL2)) continue;
-          leps[2] = m_vec_signalElectron->at(iL3).p4();
+          leps[2] = vec_electron->at(iL3).p4();
           if(isInMassWindow( (leps[0]+leps[1]+leps[2]).M()/1000., MZ, massWindow)) return true;
         }
         //Trying to add a muon
-        for(uint iL3=0; iL3<m_vec_signalMuon->size(); iL3++){
-          leps[2] = m_vec_signalMuon->at(iL3).p4();
+        for(uint iL3=0; iL3<vec_muon->size(); iL3++){
+          leps[2] = vec_muon->at(iL3).p4();
           if(isInMassWindow( (leps[0]+leps[1]+leps[2]).M()/1000., MZ, massWindow)) return true;
         }
       }
     }
   }
   //Muon pair search
-  for(uint iL=0; iL<m_vec_signalMuon->size(); iL++){
-    leps[0] = m_vec_signalMuon->at(iL).p4();
-    charge[0] = m_vec_signalMuon->at(iL).charge();
-    for(uint iL2=0; iL2<m_vec_signalMuon->size(); iL2++){
+  for(uint iL=0; iL<vec_muon->size(); iL++){
+    leps[0] = vec_muon->at(iL).p4();
+    charge[0] = vec_muon->at(iL).charge();
+    for(uint iL2=0; iL2<vec_muon->size(); iL2++){
       if(iL2<=iL) continue;
-      charge[1] = m_vec_signalMuon->at(iL2).charge();
+      charge[1] = vec_muon->at(iL2).charge();
       if(isOS(charge[0],charge[1])){
-        leps[1] = m_vec_signalMuon->at(iL2).p4();
+        leps[1] = vec_muon->at(iL2).p4();
         //Trying to add one more muon
-        for(uint iL3=0; iL3<m_vec_signalMuon->size(); iL3++){
+        for(uint iL3=0; iL3<vec_muon->size(); iL3++){
           if((iL3==iL) || (iL3==iL2)) continue;
-          leps[2] = m_vec_signalMuon->at(iL3).p4();
+          leps[2] = vec_muon->at(iL3).p4();
           if(isInMassWindow( (leps[0]+leps[1]+leps[2]).M()/1000., MZ, massWindow)) return true;
         }
         //Trying to add a electron
-        for(uint iL3=0; iL3<m_vec_signalElectron->size(); iL3++){
-          leps[2] = m_vec_signalElectron->at(iL3).p4();
+        for(uint iL3=0; iL3<vec_electron->size(); iL3++){
+          leps[2] = vec_electron->at(iL3).p4();
           if(isInMassWindow( (leps[0]+leps[1]+leps[2]).M()/1000., MZ, massWindow)) return true;
         }
       }
@@ -2377,38 +2445,40 @@ bool EventSelector::hasZllll()
   Double_t massWindow = 10.;
   TLorentzVector leps[4];
   Int_t          charge[4];
+  std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
+  std::vector< xAOD::Muon >*     vec_muon     = m_is3SigLepSel ? m_vec_signalMuon     : m_vec_baseMuon;
   //Electron pair search
-  for(uint iL=0; iL<m_vec_signalElectron->size(); iL++){
-    leps[0] = m_vec_signalElectron->at(iL).p4();
-    charge[0] = m_vec_signalElectron->at(iL).charge();
-    for(uint iL2=0; iL2<m_vec_signalElectron->size(); iL2++){
+  for(uint iL=0; iL<vec_electron->size(); iL++){
+    leps[0] = vec_electron->at(iL).p4();
+    charge[0] = vec_electron->at(iL).charge();
+    for(uint iL2=0; iL2<vec_electron->size(); iL2++){
       if(iL2<=iL) continue;
-      charge[1] = m_vec_signalElectron->at(iL2).charge();
+      charge[1] = vec_electron->at(iL2).charge();
       if(isOS(charge[0],charge[1])){
-        leps[1] = m_vec_signalElectron->at(iL2).p4();
+        leps[1] = vec_electron->at(iL2).p4();
         //Trying to add two more electrons
-        for(uint iL3=0; iL3<m_vec_signalElectron->size(); iL3++){
+        for(uint iL3=0; iL3<vec_electron->size(); iL3++){
           if((iL3==iL) || (iL3==iL2)) continue;
-          leps[2] = m_vec_signalElectron->at(iL3).p4();
-          charge[2] = m_vec_signalElectron->at(iL3).charge();
-          for(uint iL4=0; iL4<m_vec_signalElectron->size(); iL4++){
+          leps[2] = vec_electron->at(iL3).p4();
+          charge[2] = vec_electron->at(iL3).charge();
+          for(uint iL4=0; iL4<vec_electron->size(); iL4++){
             if((iL4==iL) || (iL4==iL2) || (iL4==iL3)) continue;
-            charge[3] = m_vec_signalElectron->at(iL4).charge();
+            charge[3] = vec_electron->at(iL4).charge();
             if(isOS(charge[2],charge[3])){
-              leps[3] = m_vec_signalElectron->at(iL4).p4();
+              leps[3] = vec_electron->at(iL4).p4();
               if(isInMassWindow( (leps[0]+leps[1]+leps[2]+leps[3]).M()/1000., MZ, massWindow)) return true;
             }
           }
         }
         //Trying to add two more muons
-        for(uint iL3=0; iL3<m_vec_signalMuon->size(); iL3++){
-          leps[2] = m_vec_signalMuon->at(iL3).p4();
-          charge[2] = m_vec_signalMuon->at(iL3).charge();
-          for(uint iL4=0; iL4<m_vec_signalMuon->size(); iL4++){
+        for(uint iL3=0; iL3<vec_muon->size(); iL3++){
+          leps[2] = vec_muon->at(iL3).p4();
+          charge[2] = vec_muon->at(iL3).charge();
+          for(uint iL4=0; iL4<vec_muon->size(); iL4++){
             if(iL4<=iL3) continue;
-            charge[3] = m_vec_signalMuon->at(iL4).charge();
+            charge[3] = vec_muon->at(iL4).charge();
             if(isOS(charge[2],charge[3])){
-              leps[3] = m_vec_signalMuon->at(iL4).p4();
+              leps[3] = vec_muon->at(iL4).p4();
               if(isInMassWindow( (leps[0]+leps[1]+leps[2]+leps[3]).M()/1000., MZ, massWindow)) return true;
             }
           }
@@ -2417,37 +2487,37 @@ bool EventSelector::hasZllll()
     }
   }
   //Muon pair search
-  for(uint iL=0; iL<m_vec_signalMuon->size(); iL++){
-    leps[0] = m_vec_signalMuon->at(iL).p4();
-    charge[0] = m_vec_signalMuon->at(iL).charge();
-    for(uint iL2=0; iL2<m_vec_signalMuon->size(); iL2++){
+  for(uint iL=0; iL<vec_muon->size(); iL++){
+    leps[0] = vec_muon->at(iL).p4();
+    charge[0] = vec_muon->at(iL).charge();
+    for(uint iL2=0; iL2<vec_muon->size(); iL2++){
       if(iL2<=iL) continue;
-      charge[1] = m_vec_signalMuon->at(iL2).charge();
+      charge[1] = vec_muon->at(iL2).charge();
       if(isOS(charge[0],charge[1])){
-        leps[1] = m_vec_signalMuon->at(iL2).p4();
+        leps[1] = vec_muon->at(iL2).p4();
         //Trying to add two more muons
-        for(uint iL3=0; iL3<m_vec_signalMuon->size(); iL3++){
+        for(uint iL3=0; iL3<vec_muon->size(); iL3++){
           if((iL3==iL) || (iL3==iL2)) continue;
-          leps[2] = m_vec_signalMuon->at(iL3).p4();
-          charge[2] = m_vec_signalMuon->at(iL3).charge();
-          for(uint iL4=0; iL4<m_vec_signalMuon->size(); iL4++){
+          leps[2] = vec_muon->at(iL3).p4();
+          charge[2] = vec_muon->at(iL3).charge();
+          for(uint iL4=0; iL4<vec_muon->size(); iL4++){
             if((iL4==iL) || (iL4==iL2) || (iL4==iL3)) continue;
-            charge[3] = m_vec_signalMuon->at(iL4).charge();
+            charge[3] = vec_muon->at(iL4).charge();
             if(isOS(charge[2],charge[3])){
-              leps[3] = m_vec_signalMuon->at(iL4).p4();
+              leps[3] = vec_muon->at(iL4).p4();
               if(isInMassWindow( (leps[0]+leps[1]+leps[2]+leps[3]).M()/1000., MZ, massWindow)) return true;
             }
           }
         }
         //Trying to add two more electrons
-        for(uint iL3=0; iL3<m_vec_signalElectron->size(); iL3++){
-          leps[2] = m_vec_signalElectron->at(iL3).p4();
-          charge[2] = m_vec_signalElectron->at(iL3).charge();
-          for(uint iL4=0; iL4<m_vec_signalElectron->size(); iL4++){
+        for(uint iL3=0; iL3<vec_electron->size(); iL3++){
+          leps[2] = vec_electron->at(iL3).p4();
+          charge[2] = vec_electron->at(iL3).charge();
+          for(uint iL4=0; iL4<vec_electron->size(); iL4++){
             if(iL4<=iL3) continue;
-            charge[3] = m_vec_signalElectron->at(iL4).charge();
+            charge[3] = vec_electron->at(iL4).charge();
             if(isOS(charge[2],charge[3])){
-              leps[3] = m_vec_signalElectron->at(iL4).p4();
+              leps[3] = vec_electron->at(iL4).p4();
               if(isInMassWindow( (leps[0]+leps[1]+leps[2]+leps[3]).M()/1000., MZ, massWindow)) return true;
             }
           }
@@ -2465,15 +2535,17 @@ float EventSelector::findBestMSFOS(int& index1, int& index2, int& flav, float ma
   Float_t bestMsfosMass = -1.;
   TLorentzVector leps[2];
   Int_t          charge[2];
+  std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
+  std::vector< xAOD::Muon >*     vec_muon     = m_is3SigLepSel ? m_vec_signalMuon     : m_vec_baseMuon;
   //Electron pair search
-  for(uint iL=0; iL<m_vec_signalElectron->size(); iL++){
-    leps[0] = m_vec_signalElectron->at(iL).p4();
-    charge[0] = m_vec_signalElectron->at(iL).charge();
-    for(uint iL2=0; iL2<m_vec_signalElectron->size(); iL2++){
+  for(uint iL=0; iL<vec_electron->size(); iL++){
+    leps[0] = vec_electron->at(iL).p4();
+    charge[0] = vec_electron->at(iL).charge();
+    for(uint iL2=0; iL2<vec_electron->size(); iL2++){
       if(iL2<=iL) continue;
-      charge[1] = m_vec_signalElectron->at(iL2).charge();
+      charge[1] = vec_electron->at(iL2).charge();
       if(isOS(charge[0],charge[1])){
-        leps[1] = m_vec_signalElectron->at(iL2).p4();
+        leps[1] = vec_electron->at(iL2).p4();
         Double_t mll = (leps[0]+leps[1]).M();
         if(bestMsfosMass<0. || fabs(bestMsfosMass-mass)>fabs(mll-mass)){
           bestMsfosMass = mll;
@@ -2485,14 +2557,14 @@ float EventSelector::findBestMSFOS(int& index1, int& index2, int& flav, float ma
     }
   }
   //Muon pair search
-  for(uint iL=0; iL<m_vec_signalMuon->size(); iL++){
-    leps[0] = m_vec_signalMuon->at(iL).p4();
-    charge[0] = m_vec_signalMuon->at(iL).charge();
-    for(uint iL2=0; iL2<m_vec_signalMuon->size(); iL2++){
+  for(uint iL=0; iL<vec_muon->size(); iL++){
+    leps[0] = vec_muon->at(iL).p4();
+    charge[0] = vec_muon->at(iL).charge();
+    for(uint iL2=0; iL2<vec_muon->size(); iL2++){
       if(iL2<=iL) continue;
-      charge[1] = m_vec_signalMuon->at(iL2).charge();
+      charge[1] = vec_muon->at(iL2).charge();
       if(isOS(charge[0],charge[1])){
-        leps[1] = m_vec_signalMuon->at(iL2).p4();
+        leps[1] = vec_muon->at(iL2).p4();
         Double_t mll = (leps[0]+leps[1]).M();
         if(bestMsfosMass<0. || fabs(bestMsfosMass-mass)>fabs(mll-mass)){
           bestMsfosMass = mll;
@@ -2536,8 +2608,10 @@ float EventSelector::getMt(TLorentzVector lep, TVector2 met)
 float EventSelector::getMeff(float jetPtCut, bool useMet)
 {
   float meff = 0;
-  for(uint cnt=0; cnt<m_vec_signalElectron->size(); ++cnt) meff += m_vec_signalElectron->at(cnt).pt();
-  for(uint cnt=0; cnt<m_vec_signalMuon    ->size(); ++cnt) meff += m_vec_signalMuon    ->at(cnt).pt();
+  std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
+  std::vector< xAOD::Muon >*     vec_muon     = m_is3SigLepSel ? m_vec_signalMuon     : m_vec_baseMuon;
+  for(uint cnt=0; cnt<vec_electron->size(); ++cnt) meff += vec_electron->at(cnt).pt();
+  for(uint cnt=0; cnt<vec_muon    ->size(); ++cnt) meff += vec_muon    ->at(cnt).pt();
   for(uint cnt=0; cnt<m_vec_signalJet     ->size(); ++cnt){
     if(m_vec_signalJet->at(cnt).pt()/1000. > jetPtCut) meff += m_vec_signalJet->at(cnt).pt();
   }
@@ -2552,7 +2626,9 @@ float EventSelector::getMljj()
   TLorentzVector jet[2];
   TLorentzVector lep[2];
   for(Int_t id=0; id<2; id++) jet[id] = m_vec_signalJet->at(id).p4();
-  for(Int_t id=0; id<2; id++) lep[id] = getFourVector(m_leadLepIndex[id],m_leadLepFlavor[id]);
+  Int_t* lepIndex  = m_is3SigLepSel ? m_leadLepIndex  : m_baseLepIndex ;
+  Int_t* lepFlavor = m_is3SigLepSel ? m_leadLepFlavor : m_baseLepFlavor;
+  for(Int_t id=0; id<2; id++) lep[id] = getFourVector(lepIndex[id],lepFlavor[id]);
 
   TLorentzVector jj = jet[0]+jet[1];
   float dR1 = jj.DeltaR(lep[0]);
@@ -2565,20 +2641,24 @@ TLorentzVector EventSelector::getFourVector(int index, int flav)
 {
   //method to retrieve four vector by m_leadLepIndex;
   TLorentzVector lep(0.,0.,0.,0.);
+  std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
+  std::vector< xAOD::Muon >*     vec_muon     = m_is3SigLepSel ? m_vec_signalMuon     : m_vec_baseMuon;
   if(index!=-1){
-    if     (flav==0) lep = (m_vec_signalElectron->at(index)).p4();
-    else if(flav==1) lep = (m_vec_signalMuon    ->at(index)).p4();
+    if     (flav==0) lep = (vec_electron->at(index)).p4();
+    else if(flav==1) lep = (vec_muon    ->at(index)).p4();
   }
   return lep;
 }
 /*--------------------------------------------------------------------------------*/
 int EventSelector::getCharge(int index, int flav)
 {
-  //method to retrieve charge by m_leadLepIndex;
+  //method to retrieve charge by m_lead/baseLepIndex;
   Int_t charge = 0;
+  std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
+  std::vector< xAOD::Muon >*     vec_muon     = m_is3SigLepSel ? m_vec_signalMuon     : m_vec_baseMuon;
   if(index!=-1){
-    if     (flav==0) charge = (m_vec_signalElectron->at(index)).charge();
-    else if(flav==1) charge = (m_vec_signalMuon    ->at(index)).charge();
+    if     (flav==0) charge = (vec_electron->at(index)).charge();
+    else if(flav==1) charge = (vec_muon    ->at(index)).charge();
   }
   return charge;
 }
@@ -2587,9 +2667,11 @@ float EventSelector::getIsolationValue(int index, int flav, xAOD::Iso::Isolation
 {
   //method to retrieve isolation value by m_leadLepIndex;
   float iso = 0.;
+  std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
+  std::vector< xAOD::Muon >*     vec_muon     = m_is3SigLepSel ? m_vec_signalMuon     : m_vec_baseMuon;
   if(index!=-1){
-    if     (flav==0) (m_vec_signalElectron->at(index)).isolationValue(iso,type);
-    else if(flav==1) (m_vec_signalMuon    ->at(index)).isolation     (iso,type);
+    if     (flav==0) (vec_electron->at(index)).isolationValue(iso,type);
+    else if(flav==1) (vec_muon    ->at(index)).isolation     (iso,type);
   }
   return iso;
 }
@@ -2598,9 +2680,11 @@ xAOD::TrackParticle* EventSelector::getTrack(int index, int flav)
 {
   //method to retrieve track object by m_leadLepIndex;
   xAOD::TrackParticle* track = 0;
+  std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
+  std::vector< xAOD::Muon >*     vec_muon     = m_is3SigLepSel ? m_vec_signalMuon     : m_vec_baseMuon;
   if(index!=-1){
-    if     (flav==0) track = const_cast<xAOD::TrackParticle*>((m_vec_signalElectron->at(index)).trackParticle());
-    else if(flav==1) track = const_cast<xAOD::TrackParticle*>((m_vec_signalMuon    ->at(index)).primaryTrackParticle());
+    if     (flav==0) track = const_cast<xAOD::TrackParticle*>((vec_electron->at(index)).trackParticle());
+    else if(flav==1) track = const_cast<xAOD::TrackParticle*>((vec_muon    ->at(index)).primaryTrackParticle());
   }
   return track;
 }

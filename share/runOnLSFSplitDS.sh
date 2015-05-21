@@ -84,7 +84,7 @@ runnum=`echo $TXT | cut -c $startPos-$runnumEndPos`
 
 ######################################################
 # Waiting for #submitted jobs to be less than maxJobs
-maxJobs=800
+maxJobs=8000
 while [ $(bjobs | wc -l) -gt $maxJobs  ]
 do
     echo Currently $(bjobs | wc -l) jobs are runnning. Wait for 10 seconds to keep less running jobs...
@@ -94,8 +94,8 @@ done
 
 maxEve=-1
 echo Starting testRun for DSID=$runnum ...
-echo bsub -q 12h -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG
-bsub -q 12h -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG
+echo bsub -q 1d -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG
+bsub -q 1d -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG
 echo ''
 done
 

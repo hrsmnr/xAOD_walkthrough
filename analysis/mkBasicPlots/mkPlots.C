@@ -36,6 +36,33 @@ void SetDistType(void){
   DistTypeNames->push_back("lep1Eta");
   DistTypeNames->push_back("lep2Eta");
   DistTypeNames->push_back("lep3Eta");
+  DistTypeNames->push_back("PRlep1Pt");
+  DistTypeNames->push_back("PRlep2Pt");
+  DistTypeNames->push_back("PRlep3Pt");
+  DistTypeNames->push_back("COlep1Pt");
+  DistTypeNames->push_back("COlep2Pt");
+  DistTypeNames->push_back("COlep3Pt");
+  DistTypeNames->push_back("HFlep1Pt");
+  DistTypeNames->push_back("HFlep2Pt");
+  DistTypeNames->push_back("HFlep3Pt");
+  DistTypeNames->push_back("LFlep1Pt");
+  DistTypeNames->push_back("LFlep2Pt");
+  DistTypeNames->push_back("LFlep3Pt");
+  DistTypeNames->push_back("UKlep1Pt");
+  DistTypeNames->push_back("UKlep2Pt");
+  DistTypeNames->push_back("UKlep3Pt");
+  DistTypeNames->push_back("baselep1Pt");
+  DistTypeNames->push_back("baselep2Pt");
+  DistTypeNames->push_back("baselep3Pt");
+  DistTypeNames->push_back("baseel1Pt");
+  DistTypeNames->push_back("baseel2Pt");
+  DistTypeNames->push_back("baseel3Pt");
+  DistTypeNames->push_back("basemu1Pt");
+  DistTypeNames->push_back("basemu2Pt");
+  DistTypeNames->push_back("basemu3Pt");
+  DistTypeNames->push_back("baselep1Eta");
+  DistTypeNames->push_back("baselep2Eta");
+  DistTypeNames->push_back("baselep3Eta");
   DistTypeNames->push_back("el1Eta");
   DistTypeNames->push_back("el2Eta");
   DistTypeNames->push_back("el3Eta");
@@ -75,6 +102,14 @@ void SetDistType(void){
   DistTypeNames->push_back("lep1Class");
   DistTypeNames->push_back("lep2Class");
   DistTypeNames->push_back("lep3Class");
+  DistTypeNames->push_back("baselepOrigin");
+  DistTypeNames->push_back("baselep1Origin");
+  DistTypeNames->push_back("baselep2Origin");
+  DistTypeNames->push_back("baselep3Origin");
+  DistTypeNames->push_back("baselepClass");
+  DistTypeNames->push_back("baselep1Class");
+  DistTypeNames->push_back("baselep2Class");
+  DistTypeNames->push_back("baselep3Class");
   DistTypeNames->push_back("hasSS");
   DistTypeNames->push_back("nTau");
   DistTypeNames->push_back("tauPt");
@@ -257,12 +292,12 @@ void SetDataType(void){
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
-enum BGType{WZ,ZZ,ttV,Higgs,ttbar,nBGType};
-TString BGTypeNames[nBGType] = {"WZ","ZZ","ttV","Higgs","ttbar"};
-Int_t BGTypeHistColors[nBGType] = {kAzure-3,kAzure-4,kCyan-2,kBlack,kOrange-2};
-Int_t BGTypeFillColors[nBGType] = {kAzure-3,kAzure-4,kCyan-2,kWhite,kOrange-2};
-Int_t BGStackOrder1[nBGType] = {WZ,ZZ,ttV,Higgs,ttbar};
-Int_t BGStackOrder2[nBGType] = {ttbar,Higgs,ttV,ZZ,WZ};
+enum BGType{WZ,ZZ,ttV,Higgs,ttbar,Zjets,nBGType};
+TString BGTypeNames[nBGType] = {"WZ","ZZ","ttV","Higgs","ttbar","Zjets"};
+Int_t BGTypeHistColors[nBGType] = {kAzure-3,kAzure-4,kCyan-2,kBlack,kOrange-2,kGreen};
+Int_t BGTypeFillColors[nBGType] = {kAzure-3,kAzure-4,kCyan-2,kWhite,kOrange-2,kGreen};
+Int_t BGStackOrder1[nBGType] = {WZ,ZZ,ttV,Higgs,ttbar,Zjets};
+Int_t BGStackOrder2[nBGType] = {Zjets,ttbar,Higgs,ttV,ZZ,WZ};
 // enum BGType{WZ,nBGType};
 // TString BGTypeNames[nBGType] = {"WZ"};
 // Int_t BGTypeHistColors[nBGType] = {kAzure-3};
@@ -347,6 +382,10 @@ void SetBGType(void){
   //ttbar
   BGFileNames[ttbar]->push_back("110401"); BGIncludeFlag[ttbar]->push_back("01111");//no all-had
 
+  //Zjets
+  BGFileNames[Zjets]->push_back("147406"); BGIncludeFlag[Zjets]->push_back("01100");//Zee
+  //  BGFileNames[ttbar]->push_back("147407"); BGIncludeFlag[ttbar]->push_back("00011");//Zmumu
+  //  BGFileNames[ttbar]->push_back("147408"); BGIncludeFlag[ttbar]->push_back("01111");//Ztautau
 
 }
 
@@ -670,7 +709,7 @@ Int_t mkPlots(TString Tag, TString SelecReg){
   TH1F* h_higgs4leg = (TH1F*)dist_bg[0][Higgs][0]->Clone("h_higgs4leg");
   h_higgs4leg->SetLineColor(kBlack);
   leg->AddEntry(h_higgs4leg,"Higgs","f");
-  // leg->AddEntry(dist_bg[0][Zjets][0],"Z/#gamma^{*}+jets","f");
+  leg->AddEntry(dist_bg[0][Zjets][0],"Z/#gamma^{*}+jets","f");
   // leg->AddEntry(dist_bg[0][Wjets][0],"W+jets","f");
   leg->AddEntry(dist_bg[0][ttbar][0],"t#bar{t}","f");
   // leg->AddEntry(dist_bg[0][OtherFake][0],"Other BG with fakes","f");
