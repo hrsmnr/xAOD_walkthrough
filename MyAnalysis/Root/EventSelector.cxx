@@ -12,8 +12,8 @@
 #include"EventLoop/StatusCode.h"
 #include"xAODMissingET/MissingETAuxContainer.h"
 #include"xAODEgamma/EgammaxAODHelpers.h"
-#include"../MCTruthClassifier/MCTruthClassifier/MCTruthClassifierDefs.h"//not prepared for rootcore
-#include"../CalcGenericMT2/src/MT2_ROOT.h"//MT2 tool
+#include"MyAnalysis/MCTruthClassifierDefs.h"//Copied from MCTruthClassifier-00-01-31
+#include"MyAnalysis/MT2_ROOT.h"//MT2 tool by CalcGenericMT2
 
 /*--------------------------------------------------------------------------------*/
 // EventSelector Constructor

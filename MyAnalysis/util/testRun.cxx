@@ -1,6 +1,7 @@
 #include "xAODRootAccess/Init.h"
 #include "EventLoop/Job.h"
 #include "EventLoop/DirectDriver.h"
+#include "EventLoopGrid/PrunDriver.h"
 #include "SampleHandler/SampleHandler.h"
 #include "SampleHandler/ToolsDiscovery.h"
 #include "SampleHandler/DiskListLocal.h"
@@ -33,6 +34,7 @@ int main( int argc, char* argv[] ) {
   std::string outputDir = "result/submitDir";
   bool doSys = false;
   bool useFAX = false;
+  bool useGRID = false;
   //  bool limitTree = false;
   
   /** Read inputs to program */  
@@ -59,6 +61,8 @@ int main( int argc, char* argv[] ) {
       doSys = true;
     else if (strcmp(argv[i], "--useFAX") == 0)
       useFAX = true;
+    else if (strcmp(argv[i], "--useGRID") == 0)
+      useGRID = true;
     //    else if (strcmp(argv[i], "--limitTree") == 0)
     //      limitTree = true;
     //else if (strcmp(argv[i], "--sigCut") == 0)
@@ -77,12 +81,19 @@ int main( int argc, char* argv[] ) {
   if(!file       .empty()) std::cout << Form("  file     : %s", file       .c_str()) << std::endl;
   if(!filelist   .empty()) std::cout << Form("  filelist : %s", filelist   .c_str()) << std::endl;
   std::cout <<Form("  useFAX   : %s"  , (useFAX?"true":"false")) << std::endl;
+  std::cout <<Form("  useGRID  : %s"  , (useGRID?"true":"false")) << std::endl;
   std::cout <<Form("  doSys    : %s"  , (doSys ?"true":"false")) << std::endl;
   std::cout << std::endl;
 
   // Aborting if useFAX but filelist was not specified
   if(useFAX && filelist.empty()){
     std::cout<<"Error: Please specify input filelist by --filelist when you use \"--useFAX\"."<<std::endl;
+    return 0;
+  }
+
+  // Aborting if useGRID but filelist was specified
+  if(useGRID && (!filelist.empty() || !file.empty())){
+    std::cout<<"Error: Please do not specify -F, --filelist, --FileDirBase with --useGRID."<<std::endl;
     return 0;
   }
 
@@ -117,7 +128,10 @@ int main( int argc, char* argv[] ) {
   SH::SampleHandler sh;
   Bool_t useDir = kTRUE;
   if(fileDir.empty()) useDir = kFALSE;
-  if(useDir){
+  if(useGRID){
+    std::cout<<"DatasetName : "<<fileDir.c_str()<<std::endl;;
+    SH::scanDQ2(sh, fileDir); 
+  }else if(useDir){
     //Check if input file path is existing.
     std::string dirFullPath = "";
     if(fileDir=="test") fileDir = "mc14_13TeV.205048.Herwigpp_UEEE4_CTEQ6L1_sM_wA_WZ_C1_100_N1_0.merge.AOD.e3479_a266_a265_r5853_tid04786763_00"; //Default dataset for testing.
@@ -204,8 +218,16 @@ int main( int argc, char* argv[] ) {
   job.algsAdd( alg );
 
   // Run the job using the local/direct driver:
-  EL::DirectDriver driver;
-  driver.submit( job, submitDir );
+  if(useGRID){
+    EL::PrunDriver driver;
+    TString outputDS = Form("user.hirose.%d_%s",dsid,submitDir.c_str());
+    std::cout<<"Output DS name: "<<outputDS.Data()<<std::endl;
+    driver.options()->setString("nc_outputSampleName", outputDS.Data());
+    driver.submitOnly( job, ("result/"+outputDS).Data() );
+  }else{
+    EL::DirectDriver driver;
+    driver.submit( job, submitDir );
+  }
   std::cout<<std::endl;
 
   return 0;
