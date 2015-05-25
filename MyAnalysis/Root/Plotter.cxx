@@ -9,7 +9,7 @@
 #include"MyAnalysis/Plotter.h"
 #include"SUSYTools/SUSYObjDef_xAOD.h"
 #include"xAODEgamma/EgammaxAODHelpers.h"
-#include"../MCTruthClassifier/MCTruthClassifier/MCTruthClassifierDefs.h"//not prepared for rootcore
+#include"MyAnalysis/MCTruthClassifierDefs.h"
 
 #include"TFile.h"
 #include"TH1F.h"
