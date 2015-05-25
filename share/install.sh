@@ -1,6 +1,6 @@
 #!/bin/sh
 source /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/user/atlasLocalSetup.sh
-rcSetup Base,2.1.30
+rcSetup Base,2.1.31
 rc checkout_pkg atlasoff/PhysicsAnalysis/SUSYPhys/SUSYTools/tags/SUSYTools-00-05-00-26
 rc checkout_pkg atlasoff/Reconstruction/EventShapes/EventShapeTools/tags/EventShapeTools-00-01-09
 rc checkout_pkg atlasoff/Reconstruction/EventShapes/EventShapeInterface/tags/EventShapeInterface-00-00-09
