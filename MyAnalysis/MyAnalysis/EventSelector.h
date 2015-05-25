@@ -55,6 +55,7 @@ class EventSelector : public TObject
   Int_t getLeadLepIndex (Int_t id){return m_leadLepIndex [id];};
   Int_t getLeadLepFlavor(Int_t id){return m_leadLepFlavor[id];};
   TLorentzVector getLeadLep(Int_t id){return m_leadLeps[id];};
+  bool is3SigLepSel(){return m_is3SigLepSel;};
 
   ///////////////////////////////////////////////
   int Get_initial     (){return n_initial     ;};
@@ -318,6 +319,7 @@ class EventSelector : public TObject
   /* std::string                 m_sample;         // sample name */
   std::string                    m_sel;            // event selection string
   std::string                    m_sys;            // systematic name string
+  bool                           m_is3SigLepSel;   // true if (m_nLepMin and m_nLepMax)!=3
   /* int                         m_selFlag;        // Integer flag for selection (for HistFitterTree) */
   /* bool                        m_doWeightSys;    // Toggle weight systematics */
   /* ObjSys::OSys                m_objSys;         // Object systematic flag */

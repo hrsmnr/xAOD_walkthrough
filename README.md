@@ -16,6 +16,7 @@ kinit [your account]@CERN.CH #not necessary but recommended
 ## Tips / example -----
 $git clone git://github.com/hrsmnr/xAOD_walkthrough.git [destination]  
 $git remote add origin https://hrsmnr@github.com/hrsmnr/xAOD_walkthrough.git  
+$git log --branches --not --remotes  
 $source rcSetup.sh  
 $rc find_packages  
 $rc compile  
@@ -40,5 +41,5 @@ $voms-proxy-init --voms atlas:/atlas/jp
 $source rcSetup.sh  
 $python share/mkFaxFileList.py [optionally: target dataset list]  
 ## Submitting jobs with FAX to LSF  
-## Make your GRID passward file as ./share/pfile.txt
-## Attention: make sure no access right for others!! (chmod 0600 ./share/pfile.txt)
+-- Make your GRID passward file as ./share/pfile.txt
+-- Attention: make sure no access right for others!! (chmod 0600 ./share/pfile.txt)
