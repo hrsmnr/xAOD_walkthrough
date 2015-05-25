@@ -296,7 +296,7 @@ enum BGType{WZ,ZZ,ttV,Higgs,ttbar,Zjets,nBGType};
 TString BGTypeNames[nBGType] = {"WZ","ZZ","ttV","Higgs","ttbar","Zjets"};
 Int_t BGTypeHistColors[nBGType] = {kAzure-3,kAzure-4,kCyan-2,kBlack,kOrange-2,kGreen};
 Int_t BGTypeFillColors[nBGType] = {kAzure-3,kAzure-4,kCyan-2,kWhite,kOrange-2,kGreen};
-Int_t BGStackOrder1[nBGType] = {WZ,ZZ,ttV,Higgs,ttbar,Zjets};
+Int_t BGStackOrder1[nBGType] = {Zjets,WZ,ZZ,ttV,Higgs,ttbar};
 Int_t BGStackOrder2[nBGType] = {Zjets,ttbar,Higgs,ttV,ZZ,WZ};
 // enum BGType{WZ,nBGType};
 // TString BGTypeNames[nBGType] = {"WZ"};
@@ -562,7 +562,7 @@ Int_t mkPlots(TString Tag, TString SelecReg){
             TH1F *h_tmp = (TH1F*)(f_tmp->Get(histname.c_str()));
             if(h_tmp->Integral()<0.){
               std::cout<<"FileIdx : "<<fileidx<<", "<<h_tmp->Integral()<<std::endl;
-              getchar();
+              //              getchar();
             }
             dist_bg[fstype][bgtype][disttype]->Add(h_tmp,scale);
             dist_bg[fstype][bgtype][disttype]->SetTitle(FSTypeNames[fstype]+":"+BGTypeNames[bgtype]);

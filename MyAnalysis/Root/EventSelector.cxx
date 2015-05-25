@@ -227,6 +227,12 @@ bool EventSelector::initialize()
     TypSel(2,0,3,0,0,0);
     m_applyTrig = false;
   }
+  else if(m_sel=="3Sig3to4Base"){
+    TypSel(3,0,-1,0,-1,-1);
+    m_nBaseLepMin = 3;//Overwriting the one set by TypSel() above. Do not move.
+    m_nBaseLepMax = 4;//Overwriting the one set by TypSel() above. Do not move.
+    m_applyTrig = false;
+  }
   else if(m_sel=="3Sig4Base"){
     TypSel(3,0,4,0,-1,-1);
     m_applyTrig = false;
