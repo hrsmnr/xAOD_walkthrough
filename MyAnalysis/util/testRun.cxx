@@ -174,6 +174,11 @@ int main( int argc, char* argv[] ) {
     gSystem->Rename(olddir,olddir+"~");
   }
 
+  // Copying additional cross-section file into the SUSYTools directory under $ROOTCOREBIN.
+  if(useGRID){
+    gSystem->Exec("\cp $ROOTCOREBIN/data/MyAnalysis/CrossSection/CrossSections_13TeV.txt $ROOTCOREBIN/data/SUSYTools/");
+  }
+
   // Obtain DSID/RunNumber from file directory name
   int dsid = -1;
   if(useDir){

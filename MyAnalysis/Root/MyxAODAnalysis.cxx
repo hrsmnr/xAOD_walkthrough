@@ -177,7 +177,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
     MyInfo( "initialize()", "SUSYObjDef_xAOD initialized... " );
   }
 
-  std::string xsecFileName  = gSystem->ExpandPathName("./RootCoreBin/data/SUSYTools");
+  std::string xsecFileName  = gSystem->ExpandPathName("$ROOTCOREBIN/data/SUSYTools");
   m_XSDB = new SUSY::CrossSectionDB(xsecFileName);
   if(isData) m_crossSection = 0.;
   else       m_crossSection = m_XSDB->xsectTimesEff(m_dsid);
