@@ -17,4 +17,4 @@ cp MCTruthClassifier/MCTruthClassifier/MCTruthClassifierDefs.h MyAnalysis/MyAnal
 rm -rf MCTruthClassifier
 rc find_packages
 rc compile
-ln -sf $ROOTCOREBIN/../share/CrossSection/CrossSections_13TeV.txt RootCoreBin/data/SUSYTools/
+ln -sf $ROOTCOREBIN/../MyAnalysis/share/CrossSection/CrossSections_13TeV.txt $ROOTCOREBIN/data/SUSYTools/
