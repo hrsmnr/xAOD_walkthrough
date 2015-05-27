@@ -233,17 +233,18 @@ bool EventSelector::initialize()
     m_nBaseLepMax = 4;//Overwriting the one set by TypSel() above. Do not move.
     m_applyTrig = false;
   }
-  else if(m_sel=="3Sig4Base"){
+  else if(m_sel=="3S4B"){
     TypSel(3,0,4,0,-1,-1);
     m_applyTrig = false;
   }
-  else if(m_sel=="3Sig4BaseBveto"){
+  else if(m_sel=="3S4BBveto"){
     TypSel(3,0,4,0,0,0);
     m_applyTrig = false;
   }
   else if(m_sel=="2S3BZvetoBvetoMet"){
-    TypSel(3,0,3,0,0,0);
+    TypSel(2,0,3,0,0,0);
     m_metMin = 50;
+    m_vetoZ = true;
     m_vetoExtZ = true;
     m_applyTrig = false;
   }

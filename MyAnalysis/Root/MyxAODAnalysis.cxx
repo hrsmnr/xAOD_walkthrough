@@ -56,7 +56,7 @@ EL::StatusCode MyxAODAnalysis :: setupJob (EL::Job& job)
   job.useXAOD();
   xAOD::Init("MyxAODAnalysis").ignore(); //call before opening first file
   for(UInt_t eveSelec=0; eveSelec<m_vec_eveSelec->size(); eveSelec++){
-    EL::OutputStream out(Form("%d.%s.AnaHists.root",m_dsid,m_vec_eveSelec->at(eveSelec).c_str()));
+    EL::OutputStream out(Form("%d.%s.AnaHists",m_dsid,m_vec_eveSelec->at(eveSelec).c_str()));
     job.outputAdd(out);
   }
   //end adding
@@ -278,7 +278,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
       Plotter* tmp_plotter = new Plotter(eveSelecName.c_str(), systName.c_str(), m_debugMode);
       m_vec_plotter->at(eveSelec).push_back(tmp_plotter);
       if(systName==""){
-        TFile *outfile = wk()->getOutputFile(Form("%d.%s.AnaHists.root",m_dsid,m_vec_eveSelec->at(eveSelec).c_str()));
+        TFile *outfile = wk()->getOutputFile(Form("%d.%s.AnaHists",m_dsid,m_vec_eveSelec->at(eveSelec).c_str()));
         m_vec_plotter->at(eveSelec).at(isys)->initialize(m_outputDir.c_str(),m_dsid,m_crossSection,outfile);
       }
       else m_vec_plotter->at(eveSelec).at(isys)->initialize(m_outputDir.c_str(),m_dsid,m_crossSection);
