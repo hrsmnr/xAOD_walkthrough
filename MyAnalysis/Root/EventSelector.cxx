@@ -202,47 +202,69 @@ bool EventSelector::initialize()
     m_mtMin = 30.;
   }
   // 3 signal leptons, that's all
-  else if(m_sel=="3lep"){
+  else if(m_sel=="3S3B"){
     TypSel(3,0,3,0,-1,-1);
     m_applyTrig = false;
   }
-  else if(m_sel=="3lepBveto"){
+  else if(m_sel=="3S3BBveto"){
     TypSel(3,0,3,0,0,0);
     m_applyTrig = false;
   }
-  else if(m_sel=="3lepNoBaseReq"){
+  else if(m_sel=="3SAnyB"){
     TypSel(3,0,-1,0,-1,-1);
     m_applyTrig = false;
   }
-  else if(m_sel=="3lepBvetoNoBaseReq"){
+  else if(m_sel=="3SAnyBBveto"){
     TypSel(3,0,-1,0,0,0);
     m_applyTrig = false;
   }
   //New idea to loosen the selection
-  else if(m_sel=="2Sig3Base"){
-    TypSel(2,0,3,0,-1,-1);
+  else if(m_sel=="2S3B"){
+    m_nLepMin = 2;
+    m_nLepMax = 2;
+    m_nBaseLepMin = 3;
+    m_nBaseLepMax = 3;
     m_applyTrig = false;
   }
-  else if(m_sel=="2Sig3BaseBveto"){
-    TypSel(2,0,3,0,0,0);
+  else if(m_sel=="2S3BBveto"){
+    m_nLepMin = 2;
+    m_nLepMax = 2;
+    m_nBaseLepMin = 3;
+    m_nBaseLepMax = 3;
+    m_nBJetMin = 0;
+    m_nBJetMax = 0;
     m_applyTrig = false;
   }
-  else if(m_sel=="3Sig3to4Base"){
-    TypSel(3,0,-1,0,-1,-1);
-    m_nBaseLepMin = 3;//Overwriting the one set by TypSel() above. Do not move.
-    m_nBaseLepMax = 4;//Overwriting the one set by TypSel() above. Do not move.
+  else if(m_sel=="3S3to4B"){
+    m_nLepMin = 3;
+    m_nLepMax = 3;
+    m_nBaseLepMin = 3;
+    m_nBaseLepMax = 4;
     m_applyTrig = false;
   }
   else if(m_sel=="3S4B"){
-    TypSel(3,0,4,0,-1,-1);
+    m_nLepMin = 3;
+    m_nLepMax = 3;
+    m_nBaseLepMin = 4;
+    m_nBaseLepMax = 4;
     m_applyTrig = false;
   }
   else if(m_sel=="3S4BBveto"){
-    TypSel(3,0,4,0,0,0);
+    m_nLepMin = 3;
+    m_nLepMax = 3;
+    m_nBaseLepMin = 4;
+    m_nBaseLepMax = 4;
+    m_nBJetMin = 0;
+    m_nBJetMax = 0;
     m_applyTrig = false;
   }
   else if(m_sel=="2S3BZvetoBvetoMet"){
-    TypSel(2,0,3,0,0,0);
+    m_nLepMin = 3;
+    m_nLepMax = 3;
+    m_nBaseLepMin = 4;
+    m_nBaseLepMax = 4;
+    m_nBJetMin = 0;
+    m_nBJetMax = 0;
     m_metMin = 50;
     m_vetoZ = true;
     m_vetoExtZ = true;
