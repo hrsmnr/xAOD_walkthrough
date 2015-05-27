@@ -21,7 +21,7 @@ class Plotter : public TObject
   Plotter(const std::string& sel="none", const std::string& sys="none", const MSG::Level& dbg=MSG::ERROR);
   virtual ~Plotter(){};
 
-  virtual void initialize(const char* path, int dsid, double XS=0.);
+  virtual void initialize(const char* path, int dsid, double XS=0., TFile* file=NULL);
   virtual void finalize();
 
   bool FillHistoPreSelec(EventSelector *EveSelec, double weight);
