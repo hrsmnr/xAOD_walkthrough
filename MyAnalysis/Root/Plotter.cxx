@@ -60,7 +60,7 @@ Plotter::Plotter(const std::string& sel, const std::string& sys, const MSG::Leve
 /*--------------------------------------------------------------------------------*/
 // Initialize the plotter
 /*--------------------------------------------------------------------------------*/
-void Plotter::initialize(const char* path, int dsid, double XS)
+void Plotter::initialize(const char* path, int dsid, double XS, TFile* file)
 {
   MyDebug("initialize()","Plotter::initialize()");
 
@@ -68,8 +68,13 @@ void Plotter::initialize(const char* path, int dsid, double XS)
   if(m_crossSection>0.) m_isMC = kTRUE;
 
   // Preparing TFile
-  m_filename = Form("%s/%d.%s.%s.AnaHists.root",path,dsid,m_sel.c_str(),m_sys.c_str());
-  m_rootfile = new TFile(m_filename.c_str(),"RECREATE");
+  if(file==NULL){
+    m_filename = Form("%s/%d.%s.%s.AnaHists.root",path,dsid,m_sel.c_str(),m_sys.c_str());
+    m_rootfile = new TFile(m_filename.c_str(),"RECREATE");
+  }else{
+    m_filename = file->GetName();
+    m_rootfile = file;
+  }
   MyInfo("initialize()",Form("Output TFile for \"%s\", \"%s\" was created at %s.",
                              m_sel.c_str(), m_sys.c_str(), m_filename.c_str()) );
 
@@ -264,8 +269,10 @@ void Plotter::finalize()
     h_mu[iCh]->Write();
   }
 
-  m_rootfile->Close();
-  delete m_rootfile;
+  if(m_sys!=""){
+    m_rootfile->Close();
+    delete m_rootfile;
+  }
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -1052,6 +1059,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
 #undef FillElHist
 #undef FillMuHist
 
+  MyDebug("FillHistograms()","Filling finished");
   return true;
 }
 /*--------------------------------------------------------------------------------*/

@@ -7,6 +7,7 @@
 #include <EventLoop/Job.h>
 #include <EventLoop/StatusCode.h>
 #include <EventLoop/Worker.h>
+#include <EventLoop/OutputStream.h>
 #include <MyAnalysis/MyxAODAnalysis.h>
 
 //added by minoru
@@ -49,8 +50,15 @@ EL::StatusCode MyxAODAnalysis :: setupJob (EL::Job& job)
   // job, which may or may not be of value to you.
 
   //Added by minoru
+  MyDebug("setupJob()", "Setting up EL::Job");
+  MyDebug("setupJob()", Form("#EventSelec=%d",(int)m_vec_eveSelec->size()));
+
   job.useXAOD();
   xAOD::Init("MyxAODAnalysis").ignore(); //call before opening first file
+  for(UInt_t eveSelec=0; eveSelec<m_vec_eveSelec->size(); eveSelec++){
+    EL::OutputStream out(Form("%d.%s.AnaHists.root",m_dsid,m_vec_eveSelec->at(eveSelec).c_str()));
+    job.outputAdd(out);
+  }
   //end adding
 
   return EL::StatusCode::SUCCESS;
@@ -100,6 +108,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   // input events.
 
   //Added by minoru
+  MyDebug("initialize()", "Initializing MyxAODAnalysis");
   m_event = wk()->xaodEvent();
 
   //as a check, let's see the number of events in our xAOD
@@ -268,7 +277,11 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
       std::string systName     = sysListItr->name();
       Plotter* tmp_plotter = new Plotter(eveSelecName.c_str(), systName.c_str(), m_debugMode);
       m_vec_plotter->at(eveSelec).push_back(tmp_plotter);
-      m_vec_plotter->at(eveSelec).at(isys)->initialize(m_outputDir.c_str(),m_dsid,m_crossSection);
+      if(systName==""){
+        TFile *outfile = wk()->getOutputFile(Form("%d.%s.AnaHists.root",m_dsid,m_vec_eveSelec->at(eveSelec).c_str()));
+        m_vec_plotter->at(eveSelec).at(isys)->initialize(m_outputDir.c_str(),m_dsid,m_crossSection,outfile);
+      }
+      else m_vec_plotter->at(eveSelec).at(isys)->initialize(m_outputDir.c_str(),m_dsid,m_crossSection);
       TStopwatch* tmp_watch = new TStopwatch();
       m_vec_watch->at(eveSelec).push_back(tmp_watch);
       if(m_noSyst) break; //break if NoSyst flag is true;

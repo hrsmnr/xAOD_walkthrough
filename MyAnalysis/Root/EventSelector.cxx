@@ -678,7 +678,7 @@ bool EventSelector::selectObject()
     for(Int_t id=0; id<nAnaLep; id++){
       if(elPt>m_baseLeps[id].Pt()){
         if(id!=nAnaLep-1){
-          for(Int_t index=nAnaLep-1; index<=id; index--){
+          for(Int_t index=nAnaLep-1; id<index; index--){
             m_baseLepIndex [index] = m_baseLepIndex [index-1];
             m_baseLepFlavor[index] = m_baseLepFlavor[index-1];
             m_baseLeps     [index] = m_baseLeps     [index-1];
@@ -697,7 +697,7 @@ bool EventSelector::selectObject()
     for(Int_t id=0; id<nAnaLep; id++){
       if(muPt>m_baseLeps[id].Pt()){
         if(id!=nAnaLep-1){
-          for(Int_t index=nAnaLep-1; index<=id; index--){
+          for(Int_t index=nAnaLep-1; id<index; index--){
             m_baseLepIndex [index] = m_baseLepIndex [index-1];
             m_baseLepFlavor[index] = m_baseLepFlavor[index-1];
             m_baseLeps     [index] = m_baseLeps     [index-1];
@@ -711,6 +711,19 @@ bool EventSelector::selectObject()
       }
     }
   }
+  //Check if well ordered by Pt
+  if(m_dbg<=MSG::DEBUG){
+    Double_t prevPt=9999999.;
+    for(Int_t id=0; id<nAnaLep; id++){
+      MyDebug("selectObject()",Form("Baseline : LeptonPt=%f, Flavor=%d, Index=%d (prevPt=%f)",m_baseLeps[id].Pt(),m_baseLepFlavor[id],m_baseLepIndex[id],prevPt));
+      if(prevPt<=m_baseLeps[id].Pt() && m_baseLepFlavor[id]!=-1){
+        MyError("selectObject()","Lepton Pt is not well ordered!!");
+        getchar();
+      }
+      prevPt=m_baseLeps[id].Pt();
+    }
+  }
+
   //For signal leptons
   MyDebug("selectObject()",Form("Signal : elSize=%d, muSize=%d",(int)m_vec_signalElectron->size(),(int)m_vec_signalMuon->size()));
   for(UInt_t elIndex=0; elIndex<m_vec_signalElectron->size(); elIndex++){
@@ -751,7 +764,6 @@ bool EventSelector::selectObject()
       }
     }
   }
-
   //Check if well ordered by Pt
   if(m_dbg<=MSG::DEBUG){
     Double_t prevPt=9999999.;

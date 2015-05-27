@@ -218,7 +218,8 @@ int main( int argc, char* argv[] ) {
   alg->SetNoSyst(!doSys);
   alg->SetDSID(dsid);
   alg->SetSkipNum(nSkip);
-  alg->SetOutputDir(submitDir.c_str());
+  if(useGRID) alg->SetOutputDir("./");
+  else        alg->SetOutputDir(submitDir.c_str());
   for(uint i=0; i<sels.size(); i++) alg->SetSelectionRegion(sels.at(i).c_str());
   job.algsAdd( alg );
 
