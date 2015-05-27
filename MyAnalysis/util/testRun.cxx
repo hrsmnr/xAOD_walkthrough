@@ -263,6 +263,8 @@ void help()
 
   std::cout << "  --useFAX will use FAX as an input source" << std::endl;
 
+  std::cout << "  --useGRID will submit jobs onto GRID" << std::endl;
+
   std::cout << "  -o output file directory"          << std::endl;
   std::cout << "     defaults: result/submitDir"     << std::endl;
 
