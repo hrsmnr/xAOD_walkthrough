@@ -12,8 +12,8 @@
 #include"EventLoop/StatusCode.h"
 #include"xAODMissingET/MissingETAuxContainer.h"
 #include"xAODEgamma/EgammaxAODHelpers.h"
-#include"../MCTruthClassifier/MCTruthClassifier/MCTruthClassifierDefs.h"//not prepared for rootcore
-#include"../CalcGenericMT2/src/MT2_ROOT.h"//MT2 tool
+#include"MyAnalysis/MCTruthClassifierDefs.h"//Copied from MCTruthClassifier-00-01-31
+#include"MyAnalysis/MT2_ROOT.h"//MT2 tool by CalcGenericMT2
 
 /*--------------------------------------------------------------------------------*/
 // EventSelector Constructor
@@ -202,48 +202,71 @@ bool EventSelector::initialize()
     m_mtMin = 30.;
   }
   // 3 signal leptons, that's all
-  else if(m_sel=="3lep"){
+  else if(m_sel=="3S3B"){
     TypSel(3,0,3,0,-1,-1);
     m_applyTrig = false;
   }
-  else if(m_sel=="3lepBveto"){
+  else if(m_sel=="3S3BBveto"){
     TypSel(3,0,3,0,0,0);
     m_applyTrig = false;
   }
-  else if(m_sel=="3lepNoBaseReq"){
+  else if(m_sel=="3SAnyB"){
     TypSel(3,0,-1,0,-1,-1);
     m_applyTrig = false;
   }
-  else if(m_sel=="3lepBvetoNoBaseReq"){
+  else if(m_sel=="3SAnyBBveto"){
     TypSel(3,0,-1,0,0,0);
     m_applyTrig = false;
   }
   //New idea to loosen the selection
-  else if(m_sel=="2Sig3Base"){
-    TypSel(2,0,3,0,-1,-1);
+  else if(m_sel=="2S3B"){
+    m_nLepMin = 2;
+    m_nLepMax = 2;
+    m_nBaseLepMin = 3;
+    m_nBaseLepMax = 3;
     m_applyTrig = false;
   }
-  else if(m_sel=="2Sig3BaseBveto"){
-    TypSel(2,0,3,0,0,0);
+  else if(m_sel=="2S3BBveto"){
+    m_nLepMin = 2;
+    m_nLepMax = 2;
+    m_nBaseLepMin = 3;
+    m_nBaseLepMax = 3;
+    m_nBJetMin = 0;
+    m_nBJetMax = 0;
     m_applyTrig = false;
   }
-  else if(m_sel=="3Sig3to4Base"){
-    TypSel(3,0,-1,0,-1,-1);
-    m_nBaseLepMin = 3;//Overwriting the one set by TypSel() above. Do not move.
-    m_nBaseLepMax = 4;//Overwriting the one set by TypSel() above. Do not move.
+  else if(m_sel=="3S3to4B"){
+    m_nLepMin = 3;
+    m_nLepMax = 3;
+    m_nBaseLepMin = 3;
+    m_nBaseLepMax = 4;
     m_applyTrig = false;
   }
-  else if(m_sel=="3Sig4Base"){
-    TypSel(3,0,4,0,-1,-1);
+  else if(m_sel=="3S4B"){
+    m_nLepMin = 3;
+    m_nLepMax = 3;
+    m_nBaseLepMin = 4;
+    m_nBaseLepMax = 4;
     m_applyTrig = false;
   }
-  else if(m_sel=="3Sig4BaseBveto"){
-    TypSel(3,0,4,0,0,0);
+  else if(m_sel=="3S4BBveto"){
+    m_nLepMin = 3;
+    m_nLepMax = 3;
+    m_nBaseLepMin = 4;
+    m_nBaseLepMax = 4;
+    m_nBJetMin = 0;
+    m_nBJetMax = 0;
     m_applyTrig = false;
   }
   else if(m_sel=="2S3BZvetoBvetoMet"){
-    TypSel(3,0,3,0,0,0);
+    m_nLepMin = 3;
+    m_nLepMax = 3;
+    m_nBaseLepMin = 4;
+    m_nBaseLepMax = 4;
+    m_nBJetMin = 0;
+    m_nBJetMax = 0;
     m_metMin = 50;
+    m_vetoZ = true;
     m_vetoExtZ = true;
     m_applyTrig = false;
   }
@@ -678,7 +701,7 @@ bool EventSelector::selectObject()
     for(Int_t id=0; id<nAnaLep; id++){
       if(elPt>m_baseLeps[id].Pt()){
         if(id!=nAnaLep-1){
-          for(Int_t index=nAnaLep-1; index<=id; index--){
+          for(Int_t index=nAnaLep-1; id<index; index--){
             m_baseLepIndex [index] = m_baseLepIndex [index-1];
             m_baseLepFlavor[index] = m_baseLepFlavor[index-1];
             m_baseLeps     [index] = m_baseLeps     [index-1];
@@ -697,7 +720,7 @@ bool EventSelector::selectObject()
     for(Int_t id=0; id<nAnaLep; id++){
       if(muPt>m_baseLeps[id].Pt()){
         if(id!=nAnaLep-1){
-          for(Int_t index=nAnaLep-1; index<=id; index--){
+          for(Int_t index=nAnaLep-1; id<index; index--){
             m_baseLepIndex [index] = m_baseLepIndex [index-1];
             m_baseLepFlavor[index] = m_baseLepFlavor[index-1];
             m_baseLeps     [index] = m_baseLeps     [index-1];
@@ -711,6 +734,19 @@ bool EventSelector::selectObject()
       }
     }
   }
+  //Check if well ordered by Pt
+  if(m_dbg<=MSG::DEBUG){
+    Double_t prevPt=9999999.;
+    for(Int_t id=0; id<nAnaLep; id++){
+      MyDebug("selectObject()",Form("Baseline : LeptonPt=%f, Flavor=%d, Index=%d (prevPt=%f)",m_baseLeps[id].Pt(),m_baseLepFlavor[id],m_baseLepIndex[id],prevPt));
+      if(prevPt<=m_baseLeps[id].Pt() && m_baseLepFlavor[id]!=-1){
+        MyError("selectObject()","Lepton Pt is not well ordered!!");
+        getchar();
+      }
+      prevPt=m_baseLeps[id].Pt();
+    }
+  }
+
   //For signal leptons
   MyDebug("selectObject()",Form("Signal : elSize=%d, muSize=%d",(int)m_vec_signalElectron->size(),(int)m_vec_signalMuon->size()));
   for(UInt_t elIndex=0; elIndex<m_vec_signalElectron->size(); elIndex++){
@@ -751,7 +787,6 @@ bool EventSelector::selectObject()
       }
     }
   }
-
   //Check if well ordered by Pt
   if(m_dbg<=MSG::DEBUG){
     Double_t prevPt=9999999.;
