@@ -858,23 +858,23 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
       if(origin==12 || origin==13 || origin==22){
         FillChanHist( h_lepClass, 0., w);
         if     (id==0){ FillChanHist( h_lep1Class, 0., w); FillChanHist( h_PRlep1Pt, lep[0].Pt()/1000., w );}
-        else if(id==1){ FillChanHist( h_lep2Class, 0., w); FillChanHist( h_PRlep1Pt, lep[1].Pt()/1000., w );}
-        else if(id==2){ FillChanHist( h_lep3Class, 0., w); FillChanHist( h_PRlep1Pt, lep[2].Pt()/1000., w );}
+        else if(id==1){ FillChanHist( h_lep2Class, 0., w); FillChanHist( h_PRlep2Pt, lep[1].Pt()/1000., w );}
+        else if(id==2){ FillChanHist( h_lep3Class, 0., w); FillChanHist( h_PRlep3Pt, lep[2].Pt()/1000., w );}
       }
       // Conversion
       else if(origin==5){
         FillChanHist( h_lepClass, 1., w);
         if     (id==0){ FillChanHist( h_lep1Class, 1., w); FillChanHist( h_COlep1Pt, lep[0].Pt()/1000., w );}
-        else if(id==1){ FillChanHist( h_lep2Class, 1., w); FillChanHist( h_COlep1Pt, lep[1].Pt()/1000., w );}
-        else if(id==2){ FillChanHist( h_lep3Class, 1., w); FillChanHist( h_COlep1Pt, lep[2].Pt()/1000., w );}
+        else if(id==1){ FillChanHist( h_lep2Class, 1., w); FillChanHist( h_COlep2Pt, lep[1].Pt()/1000., w );}
+        else if(id==2){ FillChanHist( h_lep3Class, 1., w); FillChanHist( h_COlep3Pt, lep[2].Pt()/1000., w );}
       }
       // Heavy Flavor
       else if(origin==25 || origin==26 || origin==27 ||
               origin==29 || origin==32 || origin==33 ){
         FillChanHist( h_lepClass, 2., w);
         if     (id==0){ FillChanHist( h_lep1Class, 2., w); FillChanHist( h_HFlep1Pt, lep[0].Pt()/1000., w );}
-        else if(id==1){ FillChanHist( h_lep2Class, 2., w); FillChanHist( h_HFlep1Pt, lep[1].Pt()/1000., w );}
-        else if(id==2){ FillChanHist( h_lep3Class, 2., w); FillChanHist( h_HFlep1Pt, lep[2].Pt()/1000., w );}
+        else if(id==1){ FillChanHist( h_lep2Class, 2., w); FillChanHist( h_HFlep2Pt, lep[1].Pt()/1000., w );}
+        else if(id==2){ FillChanHist( h_lep3Class, 2., w); FillChanHist( h_HFlep3Pt, lep[2].Pt()/1000., w );}
       }
       // LightFlavor
       else if(origin==23 || origin==24 || origin==30 ||
@@ -882,14 +882,14 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
               origin==41 || origin==45 ){
         FillChanHist( h_lepClass, 3., w);
         if     (id==0){ FillChanHist( h_lep1Class, 3., w); FillChanHist( h_LFlep1Pt, lep[0].Pt()/1000., w );}
-        else if(id==1){ FillChanHist( h_lep2Class, 3., w); FillChanHist( h_LFlep1Pt, lep[1].Pt()/1000., w );}
-        else if(id==2){ FillChanHist( h_lep3Class, 3., w); FillChanHist( h_LFlep1Pt, lep[2].Pt()/1000., w );}
+        else if(id==1){ FillChanHist( h_lep2Class, 3., w); FillChanHist( h_LFlep2Pt, lep[1].Pt()/1000., w );}
+        else if(id==2){ FillChanHist( h_lep3Class, 3., w); FillChanHist( h_LFlep3Pt, lep[2].Pt()/1000., w );}
         // Unknown
       }else{
         FillChanHist( h_lepClass, 4., w);
         if     (id==0){ FillChanHist( h_lep1Class, 4., w); FillChanHist( h_UKlep1Pt, lep[0].Pt()/1000., w );}
-        else if(id==1){ FillChanHist( h_lep2Class, 4., w); FillChanHist( h_UKlep1Pt, lep[1].Pt()/1000., w );}
-        else if(id==2){ FillChanHist( h_lep3Class, 4., w); FillChanHist( h_UKlep1Pt, lep[2].Pt()/1000., w );}
+        else if(id==1){ FillChanHist( h_lep2Class, 4., w); FillChanHist( h_UKlep2Pt, lep[1].Pt()/1000., w );}
+        else if(id==2){ FillChanHist( h_lep3Class, 4., w); FillChanHist( h_UKlep3Pt, lep[2].Pt()/1000., w );}
       }
     }
   }
