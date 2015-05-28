@@ -84,7 +84,7 @@ runnum=`echo $TXT | cut -c $startPos-$runnumEndPos`
 
 ######################################################
 # Waiting for #submitted jobs to be less than maxJobs
-maxJobs=8000
+maxJobs=800
 while [ $(bjobs | wc -l) -gt $maxJobs  ]
 do
     echo Currently $(bjobs | wc -l) jobs are runnning. Wait for 10 seconds to keep less running jobs...

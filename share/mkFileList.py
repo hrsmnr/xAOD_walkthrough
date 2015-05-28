@@ -30,11 +30,11 @@ isNewDsid = 0
 preDsid = 0
 nAddedFiles = 0
 nthFile = 0
-nMaxFiles = 10
+nMaxFiles = 20
 for dirid in range(ndirs):
     isDir = os.path.isdir(targetDir+'/'+dirlist[dirid])
     if not isDir: continue
-    if len(dirlist[dirid])<10: continue
+    if len(dirlist[dirid])<20: continue
     print 'For directory of ...', dirlist[dirid]
     projectName = 'mc14_13TeV.'
     dsidStartPos = dirlist[dirid].find(projectName)
