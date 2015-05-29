@@ -75,6 +75,7 @@ void Plotter::initialize(const char* path, int dsid, double XS, TFile* file)
     m_filename = file->GetName();
     m_rootfile = file;
   }
+  m_rootfile->cd();
   MyInfo("initialize()",Form("Output TFile for \"%s\", \"%s\" was created at %s.",
                              m_sel.c_str(), m_sys.c_str(), m_filename.c_str()) );
 
@@ -269,6 +270,7 @@ void Plotter::finalize()
     h_mu[iCh]->Write();
   }
 
+  MyAlways("finalize()",Form("Finalizing TFile: %s",m_rootfile->GetName()));
   if(m_sys!=""){
     m_rootfile->Close();
     delete m_rootfile;

@@ -40,6 +40,7 @@ class EventSelector : public TObject
   virtual bool initialize();
   virtual void finalize();
   virtual void setStore(xAOD::TStore* store){m_store=store;};
+  virtual void setElMuPtThreshold(double elPtCut=5000, double muPtCut=5000);
 
   // Preselection, before object selection
   //    virtual bool preSelectEvent();
@@ -90,10 +91,10 @@ class EventSelector : public TObject
   ///////////////////////////////////////////////
 #ifndef __CINT__
   ST::SUSYObjDef_xAOD* getSUSYTools(){return m_susyObjTool;};
-  /* virtual bool IsMyBaselineElectron(xAOD::Electron el); */
-  /* virtual bool IsMySignalElectron  (xAOD::Electron el); */
-  /* virtual bool IsMyBaselineMuon    (const xAOD::Muon& mu); */
-  /* virtual bool IsMySignalMuon      (const xAOD::Muon* mu); */
+  virtual bool IsMyBaselineElectron(const xAOD::Electron& el);
+  virtual bool IsMySignalElectron  (const xAOD::Electron& el);
+  virtual bool IsMyBaselineMuon    (const xAOD::Muon& mu);
+  virtual bool IsMySignalMuon      (const xAOD::Muon& mu);
   virtual bool IsMyPreJet          (xAOD::Jet jet);
   virtual bool IsMyBaselineJet     (xAOD::Jet jet);
   virtual bool IsMySignalJet       (xAOD::Jet jet);
@@ -320,6 +321,8 @@ class EventSelector : public TObject
   std::string                    m_sel;            // event selection string
   std::string                    m_sys;            // systematic name string
   bool                           m_is3SigLepSel;   // true if (m_nLepMin and m_nLepMax)!=3
+  double                         m_elPtCut;        // electron Pt threshold
+  double                         m_muPtCut;        // muon Pt threshold
   /* int                         m_selFlag;        // Integer flag for selection (for HistFitterTree) */
   /* bool                        m_doWeightSys;    // Toggle weight systematics */
   /* ObjSys::OSys                m_objSys;         // Object systematic flag */
