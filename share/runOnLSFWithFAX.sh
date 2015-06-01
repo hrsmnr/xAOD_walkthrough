@@ -1,4 +1,5 @@
 #!/bin/bash
+setopt SH_WORD_SPLIT
 #default target directory
 TARGETDS=$1
 if [ $# -lt 1 ]; then

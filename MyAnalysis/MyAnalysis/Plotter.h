@@ -80,6 +80,21 @@ class Plotter : public TObject
   TH1F *h_UKlep1Pt[nChan]; // 1st UnKnown lepton Pt
   TH1F *h_UKlep2Pt[nChan]; // 2st UnKnown lepton Pt
   TH1F *h_UKlep3Pt[nChan]; // 3st UnKnown lepton Pt
+  TH1F *h_PRlep1Eta[nChan]; // 1st PR lepton Eta
+  TH1F *h_PRlep2Eta[nChan]; // 2st PR lepton Eta
+  TH1F *h_PRlep3Eta[nChan]; // 3st PR lepton Eta
+  TH1F *h_COlep1Eta[nChan]; // 1st CO lepton Eta
+  TH1F *h_COlep2Eta[nChan]; // 2st CO lepton Eta
+  TH1F *h_COlep3Eta[nChan]; // 3st CO lepton Eta
+  TH1F *h_HFlep1Eta[nChan]; // 1st HF lepton Eta
+  TH1F *h_HFlep2Eta[nChan]; // 2st HF lepton Eta
+  TH1F *h_HFlep3Eta[nChan]; // 3st HF lepton Eta
+  TH1F *h_LFlep1Eta[nChan]; // 1st LF lepton Eta
+  TH1F *h_LFlep2Eta[nChan]; // 2st LF lepton Eta
+  TH1F *h_LFlep3Eta[nChan]; // 3st LF lepton Eta
+  TH1F *h_UKlep1Eta[nChan]; // 1st UnKnown lepton Eta
+  TH1F *h_UKlep2Eta[nChan]; // 2st UnKnown lepton Eta
+  TH1F *h_UKlep3Eta[nChan]; // 3st UnKnown lepton Eta
 
   TH1F *h_baselepChan[nChan];
   TH1F *h_baselep1Pt[nChan];
