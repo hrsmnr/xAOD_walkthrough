@@ -292,27 +292,12 @@ void SetDataType(void){
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
-enum BGType{WZ,ZZ,ttV,Higgs,ttbar,Zjets,nBGType};
-TString BGTypeNames[nBGType] = {"WZ","ZZ","ttV","Higgs","ttbar","Zjets"};
-Int_t BGTypeHistColors[nBGType] = {kAzure-3,kAzure-4,kCyan-2,kBlack,kOrange-2,kGreen};
-Int_t BGTypeFillColors[nBGType] = {kAzure-3,kAzure-4,kCyan-2,kWhite,kOrange-2,kGreen};
-Int_t BGStackOrder1[nBGType] = {Zjets,WZ,ZZ,ttV,Higgs,ttbar};
-Int_t BGStackOrder2[nBGType] = {Zjets,ttbar,Higgs,ttV,ZZ,WZ};
-// enum BGType{WZ,nBGType};
-// TString BGTypeNames[nBGType] = {"WZ"};
-// Int_t BGTypeHistColors[nBGType] = {kAzure-3};
-// Int_t BGTypeFillColors[nBGType] = {kAzure-3};
-// Int_t BGStackOrder1[nBGType] = {WZ};
-// Int_t BGStackOrder2[nBGType] = {WZ};
-// enum BGType{WZ,ZZ,ttW,ttZ,tPlusVs,Tribosons,Higgs,Zjets,Wjets,ttbar,OtherFake,nBGType};
-// TString BGTypeNames[nBGType] = {"WZ","ZZ","ttW","ttZ","tPlusVs","Tribosons","Higgs","Zjets","Wjets","ttbar","OtherFake"};
-// Int_t BGTypeHistColors[nBGType] = {kAzure-3,kAzure-4,kCyan-2,kCyan-1,kCyan,kMagenta,kBlack,kViolet-7,kViolet-9,kOrange-2,kGreen+2};
-// Int_t BGTypeFillColors[nBGType] = {kAzure-3,kAzure-4,kCyan-2,kCyan-1,kCyan,kMagenta,kWhite,kViolet-7,kViolet-9,kOrange-2,kGreen+2};
-// Int_t BGStackOrder1[nBGType] = {WZ,ZZ,ttW,ttZ,tPlusVs,Tribosons,Higgs,Zjets,Wjets,ttbar,OtherFake};
-// Int_t BGStackOrder2[nBGType] = {OtherFake,ttbar,Wjets,Zjets,Higgs,Tribosons,tPlusVs,ttZ,ttW,ZZ,WZ};
-
-//enum WZFiles{WZpeee,WZpemm,WZpett,WZpmee,WZpmmm,WZpmtt,WZptee,WZptmm,WZpttt,
-//     WZneee,WZnemm,WZnett,WZnmee,WZnmmm,WZnmtt,WZntee,WZntmm,WZnttt,nWZFiles};
+enum BGType{WZ,ZZ,ttV,Higgs,ttbar,SingleTop,Zjets,nBGType};
+TString BGTypeNames[nBGType] = {"WZ","ZZ","ttV","Higgs","ttbar","SingleTop","Zjets"};
+Int_t BGTypeHistColors[nBGType] = {kAzure-3,kAzure-4,kCyan-1,kBlack,kOrange-2,kYellow-9,kViolet-9};
+Int_t BGTypeFillColors[nBGType] = {kAzure-3,kAzure-4,kCyan-1,kWhite,kOrange-2,kYellow-9,kViolet-9};
+Int_t BGStackOrder1[nBGType] = {WZ,ZZ,ttV,Higgs,SingleTop,ttbar,Zjets};
+Int_t BGStackOrder2[nBGType] = {Higgs,ttV,ZZ,SingleTop,WZ,Zjets,ttbar};
 std::vector<TString> *BGFileNames  [nBGType];
 std::vector<TString> *BGIncludeFlag[nBGType]; //e.g. "00110" means the sample is included to the "eem" and "emm" channels.
 
@@ -382,10 +367,14 @@ void SetBGType(void){
   //ttbar
   BGFileNames[ttbar]->push_back("110401"); BGIncludeFlag[ttbar]->push_back("01111");//no all-had
 
+  //SingleTop
+  BGFileNames[SingleTop]->push_back("110302"); BGIncludeFlag[SingleTop]->push_back("01111");//s-chan
+  BGFileNames[SingleTop]->push_back("110305"); BGIncludeFlag[SingleTop]->push_back("01111");//Wt
+
   //Zjets
   BGFileNames[Zjets]->push_back("147406"); BGIncludeFlag[Zjets]->push_back("01100");//Zee
-  //  BGFileNames[ttbar]->push_back("147407"); BGIncludeFlag[ttbar]->push_back("00011");//Zmumu
-  //  BGFileNames[ttbar]->push_back("147408"); BGIncludeFlag[ttbar]->push_back("01111");//Ztautau
+  BGFileNames[Zjets]->push_back("147407"); BGIncludeFlag[Zjets]->push_back("00011");//Zmumu
+  BGFileNames[Zjets]->push_back("147408"); BGIncludeFlag[Zjets]->push_back("01111");//Ztautau
 
 }
 
@@ -447,7 +436,7 @@ Int_t mkPlots(TString Tag, TString SelecReg){
     for(UInt_t bgfile=0; bgfile<nsamples; bgfile++){
       TString dsid = BGFileNames[bgtype]->at(bgfile).Data();
       TString includeflag = BGIncludeFlag[bgtype]->at(bgfile).Data();
-      TString filename = getHistFileName((filepath_prefix+"/"+Tag+"/"+dsid+"."+SelecReg+"..AnaHists.root").Data());
+      TString filename = getHistFileName((filepath_prefix+"/"+Tag+"/"+dsid+"."+SelecReg+".AnaHists.root").Data());
       std::cout<<"**** DatasetID : "<<dsid.Data()<<", filename=\""<<filename.Data()<<"\", IncludeFlag="<<includeflag.Data()<<std::endl;
       TFile *f_tmp = new TFile(filename.Data());
       vec_mcfiles->push_back(f_tmp);
@@ -460,7 +449,7 @@ Int_t mkPlots(TString Tag, TString SelecReg){
     std::cout<<"Now processing for the signal : "<<SignalTypeNames[signaltype].Data()<<" ("<<nsamples<<" files)"<<std::endl;
     for(UInt_t signalfile=0; signalfile<nsamples; signalfile++){
       TString dsid = SignalFileNames[signaltype]->at(signalfile).Data();
-      TString filename = getHistFileName((filepath_prefix+"/"+Tag+"/"+dsid+"."+SelecReg+"..AnaHists.root").Data());
+      TString filename = getHistFileName((filepath_prefix+"/"+Tag+"/"+dsid+"."+SelecReg+".AnaHists.root").Data());
       std::cout<<"**** DatasetID : "<<dsid.Data()<<", filename=\""<<filename.Data()<<"\""<<std::endl;
       TFile *f_tmp = new TFile(filename.Data());
       vec_signalfiles->push_back(f_tmp);
@@ -709,9 +698,10 @@ Int_t mkPlots(TString Tag, TString SelecReg){
   TH1F* h_higgs4leg = (TH1F*)dist_bg[0][Higgs][0]->Clone("h_higgs4leg");
   h_higgs4leg->SetLineColor(kBlack);
   leg->AddEntry(h_higgs4leg,"Higgs","f");
-  leg->AddEntry(dist_bg[0][Zjets][0],"Z/#gamma^{*}+jets","f");
   // leg->AddEntry(dist_bg[0][Wjets][0],"W+jets","f");
   leg->AddEntry(dist_bg[0][ttbar][0],"t#bar{t}","f");
+  leg->AddEntry(dist_bg[0][SingleTop][0],"Single top","f");
+  leg->AddEntry(dist_bg[0][Zjets][0],"Z/#gamma*+jets","f");
   // leg->AddEntry(dist_bg[0][OtherFake][0],"Other BG with fakes","f");
   leg->AddEntry(dist_totalbg[0][0],"Total SM","l");
   leg->AddEntry(dist_totalbgErr[0][0],"Unct. for SM ","f");

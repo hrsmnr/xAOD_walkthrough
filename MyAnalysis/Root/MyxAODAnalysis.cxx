@@ -159,8 +159,8 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
 
   CHECK(m_susyObjTool->setProperty("Is8TeV", false) ) ;
   
-  CHECK(m_susyObjTool->setProperty("EleId","MediumLLH") );
-  CHECK(m_susyObjTool->setProperty("EleIdBaseline","MediumLLH") );
+  CHECK(m_susyObjTool->setProperty("EleId","TightLLH") );
+  CHECK(m_susyObjTool->setProperty("EleIdBaseline","LooseLLH") );
   CHECK(m_susyObjTool->setProperty("MuId","Medium") );
   CHECK(m_susyObjTool->setProperty("TauId","Tight") );
 
@@ -389,6 +389,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
         if(m_processedEvents==1) MyError("execute()", Form("Not supported event selection was detected!! : %s",eveSelecName.c_str()));
         continue;
       }
+      myEveSelec->setElMuPtThreshold(5000, 5000);
       myEveSelec->setStore(&m_store);
       myEveSelec->selectObject();
       m_vec_plotter->at(eveSelec).at(isys)->FillHistoPreSelec(myEveSelec,m_eventWeight);

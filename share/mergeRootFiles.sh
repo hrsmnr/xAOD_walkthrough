@@ -19,9 +19,7 @@ DSID=("110302" "110305" #single top
     "205048" "205049" "205050" "205051" "205052" "205053"
     "205054" "205055" "205056" "205128" "205129" "205130" "205131" #Signal(N2C1toWZ)
 )
-REGION=("3lep" "3lepBveto" "3lepNoBaseReq" "3lepBvetoNoBaseReq")
-REGION=("2Sig3Base" "2Sig3BaseBveto" "3Sig4Base" "3Sig4BaseBveto")
-REGION=("3lepBveto" "3lep" "2S3BZvetoBvetoMet")
+REGION=("2S3BZvetoBvetoMet" "3S4BBveto" "3S4B" "3S3to4B" "2S3BBveto" "2S3B" "3SAnyBBveto" "3SAnyB" "3S3BBveto" "3S3B")
 
 DIRECTORY='result'
 for i in "${DSID[@]}"
@@ -29,7 +27,7 @@ do
     for j in "${REGION[@]}"
     do
         echo 'Merging data files of '$i' : SelecReg='$j' for the tag of '$TAG
-        echo time hadd -f ${DIRECTORY}/${TAG}/${i}.${j}..AnaHists.root ${DIRECTORY}/${TAG}/${i}_*/${i}.${j}..AnaHists.root
-        time hadd -f ${DIRECTORY}/${TAG}/${i}.${j}..AnaHists.root ${DIRECTORY}/${TAG}/${i}_*/${i}.${j}..AnaHists.root
+        echo time hadd -f ${DIRECTORY}/${TAG}/${i}.${j}.AnaHists.root ${DIRECTORY}/${TAG}/${i}_*/data-*.${j}.*/*.root
+        time hadd -f ${DIRECTORY}/${TAG}/${i}.${j}.AnaHists.root ${DIRECTORY}/${TAG}/${i}_*/data-*.${j}.*/*.root
     done
 done

@@ -9,6 +9,7 @@
 #include"MyAnalysis/EventSelector.h"
 
 #include"SUSYTools/SUSYObjDef_xAOD.h"
+#include"SUSYTools/ISUSYObjDef_xAODTool.h"
 #include"EventLoop/StatusCode.h"
 #include"xAODMissingET/MissingETAuxContainer.h"
 #include"xAODEgamma/EgammaxAODHelpers.h"
@@ -31,6 +32,8 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   m_sel(sel),
   m_sys(sys),
   m_is3SigLepSel(true),
+  m_elPtCut(5000),
+  m_muPtCut(5000),
   // m_selFlag(0),
   // m_doWeightSys(false),
   // m_objSys(ObjSys::nom),
@@ -408,6 +411,16 @@ bool EventSelector::initialize()
 }
 
 /*--------------------------------------------------------------------------------*/
+// Setter to define electron and muon pt threshold
+/*--------------------------------------------------------------------------------*/
+void EventSelector::setElMuPtThreshold(double elPtCut, double muPtCut)
+{
+  m_elPtCut = elPtCut;
+  m_muPtCut = muPtCut;
+  return;
+}
+
+/*--------------------------------------------------------------------------------*/
 // Finalize event selection
 /*--------------------------------------------------------------------------------*/
 void EventSelector::finalize()
@@ -436,31 +449,27 @@ void EventSelector::finalize()
 /*--------------------------------------------------------------------------------*/
 // Preparing physics objects
 /*--------------------------------------------------------------------------------*/
-// bool EventSelector::IsMyBaselineElectron(xAOD::Electron el){
-//   //  (*el_itr)->auxdata<bool>("baseline")){
-//   return true;
-// }
-// bool EventSelector::IsMySignalElectron(xAOD::Electron el){
-//   // m_susyObjTool->IsSignalElectron( **el_itr ) ;
-//   Bool_t isSignalElectron = m_susyObjTool->IsSignalElectronExp( el , ST::SignalIsoExp::TightIso);
-//   //m_susyObjTool->IsSignalElectron( **el_itr )){
-//   return isSignalElectron;
-// }
-// bool EventSelector::IsMyBaselineMuon(const xAOD::Muon& mu){
-//   //  (int)(&mu)->auxdata<bool>("baseline")
-//   // CHECK( m_susyObjTool->FillMuon( mu ) );
-//   //        m_susyObjTool->IsSignalMuon( mu ) ;
-//   //  m_susyObjTool->IsSignalMuonExp( mu, ST::SignalIsoExp::TightIso);
-//   //  m_susyObjTool->IsCosmicMuon( mu );
-//   return true;
-// }
-// bool EventSelector::IsMySignalMuon(const xAOD::Muon* mu){
-//   Bool_t isSignalMuon = kFALSE;
-//   isSignalMuon = m_susyObjTool->IsSignalMuonExp( *mu, ST::SignalIsoExp::TightIso);
-//   std::cout<<"mu->muonType()="<<(*mu).muonType()<<std::endl;
-//   return isSignalMuon;
-//   //  return true;
-// }
+bool EventSelector::IsMyBaselineElectron(const xAOD::Electron& el){
+  return true;
+}
+bool EventSelector::IsMySignalElectron(const xAOD::Electron& el){
+  Bool_t isSignalElectron = kFALSE;
+  ST::IsSignalElectronExpCutArgs args; //default values are set by construnter.
+  args.etcut(m_elPtCut);
+  isSignalElectron = m_susyObjTool->IsSignalElectronExp( el , ST::SignalIsoExp::TightIso, args);
+  return isSignalElectron;
+}
+bool EventSelector::IsMyBaselineMuon(const xAOD::Muon& mu){
+  return true;
+}
+bool EventSelector::IsMySignalMuon(const xAOD::Muon& mu){
+  Bool_t isSignalMuon = kFALSE;
+  ST::IsSignalMuonExpCutArgs args; //default values are set by construnter.
+  args.ptcut(m_muPtCut);
+  isSignalMuon = m_susyObjTool->IsSignalMuonExp( mu, ST::SignalIsoExp::TightIso, args);
+  if(m_susyObjTool->IsCosmicMuon( mu )) isSignalMuon = kFALSE;
+  return isSignalMuon;
+}
 bool EventSelector::IsMySignalJet(xAOD::Jet jet){
   return true;
 }
@@ -480,10 +489,9 @@ bool EventSelector::selectObject()
   ///////////////////////////////////////////////////
   // Get Electrons from the event
   ///////////////////////////////////////////////////
-  Double_t elPtCut=5000.;
   xAOD::ElectronContainer   *electrons_copy(0);
   xAOD::ShallowAuxContainer *electrons_copyaux(0);
-  if(m_susyObjTool->GetElectrons(electrons_copy, electrons_copyaux, false, elPtCut)==EL::StatusCode::FAILURE){
+  if(m_susyObjTool->GetElectrons(electrons_copy, electrons_copyaux, false, m_elPtCut)==EL::StatusCode::FAILURE){
     MyError("selectObject()","Failing to retrieve ElectronContainer.");
     rtrvFail = true;
   }
@@ -501,10 +509,9 @@ bool EventSelector::selectObject()
   ///////////////////////////////////////////////////
   // Get the Muons from the event:
   ///////////////////////////////////////////////////
-  Double_t muPtCut=5000.;
   xAOD::MuonContainer       *muons_copy(0);
   xAOD::ShallowAuxContainer *muons_copyaux(0);
-  if(m_susyObjTool->GetMuons(muons_copy,muons_copyaux, false, muPtCut)==EL::StatusCode::FAILURE){
+  if(m_susyObjTool->GetMuons(muons_copy,muons_copyaux, false, m_muPtCut)==EL::StatusCode::FAILURE){
     MyError("selectObject()","Failing to retrieve MuonContainer.");
     rtrvFail = true;
   }
@@ -523,7 +530,9 @@ bool EventSelector::selectObject()
   xAOD::JetContainer::iterator jet_itr = (jets_copy)->begin();
   xAOD::JetContainer::iterator jet_end = (jets_copy)->end();
   for( ; jet_itr!=jet_end; ++jet_itr){
-    m_susyObjTool->IsBJet(**jet_itr); //Making b-tagged jet flag.
+    m_susyObjTool->IsBJet(**jet_itr,true,0.3511); //Making b-tagged jet flag.
+    //(https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingBenchmarks)
+    //MV1: Eff70%=0.3511, Eff80%=0.6073, Eff85%=0.3511
     m_vec_preJet->push_back(**jet_itr);
   }
 
@@ -574,14 +583,10 @@ bool EventSelector::selectObject()
   // preparing signal and baseline electrons (this should be done after overlap removal)
   xAOD::ElectronContainer::iterator el_itr = (electrons_copy)->begin();
   xAOD::ElectronContainer::iterator el_end = (electrons_copy)->end();
-  int iEl = 0;
   for( ; el_itr!=el_end; ++el_itr){
     xAOD::Electron el = **el_itr;
-    m_vec_baseElectron->push_back(el);
-    //    Bool_t isSignalElectron = m_susyObjTool->IsSignalElectronExp(el, ST::SignalIsoExp::TightIso);
-    Bool_t isSignalElectron = m_susyObjTool->IsSignalElectron(el, elPtCut);
-    if(isSignalElectron) m_vec_signalElectron->push_back(el);
-    iEl++;
+    if(IsMyBaselineElectron(el)) m_vec_baseElectron  ->push_back(el);
+    if(IsMySignalElectron  (el)) m_vec_signalElectron->push_back(el);
   }
 
   //////////////////////////////////////////////////////////////////////
@@ -601,11 +606,11 @@ bool EventSelector::selectObject()
   Int_t nBaselineMuon = 0;
   Int_t nSignalMuon = 0;
   for( ; mu_itr!=mu_end; ++mu_itr){
-    m_vec_baseMuon->at(nBaselineMuon).makePrivateStore(**mu_itr);
-    nBaselineMuon++;
-    //    Bool_t isSignalMuon = m_susyObjTool->IsSignalMuonExp(**mu_itr, ST::SignalIsoExp::TightIso);
-    Bool_t isSignalMuon = m_susyObjTool->IsSignalMuon(**mu_itr, muPtCut);
-    if(isSignalMuon){
+    if(IsMyBaselineMuon(**mu_itr)){
+      m_vec_baseMuon->at(nBaselineMuon).makePrivateStore(**mu_itr);
+      nBaselineMuon++;
+    }
+    if(IsMySignalMuon(**mu_itr)){
       m_vec_signalMuon->at(nSignalMuon).makePrivateStore(**mu_itr);
       nSignalMuon++;
     }else{

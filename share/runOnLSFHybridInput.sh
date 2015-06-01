@@ -51,15 +51,14 @@ echo h$tagNum
 \mkdir result/h${tagNum}
 
 ###########################################################
-# Submitting jobs to the dataset in the target directory 
+# Defining function to submit jobs
 ###########################################################
-for TXT in `ls $TARGETDS`
-do
-lenFilelistDirName=${#TXT}
+submit(){
+lenFilelistDirName=${#1}
 #extension check (should be .txt)
 extensionStartPos=`expr $lenFilelistDirName - 3`
 extensionEndPos=`expr $lenFilelistDirName`
-extension=`echo $TXT | cut -c $extensionStartPos-$extensionEndPos`
+extension=`echo ${1} | cut -c $extensionStartPos-$extensionEndPos`
 if [ "$extension" = ".txt" ]; then
 #    echo "matched"
     :
@@ -77,9 +76,9 @@ elif [ $lenFilelistDirName -gt 10 ]; then
     runnumEndPos=`expr $startPos + 5`
     outputDirEndPos=`expr $lenFilelistDirName - 4`
 fi
-outputDir=`echo $TXT | cut -c $startPos-$outputDirEndPos`
-runnum=`echo $TXT | cut -c $startPos-$runnumEndPos`
-#echo $TXT
+outputDir=`echo ${1} | cut -c $startPos-$outputDirEndPos`
+runnum=`echo ${1} | cut -c $startPos-$runnumEndPos`
+#echo ${1}
 ######################################################
 
 ######################################################
@@ -92,11 +91,35 @@ do
 done
 ######################################################
 
+if [ "${2}" = "Local" ]; then
+    FAXorNot=""
+    FilePath="Local"
+else
+    FAXorNot="--useFAX"
+    FilePath="FAXonTOKYO-LCG2"
+fi
+
 maxEve=-1
+queue=1d
 echo Starting testRun for DSID=$runnum ...
-echo bsub -q 1d -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG
-bsub -q 1d -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG
+echo bsub -q ${queue} -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS/${FilePath} --filelist ${1} -o result/h${tagNum}/$outputDir ${FAXorNot} $TARGETSELECREG
+bsub -q ${queue} -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS/${FilePath} --filelist ${1} -o result/h${tagNum}/$outputDir ${FAXorNot} $TARGETSELECREG
 echo ''
+}
+
+###########################################################
+# Submitting jobs to the dataset on GPFS
+###########################################################
+for TXT in `ls $TARGETDS/Local`
+do
+submit $TXT Local
+done
+###########################################################
+# Submitting jobs to the dataset on TOKYO-LCG2 via FAX
+###########################################################
+for TXT in `ls $TARGETDS/FAXonTOKYO-LCG2`
+do
+submit $TXT FAXonTOKYO-LCG2
 done
 
 echo =================================================
