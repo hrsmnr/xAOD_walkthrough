@@ -159,8 +159,8 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
 
   CHECK(m_susyObjTool->setProperty("Is8TeV", false) ) ;
   
-  CHECK(m_susyObjTool->setProperty("EleId","MediumLLH") );
-  CHECK(m_susyObjTool->setProperty("EleIdBaseline","MediumLLH") );
+  CHECK(m_susyObjTool->setProperty("EleId","TightLLH") );
+  CHECK(m_susyObjTool->setProperty("EleIdBaseline","LooseLLH") );
   CHECK(m_susyObjTool->setProperty("MuId","Medium") );
   CHECK(m_susyObjTool->setProperty("TauId","Tight") );
 
