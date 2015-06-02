@@ -152,6 +152,18 @@ void Plotter::finalize()
     h_elEtcone30[iCh]->Write();
     h_muPtcone30[iCh]->Write();
     h_muEtcone30[iCh]->Write();
+    h_el1Ptcone30[iCh]->Write();
+    h_el1Etcone30[iCh]->Write();
+    h_mu1Ptcone30[iCh]->Write();
+    h_mu1Etcone30[iCh]->Write();
+    h_el2Ptcone30[iCh]->Write();
+    h_el2Etcone30[iCh]->Write();
+    h_mu2Ptcone30[iCh]->Write();
+    h_mu2Etcone30[iCh]->Write();
+    h_el3Ptcone30[iCh]->Write();
+    h_el3Etcone30[iCh]->Write();
+    h_mu3Ptcone30[iCh]->Write();
+    h_mu3Etcone30[iCh]->Write();
     h_lepD0[iCh]->Write();
     h_lep1D0[iCh]->Write();
     h_lep2D0[iCh]->Write();
@@ -400,6 +412,18 @@ bool Plotter::BookHistograms()
     NEWHIST( elEtcone30, "Electron topo etcone30 [GeV];Events", 50, 0, 50 );
     NEWHIST( muPtcone30, "Muon ptcone30 [GeV];Events", 50, 0, 50 );
     NEWHIST( muEtcone30, "Muon etcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( el1Ptcone30, "Leading electron ptcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( el1Etcone30, "Leading electron topo etcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( mu1Ptcone30, "Leading muon ptcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( mu1Etcone30, "Leading muon etcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( el2Ptcone30, "Second electron ptcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( el2Etcone30, "Second electron topo etcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( mu2Ptcone30, "Second muon ptcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( mu2Etcone30, "Second muon etcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( el3Ptcone30, "Third electron ptcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( el3Etcone30, "Third electron topo etcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( mu3Ptcone30, "Third muon ptcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( mu3Etcone30, "Third muon etcone30 [GeV];Events", 50, 0, 50 );
 
     // impact parameters
     NEWHIST( lepD0, "Lepton |d0| [mm];Events", 20, 0, 0.5 );
@@ -787,9 +811,29 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
     if(lepFlavor[id]==0){
       FillChanHist( h_elPtcone30, ptcone30/1000., w);
       FillChanHist( h_elEtcone30, etcone30/1000., w);
+      if(id==0){
+        FillChanHist( h_el1Ptcone30, ptcone30/1000., w);
+        FillChanHist( h_el1Etcone30, etcone30/1000., w);
+      }else if(id==1){
+        FillChanHist( h_el2Ptcone30, ptcone30/1000., w);
+        FillChanHist( h_el2Etcone30, etcone30/1000., w);
+      }else if(id==2){
+        FillChanHist( h_el3Ptcone30, ptcone30/1000., w);
+        FillChanHist( h_el3Etcone30, etcone30/1000., w);
+      }
     }else{
       FillChanHist( h_muPtcone30, ptcone30/1000., w);
       FillChanHist( h_muEtcone30, etcone30/1000., w);
+      if(id==0){
+        FillChanHist( h_mu1Ptcone30, ptcone30/1000., w);
+        FillChanHist( h_mu1Etcone30, etcone30/1000., w);
+      }else if(id==1){
+        FillChanHist( h_mu2Ptcone30, ptcone30/1000., w);
+        FillChanHist( h_mu2Etcone30, etcone30/1000., w);
+      }else if(id==2){
+        FillChanHist( h_mu3Ptcone30, ptcone30/1000., w);
+        FillChanHist( h_mu3Etcone30, etcone30/1000., w);
+      }
     }
   }
 
