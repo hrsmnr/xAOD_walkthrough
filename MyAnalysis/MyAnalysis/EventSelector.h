@@ -22,6 +22,7 @@ namespace xAOD{
 }
 
 #define nAnaLep 4
+#define nAnaJet 4
 enum ChIndex{Ch_all,Ch_eee,Ch_eem,Ch_emm,Ch_mmm,nChannels};
 
 // Signal Requirements
@@ -57,6 +58,8 @@ class EventSelector : public TObject
   Int_t getLeadLepFlavor(Int_t id){return m_leadLepFlavor[id];};
   TLorentzVector getLeadLep(Int_t id){return m_leadLeps[id];};
   bool is3SigLepSel(){return m_is3SigLepSel;};
+  Int_t getLeadJetIndex (Int_t id){return m_leadJetIndex [id];};
+  TLorentzVector getLeadJet(Int_t id){return m_leadJets[id];};
 
   ///////////////////////////////////////////////
   int Get_initial     (){return n_initial     ;};
@@ -274,9 +277,27 @@ class EventSelector : public TObject
   virtual bool isDF(int flavor1, int flavor2);
   virtual void TypSel(int nLep, int nTau, int nBaseLep, int nBaseTau, int nBjetMin, int nBjetMax);
 
-  /* // Selection region */
-  /* void setSelection(std::string s) { m_sel = s; } */
-  /* std::string getSelection() { return m_sel; } */
+  // Selection region
+  std::string getSelection(){ return m_sel; }
+  // Common functions
+  virtual void SetNSigNBase(int nSig, int nBase);
+  virtual void SetBveto();
+  // Setter for each selection region
+  virtual void Set2S3B();
+  virtual void Set2S3BBveto();
+  virtual void Set2S3BZveto();
+  virtual void Set2S3BMet();
+  virtual void Set2S3BZvetoBvetoMet();
+  virtual void Set3S3B();
+  virtual void Set3S3BBveto();
+  virtual void Set3S3BZveto();
+  virtual void Set3S3BMet();
+  virtual void Set3S3BZvetoBvetoMet();
+  virtual void Set3S4B();
+  virtual void Set3S4BBveto();
+  virtual void Set3S4BZveto();
+  virtual void Set3S4BMet();
+  virtual void Set3S4BZvetoBvetoMet();
 
   /* // Systematics */
   /* void setSystematics(ObjSys::OSys objSys=ObjSys::nom, bool doWeightSys=false){ */
@@ -286,9 +307,6 @@ class EventSelector : public TObject
 
   /* // Tau ID */
   /* void setTauID(TauID id) { m_tauID = id; } */
-
-  /* // debug check */
-  /* bool debugEvent(); */
 
   // Truth selection
   bool isRealLepton(unsigned int id);     // real, prompt lepton
@@ -351,6 +369,8 @@ class EventSelector : public TObject
   Int_t m_leadLepIndex [nAnaLep];
   Int_t m_leadLepFlavor[nAnaLep]; //0:Electron, 1:Muon, -1:Initial
   TLorentzVector m_leadLeps[nAnaLep];
+  Int_t m_leadJetIndex [nAnaJet];
+  TLorentzVector m_leadJets[nAnaJet];
 
 #ifndef __CINT__
   std::vector< xAOD::Electron > *m_vec_signalElectron;
@@ -403,6 +423,7 @@ class EventSelector : public TObject
   bool                m_selZ;           // flag to select Zs 
   bool                m_vetoExtZ;       // extended multilepton Z veto  
   bool                m_selExtZ;        // extended multilepton Z veto  
+  float               m_windowZ;        // mass window around Z-boson mass
   bool                m_vetoLooseZ;     // Z veto using loose soft leptons 
   bool                m_vetoZeeSS;      // veto SS ee pair in the Z window 
   //  bool                m_vetoB;          // flag to veto B jets 

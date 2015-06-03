@@ -83,6 +83,7 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   m_selZ(false),
   m_vetoExtZ(false),
   m_selExtZ(false),
+  m_windowZ(10.),
   m_vetoLooseZ(false),
   m_vetoZeeSS(false),
   //  m_vetoB(false),
@@ -207,14 +208,6 @@ bool EventSelector::initialize()
     m_mtMin = 30.;
   }
   // 3 signal leptons, that's all
-  else if(m_sel=="3S3B"){
-    TypSel(3,0,3,0,-1,-1);
-    m_applyTrig = false;
-  }
-  else if(m_sel=="3S3BBveto"){
-    TypSel(3,0,3,0,0,0);
-    m_applyTrig = false;
-  }
   else if(m_sel=="3SAnyB"){
     TypSel(3,0,-1,0,-1,-1);
     m_applyTrig = false;
@@ -223,74 +216,21 @@ bool EventSelector::initialize()
     TypSel(3,0,-1,0,0,0);
     m_applyTrig = false;
   }
-  //New idea to loosen the selection
-  else if(m_sel=="2S3B"){
-    m_nLepMin = 2;
-    m_nLepMax = 2;
-    m_nBaseLepMin = 3;
-    m_nBaseLepMax = 3;
-    m_applyTrig = false;
-  }
-  else if(m_sel=="2S3BBveto"){
-    m_nLepMin = 2;
-    m_nLepMax = 2;
-    m_nBaseLepMin = 3;
-    m_nBaseLepMax = 3;
-    m_nBJetMin = 0;
-    m_nBJetMax = 0;
-    m_applyTrig = false;
-  }
-  else if(m_sel=="2S3BZvetoBvetoMet"){
-    m_nLepMin = 2;
-    m_nLepMax = 2;
-    m_nBaseLepMin = 3;
-    m_nBaseLepMax = 3;
-    m_nBJetMin = 0;
-    m_nBJetMax = 0;
-    m_metMin = 30;
-    m_vetoZ = true;
-    m_vetoExtZ = true;
-    m_applyTrig = false;
-  }
-  else if(m_sel=="2S3BSS"){
-    m_nLepMin = 3;
-    m_nLepMax = 3;
-    m_nBaseLepMin = 4;
-    m_nBaseLepMax = 4;
-    m_selSS = true;
-    m_applyTrig = false;
-  }
-  else if(m_sel=="2S3BDF"){
-    m_nLepMin = 3;
-    m_nLepMax = 3;
-    m_nBaseLepMin = 4;
-    m_nBaseLepMax = 4;
-    m_selDF = true;
-    m_applyTrig = false;
-  }
-  else if(m_sel=="3S3to4B"){
-    m_nLepMin = 3;
-    m_nLepMax = 3;
-    m_nBaseLepMin = 3;
-    m_nBaseLepMax = 4;
-    m_applyTrig = false;
-  }
-  else if(m_sel=="3S4B"){
-    m_nLepMin = 3;
-    m_nLepMax = 3;
-    m_nBaseLepMin = 4;
-    m_nBaseLepMax = 4;
-    m_applyTrig = false;
-  }
-  else if(m_sel=="3S4BBveto"){
-    m_nLepMin = 3;
-    m_nLepMax = 3;
-    m_nBaseLepMin = 4;
-    m_nBaseLepMax = 4;
-    m_nBJetMin = 0;
-    m_nBJetMax = 0;
-    m_applyTrig = false;
-  }
+  else if(m_sel=="2S3B"     ) Set2S3B();
+  else if(m_sel=="2S3BBveto") Set2S3BBveto();
+  else if(m_sel=="2S3BZveto") Set2S3BZveto();
+  else if(m_sel=="2S3BMet"  ) Set2S3BMet();
+  else if(m_sel=="2S3BZvetoBvetoMet") Set2S3BZvetoBvetoMet();
+  else if(m_sel=="3S3B"     ) Set3S3B();
+  else if(m_sel=="3S3BBveto") Set3S3BBveto();
+  else if(m_sel=="3S3BZveto") Set3S3BZveto();
+  else if(m_sel=="3S3BMet"  ) Set3S3BMet();
+  else if(m_sel=="3S3BZvetoBvetoMet") Set3S3BZvetoBvetoMet();
+  else if(m_sel=="3S4B"     ) Set3S4B();
+  else if(m_sel=="3S4BBveto") Set3S4BBveto();
+  else if(m_sel=="3S4BZveto") Set3S4BZveto();
+  else if(m_sel=="3S4BMet"  ) Set3S4BMet();
+  else if(m_sel=="3S4BZvetoBvetoMet") Set3S4BZvetoBvetoMet();
   //Used for the legacy paper
   else if (m_sel=="VR0a") {
     TypSel(3,0,3,0,0,0);
@@ -426,6 +366,166 @@ bool EventSelector::initialize()
 
   return true;
 
+}
+
+/*--------------------------------------------------------------------------------*/
+// Setter for each selection region
+/*--------------------------------------------------------------------------------*/
+void EventSelector::SetNSigNBase(int nSig, int nBase)
+{
+  m_nLepMin = m_nLepMax = nSig;
+  m_nBaseLepMin = m_nBaseLepMax = nBase;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::SetBveto()
+{
+  m_nBJetMin = m_nBJetMax = 0;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3B()
+{
+  SetNSigNBase(2,3);
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BBveto()
+{
+  SetNSigNBase(2,3);
+  SetBveto();
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BZveto()
+{
+  SetNSigNBase(2,3);
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BMet()
+{
+  SetNSigNBase(2,3);
+  m_metMin = 30;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BZvetoBvetoMet()
+{
+  SetNSigNBase(2,3);
+  SetBveto();
+  m_metMin = 30;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
+}
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3B()
+{
+  SetNSigNBase(3,3);
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BBveto()
+{
+  SetNSigNBase(3,3);
+  SetBveto();
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BZveto()
+{
+  SetNSigNBase(3,3);
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BMet()
+{
+  SetNSigNBase(3,3);
+  m_metMin = 30;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BZvetoBvetoMet()
+{
+  SetNSigNBase(3,3);
+  SetBveto();
+  m_metMin = 30;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
+}
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S4B()
+{
+  SetNSigNBase(3,4);
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S4BBveto()
+{
+  SetNSigNBase(3,4);
+  SetBveto();
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S4BZveto()
+{
+  SetNSigNBase(3,4);
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S4BMet()
+{
+  SetNSigNBase(3,4);
+  m_metMin = 30;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S4BZvetoBvetoMet()
+{
+  SetNSigNBase(3,4);
+  SetBveto();
+  m_metMin = 30;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -820,6 +920,31 @@ bool EventSelector::selectObject()
         getchar();
       }
       prevPt=m_leadLeps[id].Pt();
+    }
+  }
+
+  //Find candidate jet indices ===============================================================
+  for(Int_t id=0; id<nAnaJet; id++){
+    m_leadJetIndex [id] = -1;
+    m_leadJets     [id].SetPxPyPzE(0.,0.,0.,0.);
+  }
+  //For signal jets
+  MyDebug("selectObject()",Form("Signal Jet: Size=%d",(int)m_vec_signalJet->size()));
+  for(UInt_t jetIndex=0; jetIndex<m_vec_signalJet->size(); jetIndex++){
+    Double_t jetPt = m_vec_signalJet->at(jetIndex).pt();
+    for(Int_t id=0; id<nAnaJet; id++){
+      if(jetPt>m_leadJets[id].Pt()){
+        if(id!=nAnaJet-1){
+          for(Int_t index=nAnaJet-1; id<index; index--){
+            m_leadJetIndex [index] = m_leadJetIndex [index-1];
+            m_leadJets     [index] = m_leadJets     [index-1];
+          }
+        }
+        m_leadJetIndex [id] = jetIndex;
+        m_leadJets     [id] = m_vec_signalJet->at(jetIndex).p4();
+        break;
+      }else{
+      }
     }
   }
 
@@ -1383,7 +1508,7 @@ bool EventSelector::passLooseZCut()
 bool EventSelector::passZeeSSCut()
 {
   if(m_vetoZeeSS){
-    Double_t massWindow = 10.;
+    Double_t massWindow = m_windowZ;
     TLorentzVector leps[2];
     Int_t          charge[2];
     std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
@@ -2459,7 +2584,7 @@ bool EventSelector::hasUpsilon()
 bool EventSelector::hasZ()
 {
   //To find Z candidate (same flavor, oppsite sign, close to Zmass)
-  Double_t massWindow = 10.;
+  Double_t massWindow = m_windowZ;
   int index[2]={-1,-1};
   int flav=-1;
   Double_t msfos = findBestMSFOS(index[0],index[1],flav)/1000.;
@@ -2470,7 +2595,7 @@ bool EventSelector::hasZ()
 bool EventSelector::hasZlll()
 {
   //To find Z candidate with 3leptons (including same flavor, oppsite sign) and close to Zmass
-  Double_t massWindow = 10.;
+  Double_t massWindow = m_windowZ;
   TLorentzVector leps[3];
   Int_t          charge[3];
   std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
@@ -2529,7 +2654,7 @@ bool EventSelector::hasZlll()
 bool EventSelector::hasZllll()
 {
   //To find Z candidate with 4leptons (including "two" same flavor, oppsite sign lepton pairs) and close to Zmass
-  Double_t massWindow = 10.;
+  Double_t massWindow = m_windowZ;
   TLorentzVector leps[4];
   Int_t          charge[4];
   std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
