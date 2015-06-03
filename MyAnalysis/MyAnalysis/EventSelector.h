@@ -135,6 +135,8 @@ class EventSelector : public TObject
   virtual bool passOFOSCut();
   virtual bool passSSCut();
   virtual bool passOSCut();
+  virtual bool passSFCut();
+  virtual bool passDFCut();
   /* virtual bool passOSLepTauCut(const LeptonVector& leptons, const TauVector& taus); */
   bool passFlavChargeCut();
 
@@ -268,6 +270,8 @@ class EventSelector : public TObject
   virtual xAOD::TrackParticle* getTrack(int index, int flav);
   virtual bool isOS(int charge1, int charge2);
   virtual bool isSS(int charge1, int charge2);
+  virtual bool isSF(int flavor1, int flavor2);
+  virtual bool isDF(int flavor1, int flavor2);
   virtual void TypSel(int nLep, int nTau, int nBaseLep, int nBaseTau, int nBjetMin, int nBjetMax);
 
   /* // Selection region */
@@ -413,6 +417,8 @@ class EventSelector : public TObject
   //bool              m_selOFSS;        // flag to require OFSS leptons 
   bool                m_selOS;          // flag to select OS leptons, no flav cut 
   bool                m_selSS;          // flag to select SS leptons, no flav cut 
+  bool                m_selSF;          // flag to select SF leptons, no charge cut
+  bool                m_selDF;          // flag to select DF leptons, no charge cut
   bool                m_selOSTau;       // flag to select OS taus 
   bool                m_selOSLepTau;    // flag to select OS lep, tau 
   bool                m_specialCut;     // just a temporary cut for testing/hacking 

@@ -95,6 +95,8 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   m_selOFOS(false),
   m_selOS(false),
   m_selSS(false),
+  m_selSF(false),
+  m_selDF(false),
   m_selOSTau(false),
   m_selOSLepTau(false),
   //m_specialCut(false),
@@ -238,6 +240,34 @@ bool EventSelector::initialize()
     m_nBJetMax = 0;
     m_applyTrig = false;
   }
+  else if(m_sel=="2S3BZvetoBvetoMet"){
+    m_nLepMin = 2;
+    m_nLepMax = 2;
+    m_nBaseLepMin = 3;
+    m_nBaseLepMax = 3;
+    m_nBJetMin = 0;
+    m_nBJetMax = 0;
+    m_metMin = 30;
+    m_vetoZ = true;
+    m_vetoExtZ = true;
+    m_applyTrig = false;
+  }
+  else if(m_sel=="2S3BSS"){
+    m_nLepMin = 3;
+    m_nLepMax = 3;
+    m_nBaseLepMin = 4;
+    m_nBaseLepMax = 4;
+    m_selSS = true;
+    m_applyTrig = false;
+  }
+  else if(m_sel=="2S3BDF"){
+    m_nLepMin = 3;
+    m_nLepMax = 3;
+    m_nBaseLepMin = 4;
+    m_nBaseLepMax = 4;
+    m_selDF = true;
+    m_applyTrig = false;
+  }
   else if(m_sel=="3S3to4B"){
     m_nLepMin = 3;
     m_nLepMax = 3;
@@ -259,18 +289,6 @@ bool EventSelector::initialize()
     m_nBaseLepMax = 4;
     m_nBJetMin = 0;
     m_nBJetMax = 0;
-    m_applyTrig = false;
-  }
-  else if(m_sel=="2S3BZvetoBvetoMet"){
-    m_nLepMin = 3;
-    m_nLepMax = 3;
-    m_nBaseLepMin = 4;
-    m_nBaseLepMax = 4;
-    m_nBJetMin = 0;
-    m_nBJetMax = 0;
-    m_metMin = 50;
-    m_vetoZ = true;
-    m_vetoExtZ = true;
     m_applyTrig = false;
   }
   //Used for the legacy paper
@@ -1099,24 +1117,45 @@ bool EventSelector::passOFOSCut()
 bool EventSelector::passSSCut()
 {
   if(m_selSS){
-    bool ss = hasSS();
-    // TODO: drop qflip stuff, override in AnaWhPlotter
+    Int_t charge1(0), charge2(0);
+    if     (m_leadLepFlavor[0]==0) charge1 = (m_vec_signalElectron->at(m_leadLepIndex[0])).charge();
+    else if(m_leadLepFlavor[0]==1) charge1 = (m_vec_signalMuon    ->at(m_leadLepIndex[0])).charge();
+    if     (m_leadLepFlavor[1]==0) charge2 = (m_vec_signalElectron->at(m_leadLepIndex[1])).charge();
+    else if(m_leadLepFlavor[1]==1) charge2 = (m_vec_signalMuon    ->at(m_leadLepIndex[1])).charge();
+    bool ss = isSS(charge1,charge2);
     if(m_selSS && !ss) return false;
-    /*if(m_selSS && !ss){
-      // Keep this event if MC, estimating q-flip, and there are electrons
-      bool isQFlipChan = isOkForQFlip(leptons);
-      bool keep = m_nt->evt()->isMC && m_estimateQFlip && isQFlipChan;
-      if(!keep) return false;
-    }*/
   }
   return true;
 }
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::passOSCut()
 {
-  if(m_selOS){
-    bool os = hasOS();
+  if(m_selOS && nSignalLeps() >= 2){
+    Int_t charge1(0), charge2(0);
+    if     (m_leadLepFlavor[0]==0) charge1 = (m_vec_signalElectron->at(m_leadLepIndex[0])).charge();
+    else if(m_leadLepFlavor[0]==1) charge1 = (m_vec_signalMuon    ->at(m_leadLepIndex[0])).charge();
+    if     (m_leadLepFlavor[1]==0) charge2 = (m_vec_signalElectron->at(m_leadLepIndex[1])).charge();
+    else if(m_leadLepFlavor[1]==1) charge2 = (m_vec_signalMuon    ->at(m_leadLepIndex[1])).charge();
+    bool os = isOS(charge1, charge2);
     if(m_selOS && !os) return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passSFCut()
+{
+  if(m_selSF && nSignalLeps() >= 2){
+    bool sf = isSF(m_leadLepFlavor[0],m_leadLepFlavor[1]);
+    if(m_selSF && !sf) return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passDFCut()
+{
+  if(m_selDF && nSignalLeps() >= 2){
+    bool sf = isDF(m_leadLepFlavor[0],m_leadLepFlavor[1]);
+    if(m_selDF && !sf) return false;
   }
   return true;
 }
@@ -1152,6 +1191,8 @@ bool EventSelector::passFlavChargeCut()
   if(!passOFOSCut()) return false;
   if(!passSSCut()) return false;
   if(!passOSCut()) return false;
+  if(!passSFCut()) return false;
+  if(!passDFCut()) return false;
   //  if(!passOSLepTauCut(leptons, taus)) return false;
   return true;
 }
@@ -2749,6 +2790,22 @@ bool EventSelector::isSS(int charge1, int charge2)
   if( (charge1==1  && charge2==1 ) ||
       (charge1==-1 && charge2==-1) ) isSS = kTRUE;
   return isSS;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::isSF(int flavor1, int flavor2)
+{
+  Bool_t isSF = kFALSE;
+  if( (flavor1==0 && flavor2==0 ) ||
+      (flavor1==1 && flavor2==1)) isSF = kTRUE;
+  return isSF;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::isDF(int flavor1, int flavor2)
+{
+  Bool_t isDF = kFALSE;
+  if( (flavor1==0 && flavor2==1 ) ||
+      (flavor1==1 && flavor2==0)) isDF = kTRUE;
+  return isDF;
 }
 
 /*--------------------------------------------------------------------------------*/
