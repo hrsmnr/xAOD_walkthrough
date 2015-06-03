@@ -229,7 +229,8 @@ int main( int argc, char* argv[] ) {
     TString outputDS = Form("user.hirose.%d_%s",dsid,submitDir.c_str());
     std::cout<<"Output DS name: "<<outputDS.Data()<<std::endl;
     driver.options()->setString("nc_outputSampleName", outputDS.Data());
-    driver.options()->setDouble(EL::Job::optGridNFilesPerJob, 20);
+    //    driver.options()->setDouble(EL::Job::optGridNFilesPerJob, 20);
+    driver.options()->setDouble(EL::Job::optGridNGBPerJob, 20);
     driver.submitOnly( job, ("result/"+outputDS).Data() );
   }else{
     EL::DirectDriver driver;
