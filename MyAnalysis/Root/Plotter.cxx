@@ -326,6 +326,7 @@ bool Plotter::BookHistograms()
   ///////////////////////////////////////////////////////////////
   //Defining histograms
   ///////////////////////////////////////////////////////////////
+  TH1F::SetDefaultSumw2();
 
   // Histogram to store the MC cross section
   h_xsec = new TH1F("h_xsec","h_xsec;;MC cross-section[pb]",1,0.,1.);
