@@ -179,6 +179,7 @@ class Plotter : public TObject
   TH1F *h_dPhiLep2Met  [nChan]; // dPhi(lep2, met)
   TH1F *h_dPhiLep3Met  [nChan]; // dPhi(lep3, met)
   TH1F *h_dPhiLLMet    [nChan]; // dPhi(lep1+lep2, met)
+  TH1F *h_dPhiLLJet    [nChan]; // dPhi(lep1+lep2, leading jet)
   TH1F *h_dPhiJet1Met  [nChan]; // dPhi(jet1, met)
   TH1F *h_dPhiJet2Met  [nChan]; // dPhi(jet2, met)
   TH1F *h_dPhiJJMet    [nChan]; // dPhi(jet1+jet2, met)
