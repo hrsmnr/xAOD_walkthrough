@@ -703,6 +703,10 @@ bool EventSelector::selectObject()
   xAOD::ElectronContainer::iterator el_end = (electrons_copy)->end();
   for( ; el_itr!=el_end; ++el_itr){
     xAOD::Electron el = **el_itr;
+    if((*el_itr)->auxdata<char>("passOR")!=1){
+      MyDebug("selectObject()","Electron was rejected by the overlap-removal process!!");
+      continue;
+    }
     if(IsMyBaselineElectron(el)) m_vec_baseElectron  ->push_back(el);
     if(IsMySignalElectron  (el)) m_vec_signalElectron->push_back(el);
   }
@@ -724,6 +728,12 @@ bool EventSelector::selectObject()
   Int_t nBaselineMuon = 0;
   Int_t nSignalMuon = 0;
   for( ; mu_itr!=mu_end; ++mu_itr){
+    if((*mu_itr)->auxdata<char>("passOR")!=1){
+      MyDebug("selectObject()","Muon was rejected by the overlap-removal process!!");
+      m_vec_baseMuon  ->erase(m_vec_baseMuon  ->begin()+nBaselineMuon);
+      m_vec_signalMuon->erase(m_vec_signalMuon->begin()+nSignalMuon  );
+      continue;
+    }
     if(IsMyBaselineMuon(**mu_itr)){
       m_vec_baseMuon->at(nBaselineMuon).makePrivateStore(**mu_itr);
       nBaselineMuon++;
