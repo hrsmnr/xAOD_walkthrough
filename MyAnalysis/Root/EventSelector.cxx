@@ -568,25 +568,22 @@ void EventSelector::finalize()
 // Preparing physics objects
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::IsMyBaselineElectron(const xAOD::Electron& el){
+  if((int)el.auxdata<char>("baseline")!=1) return false;
   return true;
 }
 bool EventSelector::IsMySignalElectron(const xAOD::Electron& el){
-  Bool_t isSignalElectron = kFALSE;
-  ST::IsSignalElectronExpCutArgs args; //default values are set by construnter.
-  args.etcut(m_elPtCut);
-  isSignalElectron = m_susyObjTool->IsSignalElectronExp( el , ST::SignalIsoExp::TightIso, args);
-  return isSignalElectron;
+  if(not IsMyBaselineElectron(el)) return false;
+  if((int)el.auxdata<char>("signal")!=1) return false;
+  return true;
 }
 bool EventSelector::IsMyBaselineMuon(const xAOD::Muon& mu){
+  if((int)mu.auxdata<char>("baseline")!=1) return false;
   return true;
 }
 bool EventSelector::IsMySignalMuon(const xAOD::Muon& mu){
-  Bool_t isSignalMuon = kFALSE;
-  ST::IsSignalMuonExpCutArgs args; //default values are set by construnter.
-  args.ptcut(m_muPtCut);
-  isSignalMuon = m_susyObjTool->IsSignalMuonExp( mu, ST::SignalIsoExp::TightIso, args);
-  if(m_susyObjTool->IsCosmicMuon( mu )) isSignalMuon = kFALSE;
-  return isSignalMuon;
+  if(not IsMyBaselineMuon(mu)) return false;
+  if((int)mu.auxdata<char>("signal")!=1) return false;
+  return true;
 }
 bool EventSelector::IsMySignalJet(xAOD::Jet jet){
   return true;
@@ -613,6 +610,14 @@ bool EventSelector::selectObject()
     MyError("selectObject()","Failing to retrieve ElectronContainer.");
     rtrvFail = true;
   }
+  // preparing signal flag
+  xAOD::ElectronContainer::iterator el_itr = (electrons_copy)->begin();
+  xAOD::ElectronContainer::iterator el_end = (electrons_copy)->end();
+  for( ; el_itr!=el_end; ++el_itr){
+    ST::IsSignalElectronExpCutArgs args; //default values are set by construnter.
+    args.etcut(m_elPtCut);
+    m_susyObjTool->IsSignalElectronExp( **el_itr, ST::SignalIsoExp::TightIso, args); //Signal flag are set here.
+  }
 
   ///////////////////////////////////////////////////
   // Get the Photons from the event
@@ -633,6 +638,15 @@ bool EventSelector::selectObject()
     MyError("selectObject()","Failing to retrieve MuonContainer.");
     rtrvFail = true;
   }
+  // preparing signal flag
+  xAOD::MuonContainer::iterator mu_itr = (muons_copy)->begin();
+  xAOD::MuonContainer::iterator mu_end = (muons_copy)->end();
+  for( ; mu_itr!=mu_end; ++mu_itr){
+    ST::IsSignalMuonExpCutArgs args; //default values are set by construnter.
+    args.ptcut(m_muPtCut);
+    m_susyObjTool->IsSignalMuonExp( **mu_itr, ST::SignalIsoExp::TightIso, args); //Signal flag are set here.
+    m_susyObjTool->IsCosmicMuon   ( **mu_itr ); //Cosmic flag are set here.
+  }
 
   ///////////////////////////////////////////////////
   // Get the Jets from the event:
@@ -644,7 +658,7 @@ bool EventSelector::selectObject()
     MyError("selectObject()","Failing to retrieve JetContainer.");
     rtrvFail = true;
   }
-  // Check if there are bad jets
+  // Check if there are b-tagged jets
   xAOD::JetContainer::iterator jet_itr = (jets_copy)->begin();
   xAOD::JetContainer::iterator jet_end = (jets_copy)->end();
   for( ; jet_itr!=jet_end; ++jet_itr){
@@ -653,6 +667,24 @@ bool EventSelector::selectObject()
     //MV1: Eff70%=0.3511, Eff80%=0.6073, Eff85%=0.3511
     m_vec_preJet->push_back(**jet_itr);
   }
+
+  // // Print their properties, using the tools:
+  // xAOD::TauJetContainer::iterator tau_itr = (taus_copy)->begin();
+  // xAOD::TauJetContainer::iterator tau_end = (taus_copy)->end();
+  // for( ; tau_itr != tau_end; ++tau_itr ){
+  //   MyInfo(APP_NAME, "  Tau passing IsBaseline? %i  pt=%g sf=%g",
+  //          (int)(*tau_itr)->auxdata<bool>("baseline"), (*tau_itr)->pt(), m_susyObjTool->GetSignalTauSF(**tau_itr) );
+  //   // if(m_isMC){
+  //   //   T2MT.applyTruthMatch(*(*tau_itr));
+  //   //   if((*tau_itr)->auxdata<bool>("IsTruthMatched")){
+  //   //     Info(APP_NAME, "Tau was matched to a truth tau, which has %i prongs and a charge of %i",
+  //   //          int((*tau_itr)->auxdata<size_t>("TruthProng")),
+  //   //          (*tau_itr)->auxdata<int>("TruthCharge"));
+  //   //   }else{
+  //   //     Info(APP_NAME, "Tau was not matched to truth");
+  //   //   }
+  //   // }
+  // }
 
   ///////////////////////////////////////////////////
   // Get the Taus from the event:
@@ -673,96 +705,28 @@ bool EventSelector::selectObject()
     MyError("selectObject()",Form("Failing to recode MySelJets%s to TStore.",m_sys.c_str()));
     rtrvFail = true;
   }
-  if(m_susyObjTool->OverlapRemoval(electrons_copy, muons_copy, jets_copy)==EL::StatusCode::FAILURE){
+  Bool_t doHarmonization = false;
+  if(m_susyObjTool->OverlapRemoval(electrons_copy, muons_copy, jets_copy, doHarmonization)==EL::StatusCode::FAILURE){
     MyError("selectObject()","Failing overlap removal process.");
     rtrvFail = true;
   }
   //////////////////////////////////////////////////////////////////////
-  // preparing signal, baseline and pre jets (this should be done after overlap removal)
+  // preparing the goodJets container
   //////////////////////////////////////////////////////////////////////
   jet_itr = (jets_copy)->begin();
   jet_end = (jets_copy)->end();
-  for( ; jet_itr!=jet_end; ++jet_itr){
-    if((*jet_itr)->auxdata<char>("baseline")==1 &&
-       (*jet_itr)->auxdata<char>("passOR"  )==1 ){
+  for( ; jet_itr != jet_end; ++jet_itr ) {
+    MyDebug("selectObject()",Form("jet: baseline=%d",(int)(*jet_itr)->auxdata<char>("baseline")));
+    MyDebug("selectObject()",Form("jet: passOR=%d"  ,(int)(*jet_itr)->auxdata<char>("passOR"  )));
+    MyDebug("selectObject()",Form("jet: bad=%d"     ,(int)(*jet_itr)->auxdata<char>("bad"     )));
+    MyDebug("selectObject()",Form("jet: bjet=%d"    ,(int)(*jet_itr)->auxdata<char>("bjet"    )));
+    if( (*jet_itr)->auxdata<char>("baseline")==1 &&
+        (*jet_itr)->auxdata<char>("passOR"  )==1 &&
+        (*jet_itr)->auxdata<char>("bad"     )==0 ){
       m_vec_baseJet->push_back(**jet_itr);
-      if( (*jet_itr)->pt()>20000.     &&
-          fabs((*jet_itr)->eta())<2.5 ){
-        goodJets->push_back(*jet_itr);
-        m_vec_signalJet->push_back(**jet_itr);
-      }
+      goodJets->push_back (*jet_itr);
     }
   }
-  MyDebug("selectObject()",
-          Form("#signalJets=%d, #baseJets=%d, #preJets=%d",
-               (Int_t)m_vec_signalJet->size(), (Int_t)m_vec_baseJet->size(),(Int_t)m_vec_preJet->size()) );
-
-  //////////////////////////////////////////////////////////////////////
-  // preparing signal and baseline electrons (this should be done after overlap removal)
-  xAOD::ElectronContainer::iterator el_itr = (electrons_copy)->begin();
-  xAOD::ElectronContainer::iterator el_end = (electrons_copy)->end();
-  for( ; el_itr!=el_end; ++el_itr){
-    xAOD::Electron el = **el_itr;
-    if((*el_itr)->auxdata<char>("passOR")!=1){
-      MyDebug("selectObject()","Electron was rejected by the overlap-removal process!!");
-      continue;
-    }
-    if(IsMyBaselineElectron(el)) m_vec_baseElectron  ->push_back(el);
-    if(IsMySignalElectron  (el)) m_vec_signalElectron->push_back(el);
-  }
-
-  //////////////////////////////////////////////////////////////////////
-  // preparing signal and baseline muons (this should be done after overlap removal)
-  xAOD::MuonContainer::iterator mu_itr = (muons_copy)->begin();
-  xAOD::MuonContainer::iterator mu_end = (muons_copy)->end();
-  Int_t nMu = mu_end-mu_itr;
-  m_vec_baseMuon->reserve(nMu);
-  m_vec_signalMuon->reserve(nMu);
-  for(Int_t id=0; id<nMu; id++){
-    xAOD::Muon mu;
-    m_vec_baseMuon->push_back(mu);
-    m_vec_signalMuon->push_back(mu);
-    // Create private auxstore for the object later, copying all values
-    // from the old object instead of just call push_back().
-  }
-  Int_t nBaselineMuon = 0;
-  Int_t nSignalMuon = 0;
-  for( ; mu_itr!=mu_end; ++mu_itr){
-    if((*mu_itr)->auxdata<char>("passOR")!=1){
-      MyDebug("selectObject()","Muon was rejected by the overlap-removal process!!");
-      m_vec_baseMuon  ->erase(m_vec_baseMuon  ->begin()+nBaselineMuon);
-      m_vec_signalMuon->erase(m_vec_signalMuon->begin()+nSignalMuon  );
-      continue;
-    }
-    if(IsMyBaselineMuon(**mu_itr)){
-      m_vec_baseMuon->at(nBaselineMuon).makePrivateStore(**mu_itr);
-      nBaselineMuon++;
-    }
-    if(IsMySignalMuon(**mu_itr)){
-      m_vec_signalMuon->at(nSignalMuon).makePrivateStore(**mu_itr);
-      nSignalMuon++;
-    }else{
-      m_vec_signalMuon->erase(m_vec_signalMuon->begin()+nSignalMuon);
-    }
-  }
-
-  // // Print their properties, using the tools:
-  // xAOD::TauJetContainer::iterator tau_itr = (taus_copy)->begin();
-  // xAOD::TauJetContainer::iterator tau_end = (taus_copy)->end();
-  // for( ; tau_itr != tau_end; ++tau_itr ){
-  //   MyInfo(APP_NAME, "  Tau passing IsBaseline? %i  pt=%g sf=%g",
-  //          (int)(*tau_itr)->auxdata<bool>("baseline"), (*tau_itr)->pt(), m_susyObjTool->GetSignalTauSF(**tau_itr) );
-  //   // if(m_isMC){
-  //   //   T2MT.applyTruthMatch(*(*tau_itr));
-  //   //   if((*tau_itr)->auxdata<bool>("IsTruthMatched")){
-  //   //     Info(APP_NAME, "Tau was matched to a truth tau, which has %i prongs and a charge of %i",
-  //   //          int((*tau_itr)->auxdata<size_t>("TruthProng")),
-  //   //          (*tau_itr)->auxdata<int>("TruthCharge"));
-  //   //   }else{
-  //   //     Info(APP_NAME, "Tau was not matched to truth");
-  //   //   }
-  //   // }
-  // }
 
   ///////////////////////////////////////////////////
   // Retrieving Missing Et
@@ -793,13 +757,87 @@ bool EventSelector::selectObject()
   }
 
   m_met.SetMagPhi(0.,0.);
-  for(const auto& metterm : *mettst) {
-    //    std::cout<<Form("MET term \"%s\" px = %f py = %f",
-    //    metterm->name().c_str(), metterm->mpx(), metterm->mpy())<<std::endl;
+  for(const auto& metterm : *mettst){
     if(metterm->name()=="Final") m_met.SetMagPhi(metterm->met(),metterm->phi());
   }
-  //  std::cout<<"MyPx="<<Form("%12.6f",m_met.Px())<<", MyPy="<<Form("%12.6f",m_met.Py())<<std::endl;
+  MyDebug("selectObject()",Form("MyPx=%12.6f, MyPy=%12.6f",m_met.Px(),m_met.Py()));
 
+  //////////////////////////////////////////////////////////////////////
+  // preparing signal and baseline electrons (this should be done after overlap removal)
+  el_itr = (electrons_copy)->begin();
+  el_end = (electrons_copy)->end();
+  for( ; el_itr!=el_end; ++el_itr){
+    MyDebug("selectObject()",Form("el: baseline=%d",(int)(*el_itr)->auxdata<char>("baseline")));
+    MyDebug("selectObject()",Form("el: passOR=%d"  ,(int)(*el_itr)->auxdata<char>("passOR"  )));
+    MyDebug("selectObject()",Form("el: signal=%d"  ,(int)(*el_itr)->auxdata<char>("signal"  )));
+    if((*el_itr)->auxdata<char>("passOR")!=1){
+      MyDebug("selectObject()","Electron was rejected by the overlap-removal process!!");
+      continue;
+    }
+    if(IsMyBaselineElectron(**el_itr)) m_vec_baseElectron  ->push_back(**el_itr);
+    if(IsMySignalElectron  (**el_itr)) m_vec_signalElectron->push_back(**el_itr);
+  }
+  //////////////////////////////////////////////////////////////////////
+  // preparing signal and baseline muons (this should be done after overlap removal)
+  mu_itr = (muons_copy)->begin();
+  mu_end = (muons_copy)->end();
+  Int_t nMu = mu_end-mu_itr;
+  m_vec_baseMuon->reserve(nMu);
+  m_vec_signalMuon->reserve(nMu);
+  for(Int_t id=0; id<nMu; id++){
+    xAOD::Muon mu;
+    m_vec_baseMuon->push_back(mu);
+    m_vec_signalMuon->push_back(mu);
+    // Create private auxstore for the object later, copying all values
+    // from the old object instead of just call push_back().
+  }
+  Int_t nBaselineMuon = 0;
+  Int_t nSignalMuon = 0;
+  for( ; mu_itr!=mu_end; ++mu_itr){
+    MyDebug("selectObject()",Form("mu: baseline=%d",(int)(*mu_itr)->auxdata<char>("baseline")));
+    MyDebug("selectObject()",Form("mu: passOR=%d"  ,(int)(*mu_itr)->auxdata<char>("passOR"  )));
+    MyDebug("selectObject()",Form("mu: cosmic=%d"  ,(int)(*mu_itr)->auxdata<char>("cosmic"  )));
+    MyDebug("selectObject()",Form("mu: signal=%d"  ,(int)(*mu_itr)->auxdata<char>("signal"  )));
+    if((*mu_itr)->auxdata<char>("passOR")!=1){
+      MyDebug("selectObject()","Muon was rejected by the overlap-removal process!!");
+      m_vec_baseMuon  ->erase(m_vec_baseMuon  ->begin()+nBaselineMuon);
+      m_vec_signalMuon->erase(m_vec_signalMuon->begin()+nSignalMuon  );
+      continue;
+    }
+    if((*mu_itr)->auxdata<char>("cosmic")==1){
+      MyDebug("selectObject()","Muon was rejected as cosmic muon candidate!!");
+      m_vec_baseMuon  ->erase(m_vec_baseMuon  ->begin()+nBaselineMuon);
+      m_vec_signalMuon->erase(m_vec_signalMuon->begin()+nSignalMuon  );
+      continue;
+    }
+    if(IsMyBaselineMuon(**mu_itr)){
+      m_vec_baseMuon->at(nBaselineMuon).makePrivateStore(**mu_itr);
+      nBaselineMuon++;
+    }else{
+      m_vec_baseMuon->erase(m_vec_baseMuon->begin()+nBaselineMuon);
+    }
+    if(IsMySignalMuon(**mu_itr)){
+      m_vec_signalMuon->at(nSignalMuon).makePrivateStore(**mu_itr);
+      nSignalMuon++;
+    }else{
+      m_vec_signalMuon->erase(m_vec_signalMuon->begin()+nSignalMuon);
+    }
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // preparing signal, baseline and pre jets (this should be done after overlap removal)
+  jet_itr = goodJets->begin();
+  jet_end = goodJets->end();
+  for( ; jet_itr!=jet_end; ++jet_itr){
+    if((*jet_itr)->pt()>20000. && fabs((*jet_itr)->eta())<2.5){
+      m_vec_signalJet->push_back(**jet_itr);
+    }
+  }
+  MyDebug("selectObject()",
+          Form("#signalJets=%d, #baseJets=%d, #preJets=%d",
+               (Int_t)m_vec_signalJet->size(), (Int_t)m_vec_baseJet->size(),(Int_t)m_vec_preJet->size()) );
+
+  //Deleting object containers
   if(electrons_copy   !=0) delete electrons_copy;
   if(electrons_copyaux!=0) delete electrons_copyaux;
   if(photons_copy     !=0) delete photons_copy;
@@ -874,7 +912,6 @@ bool EventSelector::selectObject()
       MyDebug("selectObject()",Form("Baseline : LeptonPt=%f, Flavor=%d, Index=%d (prevPt=%f)",m_baseLeps[id].Pt(),m_baseLepFlavor[id],m_baseLepIndex[id],prevPt));
       if(prevPt<=m_baseLeps[id].Pt() && m_baseLepFlavor[id]!=-1){
         MyError("selectObject()","Lepton Pt is not well ordered!!");
-        getchar();
       }
       prevPt=m_baseLeps[id].Pt();
     }
@@ -927,7 +964,6 @@ bool EventSelector::selectObject()
       MyDebug("selectObject()",Form("Signal : LeptonPt=%f, Flavor=%d, Index=%d (prevPt=%f)",m_leadLeps[id].Pt(),m_leadLepFlavor[id],m_leadLepIndex[id],prevPt));
       if(prevPt<=m_leadLeps[id].Pt() && m_leadLepFlavor[id]!=-1){
         MyError("selectObject()","Lepton Pt is not well ordered!!");
-        getchar();
       }
       prevPt=m_leadLeps[id].Pt();
     }
