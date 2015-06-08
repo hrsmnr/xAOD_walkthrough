@@ -98,6 +98,7 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   m_selSS(false),
   m_selSF(false),
   m_selDF(false),
+  m_selDForSS4SigLep(false),
   m_selOSTau(false),
   m_selOSLepTau(false),
   //m_specialCut(false),
@@ -389,6 +390,7 @@ void EventSelector::Set2S3B()
 {
   SetNSigNBase(2,3);
   m_selSFOS = true;
+  m_selDForSS4SigLep = true;
   m_applyTrig = false;
   return;
 }
@@ -398,6 +400,7 @@ void EventSelector::Set2S3BBveto()
   SetNSigNBase(2,3);
   SetBveto();
   m_selSFOS = true;
+  m_selDForSS4SigLep = true;
   m_applyTrig = false;
   return;
 }
@@ -408,6 +411,7 @@ void EventSelector::Set2S3BZveto()
   m_vetoZ = true;
   m_vetoExtZ = true;
   m_selSFOS = true;
+  m_selDForSS4SigLep = true;
   m_applyTrig = false;
   return;
 }
@@ -417,6 +421,7 @@ void EventSelector::Set2S3BMet()
   SetNSigNBase(2,3);
   m_metMin = 30;
   m_selSFOS = true;
+  m_selDForSS4SigLep = true;
   m_applyTrig = false;
   return;
 }
@@ -429,6 +434,7 @@ void EventSelector::Set2S3BZvetoBvetoMet()
   m_vetoZ = true;
   m_vetoExtZ = true;
   m_selSFOS = true;
+  m_selDForSS4SigLep = true;
   m_applyTrig = false;
 }
 /*--------------------------------------------------------------------------------*/
@@ -1285,6 +1291,24 @@ bool EventSelector::passOFOSCut()
   return true;
 }
 /*--------------------------------------------------------------------------------*/
+bool EventSelector::passDFSSCut()
+{
+  //Select events with different flavor or same sign leptons.
+  if(m_selDForSS4SigLep){
+    bool df = false;
+    if((m_leadLepFlavor[0]==0 && m_leadLepFlavor[1]==1) ||
+       (m_leadLepFlavor[0]==1 && m_leadLepFlavor[1]==0) ) df = true;
+    Int_t charge1(0), charge2(0);
+    if     (m_leadLepFlavor[0]==0) charge1 = (m_vec_signalElectron->at(m_leadLepIndex[0])).charge();
+    else if(m_leadLepFlavor[0]==1) charge1 = (m_vec_signalMuon    ->at(m_leadLepIndex[0])).charge();
+    if     (m_leadLepFlavor[1]==0) charge2 = (m_vec_signalElectron->at(m_leadLepIndex[1])).charge();
+    else if(m_leadLepFlavor[1]==1) charge2 = (m_vec_signalMuon    ->at(m_leadLepIndex[1])).charge();
+    bool ss = isSS(charge1,charge2);
+    if(m_selDForSS4SigLep && not (df || ss)) return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
 bool EventSelector::passSSCut()
 {
   if(m_selSS){
@@ -1360,6 +1384,7 @@ bool EventSelector::passFlavChargeCut()
   if(!passSFOSCut()) return false;
   if(!passSFSSCut()) return false;
   if(!passOFOSCut()) return false;
+  if(!passDFSSCut()) return false;
   if(!passSSCut()) return false;
   if(!passOSCut()) return false;
   if(!passSFCut()) return false;
