@@ -136,6 +136,7 @@ class EventSelector : public TObject
   virtual bool passSFOSCut();
   virtual bool passSFSSCut();
   virtual bool passOFOSCut();
+  virtual bool passDFSSCut();
   virtual bool passSSCut();
   virtual bool passOSCut();
   virtual bool passSFCut();
@@ -440,6 +441,7 @@ class EventSelector : public TObject
   bool                m_selSS;          // flag to select SS leptons, no flav cut 
   bool                m_selSF;          // flag to select SF leptons, no charge cut
   bool                m_selDF;          // flag to select DF leptons, no charge cut
+  bool                m_selDForSS4SigLep;// flag to select (DF or SS) leptons in signal leptons
   bool                m_selOSTau;       // flag to select OS taus 
   bool                m_selOSLepTau;    // flag to select OS lep, tau 
   bool                m_specialCut;     // just a temporary cut for testing/hacking 
