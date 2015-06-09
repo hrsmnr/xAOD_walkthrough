@@ -299,6 +299,11 @@ class EventSelector : public TObject
   virtual void Set3S4BZveto();
   virtual void Set3S4BMet();
   virtual void Set3S4BZvetoBvetoMet();
+  virtual void Set2S3BDFSS();
+  virtual void Set2S3BBvetoDFSS();
+  virtual void Set2S3BZvetoDFSS();
+  virtual void Set2S3BMetDFSS();
+  virtual void Set2S3BZvetoBvetoMetDFSS();
 
   /* // Systematics */
   /* void setSystematics(ObjSys::OSys objSys=ObjSys::nom, bool doWeightSys=false){ */
@@ -392,6 +397,7 @@ class EventSelector : public TObject
   int                 m_nLepMax;        // max signal leptons 
   int                 m_nEleMin;        // min signal electrons 
   int                 m_nEleMax;        // max signal electrons 
+  bool                m_isoL3;          // applying isolation to 3rd lepton
   //int               m_nBaseTauMin;    // min baseline taus 
   //int               m_nBaseTauMax;    // max baseline taus 
   int                 m_nTauMin;        // min signal taus 
@@ -442,6 +448,7 @@ class EventSelector : public TObject
   bool                m_selSF;          // flag to select SF leptons, no charge cut
   bool                m_selDF;          // flag to select DF leptons, no charge cut
   bool                m_selDForSS4SigLep;// flag to select (DF or SS) leptons in signal leptons
+  bool                m_selDFandSS4SigLep;// flag to select (DF and SS) leptons in signal leptons
   bool                m_selOSTau;       // flag to select OS taus 
   bool                m_selOSLepTau;    // flag to select OS lep, tau 
   bool                m_specialCut;     // just a temporary cut for testing/hacking 
