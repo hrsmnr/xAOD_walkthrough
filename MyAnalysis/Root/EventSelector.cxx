@@ -51,6 +51,7 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   m_nLepMax(3),
   m_nEleMin(-1),
   m_nEleMax(-1),
+  m_isoL3(false),
   //m_nBaseTauMin(-1),
   //m_nBaseTauMax(-1),
   m_nTauMin(0),
@@ -99,6 +100,7 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   m_selSF(false),
   m_selDF(false),
   m_selDForSS4SigLep(false),
+  m_selDFandSS4SigLep(false),
   m_selOSTau(false),
   m_selOSLepTau(false),
   //m_specialCut(false),
@@ -232,6 +234,11 @@ bool EventSelector::initialize()
   else if(m_sel=="3S4BZveto") Set3S4BZveto();
   else if(m_sel=="3S4BMet"  ) Set3S4BMet();
   else if(m_sel=="3S4BZvetoBvetoMet") Set3S4BZvetoBvetoMet();
+  else if(m_sel=="2S3BDFSS"     ) Set2S3BDFSS();
+  else if(m_sel=="2S3BBvetoDFSS") Set2S3BBvetoDFSS();
+  else if(m_sel=="2S3BZvetoDFSS") Set2S3BZvetoDFSS();
+  else if(m_sel=="2S3BMetDFSS"  ) Set2S3BMetDFSS();
+  else if(m_sel=="2S3BZvetoBvetoMetDFSS") Set2S3BZvetoBvetoMetDFSS();
   //Used for the legacy paper
   else if (m_sel=="VR0a") {
     TypSel(3,0,3,0,0,0);
@@ -531,6 +538,59 @@ void EventSelector::Set3S4BZvetoBvetoMet()
   m_vetoZ = true;
   m_vetoExtZ = true;
   m_selSFOS = true;
+  m_applyTrig = false;
+}
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BDFSS()
+{
+  SetNSigNBase(2,3);
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BBvetoDFSS()
+{
+  SetNSigNBase(2,3);
+  SetBveto();
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BZvetoDFSS()
+{
+  SetNSigNBase(2,3);
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BMetDFSS()
+{
+  SetNSigNBase(2,3);
+  m_metMin = 30;
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BZvetoBvetoMetDFSS()
+{
+  SetNSigNBase(2,3);
+  SetBveto();
+  m_metMin = 30;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
   m_applyTrig = false;
 }
 
@@ -1305,6 +1365,20 @@ bool EventSelector::passDFSSCut()
     else if(m_leadLepFlavor[1]==1) charge2 = (m_vec_signalMuon    ->at(m_leadLepIndex[1])).charge();
     bool ss = isSS(charge1,charge2);
     if(m_selDForSS4SigLep && not (df || ss)) return false;
+  }
+  //Select events with different flavor and same sign leptons.
+  if(m_selDFandSS4SigLep){
+    bool dfss = false;
+    Int_t charge1(0), charge2(0);
+    if     (m_leadLepFlavor[0]==0) charge1 = (m_vec_signalElectron->at(m_leadLepIndex[0])).charge();
+    else if(m_leadLepFlavor[0]==1) charge1 = (m_vec_signalMuon    ->at(m_leadLepIndex[0])).charge();
+    if     (m_leadLepFlavor[1]==0) charge2 = (m_vec_signalElectron->at(m_leadLepIndex[1])).charge();
+    else if(m_leadLepFlavor[1]==1) charge2 = (m_vec_signalMuon    ->at(m_leadLepIndex[1])).charge();
+    if( ( (m_leadLepFlavor[0]==0 && m_leadLepFlavor[1]==1) && (charge1==-1 && charge2==-1) ) ||
+        ( (m_leadLepFlavor[0]==0 && m_leadLepFlavor[1]==1) && (charge1== 1 && charge2== 1) ) ||
+        ( (m_leadLepFlavor[0]==1 && m_leadLepFlavor[1]==0) && (charge1==-1 && charge2==-1) ) ||
+        ( (m_leadLepFlavor[0]==1 && m_leadLepFlavor[1]==0) && (charge1== 1 && charge2== 1) ) ) dfss = true;
+    if(m_selDFandSS4SigLep && !dfss) return false;
   }
   return true;
 }

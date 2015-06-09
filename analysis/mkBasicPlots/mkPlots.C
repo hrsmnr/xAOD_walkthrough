@@ -460,7 +460,7 @@ Int_t mkPlots(TString Tag, TString SelecReg){
   //Defining histograms
   ////////////////////////////////////////////////////
   //counting the number of signal samples
-  //  TH1::SetDefaultSumw2(); //No need to call this for ROOT6
+  TH1::SetDefaultSumw2(); //No need to call this for ROOT6?
   TH1F* dist_data[nFSType][nDistType];
   TH1F* dist_bg[nFSType][nBGType][nDistType];
   TH1F* dist_totalbg[nFSType][nDistType];
@@ -482,6 +482,7 @@ Int_t mkPlots(TString Tag, TString SelecReg){
       std::cout<<"Preparing final histogram of total BG for "<<FSTypeNames[fstype]<<" based on "<<Form("all_%s;1",distname.c_str())<<"."<<std::endl;
       dist_totalbg[fstype][disttype] = (TH1F*)(h_tmp->Clone(Form("dist_totalbg_%d_%d",fstype,disttype)));
       dist_totalbg[fstype][disttype]->Reset();
+      dist_totalbg[fstype][disttype]->Sumw2();
       //     //Ratio plot
       //     std::cout<<"Preparing final histogram of Data/SM ratio and its error for "<<FSTypeNames[fstype]<<" based on "<<Form("all_%s;1",distname.c_str())<<"."<<std::endl;
       //     dist_ratio[fstype][disttype] = (TH1F*)(h_tmp->Clone(Form("dist_ratio_%d_%d",fstype,disttype)));
@@ -493,6 +494,7 @@ Int_t mkPlots(TString Tag, TString SelecReg){
         std::cout<<"Preparing final histogram of "<<BGTypeNames[bgtype]<<" for "<<FSTypeNames[fstype]<<" based on "<<Form("all_%s;1",distname.c_str())<<"."<<std::endl;
         dist_bg[fstype][bgtype][disttype] = (TH1F*)(h_tmp->Clone(Form("dist_bg_%d_%d_%d",fstype,bgtype,disttype)));
         dist_bg[fstype][bgtype][disttype]->Reset();
+        dist_bg[fstype][bgtype][disttype]->Sumw2();
       }
       //Signal sample
       for(Int_t signaltype=0; signaltype<nSignalType; signaltype++){
@@ -501,6 +503,7 @@ Int_t mkPlots(TString Tag, TString SelecReg){
         for(UInt_t signalfile=0; signalfile<SignalFileNames[signaltype]->size(); signalfile++){
           vec_dist_signal[fstype][signaltype][disttype]->push_back((TH1F*)(h_tmp->Clone(Form("dist_signal_%d_%d_%d",fstype,signaltype,disttype))));
           vec_dist_signal[fstype][signaltype][disttype]->at(signalfile)->Reset();
+          vec_dist_signal[fstype][signaltype][disttype]->at(signalfile)->Sumw2();
         }
       }
     }
