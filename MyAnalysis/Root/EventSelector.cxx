@@ -9,8 +9,8 @@
 #include"MyAnalysis/EventSelector.h"
 
 #include"SUSYTools/SUSYObjDef_xAOD.h"
-#include"SUSYTools/ISUSYObjDef_xAODTool.h"
 #include"EventLoop/StatusCode.h"
+#include"EventPrimitives/EventPrimitivesHelpers.h"
 #include"xAODMissingET/MissingETAuxContainer.h"
 #include"xAODEgamma/EgammaxAODHelpers.h"
 #include"MyAnalysis/MCTruthClassifierDefs.h"//Copied from MCTruthClassifier-00-01-31
@@ -52,6 +52,7 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   m_nEleMin(-1),
   m_nEleMax(-1),
   m_isoL3(false),
+  m_isoBase(false),
   //m_nBaseTauMin(-1),
   //m_nBaseTauMax(-1),
   m_nTauMin(0),
@@ -234,13 +235,18 @@ bool EventSelector::initialize()
   else if(m_sel=="3S4BZveto") Set3S4BZveto();
   else if(m_sel=="3S4BMet"  ) Set3S4BMet();
   else if(m_sel=="3S4BZvetoBvetoMet") Set3S4BZvetoBvetoMet();
+  else if(m_sel=="2S3BTightBase"     ) Set2S3BTightBase();
+  else if(m_sel=="2S3BBvetoTightBase") Set2S3BBvetoTightBase();
+  else if(m_sel=="2S3BZvetoTightBase") Set2S3BZvetoTightBase();
+  else if(m_sel=="2S3BMetTightBase"  ) Set2S3BMetTightBase();
+  else if(m_sel=="2S3BZvetoBvetoMetTightBase") Set2S3BZvetoBvetoMetTightBase();
   else if(m_sel=="2S3BDFSS"     ) Set2S3BDFSS();
   else if(m_sel=="2S3BBvetoDFSS") Set2S3BBvetoDFSS();
   else if(m_sel=="2S3BZvetoDFSS") Set2S3BZvetoDFSS();
   else if(m_sel=="2S3BMetDFSS"  ) Set2S3BMetDFSS();
   else if(m_sel=="2S3BZvetoBvetoMetDFSS") Set2S3BZvetoBvetoMetDFSS();
   //Used for the legacy paper
-  else if (m_sel=="VR0a") {
+  else if(m_sel=="VR0a") {
     TypSel(3,0,3,0,0,0);
     m_jetPtMax = 50;
     m_metMax = 30;
@@ -249,7 +255,7 @@ bool EventSelector::initialize()
     m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
-  else if (m_sel=="VR0b") {
+  else if(m_sel=="VR0b") {
     TypSel(3,0,3,0,1,1);
     m_jetPtMax = 50;
     m_metMin = 30;
@@ -257,7 +263,7 @@ bool EventSelector::initialize()
     m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
-  else if (m_sel=="VR0c") {
+  else if(m_sel=="VR0c") {
     TypSel(3,0,3,0,0,0);
     m_jetPtMax = 50;
     m_lepPtMax = 30;
@@ -269,7 +275,7 @@ bool EventSelector::initialize()
     m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
-  else if (m_sel=="VR1a") { 
+  else if(m_sel=="VR1a") { 
     TypSel(3,0,3,0,0,0);
     m_nJetMin = 1;
     m_jetPtMin = 50;
@@ -279,7 +285,7 @@ bool EventSelector::initialize()
     m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
-  else if (m_sel=="VR1b") { 
+  else if(m_sel=="VR1b") { 
     TypSel(3,0,3,0,1,1);
     m_nJetMin = 1;
     m_jetPtMin = 50;
@@ -288,7 +294,7 @@ bool EventSelector::initialize()
     m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
-  else if (m_sel=="CRWZ") {
+  else if(m_sel=="CRWZ") {
     TypSel(3,0,3,0,0,0);
     m_nJetMin = 1;
     m_jetPtMin = 50.;
@@ -299,7 +305,7 @@ bool EventSelector::initialize()
     m_vetoExtZ = true;
     //    m_isoL3 = true;
   }
-  else if (m_sel=="SR0a") {
+  else if(m_sel=="SR0a") {
     TypSel(3,0,3,0,0,0);
     m_jetPtMax = 50;
     m_lepPtMax = 30;
@@ -313,7 +319,7 @@ bool EventSelector::initialize()
     m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
-  else if (m_sel=="SR0b") {
+  else if(m_sel=="SR0b") {
     TypSel(3,0,3,0,0,0);
     m_jetPtMax = 50;
     m_lepPtMax = 30;
@@ -326,7 +332,7 @@ bool EventSelector::initialize()
     m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
-  else if (m_sel=="SR1a") {
+  else if(m_sel=="SR1a") {
     TypSel(3,0,3,0,0,0);
     m_nJetMin = 1;
     m_jetPtMin = 50;
@@ -339,7 +345,7 @@ bool EventSelector::initialize()
     m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
-  else if (m_sel=="SR1b") {
+  else if(m_sel=="SR1b") {
     TypSel(3,0,3,0,0,0);
     m_nJetMin = 1;
     m_jetPtMin = 50;
@@ -491,6 +497,7 @@ void EventSelector::Set3S3BZvetoBvetoMet()
   m_vetoExtZ = true;
   m_selSFOS = true;
   m_applyTrig = false;
+  return;
 }
 /*--------------------------------------------------------------------------------*/
 /*--------------------------------------------------------------------------------*/
@@ -539,6 +546,66 @@ void EventSelector::Set3S4BZvetoBvetoMet()
   m_vetoExtZ = true;
   m_selSFOS = true;
   m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BTightBase()
+{
+  SetNSigNBase(2,3);
+  m_selSFOS = true;
+  m_selDForSS4SigLep = true;
+  m_applyTrig = false;
+  m_isoBase = true;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BBvetoTightBase()
+{
+  SetNSigNBase(2,3);
+  SetBveto();
+  m_selSFOS = true;
+  m_selDForSS4SigLep = true;
+  m_applyTrig = false;
+  m_isoBase = true;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BZvetoTightBase()
+{
+  SetNSigNBase(2,3);
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_selDForSS4SigLep = true;
+  m_applyTrig = false;
+  m_isoBase = true;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BMetTightBase()
+{
+  SetNSigNBase(2,3);
+  m_metMin = 30;
+  m_selSFOS = true;
+  m_selDForSS4SigLep = true;
+  m_applyTrig = false;
+  m_isoBase = true;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BZvetoBvetoMetTightBase()
+{
+  SetNSigNBase(2,3);
+  SetBveto();
+  m_metMin = 30;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_selDForSS4SigLep = true;
+  m_applyTrig = false;
+  m_isoBase = true;
+  return;
 }
 /*--------------------------------------------------------------------------------*/
 /*--------------------------------------------------------------------------------*/
@@ -592,6 +659,7 @@ void EventSelector::Set2S3BZvetoBvetoMetDFSS()
   m_selSFOS = true;
   m_selDFandSS4SigLep = true;
   m_applyTrig = false;
+  return;
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -635,6 +703,11 @@ void EventSelector::finalize()
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::IsMyBaselineElectron(const xAOD::Electron& el){
   if((int)el.auxdata<char>("baseline")!=1) return false;
+  if(m_isoBase){
+    ST::IsSignalElectronExpCutArgs args;
+    args.etcut(m_elPtCut);
+    if(not PassIsoElectron(el, ST::SignalIsoExp::LooseIso, args)) return false;
+  }
   return true;
 }
 bool EventSelector::IsMySignalElectron(const xAOD::Electron& el){
@@ -644,6 +717,11 @@ bool EventSelector::IsMySignalElectron(const xAOD::Electron& el){
 }
 bool EventSelector::IsMyBaselineMuon(const xAOD::Muon& mu){
   if((int)mu.auxdata<char>("baseline")!=1) return false;
+  if(m_isoBase){
+    ST::IsSignalMuonExpCutArgs args;
+    args.ptcut(m_muPtCut);
+    if(not PassIsoMuon(mu, ST::SignalIsoExp::LooseIso, args)) return false;
+  }
   return true;
 }
 bool EventSelector::IsMySignalMuon(const xAOD::Muon& mu){
@@ -658,6 +736,114 @@ bool EventSelector::IsMyBaselineJet(xAOD::Jet jet){
   return true;
 }
 bool EventSelector::IsMyPreJet(xAOD::Jet jet){
+  return true;
+}
+bool EventSelector::PassIsoElectron(const xAOD::Electron& input,
+                                    const ST::SignalIsoExp::IsoExp whichiso,
+                                    ST::IsSignalElectronExpCutArgs args)
+{
+  ///////////////////////////////////////////
+  //copied from SUSYTools-00-05-00-26
+  ///////////////////////////////////////////
+  const xAOD::TrackParticle* track = input.trackParticle();
+  const xAOD::Vertex* pv = m_susyObjTool->GetPrimVtx();
+  double primvertex_z = pv ? pv->z() : 0;
+  double el_d0sig = fabs(track->d0()) /  Amg::error(track->definingParametersCovMatrix(),0);
+  double el_z0 = track->z0() + track->vz() - primvertex_z;
+  float el_ptcone30(0.);
+  input.isolationValue(el_ptcone30,xAOD::Iso::ptcone30);
+  float el_topoEtcone30(0.);
+  input.isolationValue(el_topoEtcone30,xAOD::Iso::topoetcone30);
+  
+  // Use a relative cut on the isolation by default and an aboslute cut on the isolation if pt_isoMax>0 && pt > pt_isoMax
+  if(args._pt_isoMax>0 && input.p4().Perp2()> args._pt_isoMax*args._pt_isoMax){
+    args._id_isocut *= args._pt_isoMax;
+    args._calo_isocut *= args._pt_isoMax;
+  }
+  else{
+    args._id_isocut *= input.pt();
+    args._calo_isocut *= input.pt();
+  }
+  
+  if(whichiso == ST::SignalIsoExp::LooseIso){
+    if((input.p4().Perp2() <= args._etcut*args._etcut || input.p4().Perp2() == 0)) return false; // eT cut (might be necessary for leading electron to pass trigger)
+    if(args._id_isocut > 0.0 && el_ptcone30 >= args._id_isocut) return false; // track isolation
+    if((args._z0cut > 0.0 && fabs(el_z0*TMath::Sin(input.p4().Theta())) > args._z0cut)) return false; // longitudinal IP cut
+  }
+  else if(whichiso == ST::SignalIsoExp::MediumIso){
+    if((input.p4().Perp2() <= args._etcut*args._etcut || input.p4().Perp2() == 0)) return false; // eT cut (might be necessary for leading electron to pass trigger)
+    if((args._id_isocut > 0.0 && el_ptcone30 >= args._id_isocut)) return false; // track isolation
+    if((args._z0cut > 0.0 && fabs(el_z0*TMath::Sin(input.p4().Theta())) > args._z0cut)) return false; // longitudinal IP cut
+    if(el_d0sig != 0){
+      if((args._d0sigcut > 0.0 && fabs(el_d0sig) > args._d0sigcut)) return false; // transverse IP cut
+    }
+  }
+  else if(whichiso == ST::SignalIsoExp::TightIso){
+    if((input.p4().Perp2() <= args._etcut*args._etcut || input.p4().Perp2() == 0)) return false; // eT cut (might be necessary for leading electron to pass trigger)
+    if((args._id_isocut > 0.0 && el_ptcone30 >= args._id_isocut)) return false; // track isolation
+    if((args._z0cut > 0.0 && fabs(el_z0*TMath::Sin(input.p4().Theta())) > args._z0cut)) return false; // longitudinal IP cut
+    if(el_d0sig != 0){
+      if((args._d0sigcut > 0.0 && fabs(el_d0sig) > args._d0sigcut)) return false; // transverse IP cut
+    }
+    if(args._calo_isocut > 0.0 && el_topoEtcone30 >= args._calo_isocut) return false; // calo isolation
+  }
+  else {
+    MyError("PassIsoElectron()", "wrong isolation quality specified for electron .... returning false");
+    return false;
+  }
+  return true;
+}
+bool EventSelector::PassIsoMuon(const xAOD::Muon& input,
+                                const ST::SignalIsoExp::IsoExp whichiso,
+                                ST::IsSignalMuonExpCutArgs args)
+{
+  ///////////////////////////////////////////
+  //copied from SUSYTools-00-05-00-26
+  ///////////////////////////////////////////
+  const xAOD::TrackParticle* track =  input.primaryTrackParticle();
+  const xAOD::Vertex* pv = m_susyObjTool->GetPrimVtx();
+  double primvertex_z = pv ? pv->z() : 0;
+  double mu_d0sig = fabs(track->d0()) /  Amg::error(track->definingParametersCovMatrix(),0);
+  double mu_z0 = track->z0() + track->vz() - primvertex_z;
+  float mu_ptcone30 = input.auxdata<float>("ptcone30");
+  float mu_etcone30 = input.auxdata<float>("etcone30");
+
+  // Use a relative cut on the isolation by default and an aboslute cut on the isolation if pt_isoMax>0 && pt > pt_isoMax
+  if(args._pt_isoMax>0 && input.pt()> args._pt_isoMax){
+    args._id_isocut *= args._pt_isoMax;
+    args._calo_isocut *= args._pt_isoMax;
+  }
+  else{
+    args._id_isocut *= input.pt();
+    args._calo_isocut *= input.pt();
+  }
+
+  if(whichiso == ST::SignalIsoExp::LooseIso){
+    if(input.pt() <= args._ptcut || input.pt() == 0) return false; // pT cut (might be necessary for leading muon to pass trigger)
+    if(args._id_isocut > 0.0 && mu_ptcone30 >= args._id_isocut) return false; // track isolation
+    if(args._z0cut > 0.0 && fabs(mu_z0*TMath::Sin(input.p4().Theta())) > args._z0cut) return false; // longitudinal IP cut
+  }
+  else if(whichiso == ST::SignalIsoExp::MediumIso){
+    if(input.pt() <= args._ptcut || input.pt() == 0) return false; // pT cut (might be necessary for leading muon to pass trigger)
+    if(args._id_isocut > 0.0 && mu_ptcone30 >= args._id_isocut) return false; // track isolation
+    if(args._z0cut > 0.0 && fabs(mu_z0*TMath::Sin(input.p4().Theta())) > args._z0cut) return false; // longitudinal IP cut
+    if(mu_d0sig != 0){
+      if(args._d0sigcut > 0.0 && fabs(mu_d0sig) > args._d0sigcut) return false; // transverse IP cut
+    }
+  }
+  else if(whichiso == ST::SignalIsoExp::TightIso){
+    if(input.pt() <= args._ptcut || input.pt() == 0) return false; // pT cut (might be necessary for leading muon to pass trigger)
+    if(args._id_isocut > 0.0 && mu_ptcone30 >= args._id_isocut) return false; // track isolation
+    if(args._z0cut > 0.0 && fabs(mu_z0*TMath::Sin(input.p4().Theta())) > args._z0cut) return false; // longitudinal IP cut
+    if(mu_d0sig != 0){
+      if(args._d0sigcut > 0.0 && fabs(mu_d0sig) > args._d0sigcut) return false; // transverse IP cut
+    }
+    if(args._calo_isocut > 0.0 && mu_etcone30 >= args._calo_isocut) return false; // calo isolation
+  }
+  else{
+    MyError("PassIsoMuon()", "wrong isolation quality specified for muon .... returning false");
+    return false;
+  }
   return true;
 }
 
@@ -781,7 +967,7 @@ bool EventSelector::selectObject()
   //////////////////////////////////////////////////////////////////////
   jet_itr = (jets_copy)->begin();
   jet_end = (jets_copy)->end();
-  for( ; jet_itr != jet_end; ++jet_itr ) {
+  for( ; jet_itr != jet_end; ++jet_itr ){
     MyDebug("selectObject()",Form("jet: baseline=%d",(int)(*jet_itr)->auxdata<char>("baseline")));
     MyDebug("selectObject()",Form("jet: passOR=%d"  ,(int)(*jet_itr)->auxdata<char>("passOR"  )));
     MyDebug("selectObject()",Form("jet: bad=%d"     ,(int)(*jet_itr)->auxdata<char>("bad"     )));
@@ -1266,9 +1452,9 @@ bool EventSelector::passNJetCut()
   if(m_nJetMin>=0 && nSignalJets() < m_nJetMin) return false;
   if(m_nJetMax>=0 && nSignalJets() > m_nJetMax) return false;
 
-  if (nSignalJets()>0) {
-    if (m_jetPtMin>0 && m_vec_signalJet->at(0).pt()/1000. < m_jetPtMin) return false;
-    if (m_jetPtMax>0 && m_vec_signalJet->at(0).pt()/1000. > m_jetPtMax) return false;
+  if(nSignalJets()>0){
+    if(m_jetPtMin>0 && m_vec_signalJet->at(0).pt()/1000. < m_jetPtMin) return false;
+    if(m_jetPtMax>0 && m_vec_signalJet->at(0).pt()/1000. > m_jetPtMax) return false;
   }
 
   // 3-lepton b-jet
@@ -3089,8 +3275,8 @@ void EventSelector::TypSel(int nLep, int nTau, int nBaseLep, int nBaseTau, int n
   //  m_nBaseTauMin = m_nBaseTauMax = nBaseTau;
   m_nBJetMin = nBjetMin;
   m_nBJetMax = nBjetMax;
-  //  if (m_nBJetMax==0) m_selB = false;
-  //  if (m_nBJetMin>=1) m_selB = true;
+  //  if(m_nBJetMax==0) m_selB = false;
+  //  if(m_nBJetMin>=1) m_selB = true;
 }
 
 // /*--------------------------------------------------------------------------------*/
