@@ -11,6 +11,7 @@
 #include"xAODMuon/Muon.h"
 #include"xAODJet/Jet.h"
 #include"xAODPrimitives/IsolationType.h"
+#include"SUSYTools/ISUSYObjDef_xAODTool.h"
 #include"AsgTools/MsgLevel.h"
 
 namespace ST{
@@ -101,6 +102,9 @@ class EventSelector : public TObject
   virtual bool IsMyPreJet          (xAOD::Jet jet);
   virtual bool IsMyBaselineJet     (xAOD::Jet jet);
   virtual bool IsMySignalJet       (xAOD::Jet jet);
+  virtual bool PassIsoElectron(const xAOD::Electron& input, const ST::SignalIsoExp::IsoExp whichiso, ST::IsSignalElectronExpCutArgs args);
+  virtual bool PassIsoMuon(const xAOD::Muon& input, const ST::SignalIsoExp::IsoExp whichiso, ST::IsSignalMuonExpCutArgs args);
+
 
   std::vector< xAOD::Electron >* GetSignalElectron(){return m_vec_signalElectron;};
   std::vector< xAOD::Electron >* GetBaseElectron  (){return m_vec_baseElectron;  };
@@ -299,6 +303,11 @@ class EventSelector : public TObject
   virtual void Set3S4BZveto();
   virtual void Set3S4BMet();
   virtual void Set3S4BZvetoBvetoMet();
+  virtual void Set2S3BTightBase();
+  virtual void Set2S3BBvetoTightBase();
+  virtual void Set2S3BZvetoTightBase();
+  virtual void Set2S3BMetTightBase();
+  virtual void Set2S3BZvetoBvetoMetTightBase();
   virtual void Set2S3BDFSS();
   virtual void Set2S3BBvetoDFSS();
   virtual void Set2S3BZvetoDFSS();
@@ -398,6 +407,7 @@ class EventSelector : public TObject
   int                 m_nEleMin;        // min signal electrons 
   int                 m_nEleMax;        // max signal electrons 
   bool                m_isoL3;          // applying isolation to 3rd lepton
+  bool                m_isoBase;        // applying isolation to baseline leptons
   //int               m_nBaseTauMin;    // min baseline taus 
   //int               m_nBaseTauMax;    // max baseline taus 
   int                 m_nTauMin;        // min signal taus 

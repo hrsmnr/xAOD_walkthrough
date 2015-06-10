@@ -10,6 +10,7 @@
 #include"SUSYTools/SUSYObjDef_xAOD.h"
 #include"xAODEgamma/EgammaxAODHelpers.h"
 #include"MyAnalysis/MCTruthClassifierDefs.h"
+#include"EventPrimitives/EventPrimitivesHelpers.h"
 
 #include"TFile.h"
 #include"TH1F.h"
@@ -873,11 +874,8 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
       else if(lepIndex[id]==1) FillChanHist( h_lep2Z0, z0, w);
       else if(lepIndex[id]==2) FillChanHist( h_lep3Z0, z0, w);
       //track d0/sigma(d0)
-      Double_t vard0 = track->definingParametersCovMatrix()(0,0);
-      if(vard0 > 0){
-        Double_t d0error = 0.;
-        d0error=TMath::Sqrt(vard0);
-        d0sig  = d0/d0error;
+      if(Amg::error(track->definingParametersCovMatrix(),0)!=0){
+        d0sig = fabs(track->d0())/Amg::error(track->definingParametersCovMatrix(),0);
         FillChanHist( h_lepD0Sig, d0sig, w);
         if     (lepIndex[id]==0) FillChanHist( h_lep1D0Sig, d0sig, w);
         else if(lepIndex[id]==1) FillChanHist( h_lep2D0Sig, d0sig, w);
