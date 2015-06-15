@@ -11,6 +11,7 @@
 #include"xAODMuon/Muon.h"
 #include"xAODJet/Jet.h"
 #include"xAODPrimitives/IsolationType.h"
+#include"SUSYTools/ISUSYObjDef_xAODTool.h"
 #include"AsgTools/MsgLevel.h"
 
 namespace ST{
@@ -22,6 +23,7 @@ namespace xAOD{
 }
 
 #define nAnaLep 4
+#define nAnaJet 4
 enum ChIndex{Ch_all,Ch_eee,Ch_eem,Ch_emm,Ch_mmm,nChannels};
 
 // Signal Requirements
@@ -57,6 +59,8 @@ class EventSelector : public TObject
   Int_t getLeadLepFlavor(Int_t id){return m_leadLepFlavor[id];};
   TLorentzVector getLeadLep(Int_t id){return m_leadLeps[id];};
   bool is3SigLepSel(){return m_is3SigLepSel;};
+  Int_t getLeadJetIndex (Int_t id){return m_leadJetIndex [id];};
+  TLorentzVector getLeadJet(Int_t id){return m_leadJets[id];};
 
   ///////////////////////////////////////////////
   int Get_initial     (){return n_initial     ;};
@@ -98,6 +102,9 @@ class EventSelector : public TObject
   virtual bool IsMyPreJet          (xAOD::Jet jet);
   virtual bool IsMyBaselineJet     (xAOD::Jet jet);
   virtual bool IsMySignalJet       (xAOD::Jet jet);
+  virtual bool PassIsoElectron(const xAOD::Electron& input, const ST::SignalIsoExp::IsoExp whichiso, ST::IsSignalElectronExpCutArgs args);
+  virtual bool PassIsoMuon(const xAOD::Muon& input, const ST::SignalIsoExp::IsoExp whichiso, ST::IsSignalMuonExpCutArgs args);
+
 
   std::vector< xAOD::Electron >* GetSignalElectron(){return m_vec_signalElectron;};
   std::vector< xAOD::Electron >* GetBaseElectron  (){return m_vec_baseElectron;  };
@@ -133,8 +140,11 @@ class EventSelector : public TObject
   virtual bool passSFOSCut();
   virtual bool passSFSSCut();
   virtual bool passOFOSCut();
+  virtual bool passDFSSCut();
   virtual bool passSSCut();
   virtual bool passOSCut();
+  virtual bool passSFCut();
+  virtual bool passDFCut();
   /* virtual bool passOSLepTauCut(const LeptonVector& leptons, const TauVector& taus); */
   bool passFlavChargeCut();
 
@@ -268,11 +278,41 @@ class EventSelector : public TObject
   virtual xAOD::TrackParticle* getTrack(int index, int flav);
   virtual bool isOS(int charge1, int charge2);
   virtual bool isSS(int charge1, int charge2);
+  virtual bool isSF(int flavor1, int flavor2);
+  virtual bool isDF(int flavor1, int flavor2);
   virtual void TypSel(int nLep, int nTau, int nBaseLep, int nBaseTau, int nBjetMin, int nBjetMax);
 
-  /* // Selection region */
-  /* void setSelection(std::string s) { m_sel = s; } */
-  /* std::string getSelection() { return m_sel; } */
+  // Selection region
+  std::string getSelection(){ return m_sel; }
+  // Common functions
+  virtual void SetNSigNBase(int nSig, int nBase);
+  virtual void SetBveto();
+  // Setter for each selection region
+  virtual void Set2S3B();
+  virtual void Set2S3BBveto();
+  virtual void Set2S3BZveto();
+  virtual void Set2S3BMet();
+  virtual void Set2S3BZvetoBvetoMet();
+  virtual void Set3S3B();
+  virtual void Set3S3BBveto();
+  virtual void Set3S3BZveto();
+  virtual void Set3S3BMet();
+  virtual void Set3S3BZvetoBvetoMet();
+  virtual void Set3S4B();
+  virtual void Set3S4BBveto();
+  virtual void Set3S4BZveto();
+  virtual void Set3S4BMet();
+  virtual void Set3S4BZvetoBvetoMet();
+  virtual void Set2S3BTightBase();
+  virtual void Set2S3BBvetoTightBase();
+  virtual void Set2S3BZvetoTightBase();
+  virtual void Set2S3BMetTightBase();
+  virtual void Set2S3BZvetoBvetoMetTightBase();
+  virtual void Set2S3BDFSS();
+  virtual void Set2S3BBvetoDFSS();
+  virtual void Set2S3BZvetoDFSS();
+  virtual void Set2S3BMetDFSS();
+  virtual void Set2S3BZvetoBvetoMetDFSS();
 
   /* // Systematics */
   /* void setSystematics(ObjSys::OSys objSys=ObjSys::nom, bool doWeightSys=false){ */
@@ -282,9 +322,6 @@ class EventSelector : public TObject
 
   /* // Tau ID */
   /* void setTauID(TauID id) { m_tauID = id; } */
-
-  /* // debug check */
-  /* bool debugEvent(); */
 
   // Truth selection
   bool isRealLepton(unsigned int id);     // real, prompt lepton
@@ -347,6 +384,8 @@ class EventSelector : public TObject
   Int_t m_leadLepIndex [nAnaLep];
   Int_t m_leadLepFlavor[nAnaLep]; //0:Electron, 1:Muon, -1:Initial
   TLorentzVector m_leadLeps[nAnaLep];
+  Int_t m_leadJetIndex [nAnaJet];
+  TLorentzVector m_leadJets[nAnaJet];
 
 #ifndef __CINT__
   std::vector< xAOD::Electron > *m_vec_signalElectron;
@@ -367,6 +406,8 @@ class EventSelector : public TObject
   int                 m_nLepMax;        // max signal leptons 
   int                 m_nEleMin;        // min signal electrons 
   int                 m_nEleMax;        // max signal electrons 
+  bool                m_isoL3;          // applying isolation to 3rd lepton
+  bool                m_isoBase;        // applying isolation to baseline leptons
   //int               m_nBaseTauMin;    // min baseline taus 
   //int               m_nBaseTauMax;    // max baseline taus 
   int                 m_nTauMin;        // min signal taus 
@@ -399,6 +440,7 @@ class EventSelector : public TObject
   bool                m_selZ;           // flag to select Zs 
   bool                m_vetoExtZ;       // extended multilepton Z veto  
   bool                m_selExtZ;        // extended multilepton Z veto  
+  float               m_windowZ;        // mass window around Z-boson mass
   bool                m_vetoLooseZ;     // Z veto using loose soft leptons 
   bool                m_vetoZeeSS;      // veto SS ee pair in the Z window 
   //  bool                m_vetoB;          // flag to veto B jets 
@@ -413,6 +455,10 @@ class EventSelector : public TObject
   //bool              m_selOFSS;        // flag to require OFSS leptons 
   bool                m_selOS;          // flag to select OS leptons, no flav cut 
   bool                m_selSS;          // flag to select SS leptons, no flav cut 
+  bool                m_selSF;          // flag to select SF leptons, no charge cut
+  bool                m_selDF;          // flag to select DF leptons, no charge cut
+  bool                m_selDForSS4SigLep;// flag to select (DF or SS) leptons in signal leptons
+  bool                m_selDFandSS4SigLep;// flag to select (DF and SS) leptons in signal leptons
   bool                m_selOSTau;       // flag to select OS taus 
   bool                m_selOSLepTau;    // flag to select OS lep, tau 
   bool                m_specialCut;     // just a temporary cut for testing/hacking 

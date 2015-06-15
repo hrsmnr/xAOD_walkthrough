@@ -9,8 +9,8 @@
 #include"MyAnalysis/EventSelector.h"
 
 #include"SUSYTools/SUSYObjDef_xAOD.h"
-#include"SUSYTools/ISUSYObjDef_xAODTool.h"
 #include"EventLoop/StatusCode.h"
+#include"EventPrimitives/EventPrimitivesHelpers.h"
 #include"xAODMissingET/MissingETAuxContainer.h"
 #include"xAODEgamma/EgammaxAODHelpers.h"
 #include"MyAnalysis/MCTruthClassifierDefs.h"//Copied from MCTruthClassifier-00-01-31
@@ -51,6 +51,8 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   m_nLepMax(3),
   m_nEleMin(-1),
   m_nEleMax(-1),
+  m_isoL3(false),
+  m_isoBase(false),
   //m_nBaseTauMin(-1),
   //m_nBaseTauMax(-1),
   m_nTauMin(0),
@@ -83,6 +85,7 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   m_selZ(false),
   m_vetoExtZ(false),
   m_selExtZ(false),
+  m_windowZ(10.),
   m_vetoLooseZ(false),
   m_vetoZeeSS(false),
   //  m_vetoB(false),
@@ -95,6 +98,10 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   m_selOFOS(false),
   m_selOS(false),
   m_selSS(false),
+  m_selSF(false),
+  m_selDF(false),
+  m_selDForSS4SigLep(false),
+  m_selDFandSS4SigLep(false),
   m_selOSTau(false),
   m_selOSLepTau(false),
   //m_specialCut(false),
@@ -205,14 +212,6 @@ bool EventSelector::initialize()
     m_mtMin = 30.;
   }
   // 3 signal leptons, that's all
-  else if(m_sel=="3S3B"){
-    TypSel(3,0,3,0,-1,-1);
-    m_applyTrig = false;
-  }
-  else if(m_sel=="3S3BBveto"){
-    TypSel(3,0,3,0,0,0);
-    m_applyTrig = false;
-  }
   else if(m_sel=="3SAnyB"){
     TypSel(3,0,-1,0,-1,-1);
     m_applyTrig = false;
@@ -221,60 +220,33 @@ bool EventSelector::initialize()
     TypSel(3,0,-1,0,0,0);
     m_applyTrig = false;
   }
-  //New idea to loosen the selection
-  else if(m_sel=="2S3B"){
-    m_nLepMin = 2;
-    m_nLepMax = 2;
-    m_nBaseLepMin = 3;
-    m_nBaseLepMax = 3;
-    m_applyTrig = false;
-  }
-  else if(m_sel=="2S3BBveto"){
-    m_nLepMin = 2;
-    m_nLepMax = 2;
-    m_nBaseLepMin = 3;
-    m_nBaseLepMax = 3;
-    m_nBJetMin = 0;
-    m_nBJetMax = 0;
-    m_applyTrig = false;
-  }
-  else if(m_sel=="3S3to4B"){
-    m_nLepMin = 3;
-    m_nLepMax = 3;
-    m_nBaseLepMin = 3;
-    m_nBaseLepMax = 4;
-    m_applyTrig = false;
-  }
-  else if(m_sel=="3S4B"){
-    m_nLepMin = 3;
-    m_nLepMax = 3;
-    m_nBaseLepMin = 4;
-    m_nBaseLepMax = 4;
-    m_applyTrig = false;
-  }
-  else if(m_sel=="3S4BBveto"){
-    m_nLepMin = 3;
-    m_nLepMax = 3;
-    m_nBaseLepMin = 4;
-    m_nBaseLepMax = 4;
-    m_nBJetMin = 0;
-    m_nBJetMax = 0;
-    m_applyTrig = false;
-  }
-  else if(m_sel=="2S3BZvetoBvetoMet"){
-    m_nLepMin = 3;
-    m_nLepMax = 3;
-    m_nBaseLepMin = 4;
-    m_nBaseLepMax = 4;
-    m_nBJetMin = 0;
-    m_nBJetMax = 0;
-    m_metMin = 50;
-    m_vetoZ = true;
-    m_vetoExtZ = true;
-    m_applyTrig = false;
-  }
+  else if(m_sel=="2S3B"     ) Set2S3B();
+  else if(m_sel=="2S3BBveto") Set2S3BBveto();
+  else if(m_sel=="2S3BZveto") Set2S3BZveto();
+  else if(m_sel=="2S3BMet"  ) Set2S3BMet();
+  else if(m_sel=="2S3BZvetoBvetoMet") Set2S3BZvetoBvetoMet();
+  else if(m_sel=="3S3B"     ) Set3S3B();
+  else if(m_sel=="3S3BBveto") Set3S3BBveto();
+  else if(m_sel=="3S3BZveto") Set3S3BZveto();
+  else if(m_sel=="3S3BMet"  ) Set3S3BMet();
+  else if(m_sel=="3S3BZvetoBvetoMet") Set3S3BZvetoBvetoMet();
+  else if(m_sel=="3S4B"     ) Set3S4B();
+  else if(m_sel=="3S4BBveto") Set3S4BBveto();
+  else if(m_sel=="3S4BZveto") Set3S4BZveto();
+  else if(m_sel=="3S4BMet"  ) Set3S4BMet();
+  else if(m_sel=="3S4BZvetoBvetoMet") Set3S4BZvetoBvetoMet();
+  else if(m_sel=="2S3BTightBase"     ) Set2S3BTightBase();
+  else if(m_sel=="2S3BBvetoTightBase") Set2S3BBvetoTightBase();
+  else if(m_sel=="2S3BZvetoTightBase") Set2S3BZvetoTightBase();
+  else if(m_sel=="2S3BMetTightBase"  ) Set2S3BMetTightBase();
+  else if(m_sel=="2S3BZvetoBvetoMetTightBase") Set2S3BZvetoBvetoMetTightBase();
+  else if(m_sel=="2S3BDFSS"     ) Set2S3BDFSS();
+  else if(m_sel=="2S3BBvetoDFSS") Set2S3BBvetoDFSS();
+  else if(m_sel=="2S3BZvetoDFSS") Set2S3BZvetoDFSS();
+  else if(m_sel=="2S3BMetDFSS"  ) Set2S3BMetDFSS();
+  else if(m_sel=="2S3BZvetoBvetoMetDFSS") Set2S3BZvetoBvetoMetDFSS();
   //Used for the legacy paper
-  else if (m_sel=="VR0a") {
+  else if(m_sel=="VR0a") {
     TypSel(3,0,3,0,0,0);
     m_jetPtMax = 50;
     m_metMax = 30;
@@ -283,7 +255,7 @@ bool EventSelector::initialize()
     m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
-  else if (m_sel=="VR0b") {
+  else if(m_sel=="VR0b") {
     TypSel(3,0,3,0,1,1);
     m_jetPtMax = 50;
     m_metMin = 30;
@@ -291,7 +263,7 @@ bool EventSelector::initialize()
     m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
-  else if (m_sel=="VR0c") {
+  else if(m_sel=="VR0c") {
     TypSel(3,0,3,0,0,0);
     m_jetPtMax = 50;
     m_lepPtMax = 30;
@@ -303,7 +275,7 @@ bool EventSelector::initialize()
     m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
-  else if (m_sel=="VR1a") { 
+  else if(m_sel=="VR1a") { 
     TypSel(3,0,3,0,0,0);
     m_nJetMin = 1;
     m_jetPtMin = 50;
@@ -313,7 +285,7 @@ bool EventSelector::initialize()
     m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
-  else if (m_sel=="VR1b") { 
+  else if(m_sel=="VR1b") { 
     TypSel(3,0,3,0,1,1);
     m_nJetMin = 1;
     m_jetPtMin = 50;
@@ -322,7 +294,7 @@ bool EventSelector::initialize()
     m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
-  else if (m_sel=="CRWZ") {
+  else if(m_sel=="CRWZ") {
     TypSel(3,0,3,0,0,0);
     m_nJetMin = 1;
     m_jetPtMin = 50.;
@@ -333,7 +305,7 @@ bool EventSelector::initialize()
     m_vetoExtZ = true;
     //    m_isoL3 = true;
   }
-  else if (m_sel=="SR0a") {
+  else if(m_sel=="SR0a") {
     TypSel(3,0,3,0,0,0);
     m_jetPtMax = 50;
     m_lepPtMax = 30;
@@ -347,7 +319,7 @@ bool EventSelector::initialize()
     m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
-  else if (m_sel=="SR0b") {
+  else if(m_sel=="SR0b") {
     TypSel(3,0,3,0,0,0);
     m_jetPtMax = 50;
     m_lepPtMax = 30;
@@ -360,7 +332,7 @@ bool EventSelector::initialize()
     m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
-  else if (m_sel=="SR1a") {
+  else if(m_sel=="SR1a") {
     TypSel(3,0,3,0,0,0);
     m_nJetMin = 1;
     m_jetPtMin = 50;
@@ -373,7 +345,7 @@ bool EventSelector::initialize()
     m_vetoUpsilon = true;
     //    m_isoL3 = true;
   }
-  else if (m_sel=="SR1b") {
+  else if(m_sel=="SR1b") {
     TypSel(3,0,3,0,0,0);
     m_nJetMin = 1;
     m_jetPtMin = 50;
@@ -408,6 +380,286 @@ bool EventSelector::initialize()
 
   return true;
 
+}
+
+/*--------------------------------------------------------------------------------*/
+// Setter for each selection region
+/*--------------------------------------------------------------------------------*/
+void EventSelector::SetNSigNBase(int nSig, int nBase)
+{
+  m_nLepMin = m_nLepMax = nSig;
+  m_nBaseLepMin = m_nBaseLepMax = nBase;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::SetBveto()
+{
+  m_nBJetMin = m_nBJetMax = 0;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3B()
+{
+  SetNSigNBase(2,3);
+  m_selSFOS = true;
+  m_selDForSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BBveto()
+{
+  SetNSigNBase(2,3);
+  SetBveto();
+  m_selSFOS = true;
+  m_selDForSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BZveto()
+{
+  SetNSigNBase(2,3);
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_selDForSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BMet()
+{
+  SetNSigNBase(2,3);
+  m_metMin = 30;
+  m_selSFOS = true;
+  m_selDForSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BZvetoBvetoMet()
+{
+  SetNSigNBase(2,3);
+  SetBveto();
+  m_metMin = 30;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_selDForSS4SigLep = true;
+  m_applyTrig = false;
+}
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3B()
+{
+  SetNSigNBase(3,3);
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BBveto()
+{
+  SetNSigNBase(3,3);
+  SetBveto();
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BZveto()
+{
+  SetNSigNBase(3,3);
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BMet()
+{
+  SetNSigNBase(3,3);
+  m_metMin = 30;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BZvetoBvetoMet()
+{
+  SetNSigNBase(3,3);
+  SetBveto();
+  m_metMin = 30;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S4B()
+{
+  SetNSigNBase(3,4);
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S4BBveto()
+{
+  SetNSigNBase(3,4);
+  SetBveto();
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S4BZveto()
+{
+  SetNSigNBase(3,4);
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S4BMet()
+{
+  SetNSigNBase(3,4);
+  m_metMin = 30;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S4BZvetoBvetoMet()
+{
+  SetNSigNBase(3,4);
+  SetBveto();
+  m_metMin = 30;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BTightBase()
+{
+  SetNSigNBase(2,3);
+  m_selSFOS = true;
+  m_selDForSS4SigLep = true;
+  m_applyTrig = false;
+  m_isoBase = true;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BBvetoTightBase()
+{
+  SetNSigNBase(2,3);
+  SetBveto();
+  m_selSFOS = true;
+  m_selDForSS4SigLep = true;
+  m_applyTrig = false;
+  m_isoBase = true;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BZvetoTightBase()
+{
+  SetNSigNBase(2,3);
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_selDForSS4SigLep = true;
+  m_applyTrig = false;
+  m_isoBase = true;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BMetTightBase()
+{
+  SetNSigNBase(2,3);
+  m_metMin = 30;
+  m_selSFOS = true;
+  m_selDForSS4SigLep = true;
+  m_applyTrig = false;
+  m_isoBase = true;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BZvetoBvetoMetTightBase()
+{
+  SetNSigNBase(2,3);
+  SetBveto();
+  m_metMin = 30;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_selDForSS4SigLep = true;
+  m_applyTrig = false;
+  m_isoBase = true;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BDFSS()
+{
+  SetNSigNBase(2,3);
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BBvetoDFSS()
+{
+  SetNSigNBase(2,3);
+  SetBveto();
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BZvetoDFSS()
+{
+  SetNSigNBase(2,3);
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BMetDFSS()
+{
+  SetNSigNBase(2,3);
+  m_metMin = 30;
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BZvetoBvetoMetDFSS()
+{
+  SetNSigNBase(2,3);
+  SetBveto();
+  m_metMin = 30;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  return;
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -450,25 +702,32 @@ void EventSelector::finalize()
 // Preparing physics objects
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::IsMyBaselineElectron(const xAOD::Electron& el){
+  if((int)el.auxdata<char>("baseline")!=1) return false;
+  if(m_isoBase){
+    ST::IsSignalElectronExpCutArgs args;
+    args.etcut(m_elPtCut);
+    if(not PassIsoElectron(el, ST::SignalIsoExp::LooseIso, args)) return false;
+  }
   return true;
 }
 bool EventSelector::IsMySignalElectron(const xAOD::Electron& el){
-  Bool_t isSignalElectron = kFALSE;
-  ST::IsSignalElectronExpCutArgs args; //default values are set by construnter.
-  args.etcut(m_elPtCut);
-  isSignalElectron = m_susyObjTool->IsSignalElectronExp( el , ST::SignalIsoExp::TightIso, args);
-  return isSignalElectron;
+  if(not IsMyBaselineElectron(el)) return false;
+  if((int)el.auxdata<char>("signal")!=1) return false;
+  return true;
 }
 bool EventSelector::IsMyBaselineMuon(const xAOD::Muon& mu){
+  if((int)mu.auxdata<char>("baseline")!=1) return false;
+  if(m_isoBase){
+    ST::IsSignalMuonExpCutArgs args;
+    args.ptcut(m_muPtCut);
+    if(not PassIsoMuon(mu, ST::SignalIsoExp::LooseIso, args)) return false;
+  }
   return true;
 }
 bool EventSelector::IsMySignalMuon(const xAOD::Muon& mu){
-  Bool_t isSignalMuon = kFALSE;
-  ST::IsSignalMuonExpCutArgs args; //default values are set by construnter.
-  args.ptcut(m_muPtCut);
-  isSignalMuon = m_susyObjTool->IsSignalMuonExp( mu, ST::SignalIsoExp::TightIso, args);
-  if(m_susyObjTool->IsCosmicMuon( mu )) isSignalMuon = kFALSE;
-  return isSignalMuon;
+  if(not IsMyBaselineMuon(mu)) return false;
+  if((int)mu.auxdata<char>("signal")!=1) return false;
+  return true;
 }
 bool EventSelector::IsMySignalJet(xAOD::Jet jet){
   return true;
@@ -477,6 +736,114 @@ bool EventSelector::IsMyBaselineJet(xAOD::Jet jet){
   return true;
 }
 bool EventSelector::IsMyPreJet(xAOD::Jet jet){
+  return true;
+}
+bool EventSelector::PassIsoElectron(const xAOD::Electron& input,
+                                    const ST::SignalIsoExp::IsoExp whichiso,
+                                    ST::IsSignalElectronExpCutArgs args)
+{
+  ///////////////////////////////////////////
+  //copied from SUSYTools-00-05-00-26
+  ///////////////////////////////////////////
+  const xAOD::TrackParticle* track = input.trackParticle();
+  const xAOD::Vertex* pv = m_susyObjTool->GetPrimVtx();
+  double primvertex_z = pv ? pv->z() : 0;
+  double el_d0sig = fabs(track->d0()) /  Amg::error(track->definingParametersCovMatrix(),0);
+  double el_z0 = track->z0() + track->vz() - primvertex_z;
+  float el_ptcone30(0.);
+  input.isolationValue(el_ptcone30,xAOD::Iso::ptcone30);
+  float el_topoEtcone30(0.);
+  input.isolationValue(el_topoEtcone30,xAOD::Iso::topoetcone30);
+  
+  // Use a relative cut on the isolation by default and an aboslute cut on the isolation if pt_isoMax>0 && pt > pt_isoMax
+  if(args._pt_isoMax>0 && input.p4().Perp2()> args._pt_isoMax*args._pt_isoMax){
+    args._id_isocut *= args._pt_isoMax;
+    args._calo_isocut *= args._pt_isoMax;
+  }
+  else{
+    args._id_isocut *= input.pt();
+    args._calo_isocut *= input.pt();
+  }
+  
+  if(whichiso == ST::SignalIsoExp::LooseIso){
+    if((input.p4().Perp2() <= args._etcut*args._etcut || input.p4().Perp2() == 0)) return false; // eT cut (might be necessary for leading electron to pass trigger)
+    if(args._id_isocut > 0.0 && el_ptcone30 >= args._id_isocut) return false; // track isolation
+    if((args._z0cut > 0.0 && fabs(el_z0*TMath::Sin(input.p4().Theta())) > args._z0cut)) return false; // longitudinal IP cut
+  }
+  else if(whichiso == ST::SignalIsoExp::MediumIso){
+    if((input.p4().Perp2() <= args._etcut*args._etcut || input.p4().Perp2() == 0)) return false; // eT cut (might be necessary for leading electron to pass trigger)
+    if((args._id_isocut > 0.0 && el_ptcone30 >= args._id_isocut)) return false; // track isolation
+    if((args._z0cut > 0.0 && fabs(el_z0*TMath::Sin(input.p4().Theta())) > args._z0cut)) return false; // longitudinal IP cut
+    if(el_d0sig != 0){
+      if((args._d0sigcut > 0.0 && fabs(el_d0sig) > args._d0sigcut)) return false; // transverse IP cut
+    }
+  }
+  else if(whichiso == ST::SignalIsoExp::TightIso){
+    if((input.p4().Perp2() <= args._etcut*args._etcut || input.p4().Perp2() == 0)) return false; // eT cut (might be necessary for leading electron to pass trigger)
+    if((args._id_isocut > 0.0 && el_ptcone30 >= args._id_isocut)) return false; // track isolation
+    if((args._z0cut > 0.0 && fabs(el_z0*TMath::Sin(input.p4().Theta())) > args._z0cut)) return false; // longitudinal IP cut
+    if(el_d0sig != 0){
+      if((args._d0sigcut > 0.0 && fabs(el_d0sig) > args._d0sigcut)) return false; // transverse IP cut
+    }
+    if(args._calo_isocut > 0.0 && el_topoEtcone30 >= args._calo_isocut) return false; // calo isolation
+  }
+  else {
+    MyError("PassIsoElectron()", "wrong isolation quality specified for electron .... returning false");
+    return false;
+  }
+  return true;
+}
+bool EventSelector::PassIsoMuon(const xAOD::Muon& input,
+                                const ST::SignalIsoExp::IsoExp whichiso,
+                                ST::IsSignalMuonExpCutArgs args)
+{
+  ///////////////////////////////////////////
+  //copied from SUSYTools-00-05-00-26
+  ///////////////////////////////////////////
+  const xAOD::TrackParticle* track =  input.primaryTrackParticle();
+  const xAOD::Vertex* pv = m_susyObjTool->GetPrimVtx();
+  double primvertex_z = pv ? pv->z() : 0;
+  double mu_d0sig = fabs(track->d0()) /  Amg::error(track->definingParametersCovMatrix(),0);
+  double mu_z0 = track->z0() + track->vz() - primvertex_z;
+  float mu_ptcone30 = input.auxdata<float>("ptcone30");
+  float mu_etcone30 = input.auxdata<float>("etcone30");
+
+  // Use a relative cut on the isolation by default and an aboslute cut on the isolation if pt_isoMax>0 && pt > pt_isoMax
+  if(args._pt_isoMax>0 && input.pt()> args._pt_isoMax){
+    args._id_isocut *= args._pt_isoMax;
+    args._calo_isocut *= args._pt_isoMax;
+  }
+  else{
+    args._id_isocut *= input.pt();
+    args._calo_isocut *= input.pt();
+  }
+
+  if(whichiso == ST::SignalIsoExp::LooseIso){
+    if(input.pt() <= args._ptcut || input.pt() == 0) return false; // pT cut (might be necessary for leading muon to pass trigger)
+    if(args._id_isocut > 0.0 && mu_ptcone30 >= args._id_isocut) return false; // track isolation
+    if(args._z0cut > 0.0 && fabs(mu_z0*TMath::Sin(input.p4().Theta())) > args._z0cut) return false; // longitudinal IP cut
+  }
+  else if(whichiso == ST::SignalIsoExp::MediumIso){
+    if(input.pt() <= args._ptcut || input.pt() == 0) return false; // pT cut (might be necessary for leading muon to pass trigger)
+    if(args._id_isocut > 0.0 && mu_ptcone30 >= args._id_isocut) return false; // track isolation
+    if(args._z0cut > 0.0 && fabs(mu_z0*TMath::Sin(input.p4().Theta())) > args._z0cut) return false; // longitudinal IP cut
+    if(mu_d0sig != 0){
+      if(args._d0sigcut > 0.0 && fabs(mu_d0sig) > args._d0sigcut) return false; // transverse IP cut
+    }
+  }
+  else if(whichiso == ST::SignalIsoExp::TightIso){
+    if(input.pt() <= args._ptcut || input.pt() == 0) return false; // pT cut (might be necessary for leading muon to pass trigger)
+    if(args._id_isocut > 0.0 && mu_ptcone30 >= args._id_isocut) return false; // track isolation
+    if(args._z0cut > 0.0 && fabs(mu_z0*TMath::Sin(input.p4().Theta())) > args._z0cut) return false; // longitudinal IP cut
+    if(mu_d0sig != 0){
+      if(args._d0sigcut > 0.0 && fabs(mu_d0sig) > args._d0sigcut) return false; // transverse IP cut
+    }
+    if(args._calo_isocut > 0.0 && mu_etcone30 >= args._calo_isocut) return false; // calo isolation
+  }
+  else{
+    MyError("PassIsoMuon()", "wrong isolation quality specified for muon .... returning false");
+    return false;
+  }
   return true;
 }
 
@@ -494,6 +861,14 @@ bool EventSelector::selectObject()
   if(m_susyObjTool->GetElectrons(electrons_copy, electrons_copyaux, false, m_elPtCut)==EL::StatusCode::FAILURE){
     MyError("selectObject()","Failing to retrieve ElectronContainer.");
     rtrvFail = true;
+  }
+  // preparing signal flag
+  xAOD::ElectronContainer::iterator el_itr = (electrons_copy)->begin();
+  xAOD::ElectronContainer::iterator el_end = (electrons_copy)->end();
+  for( ; el_itr!=el_end; ++el_itr){
+    ST::IsSignalElectronExpCutArgs args; //default values are set by construnter.
+    args.etcut(m_elPtCut);
+    m_susyObjTool->IsSignalElectronExp( **el_itr, ST::SignalIsoExp::TightIso, args); //Signal flag are set here.
   }
 
   ///////////////////////////////////////////////////
@@ -515,6 +890,15 @@ bool EventSelector::selectObject()
     MyError("selectObject()","Failing to retrieve MuonContainer.");
     rtrvFail = true;
   }
+  // preparing signal flag
+  xAOD::MuonContainer::iterator mu_itr = (muons_copy)->begin();
+  xAOD::MuonContainer::iterator mu_end = (muons_copy)->end();
+  for( ; mu_itr!=mu_end; ++mu_itr){
+    ST::IsSignalMuonExpCutArgs args; //default values are set by construnter.
+    args.ptcut(m_muPtCut);
+    m_susyObjTool->IsSignalMuonExp( **mu_itr, ST::SignalIsoExp::TightIso, args); //Signal flag are set here.
+    m_susyObjTool->IsCosmicMuon   ( **mu_itr ); //Cosmic flag are set here.
+  }
 
   ///////////////////////////////////////////////////
   // Get the Jets from the event:
@@ -526,7 +910,7 @@ bool EventSelector::selectObject()
     MyError("selectObject()","Failing to retrieve JetContainer.");
     rtrvFail = true;
   }
-  // Check if there are bad jets
+  // Check if there are b-tagged jets
   xAOD::JetContainer::iterator jet_itr = (jets_copy)->begin();
   xAOD::JetContainer::iterator jet_end = (jets_copy)->end();
   for( ; jet_itr!=jet_end; ++jet_itr){
@@ -535,6 +919,24 @@ bool EventSelector::selectObject()
     //MV1: Eff70%=0.3511, Eff80%=0.6073, Eff85%=0.3511
     m_vec_preJet->push_back(**jet_itr);
   }
+
+  // // Print their properties, using the tools:
+  // xAOD::TauJetContainer::iterator tau_itr = (taus_copy)->begin();
+  // xAOD::TauJetContainer::iterator tau_end = (taus_copy)->end();
+  // for( ; tau_itr != tau_end; ++tau_itr ){
+  //   MyInfo(APP_NAME, "  Tau passing IsBaseline? %i  pt=%g sf=%g",
+  //          (int)(*tau_itr)->auxdata<bool>("baseline"), (*tau_itr)->pt(), m_susyObjTool->GetSignalTauSF(**tau_itr) );
+  //   // if(m_isMC){
+  //   //   T2MT.applyTruthMatch(*(*tau_itr));
+  //   //   if((*tau_itr)->auxdata<bool>("IsTruthMatched")){
+  //   //     Info(APP_NAME, "Tau was matched to a truth tau, which has %i prongs and a charge of %i",
+  //   //          int((*tau_itr)->auxdata<size_t>("TruthProng")),
+  //   //          (*tau_itr)->auxdata<int>("TruthCharge"));
+  //   //   }else{
+  //   //     Info(APP_NAME, "Tau was not matched to truth");
+  //   //   }
+  //   // }
+  // }
 
   ///////////////////////////////////////////////////
   // Get the Taus from the event:
@@ -555,86 +957,28 @@ bool EventSelector::selectObject()
     MyError("selectObject()",Form("Failing to recode MySelJets%s to TStore.",m_sys.c_str()));
     rtrvFail = true;
   }
-  if(m_susyObjTool->OverlapRemoval(electrons_copy, muons_copy, jets_copy)==EL::StatusCode::FAILURE){
+  Bool_t doHarmonization = false;
+  if(m_susyObjTool->OverlapRemoval(electrons_copy, muons_copy, jets_copy, doHarmonization)==EL::StatusCode::FAILURE){
     MyError("selectObject()","Failing overlap removal process.");
     rtrvFail = true;
   }
   //////////////////////////////////////////////////////////////////////
-  // preparing signal, baseline and pre jets (this should be done after overlap removal)
+  // preparing the goodJets container
   //////////////////////////////////////////////////////////////////////
   jet_itr = (jets_copy)->begin();
   jet_end = (jets_copy)->end();
-  for( ; jet_itr!=jet_end; ++jet_itr){
-    if((*jet_itr)->auxdata<char>("baseline")==1 &&
-       (*jet_itr)->auxdata<char>("passOR"  )==1 ){
+  for( ; jet_itr != jet_end; ++jet_itr ){
+    MyDebug("selectObject()",Form("jet: baseline=%d",(int)(*jet_itr)->auxdata<char>("baseline")));
+    MyDebug("selectObject()",Form("jet: passOR=%d"  ,(int)(*jet_itr)->auxdata<char>("passOR"  )));
+    MyDebug("selectObject()",Form("jet: bad=%d"     ,(int)(*jet_itr)->auxdata<char>("bad"     )));
+    MyDebug("selectObject()",Form("jet: bjet=%d"    ,(int)(*jet_itr)->auxdata<char>("bjet"    )));
+    if( (*jet_itr)->auxdata<char>("baseline")==1 &&
+        (*jet_itr)->auxdata<char>("passOR"  )==1 &&
+        (*jet_itr)->auxdata<char>("bad"     )==0 ){
       m_vec_baseJet->push_back(**jet_itr);
-      if( (*jet_itr)->pt()>20000.     &&
-          fabs((*jet_itr)->eta())<2.5 ){
-        goodJets->push_back(*jet_itr);
-        m_vec_signalJet->push_back(**jet_itr);
-      }
+      goodJets->push_back (*jet_itr);
     }
   }
-  MyDebug("selectObject()",
-          Form("#signalJets=%d, #baseJets=%d, #preJets=%d",
-               (Int_t)m_vec_signalJet->size(), (Int_t)m_vec_baseJet->size(),(Int_t)m_vec_preJet->size()) );
-
-  //////////////////////////////////////////////////////////////////////
-  // preparing signal and baseline electrons (this should be done after overlap removal)
-  xAOD::ElectronContainer::iterator el_itr = (electrons_copy)->begin();
-  xAOD::ElectronContainer::iterator el_end = (electrons_copy)->end();
-  for( ; el_itr!=el_end; ++el_itr){
-    xAOD::Electron el = **el_itr;
-    if(IsMyBaselineElectron(el)) m_vec_baseElectron  ->push_back(el);
-    if(IsMySignalElectron  (el)) m_vec_signalElectron->push_back(el);
-  }
-
-  //////////////////////////////////////////////////////////////////////
-  // preparing signal and baseline muons (this should be done after overlap removal)
-  xAOD::MuonContainer::iterator mu_itr = (muons_copy)->begin();
-  xAOD::MuonContainer::iterator mu_end = (muons_copy)->end();
-  Int_t nMu = mu_end-mu_itr;
-  m_vec_baseMuon->reserve(nMu);
-  m_vec_signalMuon->reserve(nMu);
-  for(Int_t id=0; id<nMu; id++){
-    xAOD::Muon mu;
-    m_vec_baseMuon->push_back(mu);
-    m_vec_signalMuon->push_back(mu);
-    // Create private auxstore for the object later, copying all values
-    // from the old object instead of just call push_back().
-  }
-  Int_t nBaselineMuon = 0;
-  Int_t nSignalMuon = 0;
-  for( ; mu_itr!=mu_end; ++mu_itr){
-    if(IsMyBaselineMuon(**mu_itr)){
-      m_vec_baseMuon->at(nBaselineMuon).makePrivateStore(**mu_itr);
-      nBaselineMuon++;
-    }
-    if(IsMySignalMuon(**mu_itr)){
-      m_vec_signalMuon->at(nSignalMuon).makePrivateStore(**mu_itr);
-      nSignalMuon++;
-    }else{
-      m_vec_signalMuon->erase(m_vec_signalMuon->begin()+nSignalMuon);
-    }
-  }
-
-  // // Print their properties, using the tools:
-  // xAOD::TauJetContainer::iterator tau_itr = (taus_copy)->begin();
-  // xAOD::TauJetContainer::iterator tau_end = (taus_copy)->end();
-  // for( ; tau_itr != tau_end; ++tau_itr ){
-  //   MyInfo(APP_NAME, "  Tau passing IsBaseline? %i  pt=%g sf=%g",
-  //          (int)(*tau_itr)->auxdata<bool>("baseline"), (*tau_itr)->pt(), m_susyObjTool->GetSignalTauSF(**tau_itr) );
-  //   // if(m_isMC){
-  //   //   T2MT.applyTruthMatch(*(*tau_itr));
-  //   //   if((*tau_itr)->auxdata<bool>("IsTruthMatched")){
-  //   //     Info(APP_NAME, "Tau was matched to a truth tau, which has %i prongs and a charge of %i",
-  //   //          int((*tau_itr)->auxdata<size_t>("TruthProng")),
-  //   //          (*tau_itr)->auxdata<int>("TruthCharge"));
-  //   //   }else{
-  //   //     Info(APP_NAME, "Tau was not matched to truth");
-  //   //   }
-  //   // }
-  // }
 
   ///////////////////////////////////////////////////
   // Retrieving Missing Et
@@ -665,13 +1009,87 @@ bool EventSelector::selectObject()
   }
 
   m_met.SetMagPhi(0.,0.);
-  for(const auto& metterm : *mettst) {
-    //    std::cout<<Form("MET term \"%s\" px = %f py = %f",
-    //    metterm->name().c_str(), metterm->mpx(), metterm->mpy())<<std::endl;
+  for(const auto& metterm : *mettst){
     if(metterm->name()=="Final") m_met.SetMagPhi(metterm->met(),metterm->phi());
   }
-  //  std::cout<<"MyPx="<<Form("%12.6f",m_met.Px())<<", MyPy="<<Form("%12.6f",m_met.Py())<<std::endl;
+  MyDebug("selectObject()",Form("MyPx=%12.6f, MyPy=%12.6f",m_met.Px(),m_met.Py()));
 
+  //////////////////////////////////////////////////////////////////////
+  // preparing signal and baseline electrons (this should be done after overlap removal)
+  el_itr = (electrons_copy)->begin();
+  el_end = (electrons_copy)->end();
+  for( ; el_itr!=el_end; ++el_itr){
+    MyDebug("selectObject()",Form("el: baseline=%d",(int)(*el_itr)->auxdata<char>("baseline")));
+    MyDebug("selectObject()",Form("el: passOR=%d"  ,(int)(*el_itr)->auxdata<char>("passOR"  )));
+    MyDebug("selectObject()",Form("el: signal=%d"  ,(int)(*el_itr)->auxdata<char>("signal"  )));
+    if((*el_itr)->auxdata<char>("passOR")!=1){
+      MyDebug("selectObject()","Electron was rejected by the overlap-removal process!!");
+      continue;
+    }
+    if(IsMyBaselineElectron(**el_itr)) m_vec_baseElectron  ->push_back(**el_itr);
+    if(IsMySignalElectron  (**el_itr)) m_vec_signalElectron->push_back(**el_itr);
+  }
+  //////////////////////////////////////////////////////////////////////
+  // preparing signal and baseline muons (this should be done after overlap removal)
+  mu_itr = (muons_copy)->begin();
+  mu_end = (muons_copy)->end();
+  Int_t nMu = mu_end-mu_itr;
+  m_vec_baseMuon->reserve(nMu);
+  m_vec_signalMuon->reserve(nMu);
+  for(Int_t id=0; id<nMu; id++){
+    xAOD::Muon mu;
+    m_vec_baseMuon->push_back(mu);
+    m_vec_signalMuon->push_back(mu);
+    // Create private auxstore for the object later, copying all values
+    // from the old object instead of just call push_back().
+  }
+  Int_t nBaselineMuon = 0;
+  Int_t nSignalMuon = 0;
+  for( ; mu_itr!=mu_end; ++mu_itr){
+    MyDebug("selectObject()",Form("mu: baseline=%d",(int)(*mu_itr)->auxdata<char>("baseline")));
+    MyDebug("selectObject()",Form("mu: passOR=%d"  ,(int)(*mu_itr)->auxdata<char>("passOR"  )));
+    MyDebug("selectObject()",Form("mu: cosmic=%d"  ,(int)(*mu_itr)->auxdata<char>("cosmic"  )));
+    MyDebug("selectObject()",Form("mu: signal=%d"  ,(int)(*mu_itr)->auxdata<char>("signal"  )));
+    if((*mu_itr)->auxdata<char>("passOR")!=1){
+      MyDebug("selectObject()","Muon was rejected by the overlap-removal process!!");
+      m_vec_baseMuon  ->erase(m_vec_baseMuon  ->begin()+nBaselineMuon);
+      m_vec_signalMuon->erase(m_vec_signalMuon->begin()+nSignalMuon  );
+      continue;
+    }
+    if((*mu_itr)->auxdata<char>("cosmic")==1){
+      MyDebug("selectObject()","Muon was rejected as cosmic muon candidate!!");
+      m_vec_baseMuon  ->erase(m_vec_baseMuon  ->begin()+nBaselineMuon);
+      m_vec_signalMuon->erase(m_vec_signalMuon->begin()+nSignalMuon  );
+      continue;
+    }
+    if(IsMyBaselineMuon(**mu_itr)){
+      m_vec_baseMuon->at(nBaselineMuon).makePrivateStore(**mu_itr);
+      nBaselineMuon++;
+    }else{
+      m_vec_baseMuon->erase(m_vec_baseMuon->begin()+nBaselineMuon);
+    }
+    if(IsMySignalMuon(**mu_itr)){
+      m_vec_signalMuon->at(nSignalMuon).makePrivateStore(**mu_itr);
+      nSignalMuon++;
+    }else{
+      m_vec_signalMuon->erase(m_vec_signalMuon->begin()+nSignalMuon);
+    }
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // preparing signal, baseline and pre jets (this should be done after overlap removal)
+  jet_itr = goodJets->begin();
+  jet_end = goodJets->end();
+  for( ; jet_itr!=jet_end; ++jet_itr){
+    if((*jet_itr)->pt()>20000. && fabs((*jet_itr)->eta())<2.5){
+      m_vec_signalJet->push_back(**jet_itr);
+    }
+  }
+  MyDebug("selectObject()",
+          Form("#signalJets=%d, #baseJets=%d, #preJets=%d",
+               (Int_t)m_vec_signalJet->size(), (Int_t)m_vec_baseJet->size(),(Int_t)m_vec_preJet->size()) );
+
+  //Deleting object containers
   if(electrons_copy   !=0) delete electrons_copy;
   if(electrons_copyaux!=0) delete electrons_copyaux;
   if(photons_copy     !=0) delete photons_copy;
@@ -746,7 +1164,6 @@ bool EventSelector::selectObject()
       MyDebug("selectObject()",Form("Baseline : LeptonPt=%f, Flavor=%d, Index=%d (prevPt=%f)",m_baseLeps[id].Pt(),m_baseLepFlavor[id],m_baseLepIndex[id],prevPt));
       if(prevPt<=m_baseLeps[id].Pt() && m_baseLepFlavor[id]!=-1){
         MyError("selectObject()","Lepton Pt is not well ordered!!");
-        getchar();
       }
       prevPt=m_baseLeps[id].Pt();
     }
@@ -799,9 +1216,33 @@ bool EventSelector::selectObject()
       MyDebug("selectObject()",Form("Signal : LeptonPt=%f, Flavor=%d, Index=%d (prevPt=%f)",m_leadLeps[id].Pt(),m_leadLepFlavor[id],m_leadLepIndex[id],prevPt));
       if(prevPt<=m_leadLeps[id].Pt() && m_leadLepFlavor[id]!=-1){
         MyError("selectObject()","Lepton Pt is not well ordered!!");
-        getchar();
       }
       prevPt=m_leadLeps[id].Pt();
+    }
+  }
+
+  //Find candidate jet indices ===============================================================
+  for(Int_t id=0; id<nAnaJet; id++){
+    m_leadJetIndex [id] = -1;
+    m_leadJets     [id].SetPxPyPzE(0.,0.,0.,0.);
+  }
+  //For signal jets
+  MyDebug("selectObject()",Form("Signal Jet: Size=%d",(int)m_vec_signalJet->size()));
+  for(UInt_t jetIndex=0; jetIndex<m_vec_signalJet->size(); jetIndex++){
+    Double_t jetPt = m_vec_signalJet->at(jetIndex).pt();
+    for(Int_t id=0; id<nAnaJet; id++){
+      if(jetPt>m_leadJets[id].Pt()){
+        if(id!=nAnaJet-1){
+          for(Int_t index=nAnaJet-1; id<index; index--){
+            m_leadJetIndex [index] = m_leadJetIndex [index-1];
+            m_leadJets     [index] = m_leadJets     [index-1];
+          }
+        }
+        m_leadJetIndex [id] = jetIndex;
+        m_leadJets     [id] = m_vec_signalJet->at(jetIndex).p4();
+        break;
+      }else{
+      }
     }
   }
 
@@ -1011,9 +1452,9 @@ bool EventSelector::passNJetCut()
   if(m_nJetMin>=0 && nSignalJets() < m_nJetMin) return false;
   if(m_nJetMax>=0 && nSignalJets() > m_nJetMax) return false;
 
-  if (nSignalJets()>0) {
-    if (m_jetPtMin>0 && m_vec_signalJet->at(0).pt()/1000. < m_jetPtMin) return false;
-    if (m_jetPtMax>0 && m_vec_signalJet->at(0).pt()/1000. > m_jetPtMax) return false;
+  if(nSignalJets()>0){
+    if(m_jetPtMin>0 && m_vec_signalJet->at(0).pt()/1000. < m_jetPtMin) return false;
+    if(m_jetPtMax>0 && m_vec_signalJet->at(0).pt()/1000. > m_jetPtMax) return false;
   }
 
   // 3-lepton b-jet
@@ -1096,27 +1537,80 @@ bool EventSelector::passOFOSCut()
   return true;
 }
 /*--------------------------------------------------------------------------------*/
+bool EventSelector::passDFSSCut()
+{
+  //Select events with different flavor or same sign leptons.
+  if(m_selDForSS4SigLep){
+    bool df = false;
+    if((m_leadLepFlavor[0]==0 && m_leadLepFlavor[1]==1) ||
+       (m_leadLepFlavor[0]==1 && m_leadLepFlavor[1]==0) ) df = true;
+    Int_t charge1(0), charge2(0);
+    if     (m_leadLepFlavor[0]==0) charge1 = (m_vec_signalElectron->at(m_leadLepIndex[0])).charge();
+    else if(m_leadLepFlavor[0]==1) charge1 = (m_vec_signalMuon    ->at(m_leadLepIndex[0])).charge();
+    if     (m_leadLepFlavor[1]==0) charge2 = (m_vec_signalElectron->at(m_leadLepIndex[1])).charge();
+    else if(m_leadLepFlavor[1]==1) charge2 = (m_vec_signalMuon    ->at(m_leadLepIndex[1])).charge();
+    bool ss = isSS(charge1,charge2);
+    if(m_selDForSS4SigLep && not (df || ss)) return false;
+  }
+  //Select events with different flavor and same sign leptons.
+  if(m_selDFandSS4SigLep){
+    bool dfss = false;
+    Int_t charge1(0), charge2(0);
+    if     (m_leadLepFlavor[0]==0) charge1 = (m_vec_signalElectron->at(m_leadLepIndex[0])).charge();
+    else if(m_leadLepFlavor[0]==1) charge1 = (m_vec_signalMuon    ->at(m_leadLepIndex[0])).charge();
+    if     (m_leadLepFlavor[1]==0) charge2 = (m_vec_signalElectron->at(m_leadLepIndex[1])).charge();
+    else if(m_leadLepFlavor[1]==1) charge2 = (m_vec_signalMuon    ->at(m_leadLepIndex[1])).charge();
+    if( ( (m_leadLepFlavor[0]==0 && m_leadLepFlavor[1]==1) && (charge1==-1 && charge2==-1) ) ||
+        ( (m_leadLepFlavor[0]==0 && m_leadLepFlavor[1]==1) && (charge1== 1 && charge2== 1) ) ||
+        ( (m_leadLepFlavor[0]==1 && m_leadLepFlavor[1]==0) && (charge1==-1 && charge2==-1) ) ||
+        ( (m_leadLepFlavor[0]==1 && m_leadLepFlavor[1]==0) && (charge1== 1 && charge2== 1) ) ) dfss = true;
+    if(m_selDFandSS4SigLep && !dfss) return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
 bool EventSelector::passSSCut()
 {
   if(m_selSS){
-    bool ss = hasSS();
-    // TODO: drop qflip stuff, override in AnaWhPlotter
+    Int_t charge1(0), charge2(0);
+    if     (m_leadLepFlavor[0]==0) charge1 = (m_vec_signalElectron->at(m_leadLepIndex[0])).charge();
+    else if(m_leadLepFlavor[0]==1) charge1 = (m_vec_signalMuon    ->at(m_leadLepIndex[0])).charge();
+    if     (m_leadLepFlavor[1]==0) charge2 = (m_vec_signalElectron->at(m_leadLepIndex[1])).charge();
+    else if(m_leadLepFlavor[1]==1) charge2 = (m_vec_signalMuon    ->at(m_leadLepIndex[1])).charge();
+    bool ss = isSS(charge1,charge2);
     if(m_selSS && !ss) return false;
-    /*if(m_selSS && !ss){
-      // Keep this event if MC, estimating q-flip, and there are electrons
-      bool isQFlipChan = isOkForQFlip(leptons);
-      bool keep = m_nt->evt()->isMC && m_estimateQFlip && isQFlipChan;
-      if(!keep) return false;
-    }*/
   }
   return true;
 }
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::passOSCut()
 {
-  if(m_selOS){
-    bool os = hasOS();
+  if(m_selOS && nSignalLeps() >= 2){
+    Int_t charge1(0), charge2(0);
+    if     (m_leadLepFlavor[0]==0) charge1 = (m_vec_signalElectron->at(m_leadLepIndex[0])).charge();
+    else if(m_leadLepFlavor[0]==1) charge1 = (m_vec_signalMuon    ->at(m_leadLepIndex[0])).charge();
+    if     (m_leadLepFlavor[1]==0) charge2 = (m_vec_signalElectron->at(m_leadLepIndex[1])).charge();
+    else if(m_leadLepFlavor[1]==1) charge2 = (m_vec_signalMuon    ->at(m_leadLepIndex[1])).charge();
+    bool os = isOS(charge1, charge2);
     if(m_selOS && !os) return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passSFCut()
+{
+  if(m_selSF && nSignalLeps() >= 2){
+    bool sf = isSF(m_leadLepFlavor[0],m_leadLepFlavor[1]);
+    if(m_selSF && !sf) return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passDFCut()
+{
+  if(m_selDF && nSignalLeps() >= 2){
+    bool sf = isDF(m_leadLepFlavor[0],m_leadLepFlavor[1]);
+    if(m_selDF && !sf) return false;
   }
   return true;
 }
@@ -1150,8 +1644,11 @@ bool EventSelector::passFlavChargeCut()
   if(!passSFOSCut()) return false;
   if(!passSFSSCut()) return false;
   if(!passOFOSCut()) return false;
+  if(!passDFSSCut()) return false;
   if(!passSSCut()) return false;
   if(!passOSCut()) return false;
+  if(!passSFCut()) return false;
+  if(!passDFCut()) return false;
   //  if(!passOSLepTauCut(leptons, taus)) return false;
   return true;
 }
@@ -1342,7 +1839,7 @@ bool EventSelector::passLooseZCut()
 bool EventSelector::passZeeSSCut()
 {
   if(m_vetoZeeSS){
-    Double_t massWindow = 10.;
+    Double_t massWindow = m_windowZ;
     TLorentzVector leps[2];
     Int_t          charge[2];
     std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
@@ -2418,7 +2915,7 @@ bool EventSelector::hasUpsilon()
 bool EventSelector::hasZ()
 {
   //To find Z candidate (same flavor, oppsite sign, close to Zmass)
-  Double_t massWindow = 10.;
+  Double_t massWindow = m_windowZ;
   int index[2]={-1,-1};
   int flav=-1;
   Double_t msfos = findBestMSFOS(index[0],index[1],flav)/1000.;
@@ -2429,7 +2926,7 @@ bool EventSelector::hasZ()
 bool EventSelector::hasZlll()
 {
   //To find Z candidate with 3leptons (including same flavor, oppsite sign) and close to Zmass
-  Double_t massWindow = 10.;
+  Double_t massWindow = m_windowZ;
   TLorentzVector leps[3];
   Int_t          charge[3];
   std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
@@ -2488,7 +2985,7 @@ bool EventSelector::hasZlll()
 bool EventSelector::hasZllll()
 {
   //To find Z candidate with 4leptons (including "two" same flavor, oppsite sign lepton pairs) and close to Zmass
-  Double_t massWindow = 10.;
+  Double_t massWindow = m_windowZ;
   TLorentzVector leps[4];
   Int_t          charge[4];
   std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
@@ -2750,6 +3247,22 @@ bool EventSelector::isSS(int charge1, int charge2)
       (charge1==-1 && charge2==-1) ) isSS = kTRUE;
   return isSS;
 }
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::isSF(int flavor1, int flavor2)
+{
+  Bool_t isSF = kFALSE;
+  if( (flavor1==0 && flavor2==0 ) ||
+      (flavor1==1 && flavor2==1)) isSF = kTRUE;
+  return isSF;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::isDF(int flavor1, int flavor2)
+{
+  Bool_t isDF = kFALSE;
+  if( (flavor1==0 && flavor2==1 ) ||
+      (flavor1==1 && flavor2==0)) isDF = kTRUE;
+  return isDF;
+}
 
 /*--------------------------------------------------------------------------------*/
 // Typical selection for 3L 
@@ -2762,8 +3275,8 @@ void EventSelector::TypSel(int nLep, int nTau, int nBaseLep, int nBaseTau, int n
   //  m_nBaseTauMin = m_nBaseTauMax = nBaseTau;
   m_nBJetMin = nBjetMin;
   m_nBJetMax = nBjetMax;
-  //  if (m_nBJetMax==0) m_selB = false;
-  //  if (m_nBJetMin>=1) m_selB = true;
+  //  if(m_nBJetMax==0) m_selB = false;
+  //  if(m_nBJetMin>=1) m_selB = true;
 }
 
 // /*--------------------------------------------------------------------------------*/

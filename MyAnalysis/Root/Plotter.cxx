@@ -10,6 +10,7 @@
 #include"SUSYTools/SUSYObjDef_xAOD.h"
 #include"xAODEgamma/EgammaxAODHelpers.h"
 #include"MyAnalysis/MCTruthClassifierDefs.h"
+#include"EventPrimitives/EventPrimitivesHelpers.h"
 
 #include"TFile.h"
 #include"TH1F.h"
@@ -177,6 +178,18 @@ void Plotter::finalize()
     h_elEtcone30[iCh]->Write();
     h_muPtcone30[iCh]->Write();
     h_muEtcone30[iCh]->Write();
+    h_el1Ptcone30[iCh]->Write();
+    h_el1Etcone30[iCh]->Write();
+    h_mu1Ptcone30[iCh]->Write();
+    h_mu1Etcone30[iCh]->Write();
+    h_el2Ptcone30[iCh]->Write();
+    h_el2Etcone30[iCh]->Write();
+    h_mu2Ptcone30[iCh]->Write();
+    h_mu2Etcone30[iCh]->Write();
+    h_el3Ptcone30[iCh]->Write();
+    h_el3Etcone30[iCh]->Write();
+    h_mu3Ptcone30[iCh]->Write();
+    h_mu3Etcone30[iCh]->Write();
     h_lepD0[iCh]->Write();
     h_lep1D0[iCh]->Write();
     h_lep2D0[iCh]->Write();
@@ -226,6 +239,7 @@ void Plotter::finalize()
     h_dPhiLep2Met[iCh]->Write();
     h_dPhiLep3Met[iCh]->Write();
     h_dPhiLLMet[iCh]->Write();
+    h_dPhiLLJet[iCh]->Write();
     h_dPhiJet1Met[iCh]->Write();
     h_dPhiJet2Met[iCh]->Write();
     h_dPhiJJMet[iCh]->Write();
@@ -338,6 +352,7 @@ bool Plotter::BookHistograms()
   ///////////////////////////////////////////////////////////////
   //Defining histograms
   ///////////////////////////////////////////////////////////////
+  TH1F::SetDefaultSumw2();
 
   // Histogram to store the MC cross section
   h_xsec = new TH1F("h_xsec","h_xsec;;MC cross-section[pb]",1,0.,1.);
@@ -452,6 +467,18 @@ bool Plotter::BookHistograms()
     NEWHIST( elEtcone30, "Electron topo etcone30 [GeV];Events", 50, 0, 50 );
     NEWHIST( muPtcone30, "Muon ptcone30 [GeV];Events", 50, 0, 50 );
     NEWHIST( muEtcone30, "Muon etcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( el1Ptcone30, "Leading electron ptcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( el1Etcone30, "Leading electron topo etcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( mu1Ptcone30, "Leading muon ptcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( mu1Etcone30, "Leading muon etcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( el2Ptcone30, "Second electron ptcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( el2Etcone30, "Second electron topo etcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( mu2Ptcone30, "Second muon ptcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( mu2Etcone30, "Second muon etcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( el3Ptcone30, "Third electron ptcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( el3Etcone30, "Third electron topo etcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( mu3Ptcone30, "Third muon ptcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( mu3Etcone30, "Third muon etcone30 [GeV];Events", 50, 0, 50 );
 
     // impact parameters
     NEWHIST( lepD0, "Lepton |d0| [mm];Events", 20, 0, 0.5 );
@@ -569,6 +596,7 @@ bool Plotter::BookHistograms()
     DPHIHIST( dPhiLep2Met, "dPhi(lep2, MET);Events" );
     DPHIHIST( dPhiLep3Met, "dPhi(lep3, MET);Events" );
     DPHIHIST( dPhiLLMet, "dPhi(lep1+lep2, MET);Events" );
+    DPHIHIST( dPhiLLJet, "dPhi(lep1+lep2, jet1);Events" );
     DPHIHIST( dPhiJet1Met, "dPhi(jet1, MET);Events" );
     DPHIHIST( dPhiJet2Met, "dPhi(jet2, MET);Events" );
     DPHIHIST( dPhiJJMet, "dPhi(jet1+jet2, MET);Events" );
@@ -590,7 +618,8 @@ bool Plotter::BookHistograms()
 
     // mass plots
     NEWHIST( mll, "M_{ll} [GeV];Events", 50, 50, 150 );
-    ZMASSHIST( msfos, "M_{SFOS} [GeV];Events" );
+    //    ZMASSHIST( msfos, "M_{SFOS} [GeV];Events" );
+    NEWHIST( msfos, "M_{SFOS} [GeV];Events", 50, 0., 150 );
     NEWHIST( minMsfos, "min M_{SFOS} [GeV];Events", 50, 0., 150 );
     NEWHIST( msfss, "M_{SFSS} [GeV];SFSS lepton pairs", 50, 0, 500 );
     NEWVARHIST( mlll, "M_{lll} [GeV];Events", nMassBins, massBins );
@@ -743,6 +772,14 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
     lep      [id] = EveSelec->is3SigLepSel() ? EveSelec->getLeadLep      (id) : EveSelec->getBaseLep      (id);
   }
 
+  //Prepare 1st-3rd leading signal jet's four-vector
+  //  Int_t leadJetIndex[3];
+  TLorentzVector leadJet[3];
+  for(Int_t id=0; id<3; id++){
+    //    leadJetIndex[id] = EveSelec->getLeadJetIndex (id);
+    leadJet     [id] = EveSelec->getLeadJet      (id);
+  }
+
   //===========================================================================
   Double_t w = weight*EveSelec->getTotalSF();
 
@@ -839,9 +876,29 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
     if(lepFlavor[id]==0){
       FillChanHist( h_elPtcone30, ptcone30/1000., w);
       FillChanHist( h_elEtcone30, etcone30/1000., w);
+      if(id==0){
+        FillChanHist( h_el1Ptcone30, ptcone30/1000., w);
+        FillChanHist( h_el1Etcone30, etcone30/1000., w);
+      }else if(id==1){
+        FillChanHist( h_el2Ptcone30, ptcone30/1000., w);
+        FillChanHist( h_el2Etcone30, etcone30/1000., w);
+      }else if(id==2){
+        FillChanHist( h_el3Ptcone30, ptcone30/1000., w);
+        FillChanHist( h_el3Etcone30, etcone30/1000., w);
+      }
     }else{
       FillChanHist( h_muPtcone30, ptcone30/1000., w);
       FillChanHist( h_muEtcone30, etcone30/1000., w);
+      if(id==0){
+        FillChanHist( h_mu1Ptcone30, ptcone30/1000., w);
+        FillChanHist( h_mu1Etcone30, etcone30/1000., w);
+      }else if(id==1){
+        FillChanHist( h_mu2Ptcone30, ptcone30/1000., w);
+        FillChanHist( h_mu2Etcone30, etcone30/1000., w);
+      }else if(id==2){
+        FillChanHist( h_mu3Ptcone30, ptcone30/1000., w);
+        FillChanHist( h_mu3Etcone30, etcone30/1000., w);
+      }
     }
   }
 
@@ -869,11 +926,8 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
       else if(lepIndex[id]==1) FillChanHist( h_lep2Z0, z0, w);
       else if(lepIndex[id]==2) FillChanHist( h_lep3Z0, z0, w);
       //track d0/sigma(d0)
-      Double_t vard0 = track->definingParametersCovMatrix()(0,0);
-      if(vard0 > 0){
-        Double_t d0error = 0.;
-        d0error=TMath::Sqrt(vard0);
-        d0sig  = d0/d0error;
+      if(Amg::error(track->definingParametersCovMatrix(),0)!=0){
+        d0sig = fabs(track->d0())/Amg::error(track->definingParametersCovMatrix(),0);
         FillChanHist( h_lepD0Sig, d0sig, w);
         if     (lepIndex[id]==0) FillChanHist( h_lep1D0Sig, d0sig, w);
         else if(lepIndex[id]==1) FillChanHist( h_lep2D0Sig, d0sig, w);
@@ -1094,13 +1148,14 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   // FillChanHist( h_tau1Class, , w);
   // FillChanHist( h_tau2Class, , w);
   // FillChanHist( h_minDRLepLep, , w);
-  // FillChanHist( h_dPhiLep1Met, , w);
-  // FillChanHist( h_dPhiLep2Met, , w);
-  // FillChanHist( h_dPhiLep3Met, , w);
-  // FillChanHist( h_dPhiLLMet, , w);
-  // FillChanHist( h_dPhiJet1Met, , w);
-  // FillChanHist( h_dPhiJet2Met, , w);
-  // FillChanHist( h_dPhiJJMet, , w);
+  FillChanHist( h_dPhiLep1Met, lep[0].Vect().XYvector().DeltaPhi(met), w);
+  FillChanHist( h_dPhiLep2Met, lep[1].Vect().XYvector().DeltaPhi(met), w);
+  FillChanHist( h_dPhiLep3Met, lep[2].Vect().XYvector().DeltaPhi(met), w);
+  FillChanHist( h_dPhiLLMet, (leadLep[0]+leadLep[1]).Vect().XYvector().DeltaPhi(met), w);
+  FillChanHist( h_dPhiLLJet, (leadLep[0]+leadLep[1]).DeltaPhi(leadJet[0]), w);
+  FillChanHist( h_dPhiJet1Met, leadJet[0].Vect().XYvector().DeltaPhi(met), w);
+  FillChanHist( h_dPhiJet2Met, leadJet[1].Vect().XYvector().DeltaPhi(met), w);
+  FillChanHist( h_dPhiJJMet, (leadJet[0]+leadJet[1]).Vect().XYvector().DeltaPhi(met), w);
   // FillChanHist( h_minDPhiLepLep, , w);
   // FillChanHist( h_minDPhiLepMet, , w);
   // FillChanHist( h_minDPhiJetJet, , w);
@@ -1135,9 +1190,9 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
       FillChanHist( h_bJetEta, vec_signalJet->at(ij).p4().Eta()      , w);
     }
   }
-  // FillChanHist( h_jet1Pt, , w);
-  // FillChanHist( h_jet2Pt, , w);
-  // FillChanHist( h_jet3Pt, , w);
+  FillChanHist( h_jet1Pt, leadJet[0].Pt()/1000., w);
+  FillChanHist( h_jet2Pt, leadJet[1].Pt()/1000., w);
+  FillChanHist( h_jet3Pt, leadJet[2].Pt()/1000., w);
   // FillChanHist( h_bJet1Pt, , w);
   // FillChanHist( h_bJet2Pt, , w);
   // FillChanHist( h_bJet3Pt, , w);
@@ -1147,9 +1202,9 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   // FillChanHist( h_jetMV1, , w);
   // FillChanHist( h_jetJVF, , w);
   // FillChanHist( h_bJetJVF, , w);
-  // FillChanHist( h_dijetM, , w);
+  FillChanHist( h_dijetM, (leadJet[0]+leadJet[1]).M()/1000., w);
   // FillChanHist( h_productEta1Eta2, , w);
-  // FillChanHist( h_mll, , w);
+  FillChanHist( h_mll, (lep[0]+lep[1]).M()/1000., w);
   Int_t sfosIndex[2]={-1,-1};
   Int_t sfosFlav=-1;
   Double_t msfos = EveSelec->findBestMSFOS(sfosIndex[0],sfosIndex[1],sfosFlav,MZ);

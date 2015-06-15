@@ -137,6 +137,18 @@ class Plotter : public TObject
   TH1F *h_elEtcone30[nChan]; // electron etcone30
   TH1F *h_muPtcone30[nChan]; // muon ptcone30
   TH1F *h_muEtcone30[nChan]; // muon etcone30
+  TH1F *h_el1Ptcone30[nChan]; // electron ptcone30
+  TH1F *h_el1Etcone30[nChan]; // electron etcone30
+  TH1F *h_mu1Ptcone30[nChan]; // muon ptcone30
+  TH1F *h_mu1Etcone30[nChan]; // muon etcone30
+  TH1F *h_el2Ptcone30[nChan]; // electron ptcone30
+  TH1F *h_el2Etcone30[nChan]; // electron etcone30
+  TH1F *h_mu2Ptcone30[nChan]; // muon ptcone30
+  TH1F *h_mu2Etcone30[nChan]; // muon etcone30
+  TH1F *h_el3Ptcone30[nChan]; // electron ptcone30
+  TH1F *h_el3Etcone30[nChan]; // electron etcone30
+  TH1F *h_mu3Ptcone30[nChan]; // muon ptcone30
+  TH1F *h_mu3Etcone30[nChan]; // muon etcone30
 
   // impact parameter histograms
   TH1F *h_lepD0 [nChan]; // all lepton d0
@@ -197,6 +209,7 @@ class Plotter : public TObject
   TH1F *h_dPhiLep2Met  [nChan]; // dPhi(lep2, met)
   TH1F *h_dPhiLep3Met  [nChan]; // dPhi(lep3, met)
   TH1F *h_dPhiLLMet    [nChan]; // dPhi(lep1+lep2, met)
+  TH1F *h_dPhiLLJet    [nChan]; // dPhi(lep1+lep2, leading jet)
   TH1F *h_dPhiJet1Met  [nChan]; // dPhi(jet1, met)
   TH1F *h_dPhiJet2Met  [nChan]; // dPhi(jet2, met)
   TH1F *h_dPhiJJMet    [nChan]; // dPhi(jet1+jet2, met)
