@@ -1,3 +1,9 @@
+#For the people not using /bin/bash
+if [ $SHELL != '/bin/bash' ]; then
+    echo 'Please change your shell to /bin/bash to use this script!!'
+    return
+fi
+
 #default target directory
 TARGETDS=$1
 if [ $# -lt 1 ]; then
@@ -32,7 +38,7 @@ echo Target selection region = $TARGETSELECREG
 # Finding new output directory (result/hXXX/)
 ###########################################################
 maxTagNum=0
-for OUTDIR in `ls result | grep h`
+for OUTDIR in `\ls result | grep h`
 do
     if [ ${#OUTDIR} -ne 5 ]; then continue; fi
     if [ `echo $OUTDIR | cut -c 1` = 'h' ]; then
@@ -54,7 +60,7 @@ echo h$tagNum
 ###########################################################
 # Submitting jobs to the dataset in the target directory 
 ###########################################################
-for TXT in `ls $TARGETDS`
+for TXT in `\ls $TARGETDS`
 do
 lenFilelistDirName=${#TXT}
 #extension check (should be .txt)
