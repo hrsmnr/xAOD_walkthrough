@@ -259,8 +259,26 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   MAKE_COUNTER_VEC(pass_lepPt  );
   MAKE_COUNTER_VEC(pass_lepDR  );
   MAKE_COUNTER_VEC(pass_other  );
- 
+
 #undef MAKE_COUNTER_VEC
+
+  n_passAC_badMuon    = 0;
+  n_passAC_jetClean   = 0;
+  n_passAC_primVtx    = 0;
+  n_passAC_cosmic     = 0;
+  n_passAC_oneBaseLep = 0;
+  n_passAC_oneSigLep  = 0;
+  n_passAC_oneBaseJet = 0;
+  n_passAC_oneSigJet  = 0;
+  n_passAC_twoBaseLep = 0;
+  n_passAC_twoSigLep  = 0;
+  n_passAC_oneBaseEl  = 0;
+  n_passAC_oneSigEl   = 0;
+  n_passAC_oneBaseMu  = 0;
+  n_passAC_oneSigMu   = 0;
+  n_passAC_oneBaseTau = 0;
+  n_passAC_oneSigTau  = 0;
+  n_passAC_oneBjet    = 0;
 
   //Preparing plotter and stopwatch for each event selection region and systematic variation
   m_vec_plotter = new std::vector<std::vector<Plotter*> >();
@@ -389,13 +407,22 @@ EL::StatusCode MyxAODAnalysis :: execute ()
         if(m_processedEvents==1) MyError("execute()", Form("Not supported event selection was detected!! : %s",eveSelecName.c_str()));
         continue;
       }
-      myEveSelec->setElMuPtThreshold(5000, 5000);
+      if(eveSelecName=="ac"){
+        myEveSelec->setBaseElMuPtThreshold(10000, 10000);
+        myEveSelec->setSigElMuPtThreshold(25000, 25000);
+      }else{
+        myEveSelec->setBaseElMuPtThreshold(5000, 5000);
+        myEveSelec->setSigElMuPtThreshold(5000, 5000);
+      }
+      myEveSelec->setBaseJetPtEtaThreshold(20000,2.8);
+      myEveSelec->setSigJetPtEtaThreshold(20000,2.8);
       myEveSelec->setStore(&m_store);
       myEveSelec->selectObject();
       m_vec_plotter->at(eveSelec).at(isys)->FillHistoPreSelec(myEveSelec,m_eventWeight);
       Bool_t passSelec = myEveSelec->selectEvent();
       if(passSelec) m_vec_plotter->at(eveSelec).at(isys)->FillHistograms(myEveSelec,m_eventWeight);
       SetEventCounter(myEveSelec,eveSelec,isys);
+      if(eveSelecName=="ac" && isys==0)SetEventCounterAC(myEveSelec);
       myEveSelec->finalize();
       delete myEveSelec;
 
@@ -456,6 +483,7 @@ EL::StatusCode MyxAODAnalysis :: finalize ()
   MyAlways("finalize()", Form("Total #Events in the sample dataset : %lli", m_eventCounter) );
   MyAlways("finalize()", Form("#(Used Events) : %lli, #(Healthy events) : %lli", m_processedEvents, m_numCleanEvents) );
   dumpEventCounters();
+  dumpEventCountersAC();
 
   if(m_susyObjTool){
     delete m_susyObjTool;
@@ -585,6 +613,29 @@ void MyxAODAnalysis::SetEventCounter(EventSelector *EveSelec, int eveSelec, int 
 }
 
 /*--------------------------------------------------------------------------------*/
+void MyxAODAnalysis::SetEventCounterAC(EventSelector *EveSelec){
+  n_passAC_badMuon    += EveSelec->GetPassAC_badMuon   ()?1:0;
+  n_passAC_jetClean   += EveSelec->GetPassAC_jetClean  ()?1:0;
+  n_passAC_primVtx    += EveSelec->GetPassAC_primVtx   ()?1:0;
+  n_passAC_cosmic     += EveSelec->GetPassAC_cosmic    ()?1:0;
+  n_passAC_oneBaseLep += EveSelec->GetPassAC_oneBaseLep()?1:0;
+  n_passAC_oneSigLep  += EveSelec->GetPassAC_oneSigLep ()?1:0;
+  n_passAC_oneBaseJet += EveSelec->GetPassAC_oneBaseJet()?1:0;
+  n_passAC_oneSigJet  += EveSelec->GetPassAC_oneSigJet ()?1:0;
+  n_passAC_twoBaseLep += EveSelec->GetPassAC_twoBaseLep()?1:0;
+  n_passAC_twoSigLep  += EveSelec->GetPassAC_twoSigLep ()?1:0;
+  n_passAC_oneBaseEl  += EveSelec->GetPassAC_oneBaseEl ()?1:0;
+  n_passAC_oneSigEl   += EveSelec->GetPassAC_oneSigEl  ()?1:0;
+  n_passAC_oneBaseMu  += EveSelec->GetPassAC_oneBaseMu ()?1:0;
+  n_passAC_oneSigMu   += EveSelec->GetPassAC_oneSigMu  ()?1:0;
+  n_passAC_oneBaseTau += EveSelec->GetPassAC_oneBaseTau()?1:0;
+  n_passAC_oneSigTau  += EveSelec->GetPassAC_oneSigTau ()?1:0;
+  n_passAC_oneBjet    += EveSelec->GetPassAC_oneBjet   ()?1:0;
+  
+  return;
+}
+
+/*--------------------------------------------------------------------------------*/
 // Event counters
 /*--------------------------------------------------------------------------------*/
 void MyxAODAnalysis::dumpEventCounters()
@@ -626,6 +677,38 @@ void MyxAODAnalysis::dumpEventCounters()
       if(m_noSyst) break; //break if NoSyst flag is true;
       isys++;
     }
+  }
+}
 
+void MyxAODAnalysis::dumpEventCountersAC()
+{
+  for(UInt_t eveSelec=0; eveSelec<m_vec_eveSelec->size(); eveSelec++){
+    std::string eveSelecName = m_vec_eveSelec->at(eveSelec);
+    if(eveSelecName=="ac"){
+      std::cout << std::endl;
+      std::cout << "Event selection counters for the cutflow comparison" << std::endl;
+      std::cout << "  initial   :      " << n_initial->at(eveSelec).at(0)<< std::endl;
+      std::cout << "  GRL       :      fix me" << std::endl;
+      std::cout << "  errorflags:      fix me" << std::endl;
+      std::cout << "  trigger   :      fix me" << std::endl;
+      std::cout << "  badMuon   :      " << n_passAC_badMuon   << std::endl;
+      std::cout << "  jetClean  :      " << n_passAC_jetClean  << std::endl;
+      std::cout << "  primVtx   :      " << n_passAC_primVtx   << std::endl;
+      std::cout << "  cosmic    :      " << n_passAC_cosmic    << std::endl;
+      std::cout << "  oneBaseLep:      " << n_passAC_oneBaseLep<< std::endl;
+      std::cout << "  oneSigLep :      " << n_passAC_oneSigLep << std::endl;
+      std::cout << "  oneBaseJet:      " << n_passAC_oneBaseJet<< std::endl;
+      std::cout << "  oneSigJet :      " << n_passAC_oneSigJet << std::endl;
+      std::cout << "  twoBaseLep:      " << n_passAC_twoBaseLep<< std::endl;
+      std::cout << "  twoSigLep :      " << n_passAC_twoSigLep << std::endl;
+      std::cout << "  oneBaseEl :      " << n_passAC_oneBaseEl << std::endl;
+      std::cout << "  oneSigEl  :      " << n_passAC_oneSigEl  << std::endl;
+      std::cout << "  oneBaseMu :      " << n_passAC_oneBaseMu << std::endl;
+      std::cout << "  oneSigMu  :      " << n_passAC_oneSigMu  << std::endl;
+      std::cout << "  oneBaseTau:      " << n_passAC_oneBaseTau<< std::endl;
+      std::cout << "  oneSigTau :      " << n_passAC_oneSigTau << std::endl;
+      std::cout << "  oneBjet   :      " << n_passAC_oneBjet   << std::endl;
+      std::cout<<std::endl;
+    }
   }
 }

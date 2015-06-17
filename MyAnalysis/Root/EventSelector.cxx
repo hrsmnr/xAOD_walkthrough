@@ -32,8 +32,10 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   m_sel(sel),
   m_sys(sys),
   m_is3SigLepSel(true),
-  m_elPtCut(5000),
-  m_muPtCut(5000),
+  m_sigElPtCut(5000),
+  m_sigMuPtCut(5000),
+  m_baseElPtCut(5000),
+  m_baseMuPtCut(5000),
   // m_selFlag(0),
   // m_doWeightSys(false),
   // m_objSys(ObjSys::nom),
@@ -184,6 +186,24 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   n_pass_lepDR  = 0;
   n_pass_other  = 0;
 
+  b_passAC_badMuon    = true;
+  b_passAC_jetClean   = true;
+  b_passAC_primVtx    = true;
+  b_passAC_cosmic     = true;
+  b_passAC_oneBaseLep = true;
+  b_passAC_oneSigLep  = true;
+  b_passAC_oneBaseJet = true;
+  b_passAC_oneSigJet  = true;
+  b_passAC_twoBaseLep = true;
+  b_passAC_twoSigLep  = true;
+  b_passAC_oneBaseEl  = true;
+  b_passAC_oneSigEl   = true;
+  b_passAC_oneBaseMu  = true;
+  b_passAC_oneSigMu   = true;
+  b_passAC_oneBaseTau = true;
+  b_passAC_oneSigTau  = true;
+  b_passAC_oneBjet    = true;
+
   // n_evt_pileup  = 0;
   // n_evt_lepSF   = 0;
   // n_evt_btagSF  = 0;
@@ -204,7 +224,10 @@ bool EventSelector::initialize()
   //////////////////////////////////////////////
 
   // No selection, use every event in the ntuple
-  if(m_sel=="none"){
+  if(m_sel=="ac"){ //for acceptance challenge
+
+  }
+  else if(m_sel=="none"){
     m_nLepMin = m_nLepMax = -1;
     m_nTauMin = m_nTauMax = -1;
     m_applyTrig = false;
@@ -665,12 +688,31 @@ void EventSelector::Set2S3BZvetoBvetoMetDFSS()
 /*--------------------------------------------------------------------------------*/
 // Setter to define electron and muon pt threshold
 /*--------------------------------------------------------------------------------*/
-void EventSelector::setElMuPtThreshold(double elPtCut, double muPtCut)
+void EventSelector::setSigElMuPtThreshold(double elPtCut, double muPtCut)
 {
-  m_elPtCut = elPtCut;
-  m_muPtCut = muPtCut;
+  m_sigElPtCut = elPtCut;
+  m_sigMuPtCut = muPtCut;
   return;
 }
+void EventSelector::setBaseElMuPtThreshold(double elPtCut, double muPtCut)
+{
+  m_baseElPtCut = elPtCut;
+  m_baseMuPtCut = muPtCut;
+  return;
+}
+void EventSelector::setSigJetPtEtaThreshold(double jetPtCut, double jetEtaCut)
+{
+  m_sigJetPtCut = jetPtCut;
+  m_sigJetEtaCut = jetEtaCut;
+  return;
+}
+void EventSelector::setBaseJetPtEtaThreshold(double jetPtCut, double jetEtaCut)
+{
+  m_baseJetPtCut = jetPtCut;
+  m_baseJetEtaCut = jetEtaCut;
+  return;
+}
+
 
 /*--------------------------------------------------------------------------------*/
 // Finalize event selection
@@ -705,7 +747,7 @@ bool EventSelector::IsMyBaselineElectron(const xAOD::Electron& el){
   if((int)el.auxdata<char>("baseline")!=1) return false;
   if(m_isoBase){
     ST::IsSignalElectronExpCutArgs args;
-    args.etcut(m_elPtCut);
+    args.etcut(m_baseElPtCut);
     if(not PassIsoElectron(el, ST::SignalIsoExp::LooseIso, args)) return false;
   }
   return true;
@@ -719,7 +761,7 @@ bool EventSelector::IsMyBaselineMuon(const xAOD::Muon& mu){
   if((int)mu.auxdata<char>("baseline")!=1) return false;
   if(m_isoBase){
     ST::IsSignalMuonExpCutArgs args;
-    args.ptcut(m_muPtCut);
+    args.ptcut(m_baseMuPtCut);
     if(not PassIsoMuon(mu, ST::SignalIsoExp::LooseIso, args)) return false;
   }
   return true;
@@ -729,13 +771,13 @@ bool EventSelector::IsMySignalMuon(const xAOD::Muon& mu){
   if((int)mu.auxdata<char>("signal")!=1) return false;
   return true;
 }
-bool EventSelector::IsMySignalJet(xAOD::Jet jet){
+bool EventSelector::IsMySignalJet(xAOD::Jet& jet){
   return true;
 }
-bool EventSelector::IsMyBaselineJet(xAOD::Jet jet){
+bool EventSelector::IsMyBaselineJet(xAOD::Jet& jet){
   return true;
 }
-bool EventSelector::IsMyPreJet(xAOD::Jet jet){
+bool EventSelector::IsMyPreJet(xAOD::Jet& jet){
   return true;
 }
 bool EventSelector::PassIsoElectron(const xAOD::Electron& input,
@@ -858,7 +900,7 @@ bool EventSelector::selectObject()
   ///////////////////////////////////////////////////
   xAOD::ElectronContainer   *electrons_copy(0);
   xAOD::ShallowAuxContainer *electrons_copyaux(0);
-  if(m_susyObjTool->GetElectrons(electrons_copy, electrons_copyaux, false, m_elPtCut)==EL::StatusCode::FAILURE){
+  if(m_susyObjTool->GetElectrons(electrons_copy, electrons_copyaux, false, m_baseElPtCut)==EL::StatusCode::FAILURE){
     MyError("selectObject()","Failing to retrieve ElectronContainer.");
     rtrvFail = true;
   }
@@ -867,7 +909,7 @@ bool EventSelector::selectObject()
   xAOD::ElectronContainer::iterator el_end = (electrons_copy)->end();
   for( ; el_itr!=el_end; ++el_itr){
     ST::IsSignalElectronExpCutArgs args; //default values are set by construnter.
-    args.etcut(m_elPtCut);
+    args.etcut(m_sigElPtCut);
     m_susyObjTool->IsSignalElectronExp( **el_itr, ST::SignalIsoExp::TightIso, args); //Signal flag are set here.
   }
 
@@ -886,7 +928,7 @@ bool EventSelector::selectObject()
   ///////////////////////////////////////////////////
   xAOD::MuonContainer       *muons_copy(0);
   xAOD::ShallowAuxContainer *muons_copyaux(0);
-  if(m_susyObjTool->GetMuons(muons_copy,muons_copyaux, false, m_muPtCut)==EL::StatusCode::FAILURE){
+  if(m_susyObjTool->GetMuons(muons_copy,muons_copyaux, false, m_baseMuPtCut)==EL::StatusCode::FAILURE){
     MyError("selectObject()","Failing to retrieve MuonContainer.");
     rtrvFail = true;
   }
@@ -895,9 +937,10 @@ bool EventSelector::selectObject()
   xAOD::MuonContainer::iterator mu_end = (muons_copy)->end();
   for( ; mu_itr!=mu_end; ++mu_itr){
     ST::IsSignalMuonExpCutArgs args; //default values are set by construnter.
-    args.ptcut(m_muPtCut);
+    args.ptcut(m_sigMuPtCut);
     m_susyObjTool->IsSignalMuonExp( **mu_itr, ST::SignalIsoExp::TightIso, args); //Signal flag are set here.
     m_susyObjTool->IsCosmicMuon   ( **mu_itr ); //Cosmic flag are set here.
+    if(m_sel=="ac")passACCut_badMuon();
   }
 
   ///////////////////////////////////////////////////
@@ -906,7 +949,7 @@ bool EventSelector::selectObject()
   //Checking jet containers status
   xAOD::JetContainer        *jets_copy(0);
   xAOD::ShallowAuxContainer *jets_copyaux(0);
-  if(m_susyObjTool->GetJets(jets_copy, jets_copyaux)==EL::StatusCode::FAILURE){
+  if(m_susyObjTool->GetJets(jets_copy, jets_copyaux, false, m_baseJetPtCut, m_baseJetEtaCut)==EL::StatusCode::FAILURE){
     MyError("selectObject()","Failing to retrieve JetContainer.");
     rtrvFail = true;
   }
@@ -972,6 +1015,7 @@ bool EventSelector::selectObject()
     MyDebug("selectObject()",Form("jet: passOR=%d"  ,(int)(*jet_itr)->auxdata<char>("passOR"  )));
     MyDebug("selectObject()",Form("jet: bad=%d"     ,(int)(*jet_itr)->auxdata<char>("bad"     )));
     MyDebug("selectObject()",Form("jet: bjet=%d"    ,(int)(*jet_itr)->auxdata<char>("bjet"    )));
+    if(m_sel=="ac")passACCut_jetClean(**jet_itr);
     if( (*jet_itr)->auxdata<char>("baseline")==1 &&
         (*jet_itr)->auxdata<char>("passOR"  )==1 &&
         (*jet_itr)->auxdata<char>("bad"     )==0 ){
@@ -979,6 +1023,11 @@ bool EventSelector::selectObject()
       goodJets->push_back (*jet_itr);
     }
   }
+
+  ///////////////////////////////////////////////////
+  // This has to be called after passACCut_jetClean() and before passACCut_cosmic().
+  if(m_sel=="ac")passACCut_primVtx();
+  ///////////////////////////////////////////////////
 
   ///////////////////////////////////////////////////
   // Retrieving Missing Et
@@ -1050,6 +1099,7 @@ bool EventSelector::selectObject()
     MyDebug("selectObject()",Form("mu: passOR=%d"  ,(int)(*mu_itr)->auxdata<char>("passOR"  )));
     MyDebug("selectObject()",Form("mu: cosmic=%d"  ,(int)(*mu_itr)->auxdata<char>("cosmic"  )));
     MyDebug("selectObject()",Form("mu: signal=%d"  ,(int)(*mu_itr)->auxdata<char>("signal"  )));
+    if(m_sel=="ac")passACCut_cosmic(**mu_itr);//Don't move this. This should be called after passACCut_jetClean();
     if((*mu_itr)->auxdata<char>("passOR")!=1){
       MyDebug("selectObject()","Muon was rejected by the overlap-removal process!!");
       m_vec_baseMuon  ->erase(m_vec_baseMuon  ->begin()+nBaselineMuon);
@@ -1081,7 +1131,7 @@ bool EventSelector::selectObject()
   jet_itr = goodJets->begin();
   jet_end = goodJets->end();
   for( ; jet_itr!=jet_end; ++jet_itr){
-    if((*jet_itr)->pt()>20000. && fabs((*jet_itr)->eta())<2.5){
+    if((*jet_itr)->pt()>m_sigJetPtCut && fabs((*jet_itr)->eta())<m_sigJetEtaCut){
       m_vec_signalJet->push_back(**jet_itr);
     }
   }
@@ -1251,6 +1301,40 @@ bool EventSelector::selectObject()
   m_nSignalJets = m_vec_signalJet->size();
   m_nBaselineJets = m_vec_baseJet->size();
   m_objReady = true;
+
+  //For part of acceptance challenge
+  if(m_sel=="ac"){
+    //    if(b_passAC_badMuon && b_passAC_jetClean && b_passAC_primVtx && b_passAC_cosmic){
+      passACCut_oneBaseLep();
+      passACCut_oneSigLep ();
+      passACCut_oneBaseJet();
+      passACCut_oneSigJet ();
+      passACCut_twoBaseLep();
+      passACCut_twoSigLep ();
+      passACCut_oneBaseEl ();
+      passACCut_oneSigEl  ();
+      passACCut_oneBaseMu ();
+      passACCut_oneSigMu  ();
+      passACCut_oneBaseTau();
+      passACCut_oneSigTau ();
+      passACCut_oneBjet   ();
+    // }else{
+    //   b_passAC_oneBaseLep = false;
+    //   b_passAC_oneSigLep = false;
+    //   b_passAC_oneBaseJet = false;
+    //   b_passAC_oneSigJet = false;
+    //   b_passAC_twoBaseLep = false;
+    //   b_passAC_twoSigLep = false;
+    //   b_passAC_oneBaseEl = false;
+    //   b_passAC_oneSigEl = false;
+    //   b_passAC_oneBaseMu = false;
+    //   b_passAC_oneSigMu = false;
+    //   b_passAC_oneBaseTau = false;
+    //   b_passAC_oneSigTau = false;
+    //   b_passAC_oneBjet = false;
+    // }
+  }
+
   return true;
 
 }
@@ -1265,6 +1349,7 @@ bool EventSelector::selectEvent()
     MyError("selectEvents()","EventSelector::selectEvent() was called before selectObject().");
     exit(1);
   }
+  
   PRINT_STEP(initial);
   //   if(!passHfor()) return false;
   //   if(!passPeriod()) return false;
@@ -1335,6 +1420,150 @@ bool EventSelector::selectEvent()
 
   return true;
 }
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_badMuon   ()
+{
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_jetClean  (xAOD::Jet& jet){
+  // if(not (b_passAC_badMuon)){
+  //   b_passAC_jetClean = false;
+  //   return false;
+  // }
+  if(jet.auxdata<char>("baseline")==1){
+    if(jet.pt()>m_baseJetPtCut && fabs(jet.eta())<m_baseJetEtaCut){
+      if(jet.auxdata<char>("bad")==1){
+        b_passAC_jetClean = false;
+        return false;
+      }
+    }
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_primVtx   (){
+  // if(not (b_passAC_badMuon && b_passAC_jetClean)){
+  //   b_passAC_primVtx = false;
+  //   return false;
+  // }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_cosmic    (xAOD::Muon& mu){
+  // if(not (b_passAC_badMuon && b_passAC_jetClean && b_passAC_primVtx)){
+  //   b_passAC_cosmic = false;
+  //   return false;
+  // }
+  if(mu.auxdata<char>("baseline")==1 && mu.auxdata<char>("cosmic")==1){
+    b_passAC_cosmic = false;
+    return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_oneBaseLep(){
+  if(nBaselineLeps()!=1){
+    b_passAC_oneBaseLep = false;
+    return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_oneSigLep (){
+  if(nSignalLeps()!=1){
+    b_passAC_oneSigLep = false;
+    return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_oneBaseJet(){
+  if(nBaselineJets()!=1){
+    b_passAC_oneBaseJet = false;
+    return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_oneSigJet (){
+  if(nSignalJets()!=1){
+    b_passAC_oneSigJet = false;
+    return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_twoBaseLep(){
+  if(nBaselineLeps()!=2){
+    b_passAC_twoBaseLep = false;
+    return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_twoSigLep (){
+  if(nSignalLeps()!=2){
+    b_passAC_twoSigLep = false;
+    return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_oneBaseEl (){
+  if(m_vec_baseElectron->size()!=1){
+    b_passAC_oneBaseEl = false;
+    return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_oneSigEl  (){
+  if(m_vec_signalElectron->size()!=1){
+    b_passAC_oneSigEl = false;
+    return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_oneBaseMu (){
+  if(m_vec_baseMuon->size()!=1){
+    b_passAC_oneBaseMu = false;
+    return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_oneSigMu  (){
+  if(m_vec_signalMuon->size()!=1){
+    b_passAC_oneSigMu = false;
+    return false;  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_oneBaseTau(){
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_oneSigTau (){
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_oneBjet   (){
+  Int_t numBJets = 0;
+  for(UInt_t cnt=0; cnt<m_vec_signalJet->size(); cnt++){
+    if((m_vec_signalJet->at(cnt)).auxdata<char>("bjet")){
+      numBJets++;
+    }
+  }
+  if(numBJets!=1){
+    b_passAC_oneBjet = false;
+    return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+
 // /*--------------------------------------------------------------------------------*/
 // bool EventSelector::passHfor()
 // {
