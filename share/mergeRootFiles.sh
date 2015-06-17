@@ -1,4 +1,3 @@
-#!/bin/bash
 TAG=$1
 if [ $# -lt 1 ]; then
   echo 'Specify a target tag (e.g. h0001, h0002...)'
