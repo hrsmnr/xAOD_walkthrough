@@ -31,7 +31,7 @@ echo Target selection region = $TARGETSELECREG
 ###########################################################
 # Finding new output directory (result/hXXX/)
 ###########################################################
-for OUTDIR in `ls result | grep h`
+for OUTDIR in `\ls result | grep h`
 do
     maxTagNum=0
     if [ `echo $OUTDIR | cut -c 1` = 'h' ]; then
@@ -53,7 +53,7 @@ echo h$tagNum
 ###########################################################
 # Submitting jobs to the dataset in the target directory 
 ###########################################################
-for TXT in `ls $TARGETDS`
+for TXT in `\ls $TARGETDS`
 do
 lenFilelistDirName=${#TXT}
 #extension check (should be .txt)

@@ -27,7 +27,7 @@ done
 echo Target DS directory     = $TARGETDS
 echo Target selection region = $TARGETSELECREG
 
-for DatasetDir in `ls $TARGETDS`
+for DatasetDir in `\ls $TARGETDS`
 do
 #echo $DatasetDir
 ############################################

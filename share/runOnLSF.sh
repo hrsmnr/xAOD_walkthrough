@@ -32,7 +32,7 @@ echo Target selection region = $TARGETSELECREG
 # Deleting old logfiles in ./lsfoutput
 ###########################################################
 \rm -f lsfoutput/*.log~* #delete logfiles with "~" first
-for logfile in `ls ./lsfoutput`
+for logfile in `\ls ./lsfoutput`
 do
     \cp -p --force lsfoutput/$logfile lsfoutput/$logfile~
     \rm -f lsfoutput/$logfile
@@ -41,7 +41,7 @@ done
 ###########################################################
 # Submitting jobs to the dataset in the target directory 
 ###########################################################
-for DatasetDir in `ls $TARGETDS`
+for DatasetDir in `\ls $TARGETDS`
 do
 ######################################################
 # Finding "data type" and "run number"
