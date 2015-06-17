@@ -1,3 +1,9 @@
+#For the people not using /bin/bash
+if [ $SHELL != '/bin/bash' ]; then
+    echo 'Please change your shell to /bin/bash to use this script!!'
+    return
+fi
+
 #default target directory
 TARGETDS=$1
 if [ $# -lt 1 ]; then
@@ -111,14 +117,14 @@ echo ''
 ###########################################################
 # Submitting jobs to the dataset on GPFS
 ###########################################################
-for TXT in `ls $TARGETDS/Local`
+for TXT in `\ls $TARGETDS/Local`
 do
 submit $TXT Local
 done
 ###########################################################
 # Submitting jobs to the dataset on TOKYO-LCG2 via FAX
 ###########################################################
-for TXT in `ls $TARGETDS/FAXonTOKYO-LCG2`
+for TXT in `\ls $TARGETDS/FAXonTOKYO-LCG2`
 do
 submit $TXT FAXonTOKYO-LCG2
 done

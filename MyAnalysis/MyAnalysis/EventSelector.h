@@ -42,7 +42,10 @@ class EventSelector : public TObject
   virtual bool initialize();
   virtual void finalize();
   virtual void setStore(xAOD::TStore* store){m_store=store;};
-  virtual void setElMuPtThreshold(double elPtCut=5000, double muPtCut=5000);
+  virtual void setSigElMuPtThreshold(double elPtCut=5000, double muPtCut=5000);
+  virtual void setBaseElMuPtThreshold(double elPtCut=5000, double muPtCut=5000);
+  virtual void setSigJetPtEtaThreshold(double jetPtCut=20000, double jetEtaCut=2.8);
+  virtual void setBaseJetPtEtaThreshold(double jetPtCut=20000, double jetEtaCut=2.8);
 
   // Preselection, before object selection
   //    virtual bool preSelectEvent();
@@ -90,6 +93,26 @@ class EventSelector : public TObject
   int Get_pass_lepDR  (){return n_pass_lepDR  ;};
   int Get_pass_other  (){return n_pass_other  ;};
 
+  // For the cutflow comparison
+  bool GetPassAC_badMuon   (){return b_passAC_badMuon   ;};
+  bool GetPassAC_jetClean  (){return b_passAC_jetClean  ;};
+  bool GetPassAC_primVtx   (){return b_passAC_primVtx   ;};
+  bool GetPassAC_cosmic    (){return b_passAC_cosmic    ;};
+  bool GetPassAC_oneBaseLep(){return b_passAC_oneBaseLep;};
+  bool GetPassAC_oneSigLep (){return b_passAC_oneSigLep ;};
+  bool GetPassAC_oneBaseJet(){return b_passAC_oneBaseJet;};
+  bool GetPassAC_oneSigJet (){return b_passAC_oneSigJet ;};
+  bool GetPassAC_twoBaseLep(){return b_passAC_twoBaseLep;};
+  bool GetPassAC_twoSigLep (){return b_passAC_twoSigLep ;};
+  bool GetPassAC_oneBaseEl (){return b_passAC_oneBaseEl ;};
+  bool GetPassAC_oneSigEl  (){return b_passAC_oneSigEl  ;};
+  bool GetPassAC_oneBaseMu (){return b_passAC_oneBaseMu ;};
+  bool GetPassAC_oneSigMu  (){return b_passAC_oneSigMu  ;};
+  bool GetPassAC_oneBaseTau(){return b_passAC_oneBaseTau;};
+  bool GetPassAC_oneSigTau (){return b_passAC_oneSigTau ;};
+  bool GetPassAC_oneBjet   (){return b_passAC_oneBjet   ;};
+
+
   ///////////////////////////////////////////////
   // Preparing objects
   ///////////////////////////////////////////////
@@ -99,9 +122,9 @@ class EventSelector : public TObject
   virtual bool IsMySignalElectron  (const xAOD::Electron& el);
   virtual bool IsMyBaselineMuon    (const xAOD::Muon& mu);
   virtual bool IsMySignalMuon      (const xAOD::Muon& mu);
-  virtual bool IsMyPreJet          (xAOD::Jet jet);
-  virtual bool IsMyBaselineJet     (xAOD::Jet jet);
-  virtual bool IsMySignalJet       (xAOD::Jet jet);
+  virtual bool IsMyPreJet          (xAOD::Jet& jet);
+  virtual bool IsMyBaselineJet     (xAOD::Jet& jet);
+  virtual bool IsMySignalJet       (xAOD::Jet& jet);
   virtual bool PassIsoElectron(const xAOD::Electron& input, const ST::SignalIsoExp::IsoExp whichiso, ST::IsSignalElectronExpCutArgs args);
   virtual bool PassIsoMuon(const xAOD::Muon& input, const ST::SignalIsoExp::IsoExp whichiso, ST::IsSignalMuonExpCutArgs args);
 
@@ -200,6 +223,27 @@ class EventSelector : public TObject
 
   // Truth selection
   bool passLepTruthCut();
+
+  ///////////////////////////////////////////////
+  // Cut methods for acceptance challenge
+  ///////////////////////////////////////////////
+  bool passACCut_badMuon   ();
+  bool passACCut_jetClean  (xAOD::Jet& jet);
+  bool passACCut_primVtx   ();
+  bool passACCut_cosmic    (xAOD::Muon& mu);
+  bool passACCut_oneBaseLep();
+  bool passACCut_oneSigLep ();
+  bool passACCut_oneBaseJet();
+  bool passACCut_oneSigJet ();
+  bool passACCut_twoBaseLep();
+  bool passACCut_twoSigLep ();
+  bool passACCut_oneBaseEl ();
+  bool passACCut_oneSigEl  ();
+  bool passACCut_oneBaseMu ();
+  bool passACCut_oneSigMu  ();
+  bool passACCut_oneBaseTau();
+  bool passACCut_oneSigTau ();
+  bool passACCut_oneBjet   ();
 
   ///////////////////////////////////////////////
   // Event modifications
@@ -358,8 +402,14 @@ class EventSelector : public TObject
   std::string                    m_sel;            // event selection string
   std::string                    m_sys;            // systematic name string
   bool                           m_is3SigLepSel;   // true if (m_nLepMin and m_nLepMax)!=3
-  double                         m_elPtCut;        // electron Pt threshold
-  double                         m_muPtCut;        // muon Pt threshold
+  double                         m_sigElPtCut;     // signal electron Pt threshold
+  double                         m_sigMuPtCut;     // signal muon Pt threshold
+  double                         m_baseElPtCut;    // baseline electron Pt threshold
+  double                         m_baseMuPtCut;    // baseline muon Pt threshold
+  double                         m_sigJetPtCut;   // baseline jet Pt threshold
+  double                         m_sigJetEtaCut;  // baseline jet Eta threshold
+  double                         m_baseJetPtCut;   // baseline jet Pt threshold
+  double                         m_baseJetEtaCut;  // baseline jet Eta threshold
   /* int                         m_selFlag;        // Integer flag for selection (for HistFitterTree) */
   /* bool                        m_doWeightSys;    // Toggle weight systematics */
   /* ObjSys::OSys                m_objSys;         // Object systematic flag */
@@ -544,6 +594,25 @@ class EventSelector : public TObject
   int                n_pass_lepPt;
   int                n_pass_lepDR;
   int                n_pass_other;
+
+  // Event counters for the cutflow comparison
+  bool               b_passAC_badMuon;
+  bool               b_passAC_jetClean;
+  bool               b_passAC_primVtx;
+  bool               b_passAC_cosmic;
+  bool               b_passAC_oneBaseLep;
+  bool               b_passAC_oneSigLep;
+  bool               b_passAC_oneBaseJet;
+  bool               b_passAC_oneSigJet;
+  bool               b_passAC_twoBaseLep;
+  bool               b_passAC_twoSigLep;
+  bool               b_passAC_oneBaseEl;
+  bool               b_passAC_oneSigEl;
+  bool               b_passAC_oneBaseMu;
+  bool               b_passAC_oneSigMu;
+  bool               b_passAC_oneBaseTau;
+  bool               b_passAC_oneSigTau;
+  bool               b_passAC_oneBjet;
 
   /* // Weighted event counters after all cuts */
   /* float               n_evt_pileup;     // pileup weighted events */
