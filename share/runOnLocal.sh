@@ -1,3 +1,9 @@
+#For the people not using /bin/bash
+if [ $SHELL != '/bin/bash' ]; then
+    echo 'Please change your shell to /bin/bash to use this script!!'
+    return
+fi
+
 #default target directory
 TARGETDS=$1
 if [ $# -lt 1 ]; then
@@ -27,7 +33,7 @@ done
 echo Target DS directory     = $TARGETDS
 echo Target selection region = $TARGETSELECREG
 
-for DatasetDir in `ls $TARGETDS`
+for DatasetDir in `\ls $TARGETDS`
 do
 #echo $DatasetDir
 ############################################

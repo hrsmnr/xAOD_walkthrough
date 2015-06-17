@@ -82,8 +82,10 @@ public:
 
   bool IsConsideredSyst(TString sysBasename);
   void SetEventCounter(EventSelector *EveSelec, int eveSelec, int sys);
+  void SetEventCounterAC(EventSelector *EveSelec);
   bool PassPreSelection(const xAOD::EventInfo* eventInfo);
   void dumpEventCounters();
+  void dumpEventCountersAC();
 
   //Setter used in a steering macro (e.g. test.Run.cxx).
   void SetDebugMode(MSG::Level debugMode=MSG::ERROR){m_debugMode = debugMode;};
@@ -122,6 +124,24 @@ public:
   std::vector<std::vector<int> > *n_pass_lepPt; //!
   std::vector<std::vector<int> > *n_pass_lepDR; //!
   std::vector<std::vector<int> > *n_pass_other; //!
+
+  int n_passAC_badMuon   ; //!
+  int n_passAC_jetClean  ; //!
+  int n_passAC_primVtx   ; //!
+  int n_passAC_cosmic    ; //!
+  int n_passAC_oneBaseLep; //!
+  int n_passAC_oneSigLep ; //!
+  int n_passAC_oneBaseJet; //!
+  int n_passAC_oneSigJet ; //!
+  int n_passAC_twoBaseLep; //!
+  int n_passAC_twoSigLep ; //!
+  int n_passAC_oneBaseEl ; //!
+  int n_passAC_oneSigEl  ; //!
+  int n_passAC_oneBaseMu ; //!
+  int n_passAC_oneSigMu  ; //!
+  int n_passAC_oneBaseTau; //!
+  int n_passAC_oneSigTau ; //!
+  int n_passAC_oneBjet   ; //!
 
   //end adding
 
