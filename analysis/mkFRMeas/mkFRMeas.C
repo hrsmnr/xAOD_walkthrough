@@ -376,7 +376,7 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
     }
   }
 
-  // //Adding histograms of BG for eee,eem,emm,mmm.
+  //Adding histograms of BG for eee,eem,emm,mmm.
   UInt_t fileidx=0;
   for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
     UInt_t nsamples = BGFileNames[bgtype]->size();
@@ -477,6 +477,7 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
   for(Int_t fstype=0; fstype<nFSType; fstype++){
     for(Int_t disttype=0; disttype<nDistType; disttype++){
       for(Int_t sorb=0; sorb<2; sorb++){
+        Int_t disttype_sorb = 2*disttype+sorb;
         //for the shape
         for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
           dist_totalbg[fstype][disttype][sorb]->Add(dist_bg[fstype][bgtype][disttype][sorb]);
@@ -491,7 +492,7 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
         dist_totalbgErr[fstype][disttype][sorb]->SetMarkerStyle(0);
         dist_totalbgErr[fstype][disttype][sorb]->SetFillStyle(3454);
         //Creating SM stuck histogram
-        std::string distname = DistTypeNames->at(2*disttype+sorb).Data();
+        std::string distname = DistTypeNames->at(disttype_sorb).Data();
         std::cout<<"Preparing THStack for "<<FSTypeNames[fstype]<<" based on "<<Form("all_%s;1",distname.c_str())<<"."<<std::endl;
         hs_bg[fstype][disttype][sorb] = new THStack(Form("hs_bg_%d_%d_%d",fstype,disttype,sorb),FSTypeNames[fstype]+":Total");
         for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
@@ -569,6 +570,7 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
   for(Int_t fstype=0; fstype<nFSType; fstype++){
     for(Int_t disttype=0; disttype<nDistType; disttype++){
       for(Int_t sorb=0; sorb<2; sorb++){
+        Int_t disttype_sorb = 2*disttype+sorb;
         //      u->Draw(dist_totalbgErr[fstype][disttype],"E2",010);
         //      u->Draw(dist_totalbg   [fstype][disttype],"samehist"); //should be drawn after the error histogram.
         //      dist_data[fstype][disttype]->Draw("sameE");
@@ -582,7 +584,7 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
 
         Double_t entry = dist_totalbg[fstype][disttype][sorb]->GetEntries();
         Double_t integral = dist_totalbg[fstype][disttype][sorb]->Integral();
-        if(fstype==0 && DistTypeNames->at(disttype)=="nJet"){
+        if(fstype==0 && DistTypeNames->at(disttype_sorb)=="nJet"){
           std::cout<<"*********************************************"<<std::endl;
           std::cout<<"Total BG : "<<integral<<std::endl;
           std::cout<<"*********************************************"<<std::endl;
@@ -598,8 +600,8 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
           //should be drawn in this order
           hs_bg[fstype][disttype][sorb]->SetMaximum(linMax);
           hs_bg[fstype][disttype][sorb]->Draw("hist");
-          hs_bg[fstype][disttype][sorb]->GetXaxis()->SetTitle(dist_bg[fstype][0][disttype][0]->GetXaxis()->GetTitle());
-          hs_bg[fstype][disttype][sorb]->GetYaxis()->SetTitle(dist_bg[fstype][0][disttype][0]->GetYaxis()->GetTitle());
+          hs_bg[fstype][disttype][sorb]->GetXaxis()->SetTitle(dist_bg[fstype][0][disttype][sorb]->GetXaxis()->GetTitle());
+          hs_bg[fstype][disttype][sorb]->GetYaxis()->SetTitle(dist_bg[fstype][0][disttype][sorb]->GetYaxis()->GetTitle());
           u->Draw(dist_totalbg[fstype][disttype][sorb],"samehist"); //should be drawn after the error histogram.
           // dist_data[fstype][disttype]->Draw("sameE");
           u->Draw(dist_totalbgErr[fstype][disttype][sorb],"sameE2");
@@ -637,6 +639,37 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
         // u->Draw(dist_ratio[fstype][disttype],"E");
         // u->Draw(dist_ratioErr[fstype][disttype],"sameE2");
       }
+    }
+  }
+
+  // Plotting  fake rate
+  // 0: singal 1: baseline
+  u->Update();
+  TH1F* fakerate_bg[nFSType][nDistType];
+  TH1F* hist_tmp0[nFSType][nDistType];
+  TH1F* hist_tmp1[nFSType][nDistType];
+  for(Int_t fstype=0; fstype<nFSType; fstype++){
+    for(Int_t disttype=0; disttype<nDistType; disttype++){
+      dist_totalbg[fstype][disttype][0]->Sumw2();
+      dist_totalbg[fstype][disttype][1]->Sumw2();
+      fakerate_bg[fstype][disttype] = (TH1F*)dist_totalbg[fstype][disttype][0]->Clone(Form("fakerate_bg_%d_%d",fstype,disttype));
+      hist_tmp0[fstype][disttype] = (TH1F*)dist_totalbg[fstype][disttype][0]->Clone(Form("hist_tmp0_%d_%d",fstype,disttype));
+      hist_tmp1[fstype][disttype] = (TH1F*)dist_totalbg[fstype][disttype][1]->Clone(Form("hist_tmp1_%d_%d",fstype,disttype));
+      // u->cdPad();
+      // Double_t entry = dist_totalbg[fstype][disttype][1]->GetEntries();
+      // if(entry==0.){
+        // u->Draw(fakerate_bg[fstype][disttype],"hist");
+      // } else {
+        // fakerate_bg[fstype][disttype]->SetName(Form("fakerate_dist_bg_%d_%d",fstype,disttype));
+        fakerate_bg[fstype][disttype]->Divide(hist_tmp0[fstype][disttype],hist_tmp1[fstype][disttype],1,1,"B");
+        u->Draw(fakerate_bg[fstype][disttype],"hist");
+      // }
+
+
+      // TH1F *fr_tmp = dist_totalbg[fstype][disttype][1]->Clone();
+      // fr_tmp->SetName(Form("fakerate_dist_bg_%d_%d",fstype,disttype));
+      // fr_tmp->Divide(dist_totalbg[fstype][disttype][0],dist_totalbg[fstype][disttype][1],1.0,1.0,"B");
+      // fakerate_bg[fstype][disttype]->Draw("hist");
     }
   }
 
