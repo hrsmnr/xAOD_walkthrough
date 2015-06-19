@@ -156,7 +156,8 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   m_productEtaEtaMin(-1),
   m_productEtaEtaMax(-1),
   m_dEtaJJMin(-1),
-  m_dEtaJJMax(-1)
+  m_dEtaJJMax(-1),
+  m_1stBaseIsSignal(false)
 {
   // event counters
   n_initial     = 0;
@@ -268,7 +269,7 @@ bool EventSelector::initialize()
   else if(m_sel=="2S3BZvetoDFSS") Set2S3BZvetoDFSS();
   else if(m_sel=="2S3BMetDFSS"  ) Set2S3BMetDFSS();
   else if(m_sel=="2S3BZvetoBvetoMetDFSS") Set2S3BZvetoBvetoMetDFSS();
-  else if(m_sel=="GT1S3B") SetGT1S3B(); // Fake rate
+  else if(m_sel=="GT1S3B") SetGT1S3B(); // Fake rate estimation
   //Used for the legacy paper
   else if(m_sel=="VR0a") {
     TypSel(3,0,3,0,0,0);
@@ -692,6 +693,7 @@ void EventSelector::SetGT1S3B()
   m_nLepMax = 3;
   m_nBaseLepMin = m_nBaseLepMax = 3;
   m_applyTrig = false;
+  m_1stBaseIsSignal = true;
   return;
 }
 
@@ -1426,6 +1428,8 @@ bool EventSelector::selectEvent()
   //if(!passMtllCut(mySigLeptons, met)) return false;
   // PRINT_STEP(pass_other);
 
+  if(!pass1stBaseIsSignal()) return false;
+
 #undef PRINT_STEP
 
   return true;
@@ -1610,6 +1614,7 @@ bool EventSelector::passACCut_oneBjet   (){
 //   n_pass_cosmic++;
 //   return true;
 // }
+/*--------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------------*/
 // Lepton/jet multiplicity
@@ -2552,6 +2557,15 @@ bool EventSelector::passLepTruthCut()
     bool lep1Real = isRealLepton(0);
     if(m_vetoRealLep1 && lep1Real) return false;
   }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::pass1stBaseIsSignal(){
+  if(m_1stBaseIsSignal){
+    if(not IsMySignalElectron( m_vec_baseElectron->at(0) )) return false;
+    if(not IsMySignalMuon    ( m_vec_baseMuon    ->at(0) )) return false;
+  }
+
   return true;
 }
 
