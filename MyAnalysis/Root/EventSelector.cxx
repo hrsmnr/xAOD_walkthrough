@@ -268,6 +268,7 @@ bool EventSelector::initialize()
   else if(m_sel=="2S3BZvetoDFSS") Set2S3BZvetoDFSS();
   else if(m_sel=="2S3BMetDFSS"  ) Set2S3BMetDFSS();
   else if(m_sel=="2S3BZvetoBvetoMetDFSS") Set2S3BZvetoBvetoMetDFSS();
+  else if(m_sel=="GT1S3B") SetGT1S3B(); // Fake rate
   //Used for the legacy paper
   else if(m_sel=="VR0a") {
     TypSel(3,0,3,0,0,0);
@@ -681,6 +682,15 @@ void EventSelector::Set2S3BZvetoBvetoMetDFSS()
   m_vetoExtZ = true;
   m_selSFOS = true;
   m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::SetGT1S3B()
+{
+  m_nLepMin = 1;
+  m_nLepMax = 3;
+  m_nBaseLepMin = m_nBaseLepMax = 3;
   m_applyTrig = false;
   return;
 }

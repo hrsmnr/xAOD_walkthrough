@@ -357,6 +357,7 @@ class EventSelector : public TObject
   virtual void Set2S3BZvetoDFSS();
   virtual void Set2S3BMetDFSS();
   virtual void Set2S3BZvetoBvetoMetDFSS();
+  virtual void SetGT1S3B();
 
   /* // Systematics */
   /* void setSystematics(ObjSys::OSys objSys=ObjSys::nom, bool doWeightSys=false){ */
