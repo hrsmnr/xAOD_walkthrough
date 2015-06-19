@@ -65,22 +65,88 @@ class Plotter : public TObject
   TH1F *h_mu1Eta [nChan]; //1st muon Eta
   TH1F *h_mu2Eta [nChan]; //2nd muon Eta
   TH1F *h_mu3Eta [nChan]; //3rd muon Eta
-  TH1F *h_PRlep1Pt[nChan]; // 1st PR lepton Pt
-  TH1F *h_PRlep2Pt[nChan]; // 2st PR lepton Pt
-  TH1F *h_PRlep3Pt[nChan]; // 3st PR lepton Pt
-  TH1F *h_COlep1Pt[nChan]; // 1st CO lepton Pt
-  TH1F *h_COlep2Pt[nChan]; // 2st CO lepton Pt
-  TH1F *h_COlep3Pt[nChan]; // 3st CO lepton Pt
-  TH1F *h_HFlep1Pt[nChan]; // 1st HF lepton Pt
-  TH1F *h_HFlep2Pt[nChan]; // 2st HF lepton Pt
-  TH1F *h_HFlep3Pt[nChan]; // 3st HF lepton Pt
-  TH1F *h_LFlep1Pt[nChan]; // 1st LF lepton Pt
-  TH1F *h_LFlep2Pt[nChan]; // 2st LF lepton Pt
-  TH1F *h_LFlep3Pt[nChan]; // 3st LF lepton Pt
-  TH1F *h_UKlep1Pt[nChan]; // 1st UnKnown lepton Pt
-  TH1F *h_UKlep2Pt[nChan]; // 2st UnKnown lepton Pt
-  TH1F *h_UKlep3Pt[nChan]; // 3st UnKnown lepton Pt
+  
+  // Fake Lepton
+  TH1F *h_PRlep1Pt [nChan]; // 1st PR lepton Pt
+  TH1F *h_PRlep2Pt [nChan]; // 2nd PR lepton Pt
+  TH1F *h_PRlep3Pt [nChan]; // 3nd PR lepton Pt
+  TH1F *h_COlep1Pt [nChan]; // 1st CO lepton Pt
+  TH1F *h_COlep2Pt [nChan]; // 2nd CO lepton Pt
+  TH1F *h_COlep3Pt [nChan]; // 3nd CO lepton Pt
+  TH1F *h_HFlep1Pt [nChan]; // 1st HF lepton Pt
+  TH1F *h_HFlep2Pt [nChan]; // 2nd HF lepton Pt
+  TH1F *h_HFlep3Pt [nChan]; // 3nd HF lepton Pt
+  TH1F *h_LFlep1Pt [nChan]; // 1st LF lepton Pt
+  TH1F *h_LFlep2Pt [nChan]; // 2nd LF lepton Pt
+  TH1F *h_LFlep3Pt [nChan]; // 3nd LF lepton Pt
+  TH1F *h_UKlep1Pt [nChan]; // 1st UnKnown lepton Pt
+  TH1F *h_UKlep2Pt [nChan]; // 2nd UnKnown lepton Pt
+  TH1F *h_UKlep3Pt [nChan]; // 3nd UnKnown lepton Pt
+  TH1F *h_PRlep1Eta[nChan]; // 1st PR lepton Eta
+  TH1F *h_PRlep2Eta[nChan]; // 2nd PR lepton Eta
+  TH1F *h_PRlep3Eta[nChan]; // 3nd PR lepton Eta
+  TH1F *h_COlep1Eta[nChan]; // 1st CO lepton Eta
+  TH1F *h_COlep2Eta[nChan]; // 2nd CO lepton Eta
+  TH1F *h_COlep3Eta[nChan]; // 3nd CO lepton Eta
+  TH1F *h_HFlep1Eta[nChan]; // 1st HF lepton Eta
+  TH1F *h_HFlep2Eta[nChan]; // 2nd HF lepton Eta
+  TH1F *h_HFlep3Eta[nChan]; // 3nd HF lepton Eta
+  TH1F *h_LFlep1Eta[nChan]; // 1st LF lepton Eta
+  TH1F *h_LFlep2Eta[nChan]; // 2nd LF lepton Eta
+  TH1F *h_LFlep3Eta[nChan]; // 3nd LF lepton Eta
+  TH1F *h_UKlep1Eta[nChan]; // 1st UnKnown lepton Eta
+  TH1F *h_UKlep2Eta[nChan]; // 2nd UnKnown lepton Eta
+  TH1F *h_UKlep3Eta[nChan]; // 3nd UnKnown lepton Eta
 
+  // Fake signal lepton for matrix method
+  TH1F *h_PRlep2and3Pt [nChan]; // 2nd and 3rd PR lepton Pt
+  TH1F *h_COlep2and3Pt [nChan]; // 2nd and 3rd CO lepton Pt
+  TH1F *h_HFlep2and3Pt [nChan]; // 2nd and 3rd HF lepton Pt
+  TH1F *h_LFlep2and3Pt [nChan]; // 2nd and 3rd LF lepton Pt
+  TH1F *h_UKlep2and3Pt [nChan]; // 2nd and 3rd UK lepton Pt
+  TH1F *h_PRlep2and3Eta[nChan]; // 2nd and 3rd PR lepton Eta
+  TH1F *h_COlep2and3Eta[nChan]; // 2nd and 3rd CO lepton Eta
+  TH1F *h_HFlep2and3Eta[nChan]; // 2nd and 3rd HF lepton Eta
+  TH1F *h_LFlep2and3Eta[nChan]; // 2nd and 3rd LF lepton Eta
+  TH1F *h_UKlep2and3Eta[nChan]; // 2nd and 3rd UK lepton Eta
+
+  // Fake signal lepton for matrix method
+  TH1F *h_PRbaselep2and3Pt [nChan]; // 2nd and 3rd PR base lepton Pt
+  TH1F *h_CObaselep2and3Pt [nChan]; // 2nd and 3rd CO base lepton Pt
+  TH1F *h_HFbaselep2and3Pt [nChan]; // 2nd and 3rd HF base lepton Pt
+  TH1F *h_LFbaselep2and3Pt [nChan]; // 2nd and 3rd LF base lepton Pt
+  TH1F *h_UKbaselep2and3Pt [nChan]; // 2nd and 3rd UK base lepton Pt
+  TH1F *h_PRbaselep2and3Eta[nChan]; // 2nd and 3rd PR base lepton Eta
+  TH1F *h_CObaselep2and3Eta[nChan]; // 2nd and 3rd CO base lepton Eta
+  TH1F *h_HFbaselep2and3Eta[nChan]; // 2nd and 3rd HF base lepton Eta
+  TH1F *h_LFbaselep2and3Eta[nChan]; // 2nd and 3rd LF base lepton Eta
+  TH1F *h_UKbaselep2and3Eta[nChan]; // 2nd and 3rd UK base lepton Eta
+
+  // Fake signal lepton
+  TH1F *h_PRlepPt [nChan]; // PR lepton Pt
+  TH1F *h_COlepPt [nChan]; // CO lepton Pt
+  TH1F *h_HFlepPt [nChan]; // HF lepton Pt
+  TH1F *h_LFlepPt [nChan]; // LF lepton Pt
+  TH1F *h_UKlepPt [nChan]; // UK lepton Pt
+  TH1F *h_PRlepEta[nChan]; // PR lepton Eta
+  TH1F *h_COlepEta[nChan]; // CO lepton Eta
+  TH1F *h_HFlepEta[nChan]; // HF lepton Eta
+  TH1F *h_LFlepEta[nChan]; // LF lepton Eta
+  TH1F *h_UKlepEta[nChan]; // UK lepton Eta
+
+  // Fake base lepton
+  TH1F *h_PRbaselepPt [nChan]; // PR base lepton Pt
+  TH1F *h_CObaselepPt [nChan]; // CO base lepton Pt
+  TH1F *h_HFbaselepPt [nChan]; // HF base lepton Pt
+  TH1F *h_LFbaselepPt [nChan]; // LF base lepton Pt
+  TH1F *h_UKbaselepPt [nChan]; // UK base lepton Pt
+  TH1F *h_PRbaselepEta[nChan]; // PR base lepton Eta
+  TH1F *h_CObaselepEta[nChan]; // CO base lepton Eta
+  TH1F *h_HFbaselepEta[nChan]; // HF base lepton Eta
+  TH1F *h_LFbaselepEta[nChan]; // LF base lepton Eta
+  TH1F *h_UKbaselepEta[nChan]; // UK base lepton Eta
+
+  // base lepton kinematics
   TH1F *h_baselepChan[nChan];
   TH1F *h_baselep1Pt[nChan];
   TH1F *h_baselep2Pt[nChan];

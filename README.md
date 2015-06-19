@@ -1,5 +1,5 @@
 # xAOD_walkthrough
-Analysis framework based on Base,2.1.30 with SUSYTools-00-05-00-26.
+Analysis framework based on Base,2.1.31 with SUSYTools-00-05-00-26.
 
 ## Contents of the package ----
 ./MyAnalysis : analysis package for EventLoop.  
@@ -25,8 +25,10 @@ $source share/runOnLocal.sh [Dataset directory] [Signal selection]
 $source share/runOnLSF.sh [Dataset directory] [Signal selection]  
 $python share/mkFileList.py [optionally: target directory]  
 $source share/runOnLSFSplitDS.sh [Dataset directory] [Signal selection]  
+$source share/runOnLSFHybridInput.sh [Dataset directory] [Signal selection]  
 $source share/mergeRootFiles.sh [tag(e.g. h0001)]  
-$root -q -b 'mkPlots.C+O("h0015","3lep")'  
+$root -q -b -n 'mkPlots.C+O("h0015","3S3B")'  
+$root -q -b -n 'mkFRMeas.C+O("h0015","3S3B")'  
 $bkill -u [your account] -b 0 #kill all your jobs on LSF  
 $bjobs -l  
 $bjobs -u all  
