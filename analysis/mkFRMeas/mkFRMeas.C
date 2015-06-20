@@ -646,24 +646,29 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
   // 0: singal 1: baseline
   u->Update();
   TH1F* fakerate_bg[nFSType][nDistType];
+  TH1F* fakerate_bgErr[nFSType][nDistType];
   TH1F* hist_tmp0[nFSType][nDistType];
   TH1F* hist_tmp1[nFSType][nDistType];
+  TH1F* hist_tmp0Err[nFSType][nDistType];
+  TH1F* hist_tmp1Err[nFSType][nDistType];
   for(Int_t fstype=0; fstype<nFSType; fstype++){
     for(Int_t disttype=0; disttype<nDistType; disttype++){
       dist_totalbg[fstype][disttype][0]->Sumw2();
       dist_totalbg[fstype][disttype][1]->Sumw2();
       fakerate_bg[fstype][disttype] = (TH1F*)dist_totalbg[fstype][disttype][0]->Clone(Form("fakerate_bg_%d_%d",fstype,disttype));
+      fakerate_bgErr[fstype][disttype] = (TH1F*)dist_totalbgErr[fstype][disttype][0]->Clone(Form("fakerate_bg_error_%d_%d",fstype,disttype));
       hist_tmp0[fstype][disttype] = (TH1F*)dist_totalbg[fstype][disttype][0]->Clone(Form("hist_tmp0_%d_%d",fstype,disttype));
       hist_tmp1[fstype][disttype] = (TH1F*)dist_totalbg[fstype][disttype][1]->Clone(Form("hist_tmp1_%d_%d",fstype,disttype));
+      hist_tmp0Err[fstype][disttype] = (TH1F*)dist_totalbgErr[fstype][disttype][0]->Clone(Form("hist_tmp0_error_%d_%d",fstype,disttype));
+      hist_tmp1Err[fstype][disttype] = (TH1F*)dist_totalbgErr[fstype][disttype][1]->Clone(Form("hist_tmp1_error_%d_%d",fstype,disttype));
       // u->cdPad();
-      // Double_t entry = dist_totalbg[fstype][disttype][1]->GetEntries();
-      // if(entry==0.){
-        // u->Draw(fakerate_bg[fstype][disttype],"hist");
-      // } else {
-        // fakerate_bg[fstype][disttype]->SetName(Form("fakerate_dist_bg_%d_%d",fstype,disttype));
-        fakerate_bg[fstype][disttype]->Divide(hist_tmp0[fstype][disttype],hist_tmp1[fstype][disttype],1,1,"B");
-        u->Draw(fakerate_bg[fstype][disttype],"hist");
-      // }
+      fakerate_bg[fstype][disttype]->Divide(hist_tmp0[fstype][disttype],hist_tmp1[fstype][disttype],1,1,"B");
+      fakerate_bg[fstype][disttype]->SetMarkerColor(kBlack);
+      fakerate_bg[fstype][disttype]->SetLineColor(kBlack);
+      // fakerate_bg[fstype][disttype]->GetYaxis()->SetTitle("Fake rate");
+      fakerate_bg[fstype][disttype]->SetStats(0);
+      u->Draw(fakerate_bg[fstype][disttype],"E");
+      u->Draw(fakerate_bgErr[fstype][disttype],"sameE2");
 
 
       // TH1F *fr_tmp = dist_totalbg[fstype][disttype][1]->Clone();
