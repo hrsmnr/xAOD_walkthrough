@@ -386,7 +386,7 @@ bool EventSelector::initialize()
     MyError("initialize()",Form("EventSelector ERROR - selection %s not supported!!",m_sel.c_str()));
     return false;
   }
-  if(m_nLepMin!=3 || m_nLepMin!=3) m_is3SigLepSel = false;
+  if(m_nLepMin!=3 || m_nLepMax!=3) m_is3SigLepSel = false;
 
   m_vec_signalElectron = new std::vector<xAOD::Electron>();
   m_vec_baseElectron   = new std::vector<xAOD::Electron>();
@@ -2562,10 +2562,12 @@ bool EventSelector::passLepTruthCut()
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::pass1stBaseIsSignal(){
   if(m_1stBaseIsSignal){
-    if(not IsMySignalElectron( m_vec_baseElectron->at(0) )) return false;
-    if(not IsMySignalMuon    ( m_vec_baseMuon    ->at(0) )) return false;
+    if(m_baseLepFlavor[0]==0){
+      if(not IsMySignalElectron( m_vec_baseElectron->at(m_baseLepIndex[0]) )) return false;
+    } else if (m_baseLepFlavor[0]==1){
+      if(not IsMySignalMuon    ( m_vec_baseMuon    ->at(m_baseLepIndex[0]) )) return false;
+    }
   }
-
   return true;
 }
 

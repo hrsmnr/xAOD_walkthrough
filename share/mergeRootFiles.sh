@@ -18,7 +18,7 @@ DSID=("110302" "110305" #single top
     "205048" "205049" "205050" "205051" "205052" "205053"
     "205054" "205055" "205056" "205128" "205129" "205130" "205131" #Signal(N2C1toWZ)
 )
-REGION=("2S3B" "2S3BZveto" "2S3BBveto" "2S3BMet" "2S3BZvetoBvetoMet" "3S3B" "3S3BZveto" "3S3BBveto" "3S3BMet" "3S3BZvetoBvetoMet" "3S4B" "3S4BZveto" "3S4BBveto" "3S4BMet" "3S4BZvetoBvetoMet")
+REGION=("2S3B" "2S3BZveto" "2S3BBveto" "2S3BMet" "2S3BZvetoBvetoMet" "3S3B" "3S3BZveto" "3S3BBveto" "3S3BMet" "3S3BZvetoBvetoMet" "3S4B" "3S4BZveto" "3S4BBveto" "3S4BMet" "3S4BZvetoBvetoMet" "GT1S3B")
 
 DIRECTORY='result'
 for i in "${DSID[@]}"

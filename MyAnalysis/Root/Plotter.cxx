@@ -833,10 +833,11 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   if(chan<0) return false;
 
   //Prepare 1st-3rd leading signal lepton's four-vector
-  Int_t leadLepIndex[3];
-  Int_t leadLepFlavor[3];
-  TLorentzVector leadLep[3];
-  for(Int_t id=0; id<3; id++){
+  const Int_t nSigLeps = EveSelec->nSignalLeps();
+  Int_t leadLepIndex[nSigLeps];
+  Int_t leadLepFlavor[nSigLeps];
+  TLorentzVector leadLep[nSigLeps];
+  for(Int_t id=0; id<nSigLeps; id++){
     leadLepIndex [id] = EveSelec->getLeadLepIndex (id);
     leadLepFlavor[id] = EveSelec->getLeadLepFlavor(id);
     leadLep      [id] = EveSelec->getLeadLep      (id);
@@ -912,27 +913,31 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   h_baselepChan[Ch_all]->Fill(Ch_all,w);
   h_baselepChan[Ch_all]->Fill(chan,w);
 
-  //Fill lepton Pt
-  FillChanHist( h_lep1Pt, leadLep[0].Pt()/1000., w );
-  FillChanHist( h_lep2Pt, leadLep[1].Pt()/1000., w );
-  FillChanHist( h_lep3Pt, leadLep[2].Pt()/1000., w );
-  FillElHist( 0, h_el1Pt, vec_signalElectron->at(leadLepIndex[0]).pt()/1000., w );
-  FillMuHist( 0, h_mu1Pt, vec_signalMuon    ->at(leadLepIndex[0]).pt()/1000., w );
-  FillElHist( 1, h_el2Pt, vec_signalElectron->at(leadLepIndex[1]).pt()/1000., w );
-  FillMuHist( 1, h_mu2Pt, vec_signalMuon    ->at(leadLepIndex[1]).pt()/1000., w );
-  FillElHist( 2, h_el3Pt, vec_signalElectron->at(leadLepIndex[2]).pt()/1000., w );
-  FillMuHist( 2, h_mu3Pt, vec_signalMuon    ->at(leadLepIndex[2]).pt()/1000., w );
-
-  //Fill lepton Eta
-  FillChanHist( h_lep1Eta, leadLep[0].Eta(), w );
-  FillChanHist( h_lep2Eta, leadLep[1].Eta(), w );
-  FillChanHist( h_lep3Eta, leadLep[2].Eta(), w );
-  FillElHist( 0, h_el1Eta, vec_signalElectron->at(leadLepIndex[0]).eta(), w );
-  FillMuHist( 0, h_mu1Eta, vec_signalMuon    ->at(leadLepIndex[0]).eta(), w );
-  FillElHist( 1, h_el2Eta, vec_signalElectron->at(leadLepIndex[1]).eta(), w );
-  FillMuHist( 1, h_mu2Eta, vec_signalMuon    ->at(leadLepIndex[1]).eta(), w );
-  FillElHist( 2, h_el3Eta, vec_signalElectron->at(leadLepIndex[2]).eta(), w );
-  FillMuHist( 2, h_mu3Eta, vec_signalMuon    ->at(leadLepIndex[2]).eta(), w );
+  //Fill lead lepton
+  for(Int_t id=0; id<3; id++){
+    if(id==0){
+      FillChanHist( h_lep1Pt, leadLep[0].Pt()/1000., w );
+      FillElHist( 0, h_el1Pt, vec_signalElectron->at(leadLepIndex[0]).pt()/1000., w );
+      FillMuHist( 0, h_mu1Pt, vec_signalMuon    ->at(leadLepIndex[0]).pt()/1000., w );
+      FillChanHist( h_lep1Eta, leadLep[0].Eta(), w );
+      FillElHist( 0, h_el1Eta, vec_signalElectron->at(leadLepIndex[0]).eta(), w );
+      FillMuHist( 0, h_mu1Eta, vec_signalMuon    ->at(leadLepIndex[0]).eta(), w );
+    } else if (id==1) {
+      FillChanHist( h_lep2Pt, leadLep[1].Pt()/1000., w );
+      FillElHist( 1, h_el2Pt, vec_signalElectron->at(leadLepIndex[1]).pt()/1000., w );
+      FillMuHist( 1, h_mu2Pt, vec_signalMuon    ->at(leadLepIndex[1]).pt()/1000., w );
+      FillChanHist( h_lep2Eta, leadLep[1].Eta(), w );
+      FillElHist( 1, h_el2Eta, vec_signalElectron->at(leadLepIndex[1]).eta(), w );
+      FillMuHist( 1, h_mu2Eta, vec_signalMuon    ->at(leadLepIndex[1]).eta(), w );
+    } else if (id==2) {
+      FillChanHist( h_lep3Pt, leadLep[2].Pt()/1000., w );
+      FillElHist( 2, h_el3Pt, vec_signalElectron->at(leadLepIndex[2]).pt()/1000., w );
+      FillMuHist( 2, h_mu3Pt, vec_signalMuon    ->at(leadLepIndex[2]).pt()/1000., w );
+      FillChanHist( h_lep3Eta, leadLep[2].Eta(), w );
+      FillElHist( 2, h_el3Eta, vec_signalElectron->at(leadLepIndex[2]).eta(), w );
+      FillMuHist( 2, h_mu3Eta, vec_signalMuon    ->at(leadLepIndex[2]).eta(), w );
+    }
+  }
 
   //Fill base lepton Pt
   FillChanHist( h_baselep1Pt, baseLep[0].Pt()/1000., w );
@@ -1035,7 +1040,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
 
   //Fill lepton truth infomation
   if(m_isMC){
-    for(Int_t id=0; id<3; id++){
+    for(Int_t id=0; id<nSigLeps; id++){
       if(lepIndex[id]==-1) continue;
       Int_t type   = -1;
       Int_t origin = -1;
@@ -1064,26 +1069,26 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
         FillChanHist( h_lepClass, 0., w);
         if       (id==0){ 
           FillChanHist( h_lep1Class, 0., w);
-          FillChanHist( h_PRlepPt,   lep[0].Pt()/1000., w );
-          FillChanHist( h_PRlep1Pt,  lep[0].Pt()/1000., w );
-          FillChanHist( h_PRlepEta,  lep[0].Eta(), w );
-          FillChanHist( h_PRlep1Eta, lep[0].Eta(), w );
+          FillChanHist( h_PRlepPt,   leadLep[0].Pt()/1000., w );
+          FillChanHist( h_PRlep1Pt,  leadLep[0].Pt()/1000., w );
+          FillChanHist( h_PRlepEta,  leadLep[0].Eta(), w );
+          FillChanHist( h_PRlep1Eta, leadLep[0].Eta(), w );
         } else if(id==1){ 
           FillChanHist( h_lep2Class, 0., w);
-          FillChanHist( h_PRlepPt,       lep[1].Pt()/1000., w );
-          FillChanHist( h_PRlep2Pt,      lep[1].Pt()/1000., w );
-          FillChanHist( h_PRlep2and3Pt,  lep[1].Pt()/1000., w );
-          FillChanHist( h_PRlepEta,      lep[1].Eta(), w );
-          FillChanHist( h_PRlep2Eta,     lep[1].Eta(), w );
-          FillChanHist( h_PRlep2and3Eta, lep[1].Eta(), w );
+          FillChanHist( h_PRlepPt,       leadLep[1].Pt()/1000., w );
+          FillChanHist( h_PRlep2Pt,      leadLep[1].Pt()/1000., w );
+          FillChanHist( h_PRlep2and3Pt,  leadLep[1].Pt()/1000., w );
+          FillChanHist( h_PRlepEta,      leadLep[1].Eta(), w );
+          FillChanHist( h_PRlep2Eta,     leadLep[1].Eta(), w );
+          FillChanHist( h_PRlep2and3Eta, leadLep[1].Eta(), w );
         } else if(id==2){ 
           FillChanHist( h_lep3Class, 0., w);
-          FillChanHist( h_PRlepPt,       lep[2].Pt()/1000., w );
-          FillChanHist( h_PRlep3Pt,      lep[2].Pt()/1000., w );
-          FillChanHist( h_PRlep2and3Pt,  lep[2].Pt()/1000., w );
-          FillChanHist( h_PRlepEta,      lep[2].Eta(), w );
-          FillChanHist( h_PRlep3Eta,     lep[2].Eta(), w );
-          FillChanHist( h_PRlep2and3Eta, lep[2].Eta(), w );
+          FillChanHist( h_PRlepPt,       leadLep[2].Pt()/1000., w );
+          FillChanHist( h_PRlep3Pt,      leadLep[2].Pt()/1000., w );
+          FillChanHist( h_PRlep2and3Pt,  leadLep[2].Pt()/1000., w );
+          FillChanHist( h_PRlepEta,      leadLep[2].Eta(), w );
+          FillChanHist( h_PRlep3Eta,     leadLep[2].Eta(), w );
+          FillChanHist( h_PRlep2and3Eta, leadLep[2].Eta(), w );
         }
       }
       // Conversion
@@ -1091,26 +1096,26 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
         FillChanHist( h_lepClass, 1., w);
         if       (id==0){ 
           FillChanHist( h_lep1Class, 1., w);
-          FillChanHist( h_COlepPt,   lep[0].Pt()/1000., w );
-          FillChanHist( h_COlep1Pt,  lep[0].Pt()/1000., w );
-          FillChanHist( h_COlepEta,  lep[0].Eta(), w );
-          FillChanHist( h_COlep1Eta, lep[0].Eta(), w );
+          FillChanHist( h_COlepPt,   leadLep[0].Pt()/1000., w );
+          FillChanHist( h_COlep1Pt,  leadLep[0].Pt()/1000., w );
+          FillChanHist( h_COlepEta,  leadLep[0].Eta(), w );
+          FillChanHist( h_COlep1Eta, leadLep[0].Eta(), w );
         } else if(id==1){ 
           FillChanHist( h_lep2Class, 1., w);
-          FillChanHist( h_COlepPt,       lep[1].Pt()/1000., w );
-          FillChanHist( h_COlep2Pt,      lep[1].Pt()/1000., w );
-          FillChanHist( h_COlep2and3Pt,  lep[1].Pt()/1000., w );
-          FillChanHist( h_COlepEta,      lep[1].Eta(), w );
-          FillChanHist( h_COlep2Eta,     lep[1].Eta(), w );
-          FillChanHist( h_COlep2and3Eta, lep[1].Eta(), w );
+          FillChanHist( h_COlepPt,       leadLep[1].Pt()/1000., w );
+          FillChanHist( h_COlep2Pt,      leadLep[1].Pt()/1000., w );
+          FillChanHist( h_COlep2and3Pt,  leadLep[1].Pt()/1000., w );
+          FillChanHist( h_COlepEta,      leadLep[1].Eta(), w );
+          FillChanHist( h_COlep2Eta,     leadLep[1].Eta(), w );
+          FillChanHist( h_COlep2and3Eta, leadLep[1].Eta(), w );
         } else if(id==2){ 
           FillChanHist( h_lep3Class, 1., w);
-          FillChanHist( h_COlepPt,       lep[2].Pt()/1000., w );
-          FillChanHist( h_COlep3Pt,      lep[2].Pt()/1000., w );
-          FillChanHist( h_COlep2and3Pt,  lep[2].Pt()/1000., w );
-          FillChanHist( h_COlepEta,      lep[2].Eta(), w );
-          FillChanHist( h_COlep3Eta,     lep[2].Eta(), w );
-          FillChanHist( h_COlep2and3Eta, lep[2].Eta(), w );
+          FillChanHist( h_COlepPt,       leadLep[2].Pt()/1000., w );
+          FillChanHist( h_COlep3Pt,      leadLep[2].Pt()/1000., w );
+          FillChanHist( h_COlep2and3Pt,  leadLep[2].Pt()/1000., w );
+          FillChanHist( h_COlepEta,      leadLep[2].Eta(), w );
+          FillChanHist( h_COlep3Eta,     leadLep[2].Eta(), w );
+          FillChanHist( h_COlep2and3Eta, leadLep[2].Eta(), w );
         }
       }
       // Heavy Flavor
@@ -1119,26 +1124,26 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
         FillChanHist( h_lepClass, 2., w);
         if       (id==0){ 
           FillChanHist( h_lep1Class, 2., w);
-          FillChanHist( h_HFlepPt,   lep[0].Pt()/1000., w );
-          FillChanHist( h_HFlep1Pt,  lep[0].Pt()/1000., w );
-          FillChanHist( h_HFlepEta,  lep[0].Eta(), w );
-          FillChanHist( h_HFlep1Eta, lep[0].Eta(), w );
+          FillChanHist( h_HFlepPt,   leadLep[0].Pt()/1000., w );
+          FillChanHist( h_HFlep1Pt,  leadLep[0].Pt()/1000., w );
+          FillChanHist( h_HFlepEta,  leadLep[0].Eta(), w );
+          FillChanHist( h_HFlep1Eta, leadLep[0].Eta(), w );
         } else if(id==1){ 
           FillChanHist( h_lep2Class, 2., w);
-          FillChanHist( h_HFlepPt,       lep[1].Pt()/1000., w );
-          FillChanHist( h_HFlep2Pt,      lep[1].Pt()/1000., w );
-          FillChanHist( h_HFlep2and3Pt,  lep[1].Pt()/1000., w );
-          FillChanHist( h_HFlepEta,      lep[1].Eta(), w );
-          FillChanHist( h_HFlep2Eta,     lep[1].Eta(), w );
-          FillChanHist( h_HFlep2and3Eta, lep[1].Eta(), w );
+          FillChanHist( h_HFlepPt,       leadLep[1].Pt()/1000., w );
+          FillChanHist( h_HFlep2Pt,      leadLep[1].Pt()/1000., w );
+          FillChanHist( h_HFlep2and3Pt,  leadLep[1].Pt()/1000., w );
+          FillChanHist( h_HFlepEta,      leadLep[1].Eta(), w );
+          FillChanHist( h_HFlep2Eta,     leadLep[1].Eta(), w );
+          FillChanHist( h_HFlep2and3Eta, leadLep[1].Eta(), w );
         } else if(id==2){ 
           FillChanHist( h_lep3Class, 2., w);
-          FillChanHist( h_HFlepPt,       lep[2].Pt()/1000., w );
-          FillChanHist( h_HFlep3Pt,      lep[2].Pt()/1000., w );
-          FillChanHist( h_HFlep2and3Pt,  lep[2].Pt()/1000., w );
-          FillChanHist( h_HFlepEta,      lep[2].Eta(), w );
-          FillChanHist( h_HFlep3Eta,     lep[2].Eta(), w );
-          FillChanHist( h_HFlep2and3Eta, lep[2].Eta(), w );
+          FillChanHist( h_HFlepPt,       leadLep[2].Pt()/1000., w );
+          FillChanHist( h_HFlep3Pt,      leadLep[2].Pt()/1000., w );
+          FillChanHist( h_HFlep2and3Pt,  leadLep[2].Pt()/1000., w );
+          FillChanHist( h_HFlepEta,      leadLep[2].Eta(), w );
+          FillChanHist( h_HFlep3Eta,     leadLep[2].Eta(), w );
+          FillChanHist( h_HFlep2and3Eta, leadLep[2].Eta(), w );
         }
       }
       // LightFlavor
@@ -1148,52 +1153,52 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
         FillChanHist( h_lepClass, 3., w);
         if       (id==0){ 
           FillChanHist( h_lep1Class, 3., w);
-          FillChanHist( h_LFlepPt,   lep[0].Pt()/1000., w );
-          FillChanHist( h_LFlep1Pt,  lep[0].Pt()/1000., w );
-          FillChanHist( h_LFlepEta,  lep[0].Eta(), w );
-          FillChanHist( h_LFlep1Eta, lep[0].Eta(), w );
+          FillChanHist( h_LFlepPt,   leadLep[0].Pt()/1000., w );
+          FillChanHist( h_LFlep1Pt,  leadLep[0].Pt()/1000., w );
+          FillChanHist( h_LFlepEta,  leadLep[0].Eta(), w );
+          FillChanHist( h_LFlep1Eta, leadLep[0].Eta(), w );
         } else if(id==1){ 
           FillChanHist( h_lep2Class, 3., w);
-          FillChanHist( h_LFlepPt,       lep[1].Pt()/1000., w );
-          FillChanHist( h_LFlep2Pt,      lep[1].Pt()/1000., w );
-          FillChanHist( h_LFlep2and3Pt,  lep[1].Pt()/1000., w );
-          FillChanHist( h_LFlepEta,      lep[1].Eta(), w );
-          FillChanHist( h_LFlep2Eta,     lep[1].Eta(), w );
-          FillChanHist( h_LFlep2and3Eta, lep[1].Eta(), w );
+          FillChanHist( h_LFlepPt,       leadLep[1].Pt()/1000., w );
+          FillChanHist( h_LFlep2Pt,      leadLep[1].Pt()/1000., w );
+          FillChanHist( h_LFlep2and3Pt,  leadLep[1].Pt()/1000., w );
+          FillChanHist( h_LFlepEta,      leadLep[1].Eta(), w );
+          FillChanHist( h_LFlep2Eta,     leadLep[1].Eta(), w );
+          FillChanHist( h_LFlep2and3Eta, leadLep[1].Eta(), w );
         } else if(id==2){ 
           FillChanHist( h_lep3Class, 3., w);
-          FillChanHist( h_LFlepPt,       lep[2].Pt()/1000., w );
-          FillChanHist( h_LFlep3Pt,      lep[2].Pt()/1000., w );
-          FillChanHist( h_LFlep2and3Pt,  lep[2].Pt()/1000., w );
-          FillChanHist( h_LFlepEta,      lep[2].Eta(), w );
-          FillChanHist( h_LFlep3Eta,     lep[2].Eta(), w );
-          FillChanHist( h_LFlep2and3Eta, lep[2].Eta(), w );
+          FillChanHist( h_LFlepPt,       leadLep[2].Pt()/1000., w );
+          FillChanHist( h_LFlep3Pt,      leadLep[2].Pt()/1000., w );
+          FillChanHist( h_LFlep2and3Pt,  leadLep[2].Pt()/1000., w );
+          FillChanHist( h_LFlepEta,      leadLep[2].Eta(), w );
+          FillChanHist( h_LFlep3Eta,     leadLep[2].Eta(), w );
+          FillChanHist( h_LFlep2and3Eta, leadLep[2].Eta(), w );
         }
       // Unknown
       }else{
         FillChanHist( h_lepClass, 4., w);
         if       (id==0){ 
           FillChanHist( h_lep1Class, 4., w);
-          FillChanHist( h_UKlepPt,   lep[0].Pt()/1000., w );
-          FillChanHist( h_UKlep1Pt,  lep[0].Pt()/1000., w );
-          FillChanHist( h_UKlepEta,  lep[0].Eta(), w );
-          FillChanHist( h_UKlep1Eta, lep[0].Eta(), w );
+          FillChanHist( h_UKlepPt,   leadLep[0].Pt()/1000., w );
+          FillChanHist( h_UKlep1Pt,  leadLep[0].Pt()/1000., w );
+          FillChanHist( h_UKlepEta,  leadLep[0].Eta(), w );
+          FillChanHist( h_UKlep1Eta, leadLep[0].Eta(), w );
         } else if(id==1){ 
           FillChanHist( h_lep2Class, 4., w);
-          FillChanHist( h_UKlepPt,       lep[1].Pt()/1000., w );
-          FillChanHist( h_UKlep2Pt,      lep[1].Pt()/1000., w );
-          FillChanHist( h_UKlep2and3Pt,  lep[1].Pt()/1000., w );
-          FillChanHist( h_UKlepEta,      lep[1].Eta(), w );
-          FillChanHist( h_UKlep2Eta,     lep[1].Eta(), w );
-          FillChanHist( h_UKlep2and3Eta, lep[1].Eta(), w );
+          FillChanHist( h_UKlepPt,       leadLep[1].Pt()/1000., w );
+          FillChanHist( h_UKlep2Pt,      leadLep[1].Pt()/1000., w );
+          FillChanHist( h_UKlep2and3Pt,  leadLep[1].Pt()/1000., w );
+          FillChanHist( h_UKlepEta,      leadLep[1].Eta(), w );
+          FillChanHist( h_UKlep2Eta,     leadLep[1].Eta(), w );
+          FillChanHist( h_UKlep2and3Eta, leadLep[1].Eta(), w );
         } else if(id==2){ 
           FillChanHist( h_lep3Class, 4., w);
-          FillChanHist( h_UKlepPt,       lep[2].Pt()/1000., w );
-          FillChanHist( h_UKlep3Pt,      lep[2].Pt()/1000., w );
-          FillChanHist( h_UKlep2and3Pt,  lep[2].Pt()/1000., w );
-          FillChanHist( h_UKlepEta,      lep[2].Eta(), w );
-          FillChanHist( h_UKlep3Eta,     lep[2].Eta(), w );
-          FillChanHist( h_UKlep2and3Eta, lep[2].Eta(), w );
+          FillChanHist( h_UKlepPt,       leadLep[2].Pt()/1000., w );
+          FillChanHist( h_UKlep3Pt,      leadLep[2].Pt()/1000., w );
+          FillChanHist( h_UKlep2and3Pt,  leadLep[2].Pt()/1000., w );
+          FillChanHist( h_UKlepEta,      leadLep[2].Eta(), w );
+          FillChanHist( h_UKlep3Eta,     leadLep[2].Eta(), w );
+          FillChanHist( h_UKlep2and3Eta, leadLep[2].Eta(), w );
         }
       }
     } // for loop (lead lepton)
@@ -1376,8 +1381,10 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   FillChanHist( h_dPhiLep1Met, lep[0].Vect().XYvector().DeltaPhi(met), w);
   FillChanHist( h_dPhiLep2Met, lep[1].Vect().XYvector().DeltaPhi(met), w);
   FillChanHist( h_dPhiLep3Met, lep[2].Vect().XYvector().DeltaPhi(met), w);
-  FillChanHist( h_dPhiLLMet, (leadLep[0]+leadLep[1]).Vect().XYvector().DeltaPhi(met), w);
-  FillChanHist( h_dPhiLLJet, (leadLep[0]+leadLep[1]).DeltaPhi(leadJet[0]), w);
+  if(nSigLeps>1){
+    FillChanHist( h_dPhiLLMet, (leadLep[0]+leadLep[1]).Vect().XYvector().DeltaPhi(met), w);
+    FillChanHist( h_dPhiLLJet, (leadLep[0]+leadLep[1]).DeltaPhi(leadJet[0]), w);
+  }
   FillChanHist( h_dPhiJet1Met, leadJet[0].Vect().XYvector().DeltaPhi(met), w);
   FillChanHist( h_dPhiJet2Met, leadJet[1].Vect().XYvector().DeltaPhi(met), w);
   FillChanHist( h_dPhiJJMet, (leadJet[0]+leadJet[1]).Vect().XYvector().DeltaPhi(met), w);

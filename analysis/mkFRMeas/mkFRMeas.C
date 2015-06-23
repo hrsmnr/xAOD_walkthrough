@@ -667,6 +667,7 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
       fakerate_bg[fstype][disttype]->SetLineColor(kBlack);
       // fakerate_bg[fstype][disttype]->GetYaxis()->SetTitle("Fake rate");
       fakerate_bg[fstype][disttype]->SetStats(0);
+      fakerate_bgErr[fstype][disttype]->Divide(hist_tmp0Err[fstype][disttype],hist_tmp1Err[fstype][disttype],1,1,"B");
       u->Draw(fakerate_bg[fstype][disttype],"E");
       u->Draw(fakerate_bgErr[fstype][disttype],"sameE2");
 
