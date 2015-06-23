@@ -914,7 +914,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   h_baselepChan[Ch_all]->Fill(chan,w);
 
   //Fill lead lepton
-  for(Int_t id=0; id<3; id++){
+  for(Int_t id=0; id<nSigLeps; id++){
     if(id==0){
       FillChanHist( h_lep1Pt, leadLep[0].Pt()/1000., w );
       FillElHist( 0, h_el1Pt, vec_signalElectron->at(leadLepIndex[0]).pt()/1000., w );
