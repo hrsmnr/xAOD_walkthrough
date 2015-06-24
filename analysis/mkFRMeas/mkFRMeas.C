@@ -665,11 +665,12 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
       fakerate_bg[fstype][disttype]->Divide(hist_tmp0[fstype][disttype],hist_tmp1[fstype][disttype],1,1,"B");
       fakerate_bg[fstype][disttype]->SetMarkerColor(kBlack);
       fakerate_bg[fstype][disttype]->SetLineColor(kBlack);
-      // fakerate_bg[fstype][disttype]->GetYaxis()->SetTitle("Fake rate");
       fakerate_bg[fstype][disttype]->SetStats(0);
       fakerate_bgErr[fstype][disttype]->Divide(hist_tmp0Err[fstype][disttype],hist_tmp1Err[fstype][disttype],1,1,"B");
+      fakerate_bg[fstype][disttype]->GetYaxis()->SetTitle("Ratio");
+      fakerate_bg[fstype][disttype]->GetYaxis()->SetRangeUser(0.0,1.1);
       u->Draw(fakerate_bg[fstype][disttype],"E");
-      u->Draw(fakerate_bgErr[fstype][disttype],"sameE2");
+      // u->Draw(fakerate_bgErr[fstype][disttype],"sameE2");
 
 
       // TH1F *fr_tmp = dist_totalbg[fstype][disttype][1]->Clone();
