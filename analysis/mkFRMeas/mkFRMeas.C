@@ -24,80 +24,62 @@ std::vector<TString> *DistTypeNames;
 void SetDistType(void){
   DistTypeNames = new std::vector<TString>();
   //  DistTypeNames->push_back("lepChan"); //cannot draw this with this macro.
-  DistTypeNames->push_back("lep1Pt");
-  DistTypeNames->push_back("lep2Pt");
-  DistTypeNames->push_back("lep3Pt");
-  DistTypeNames->push_back("lep1Eta");
-  DistTypeNames->push_back("lep2Eta");
-  DistTypeNames->push_back("lep3Eta");
-  DistTypeNames->push_back("PRlep1Pt");
-  DistTypeNames->push_back("PRlep2Pt");
-  DistTypeNames->push_back("PRlep3Pt");
-  DistTypeNames->push_back("COlep1Pt");
-  DistTypeNames->push_back("COlep2Pt");
-  DistTypeNames->push_back("COlep3Pt");
-  DistTypeNames->push_back("HFlep1Pt");
-  DistTypeNames->push_back("HFlep2Pt");
-  DistTypeNames->push_back("HFlep3Pt");
-  DistTypeNames->push_back("LFlep1Pt");
-  DistTypeNames->push_back("LFlep2Pt");
-  DistTypeNames->push_back("LFlep3Pt");
-  DistTypeNames->push_back("UKlep1Pt");
-  DistTypeNames->push_back("UKlep2Pt");
-  DistTypeNames->push_back("UKlep3Pt");
-  DistTypeNames->push_back("PRlep1Eta");
-  DistTypeNames->push_back("PRlep2Eta");
-  DistTypeNames->push_back("PRlep3Eta");
-  DistTypeNames->push_back("COlep1Eta");
-  DistTypeNames->push_back("COlep2Eta");
-  DistTypeNames->push_back("COlep3Eta");
-  DistTypeNames->push_back("HFlep1Eta");
-  DistTypeNames->push_back("HFlep2Eta");
-  DistTypeNames->push_back("HFlep3Eta");
-  DistTypeNames->push_back("LFlep1Eta");
-  DistTypeNames->push_back("LFlep2Eta");
-  DistTypeNames->push_back("LFlep3Eta");
-  DistTypeNames->push_back("UKlep1Eta");
-  DistTypeNames->push_back("UKlep2Eta");
-  DistTypeNames->push_back("UKlep3Eta");
-  DistTypeNames->push_back("PRlep2and3Pt");
-  DistTypeNames->push_back("COlep2and3Pt");
-  DistTypeNames->push_back("HFlep2and3Pt");
-  DistTypeNames->push_back("LFlep2and3Pt");
-  DistTypeNames->push_back("UKlep2and3Pt");
-  DistTypeNames->push_back("PRlep2and3Eta");
-  DistTypeNames->push_back("COlep2and3Eta");
-  DistTypeNames->push_back("HFlep2and3Eta");
-  DistTypeNames->push_back("LFlep2and3Eta");
-  DistTypeNames->push_back("UKlep2and3Eta");
-  DistTypeNames->push_back("baselep1Pt");
-  DistTypeNames->push_back("baselep2Pt");
-  DistTypeNames->push_back("baselep3Pt");
-  DistTypeNames->push_back("baselep1Eta");
-  DistTypeNames->push_back("baselep2Eta");
-  DistTypeNames->push_back("baselep3Eta");
-  DistTypeNames->push_back("PRbaselep2and3Pt");
-  DistTypeNames->push_back("CObaselep2and3Pt");
-  DistTypeNames->push_back("HFbaselep2and3Pt");
-  DistTypeNames->push_back("LFbaselep2and3Pt");
-  DistTypeNames->push_back("UKbaselep2and3Pt");
-  DistTypeNames->push_back("PRbaselep2and3Eta");
-  DistTypeNames->push_back("CObaselep2and3Eta");
-  DistTypeNames->push_back("HFbaselep2and3Eta");
-  DistTypeNames->push_back("LFbaselep2and3Eta");
-  DistTypeNames->push_back("UKbaselep2and3Eta");
-  DistTypeNames->push_back("lepClass");
-  DistTypeNames->push_back("lep1Class");
-  DistTypeNames->push_back("lep2Class");
-  DistTypeNames->push_back("lep3Class");
-  DistTypeNames->push_back("baselepOrigin");
-  DistTypeNames->push_back("baselep1Origin");
-  DistTypeNames->push_back("baselep2Origin");
-  DistTypeNames->push_back("baselep3Origin");
-  DistTypeNames->push_back("baselepClass");
-  DistTypeNames->push_back("baselep1Class");
-  DistTypeNames->push_back("baselep2Class");
-  DistTypeNames->push_back("baselep3Class");
+  DistTypeNames->push_back("lep1Pt");                DistTypeNames->push_back("baselep1Pt");
+  DistTypeNames->push_back("lep2Pt");                DistTypeNames->push_back("baselep2Pt");
+  DistTypeNames->push_back("lep3Pt");                DistTypeNames->push_back("baselep3Pt");
+  DistTypeNames->push_back("lep1Eta");               DistTypeNames->push_back("baselep1Eta");
+  DistTypeNames->push_back("lep2Eta");               DistTypeNames->push_back("baselep2Eta");
+  DistTypeNames->push_back("lep3Eta");               DistTypeNames->push_back("baselep3Eta");
+  DistTypeNames->push_back("PRlep2and3Pt");          DistTypeNames->push_back("PRbaselep2and3Pt");
+  DistTypeNames->push_back("COlep2and3Pt");          DistTypeNames->push_back("CObaselep2and3Pt");
+  DistTypeNames->push_back("HFlep2and3Pt");          DistTypeNames->push_back("HFbaselep2and3Pt");
+  DistTypeNames->push_back("LFlep2and3Pt");          DistTypeNames->push_back("LFbaselep2and3Pt");
+  DistTypeNames->push_back("UKlep2and3Pt");          DistTypeNames->push_back("UKbaselep2and3Pt");
+  DistTypeNames->push_back("PRlep2and3Eta");         DistTypeNames->push_back("PRbaselep2and3Eta");
+  DistTypeNames->push_back("COlep2and3Eta");         DistTypeNames->push_back("CObaselep2and3Eta");
+  DistTypeNames->push_back("HFlep2and3Eta");         DistTypeNames->push_back("HFbaselep2and3Eta");
+  DistTypeNames->push_back("LFlep2and3Eta");         DistTypeNames->push_back("LFbaselep2and3Eta");
+  DistTypeNames->push_back("UKlep2and3Eta");         DistTypeNames->push_back("UKbaselep2and3Eta");
+  DistTypeNames->push_back("lepClass");              DistTypeNames->push_back("baselepClass");
+  DistTypeNames->push_back("lep1Class");             DistTypeNames->push_back("baselep1Class");
+  DistTypeNames->push_back("lep2Class");             DistTypeNames->push_back("baselep2Class");
+  DistTypeNames->push_back("lep3Class");             DistTypeNames->push_back("baselep3Class");
+
+  // DistTypeNames->push_back("PRlep1Pt");
+  // DistTypeNames->push_back("PRlep2Pt");
+  // DistTypeNames->push_back("PRlep3Pt");
+  // DistTypeNames->push_back("COlep1Pt");
+  // DistTypeNames->push_back("COlep2Pt");
+  // DistTypeNames->push_back("COlep3Pt");
+  // DistTypeNames->push_back("HFlep1Pt");
+  // DistTypeNames->push_back("HFlep2Pt");
+  // DistTypeNames->push_back("HFlep3Pt");
+  // DistTypeNames->push_back("LFlep1Pt");
+  // DistTypeNames->push_back("LFlep2Pt");
+  // DistTypeNames->push_back("LFlep3Pt");
+  // DistTypeNames->push_back("UKlep1Pt");
+  // DistTypeNames->push_back("UKlep2Pt");
+  // DistTypeNames->push_back("UKlep3Pt");
+  // DistTypeNames->push_back("PRlep1Eta");
+  // DistTypeNames->push_back("PRlep2Eta");
+  // DistTypeNames->push_back("PRlep3Eta");
+  // DistTypeNames->push_back("COlep1Eta");
+  // DistTypeNames->push_back("COlep2Eta");
+  // DistTypeNames->push_back("COlep3Eta");
+  // DistTypeNames->push_back("HFlep1Eta");
+  // DistTypeNames->push_back("HFlep2Eta");
+  // DistTypeNames->push_back("HFlep3Eta");
+  // DistTypeNames->push_back("LFlep1Eta");
+  // DistTypeNames->push_back("LFlep2Eta");
+  // DistTypeNames->push_back("LFlep3Eta");
+  // DistTypeNames->push_back("UKlep1Eta");
+  // DistTypeNames->push_back("UKlep2Eta");
+  // DistTypeNames->push_back("UKlep3Eta");
+
+  // DistTypeNames->push_back("baselepOrigin");
+  // DistTypeNames->push_back("baselep1Origin");
+  // DistTypeNames->push_back("baselep2Origin");
+  // DistTypeNames->push_back("baselep3Origin");
 }
 
 enum FSType{allchan,eee,eem,emm,mmm,nFSType};
@@ -319,7 +301,7 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
   SetSignalType();
   SetDistType();
 
-  const Int_t nDistType = DistTypeNames->size();
+  const Int_t nDistType = (DistTypeNames->size())/2;
 
   TString filepath_prefix = "$ROOTCOREBIN/../result/";
 
@@ -354,76 +336,47 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
   //Defining histograms
   ////////////////////////////////////////////////////
   TH1::SetDefaultSumw2(); //No need to call this for ROOT6?
-  TH1F* dist_data[nFSType][nDistType];
-  TH1F* dist_bg[nFSType][nBGType][nDistType];
-  TH1F* dist_totalbg[nFSType][nDistType];
-  TH1F* dist_totalbgErr[nFSType][nDistType];
-  TH1F* dist_ratio[nFSType][nDistType];
-  TH1F* dist_ratioErr[nFSType][nDistType];
-  std::vector<TH1F*> *vec_dist_signal[nFSType][nSignalType][nDistType];
+  TH1F* dist_bg[nFSType][nBGType][nDistType][2]; // 0: signal 1: baseline 
+  TH1F* dist_totalbg[nFSType][nDistType][2];
+  TH1F* dist_totalbgErr[nFSType][nDistType][2];
+  TH1F* dist_ratio[nFSType][nDistType][2];
+  TH1F* dist_ratioErr[nFSType][nDistType][2];
+  std::vector<TH1F*> *vec_dist_signal[nFSType][nSignalType][nDistType][2];
   //  std::cout<<vec_mcfiles->at(0)->GetName()<<std::endl;
   for(Int_t fstype=0; fstype<nFSType; fstype++){
     for(Int_t disttype=0; disttype<nDistType; disttype++){
-      std::string distname = DistTypeNames->at(disttype).Data();
-      TFile *f_tmp = vec_signalfiles->at(0);
-      TH1F *h_tmp = (TH1F*)(f_tmp->Get(Form("all_%s;1",distname.c_str())));
-      //     //Real data
-      //     std::cout<<"Preparing final histogram of data for "<<FSTypeNames[fstype]<<" based on "<<Form("all_%s;1",distname.c_str())<<"."<<std::endl;
-      //     dist_data[fstype][disttype] = (TH1F*)(h_tmp->Clone(Form("dist_data_%d_%d",fstype,disttype)));
-      //     dist_data[fstype][disttype]->Reset();
-      //Total BG
-      std::cout<<"Preparing final histogram of total BG for "<<FSTypeNames[fstype]<<" based on "<<Form("all_%s;1",distname.c_str())<<"."<<std::endl;
-      dist_totalbg[fstype][disttype] = (TH1F*)(h_tmp->Clone(Form("dist_totalbg_%d_%d",fstype,disttype)));
-      dist_totalbg[fstype][disttype]->Reset();
-      dist_totalbg[fstype][disttype]->Sumw2();
-      //     //Ratio plot
-      //     std::cout<<"Preparing final histogram of Data/SM ratio and its error for "<<FSTypeNames[fstype]<<" based on "<<Form("all_%s;1",distname.c_str())<<"."<<std::endl;
-      //     dist_ratio[fstype][disttype] = (TH1F*)(h_tmp->Clone(Form("dist_ratio_%d_%d",fstype,disttype)));
-      //     dist_ratio[fstype][disttype]->Reset();
-      //     dist_ratioErr[fstype][disttype] = (TH1F*)(h_tmp->Clone(Form("dist_ratioErr_%d_%d",fstype,disttype)));
-      //     dist_ratioErr[fstype][disttype]->Reset();
-      //Backgrounds
-      for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
-        std::cout<<"Preparing final histogram of "<<BGTypeNames[bgtype]<<" for "<<FSTypeNames[fstype]<<" based on "<<Form("all_%s;1",distname.c_str())<<"."<<std::endl;
-        dist_bg[fstype][bgtype][disttype] = (TH1F*)(h_tmp->Clone(Form("dist_bg_%d_%d_%d",fstype,bgtype,disttype)));
-        dist_bg[fstype][bgtype][disttype]->Reset();
-        dist_bg[fstype][bgtype][disttype]->Sumw2();
-      }
-      //Signal sample
-      for(Int_t signaltype=0; signaltype<nSignalType; signaltype++){
-        vec_dist_signal[fstype][signaltype][disttype] = new std::vector<TH1F*>();
-        std::cout<<"Preparing histograms of "<<SignalTypeNames[signaltype]<<" for "<<FSTypeNames[fstype]<<" based on "<<Form("all_%s;1",distname.c_str())<<"."<<std::endl;
-        for(UInt_t signalfile=0; signalfile<SignalFileNames[signaltype]->size(); signalfile++){
-          vec_dist_signal[fstype][signaltype][disttype]->push_back((TH1F*)(h_tmp->Clone(Form("dist_signal_%d_%d_%d",fstype,signaltype,disttype))));
-          vec_dist_signal[fstype][signaltype][disttype]->at(signalfile)->Reset();
-          vec_dist_signal[fstype][signaltype][disttype]->at(signalfile)->Sumw2();
+      for (Int_t sorb=0; sorb<2; sorb++){
+        Int_t disttype_sorb = 2*disttype+sorb;
+        std::string distname = DistTypeNames->at(disttype_sorb).Data();
+        TFile *f_tmp = vec_signalfiles->at(0);
+        TH1F *h_tmp = (TH1F*)(f_tmp->Get(Form("all_%s;1",distname.c_str())));
+        //Total BG
+        std::cout<<"Preparing final histogram of total BG for "<<FSTypeNames[fstype]<<" based on "<<Form("all_%s;1",distname.c_str())<<"."<<std::endl;
+        dist_totalbg[fstype][disttype][sorb] = (TH1F*)(h_tmp->Clone(Form("dist_totalbg_%d_%d_%d",fstype,disttype,sorb)));
+        dist_totalbg[fstype][disttype][sorb]->Reset();
+        dist_totalbg[fstype][disttype][sorb]->Sumw2();
+        //Backgrounds
+        for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
+          std::cout<<"Preparing final histogram of "<<BGTypeNames[bgtype]<<" for "<<FSTypeNames[fstype]<<" based on "<<Form("all_%s;1",distname.c_str())<<"."<<std::endl;
+          dist_bg[fstype][bgtype][disttype][sorb] = (TH1F*)(h_tmp->Clone(Form("dist_bg_%d_%d_%d_%d",fstype,bgtype,disttype,sorb)));
+          dist_bg[fstype][bgtype][disttype][sorb]->Reset();
+          dist_bg[fstype][bgtype][disttype][sorb]->Sumw2();
+        }
+        //Signal sample
+        for(Int_t signaltype=0; signaltype<nSignalType; signaltype++){
+          vec_dist_signal[fstype][signaltype][disttype][sorb] = new std::vector<TH1F*>();
+          std::cout<<"Preparing histograms of "<<SignalTypeNames[signaltype]<<" for "<<FSTypeNames[fstype]<<" based on "<<Form("all_%s;1",distname.c_str())<<"."<<std::endl;
+          for(UInt_t signalfile=0; signalfile<SignalFileNames[signaltype]->size(); signalfile++){
+            vec_dist_signal[fstype][signaltype][disttype][sorb]->push_back((TH1F*)(h_tmp->Clone(Form("dist_signal_%d_%d_%d_%d",fstype,signaltype,disttype,sorb))));
+            vec_dist_signal[fstype][signaltype][disttype][sorb]->at(signalfile)->Reset();
+            vec_dist_signal[fstype][signaltype][disttype][sorb]->at(signalfile)->Sumw2();
+          }
         }
       }
     }
   }
 
-  // //Adding histograms of data for eee,eem,emm,mmm.
-  // for(UInt_t datafile=0; datafile<nDataType; datafile++){
-  //   for(Int_t fstype=0; fstype<nFSType; fstype++){
-  //     std::string fsname = FSTypeNames[fstype].Data();
-  //     std::cout<<"Adding histograms in "<<DataFileNames->at(datafile)<<" to "<<FSTypeNames[fstype]<<" histograms..."<<std::endl;
-  //     for(Int_t disttype=0; disttype<nDistType; disttype++){
-  //       //Getting the histogram to add.
-  //       std::string distname = DistTypeNames->at(disttype).Data();
-  //       std::string histname = Form("%s_%s;1",fsname.c_str(),distname.c_str());
-  //       std::cout<<"Accessing "<<histname<<" : "<<distname<<std::endl;
-  //       TFile *f_tmp = vec_datafiles->at(datafile);
-  //       TH1F *h_tmp = (TH1F*)(f_tmp->Get(histname.c_str()));
-  //       dist_data[fstype][disttype]->Add(h_tmp);
-  //       dist_data[fstype][disttype]->SetTitle(FSTypeNames[fstype]+":Data");
-  //       dist_data[fstype][disttype]->SetMarkerStyle(kFullCircle);
-  //       dist_data[fstype][disttype]->SetMarkerSize(1.2);
-  //       std::cout<<"#Entries : "<<h_tmp->GetName()<<" : "<<h_tmp->GetEntries()<<std::endl;
-  //     }
-  //   }
-  // }
-
-  // //Adding histograms of BG for eee,eem,emm,mmm.
+  //Adding histograms of BG for eee,eem,emm,mmm.
   UInt_t fileidx=0;
   for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
     UInt_t nsamples = BGFileNames[bgtype]->size();
@@ -440,21 +393,24 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
           TFile *f_tmp = vec_mcfiles->at(fileidx);
           Double_t scale = getMCScale(f_tmp);
           for(Int_t disttype=0; disttype<nDistType; disttype++){
-            //Getting the histogram to add.
-            std::string distname = DistTypeNames->at(disttype).Data();
-            std::string histname = Form("%s_%s;1",fsname.c_str(),distname.c_str());
-            std::cout<<"Accessing "<<histname<<" : "<<distname<<std::endl;
-            TH1F *h_tmp = (TH1F*)(f_tmp->Get(histname.c_str()));
-            if(h_tmp->Integral()<0.){
-              std::cout<<"FileIdx : "<<fileidx<<", "<<h_tmp->Integral()<<std::endl;
-              //              getchar();
+            for(Int_t sorb=0; sorb<2; sorb++){
+              Int_t disttype_sorb = 2*disttype+sorb;
+              //Getting the histogram to add.
+              std::string distname = DistTypeNames->at(disttype_sorb).Data();
+              std::string histname = Form("%s_%s;1",fsname.c_str(),distname.c_str());
+              std::cout<<"Accessing "<<histname<<" : "<<distname<<std::endl;
+              TH1F *h_tmp = (TH1F*)(f_tmp->Get(histname.c_str()));
+              if(h_tmp->Integral()<0.){
+                std::cout<<"FileIdx : "<<fileidx<<", "<<h_tmp->Integral()<<std::endl;
+                //              getchar();
+              }
+              dist_bg[fstype][bgtype][disttype][sorb]->Add(h_tmp,scale);
+              dist_bg[fstype][bgtype][disttype][sorb]->SetTitle(FSTypeNames[fstype]+":"+BGTypeNames[bgtype]);
+              dist_bg[fstype][bgtype][disttype][sorb]->SetMarkerColor(BGTypeHistColors[bgtype]);
+              dist_bg[fstype][bgtype][disttype][sorb]->SetFillColor(BGTypeFillColors[bgtype]);
+              dist_bg[fstype][bgtype][disttype][sorb]->SetLineColor(BGTypeFillColors[bgtype]);
+              std::cout<<"#Entries : "<<h_tmp->GetName()<<" : "<<h_tmp->GetEntries()<<std::endl;
             }
-            dist_bg[fstype][bgtype][disttype]->Add(h_tmp,scale);
-            dist_bg[fstype][bgtype][disttype]->SetTitle(FSTypeNames[fstype]+":"+BGTypeNames[bgtype]);
-            dist_bg[fstype][bgtype][disttype]->SetMarkerColor(BGTypeHistColors[bgtype]);
-            dist_bg[fstype][bgtype][disttype]->SetFillColor(BGTypeFillColors[bgtype]);
-            dist_bg[fstype][bgtype][disttype]->SetLineColor(BGTypeFillColors[bgtype]);
-            std::cout<<"#Entries : "<<h_tmp->GetName()<<" : "<<h_tmp->GetEntries()<<std::endl;
           }
         }
       }
@@ -474,23 +430,26 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
         TFile *f_tmp = vec_signalfiles->at(fileidx);
         Double_t scale = getMCScale(f_tmp);
         for(Int_t disttype=0; disttype<nDistType; disttype++){
-          //Getting the histogram to add.
-          std::string distname = DistTypeNames->at(disttype).Data();
-          std::string histname = Form("%s_%s;1",fsname.c_str(),distname.c_str());
-          TH1F *h_tmp = (TH1F*)(f_tmp->Get(histname.c_str()));
-          std::cout<<"Accessing "<<histname<<" : "<<distname<<std::endl;
-          vec_dist_signal[fstype][signaltype][disttype]->at(signalfile)->Add(h_tmp,scale);
-          vec_dist_signal[fstype][signaltype][disttype]->at(signalfile)->SetTitle(FSTypeNames[fstype]+":"+SignalTypeNames[signaltype]);
-          Int_t color = kBlack;
-          Int_t style = kSolid;
-          if(SignalTypeNames[signaltype]=="SmplViaWZ"){
-            color = SmplViaWZHistColors[signalfile];
-            style = SmplViaWZLineStyle [signalfile];
+          for(Int_t sorb=0; sorb<2; sorb++){
+            Int_t disttype_sorb = 2*disttype+sorb;
+            //Getting the histogram to add.
+            std::string distname = DistTypeNames->at(disttype_sorb).Data();;
+            std::string histname = Form("%s_%s;1",fsname.c_str(),distname.c_str());
+            TH1F *h_tmp = (TH1F*)(f_tmp->Get(histname.c_str()));
+            std::cout<<"Accessing "<<histname<<" : "<<distname<<std::endl;
+            vec_dist_signal[fstype][signaltype][disttype][sorb]->at(signalfile)->Add(h_tmp,scale);
+            vec_dist_signal[fstype][signaltype][disttype][sorb]->at(signalfile)->SetTitle(FSTypeNames[fstype]+":"+SignalTypeNames[signaltype]);
+            Int_t color = kBlack;
+            Int_t style = kSolid;
+            if(SignalTypeNames[signaltype]=="SmplViaWZ"){
+              color = SmplViaWZHistColors[signalfile];
+              style = SmplViaWZLineStyle [signalfile];
+            }
+            vec_dist_signal[fstype][signaltype][disttype][sorb]->at(signalfile)->SetMarkerColor(color);
+            vec_dist_signal[fstype][signaltype][disttype][sorb]->at(signalfile)->SetLineColor(color);
+            vec_dist_signal[fstype][signaltype][disttype][sorb]->at(signalfile)->SetLineStyle(style);
+            std::cout<<"#Entries : "<<h_tmp->GetName()<<" : "<<h_tmp->GetEntries()<<std::endl;
           }
-          vec_dist_signal[fstype][signaltype][disttype]->at(signalfile)->SetMarkerColor(color);
-          vec_dist_signal[fstype][signaltype][disttype]->at(signalfile)->SetLineColor(color);
-          vec_dist_signal[fstype][signaltype][disttype]->at(signalfile)->SetLineStyle(style);
-          std::cout<<"#Entries : "<<h_tmp->GetName()<<" : "<<h_tmp->GetEntries()<<std::endl;
         }
       }
       fileidx++;
@@ -500,43 +459,48 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
   //Making histograms for all channels (eee,eem,emm,mmm).
   for(Int_t disttype=0; disttype<nDistType; disttype++){
     for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
-      dist_bg[allchan][bgtype][disttype]->Add(dist_bg[eee][bgtype][disttype]);
-      dist_bg[allchan][bgtype][disttype]->Add(dist_bg[eem][bgtype][disttype]);
-      dist_bg[allchan][bgtype][disttype]->Add(dist_bg[emm][bgtype][disttype]);
-      dist_bg[allchan][bgtype][disttype]->Add(dist_bg[mmm][bgtype][disttype]);
-      dist_bg[allchan][bgtype][disttype]->SetTitle(FSTypeNames[allchan]+":"+BGTypeNames[bgtype]);
-      dist_bg[allchan][bgtype][disttype]->SetMarkerColor(BGTypeHistColors[bgtype]);
-      dist_bg[allchan][bgtype][disttype]->SetLineColor(BGTypeFillColors[bgtype]);
-      dist_bg[allchan][bgtype][disttype]->SetFillColor(BGTypeFillColors[bgtype]);
+      for(Int_t sorb=0; sorb<2; sorb++){
+        dist_bg[allchan][bgtype][disttype][sorb]->Add(dist_bg[eee][bgtype][disttype][sorb]);
+        dist_bg[allchan][bgtype][disttype][sorb]->Add(dist_bg[eem][bgtype][disttype][sorb]);
+        dist_bg[allchan][bgtype][disttype][sorb]->Add(dist_bg[emm][bgtype][disttype][sorb]);
+        dist_bg[allchan][bgtype][disttype][sorb]->Add(dist_bg[mmm][bgtype][disttype][sorb]);
+        dist_bg[allchan][bgtype][disttype][sorb]->SetTitle(FSTypeNames[allchan]+":"+BGTypeNames[bgtype]);
+        dist_bg[allchan][bgtype][disttype][sorb]->SetMarkerColor(BGTypeHistColors[bgtype]);
+        dist_bg[allchan][bgtype][disttype][sorb]->SetLineColor(BGTypeFillColors[bgtype]);
+        dist_bg[allchan][bgtype][disttype][sorb]->SetFillColor(BGTypeFillColors[bgtype]);
+      }
     }
   }
 
   //Making plots for total BG
-  THStack *hs_bg[nFSType][nDistType];
+  THStack *hs_bg[nFSType][nDistType][2];
   for(Int_t fstype=0; fstype<nFSType; fstype++){
     for(Int_t disttype=0; disttype<nDistType; disttype++){
-      //for the shape
-      for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
-        dist_totalbg[fstype][disttype]->Add(dist_bg[fstype][bgtype][disttype]);
-      }
-      dist_totalbg[fstype][disttype]->SetTitle(FSTypeNames[fstype]+":Total");
-      dist_totalbg[fstype][disttype]->SetLineColor(kRed);
-      //for the error band
-      dist_totalbgErr[fstype][disttype] = (TH1F*)dist_totalbg[fstype][disttype]->Clone(Form("dist_totalbgErr_%d_%d",fstype,disttype));
-      dist_totalbgErr[fstype][disttype]->SetTitle(FSTypeNames[fstype]+":Total");
-      dist_totalbgErr[fstype][disttype]->SetLineColor(kBlack);
-      dist_totalbgErr[fstype][disttype]->SetFillColor(kGray+3);
-      dist_totalbgErr[fstype][disttype]->SetMarkerStyle(0);
-      dist_totalbgErr[fstype][disttype]->SetFillStyle(3454);
-      //Creating SM stuck histogram
-      std::string distname = DistTypeNames->at(disttype).Data();
-      std::cout<<"Preparing THStack for "<<FSTypeNames[fstype]<<" based on "<<Form("all_%s;1",distname.c_str())<<"."<<std::endl;
-      hs_bg[fstype][disttype] = new THStack(Form("hs_bg_%d_%d",fstype,disttype),FSTypeNames[fstype]+":Total");
-      for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
-        std::cout<<"Adding "<<BGTypeNames[BGStackOrder2[bgtype]]<<" to THStack..."<<std::endl;
-        hs_bg[fstype][disttype]->Add(dist_bg[fstype][BGStackOrder2[bgtype]][disttype]);
-        //std::cout<<"Adding "<<BGTypeNames[bgtype]<<" to THStack..."<<std::endl;
-        //hs_bg[fstype][disttype]->Add(dist_bg[fstype][bgtype][disttype]);
+      for(Int_t sorb=0; sorb<2; sorb++){
+        Int_t disttype_sorb = 2*disttype+sorb;
+        //for the shape
+        for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
+          dist_totalbg[fstype][disttype][sorb]->Add(dist_bg[fstype][bgtype][disttype][sorb]);
+        }
+        dist_totalbg[fstype][disttype][sorb]->SetTitle(FSTypeNames[fstype]+":Total");
+        dist_totalbg[fstype][disttype][sorb]->SetLineColor(kRed);
+        //for the error band
+        dist_totalbgErr[fstype][disttype][sorb] = (TH1F*)dist_totalbg[fstype][disttype][sorb]->Clone(Form("dist_totalbgErr_%d_%d_%d",fstype,disttype,sorb));
+        dist_totalbgErr[fstype][disttype][sorb]->SetTitle(FSTypeNames[fstype]+":Total");
+        dist_totalbgErr[fstype][disttype][sorb]->SetLineColor(kBlack);
+        dist_totalbgErr[fstype][disttype][sorb]->SetFillColor(kGray+3);
+        dist_totalbgErr[fstype][disttype][sorb]->SetMarkerStyle(0);
+        dist_totalbgErr[fstype][disttype][sorb]->SetFillStyle(3454);
+        //Creating SM stuck histogram
+        std::string distname = DistTypeNames->at(disttype_sorb).Data();
+        std::cout<<"Preparing THStack for "<<FSTypeNames[fstype]<<" based on "<<Form("all_%s;1",distname.c_str())<<"."<<std::endl;
+        hs_bg[fstype][disttype][sorb] = new THStack(Form("hs_bg_%d_%d_%d",fstype,disttype,sorb),FSTypeNames[fstype]+":Total");
+        for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
+          std::cout<<"Adding "<<BGTypeNames[BGStackOrder2[bgtype]]<<" to THStack..."<<std::endl;
+          hs_bg[fstype][disttype][sorb]->Add(dist_bg[fstype][BGStackOrder2[bgtype]][disttype][sorb]);
+          //std::cout<<"Adding "<<BGTypeNames[bgtype]<<" to THStack..."<<std::endl;
+          //hs_bg[fstype][disttype]->Add(dist_bg[fstype][bgtype][disttype]);
+        }
       }
     }
   }
@@ -551,21 +515,21 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
   leg->SetTextFont(72);
   leg->SetTextSize(0.05);
   // leg->AddEntry(dist_data[0][0],"Data","lp");
-  leg->AddEntry(dist_bg[0][WZ][0],"WZ","f");
-  leg->AddEntry(dist_bg[0][ZZ][0],"ZZ","f");
-  leg->AddEntry(dist_bg[0][ttV][0],"t#bar{t}V","f");
+  leg->AddEntry(dist_bg[0][WZ][0][0],"WZ","f");
+  leg->AddEntry(dist_bg[0][ZZ][0][0],"ZZ","f");
+  leg->AddEntry(dist_bg[0][ttV][0][0],"t#bar{t}V","f");
   // leg->AddEntry(dist_bg[0][Tribosons][0],"Tribosons","f");
   //For Higgs histograms, special treatment is needed to make it visible.
-  TH1F* h_higgs4leg = (TH1F*)dist_bg[0][Higgs][0]->Clone("h_higgs4leg");
+  TH1F* h_higgs4leg = (TH1F*)dist_bg[0][Higgs][0][0]->Clone("h_higgs4leg");
   h_higgs4leg->SetLineColor(kBlack);
   leg->AddEntry(h_higgs4leg,"Higgs","f");
   // leg->AddEntry(dist_bg[0][Wjets][0],"W+jets","f");
-  leg->AddEntry(dist_bg[0][ttbar][0],"t#bar{t}","f");
-  leg->AddEntry(dist_bg[0][SingleTop][0],"Single top","f");
-  leg->AddEntry(dist_bg[0][Zjets][0],"Z/#gamma*+jets","f");
+  leg->AddEntry(dist_bg[0][ttbar][0][0],"t#bar{t}","f");
+  leg->AddEntry(dist_bg[0][SingleTop][0][0],"Single top","f");
+  leg->AddEntry(dist_bg[0][Zjets][0][0],"Z/#gamma*+jets","f");
   // leg->AddEntry(dist_bg[0][OtherFake][0],"Other BG with fakes","f");
-  leg->AddEntry(dist_totalbg[0][0],"Total SM","l");
-  leg->AddEntry(dist_totalbgErr[0][0],"Unct. for SM ","f");
+  leg->AddEntry(dist_totalbg[0][0][0],"Total SM","l");
+  leg->AddEntry(dist_totalbgErr[0][0][0],"Unct. for SM ","f");
   const Int_t nDrawnSignal = DrawnSignalType->size();
 
   ////////////////////////////////////////////////////
@@ -593,9 +557,11 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
 
   u->SetPadNumXY(3,4);
   for(Int_t disttype=0; disttype<nDistType; disttype++){
-    u->cdPad();
-    for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
-      dist_bg[allchan][bgtype][disttype]->DrawNormalized(bgtype==0?"":"same");
+    for(Int_t sorb=0; sorb<2; sorb++){
+      u->cdPad();
+      for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
+        dist_bg[allchan][bgtype][disttype][sorb]->DrawNormalized(bgtype==0?"":"same");
+      }
     }
   }
 
@@ -603,108 +569,135 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
   //  u->SetPadNumXY(3,4);
   for(Int_t fstype=0; fstype<nFSType; fstype++){
     for(Int_t disttype=0; disttype<nDistType; disttype++){
-      //      u->Draw(dist_totalbgErr[fstype][disttype],"E2",010);
-      //      u->Draw(dist_totalbg   [fstype][disttype],"samehist"); //should be drawn after the error histogram.
-      //      dist_data[fstype][disttype]->Draw("sameE");
-      //      Double_t logMax = TMath::Max(dist_totalbg[fstype][disttype]->GetMaximum(),dist_data[fstype][disttype]->GetMaximum());
-      //      Double_t linMax = TMath::Max(dist_totalbg[fstype][disttype]->GetMaximum(),dist_data[fstype][disttype]->GetMaximum());
-      Double_t logMax = TMath::Max(dist_totalbg[fstype][disttype]->GetMaximum(),-1.);
-      Double_t linMax = TMath::Max(dist_totalbg[fstype][disttype]->GetMaximum(),-1.);
-      logMax *= 1.3E0*TMath::Log10(logMax);
-      linMax *= 1.3E0;
-      if(logMax<=1.) logMax=2.;
+      for(Int_t sorb=0; sorb<2; sorb++){
+        Int_t disttype_sorb = 2*disttype+sorb;
+        //      u->Draw(dist_totalbgErr[fstype][disttype],"E2",010);
+        //      u->Draw(dist_totalbg   [fstype][disttype],"samehist"); //should be drawn after the error histogram.
+        //      dist_data[fstype][disttype]->Draw("sameE");
+        //      Double_t logMax = TMath::Max(dist_totalbg[fstype][disttype]->GetMaximum(),dist_data[fstype][disttype]->GetMaximum());
+        //      Double_t linMax = TMath::Max(dist_totalbg[fstype][disttype]->GetMaximum(),dist_data[fstype][disttype]->GetMaximum());
+        Double_t logMax = TMath::Max(dist_totalbg[fstype][disttype][sorb]->GetMaximum(),-1.);
+        Double_t linMax = TMath::Max(dist_totalbg[fstype][disttype][sorb]->GetMaximum(),-1.);
+        logMax *= 1.3E0*TMath::Log10(logMax);
+        linMax *= 1.3E0;
+        if(logMax<=1.) logMax=2.;
 
-      Double_t entry = dist_totalbg[fstype][disttype]->GetEntries();
-      Double_t integral = dist_totalbg[fstype][disttype]->Integral();
-      if(fstype==0 && DistTypeNames->at(disttype)=="nJet"){
-        std::cout<<"*********************************************"<<std::endl;
-        std::cout<<"Total BG : "<<integral<<std::endl;
-        std::cout<<"*********************************************"<<std::endl;
-      }
-      if(entry==0.){ //to avoid error in PostScript
-        u->Draw(dist_totalbg[fstype][disttype],"hist");
-        u->Draw(dist_totalbg[fstype][disttype],"hist",010);
-      }else{
-        //////////////////////////////////////////////////////////////
-        // Linear version
-        //////////////////////////////////////////////////////////////
-        u->cdPad();
-        //should be drawn in this order
-        hs_bg[fstype][disttype]->SetMaximum(linMax);
-        hs_bg[fstype][disttype]->Draw("hist");
-        hs_bg[fstype][disttype]->GetXaxis()->SetTitle(dist_bg[fstype][0][disttype]->GetXaxis()->GetTitle());
-        hs_bg[fstype][disttype]->GetYaxis()->SetTitle(dist_bg[fstype][0][disttype]->GetYaxis()->GetTitle());
-        u->Draw(dist_totalbg   [fstype][disttype],"samehist"); //should be drawn after the error histogram.
-        // dist_data[fstype][disttype]->Draw("sameE");
-        u->Draw(dist_totalbgErr[fstype][disttype],"sameE2");
-        TH1F *h_sig[nDrawnSignal];
-        for(Int_t cnt=0; cnt<nDrawnSignal; cnt++){
-          h_sig[cnt] = vec_dist_signal[fstype][DrawnSignalType->at(cnt)][disttype]->at(DrawnSignalFile->at(cnt));
-          h_sig[cnt]->SetLineColor(DrawnSignalColor->at(cnt));
-          h_sig[cnt]->SetMarkerColor(DrawnSignalColor->at(cnt));
-          h_sig[cnt]->SetFillColor(0);
-          h_sig[cnt]->SetLineStyle(DrawnSignalStyle->at(cnt));
-          h_sig[cnt]->Draw("samehist");
-          if(fstype==0&&disttype==0) leg->AddEntry(h_sig[cnt],DrawnSignalLegend->at(cnt).c_str(),"l");
+        Double_t entry = dist_totalbg[fstype][disttype][sorb]->GetEntries();
+        Double_t integral = dist_totalbg[fstype][disttype][sorb]->Integral();
+        if(fstype==0 && DistTypeNames->at(disttype_sorb)=="nJet"){
+          std::cout<<"*********************************************"<<std::endl;
+          std::cout<<"Total BG : "<<integral<<std::endl;
+          std::cout<<"*********************************************"<<std::endl;
         }
-        //////////////////////////////////////////////////////////////
-        // Log version
-        //////////////////////////////////////////////////////////////
-        u->cdPad();
-        //should be drawn in this order
-        hs_bg[fstype][disttype]->SetMaximum(logMax);
-        hs_bg[fstype][disttype]->SetMinimum(1.E-2);
-        hs_bg[fstype][disttype]->Draw("hist");
-        u->Draw(dist_totalbg   [fstype][disttype],"samehist");
-        // dist_data[fstype][disttype]->Draw("sameE");
-        u->Draw(dist_totalbgErr[fstype][disttype],"sameE2");
-        for(Int_t cnt=0; cnt<nDrawnSignal; cnt++) h_sig[cnt]->Draw("samehist");
-        gPad->SetLogy();
+        if(entry==0.){ //to avoid error in PostScript
+          u->Draw(dist_totalbg[fstype][disttype][sorb],"hist");
+          u->Draw(dist_totalbg[fstype][disttype][sorb],"hist",010);
+        }else{
+          //////////////////////////////////////////////////////////////
+          // Linear version
+          //////////////////////////////////////////////////////////////
+          u->cdPad();
+          //should be drawn in this order
+          hs_bg[fstype][disttype][sorb]->SetMaximum(linMax);
+          hs_bg[fstype][disttype][sorb]->Draw("hist");
+          hs_bg[fstype][disttype][sorb]->GetXaxis()->SetTitle(dist_bg[fstype][0][disttype][sorb]->GetXaxis()->GetTitle());
+          hs_bg[fstype][disttype][sorb]->GetYaxis()->SetTitle(dist_bg[fstype][0][disttype][sorb]->GetYaxis()->GetTitle());
+          u->Draw(dist_totalbg[fstype][disttype][sorb],"samehist"); //should be drawn after the error histogram.
+          // dist_data[fstype][disttype]->Draw("sameE");
+          u->Draw(dist_totalbgErr[fstype][disttype][sorb],"sameE2");
+          TH1F *h_sig[nDrawnSignal];
+          for(Int_t cnt=0; cnt<nDrawnSignal; cnt++){
+            h_sig[cnt] = vec_dist_signal[fstype][DrawnSignalType->at(cnt)][disttype][sorb]->at(DrawnSignalFile->at(cnt));
+            h_sig[cnt]->SetLineColor(DrawnSignalColor->at(cnt));
+            h_sig[cnt]->SetMarkerColor(DrawnSignalColor->at(cnt));
+            h_sig[cnt]->SetFillColor(0);
+            h_sig[cnt]->SetLineStyle(DrawnSignalStyle->at(cnt));
+            h_sig[cnt]->Draw("samehist");
+            if(fstype==0&&disttype==0) leg->AddEntry(h_sig[cnt],DrawnSignalLegend->at(cnt).c_str(),"l");
+          }
+          //////////////////////////////////////////////////////////////
+          // Log version
+          //////////////////////////////////////////////////////////////
+          u->cdPad();
+          //should be drawn in this order
+          hs_bg[fstype][disttype][sorb]->SetMaximum(logMax);
+          hs_bg[fstype][disttype][sorb]->SetMinimum(1.E-2);
+          hs_bg[fstype][disttype][sorb]->Draw("hist");
+          u->Draw(dist_totalbg[fstype][disttype][sorb],"samehist");
+          // dist_data[fstype][disttype]->Draw("sameE");
+          u->Draw(dist_totalbgErr[fstype][disttype][sorb],"sameE2");
+          for(Int_t cnt=0; cnt<nDrawnSignal; cnt++) h_sig[cnt]->Draw("samehist");
+          gPad->SetLogy();
+        }
+        //Ratio plot
+        u->cdPad(); //not needed when we include ratio plot in the future
+        // //should be drawn in this order
+        // Double_t ratioWidth = 1.0;
+        // dist_ratio[fstype][disttype]->SetStats(0);
+        // dist_ratio[fstype][disttype]->GetYaxis()->SetRangeUser(1.-ratioWidth,1.+ratioWidth);
+        // //      dist_ratio[fstype][disttype]->SetMarkerColor(kBlack);
+        // u->Draw(dist_ratio[fstype][disttype],"E");
+        // u->Draw(dist_ratioErr[fstype][disttype],"sameE2");
       }
-      //Ratio plot
-      u->cdPad(); //not needed when we include ratio plot in the future
-      // //should be drawn in this order
-      // Double_t ratioWidth = 1.0;
-      // dist_ratio[fstype][disttype]->SetStats(0);
-      // dist_ratio[fstype][disttype]->GetYaxis()->SetRangeUser(1.-ratioWidth,1.+ratioWidth);
-      // //      dist_ratio[fstype][disttype]->SetMarkerColor(kBlack);
-      // u->Draw(dist_ratio[fstype][disttype],"E");
-      // u->Draw(dist_ratioErr[fstype][disttype],"sameE2");
     }
   }
 
-  //Plotting #signal vs #baseline leptons
-  fileidx=0;
+  // Plotting  fake rate
+  // 0: singal 1: baseline
   u->Update();
-  for(Int_t signaltype=0; signaltype<nSignalType; signaltype++){
-    UInt_t nsamples = SignalFileNames[signaltype]->size();
-    for(UInt_t signalfile=0; signalfile<nsamples; signalfile++){
-      TFile *f_tmp = vec_signalfiles->at(fileidx);
-      TH2F *h2_tmp = (TH2F*)(f_tmp->Get("h_nSigBaseLep"));
-      h2_tmp->SetStats(0);
-      h2_tmp->SetMarkerSize(2.0);
-      h2_tmp->GetZaxis()->SetTitle("Events in 10k");
-      u->cdPad();
-      h2_tmp->DrawNormalized("colztext",10000)->GetZaxis()->SetRangeUser(0,1000);
-      myText(0.18,0.78,kBlack,
-             Form("MN2=%s,MN1=%s",
-                  SignalMN2[signaltype]->at(signalfile).Data(),
-                  SignalMN1[signaltype]->at(signalfile).Data()), 0.1);
-      fileidx++;
+  TH1F* fakerate_bg[nFSType][nDistType];
+  TH1F* fakerate_bgErr[nFSType][nDistType];
+  TH1F* hist_tmp0[nFSType][nDistType];
+  TH1F* hist_tmp1[nFSType][nDistType];
+  TH1F* hist_tmp0Err[nFSType][nDistType];
+  TH1F* hist_tmp1Err[nFSType][nDistType];
+  for(Int_t fstype=0; fstype<nFSType; fstype++){
+    for(Int_t disttype=0; disttype<nDistType; disttype++){
+      dist_totalbg[fstype][disttype][0]->Sumw2();
+      dist_totalbg[fstype][disttype][1]->Sumw2();
+      fakerate_bg[fstype][disttype] = (TH1F*)dist_totalbg[fstype][disttype][0]->Clone(Form("fakerate_bg_%d_%d",fstype,disttype));
+      fakerate_bgErr[fstype][disttype] = (TH1F*)dist_totalbgErr[fstype][disttype][0]->Clone(Form("fakerate_bg_error_%d_%d",fstype,disttype));
+      hist_tmp0[fstype][disttype] = (TH1F*)dist_totalbg[fstype][disttype][0]->Clone(Form("hist_tmp0_%d_%d",fstype,disttype));
+      hist_tmp1[fstype][disttype] = (TH1F*)dist_totalbg[fstype][disttype][1]->Clone(Form("hist_tmp1_%d_%d",fstype,disttype));
+      hist_tmp0Err[fstype][disttype] = (TH1F*)dist_totalbgErr[fstype][disttype][0]->Clone(Form("hist_tmp0_error_%d_%d",fstype,disttype));
+      hist_tmp1Err[fstype][disttype] = (TH1F*)dist_totalbgErr[fstype][disttype][1]->Clone(Form("hist_tmp1_error_%d_%d",fstype,disttype));
+      // u->cdPad();
+      fakerate_bg[fstype][disttype]->Divide(hist_tmp0[fstype][disttype],hist_tmp1[fstype][disttype],1,1,"B");
+      fakerate_bg[fstype][disttype]->SetMarkerColor(kBlack);
+      fakerate_bg[fstype][disttype]->SetLineColor(kBlack);
+      fakerate_bg[fstype][disttype]->SetStats(0);
+      fakerate_bgErr[fstype][disttype]->Divide(hist_tmp0Err[fstype][disttype],hist_tmp1Err[fstype][disttype],1,1,"B");
+      fakerate_bg[fstype][disttype]->GetYaxis()->SetTitle("Ratio");
+      fakerate_bg[fstype][disttype]->GetYaxis()->SetRangeUser(0.0,1.1);
+      u->Draw(fakerate_bg[fstype][disttype],"E");
+      // u->Draw(fakerate_bgErr[fstype][disttype],"sameE2");
+
+
+      // TH1F *fr_tmp = dist_totalbg[fstype][disttype][1]->Clone();
+      // fr_tmp->SetName(Form("fakerate_dist_bg_%d_%d",fstype,disttype));
+      // fr_tmp->Divide(dist_totalbg[fstype][disttype][0],dist_totalbg[fstype][disttype][1],1.0,1.0,"B");
+      // fakerate_bg[fstype][disttype]->Draw("hist");
     }
   }
 
-  // //Plotting signal only distributions
-  // for(Int_t fstype=0; fstype<nFSType; fstype++){
-  //   for(Int_t disttype=0; disttype<nDistType; disttype++){
-  //     for(Int_t signaltype=0; signaltype<nSignalType; signaltype++){
-  //       UInt_t nsamples = SignalFileNames[signaltype]->size();
-  //       for(UInt_t signalfile=0; signalfile<nsamples; signalfile++){
-  //         std::string option = (signaltype==0&&signalfile==0) ? "" : "same";
-  //         if(option=="") u->cdPad();
-  //         vec_dist_signal[fstype][signaltype][disttype]->at(signalfile)->Draw(option.c_str());
-  //       }
-  //     }
+  // Plotting #signal vs #baseline leptons
+  // fileidx=0;
+  // u->Update();
+  // for(Int_t signaltype=0; signaltype<nSignalType; signaltype++){
+  //   UInt_t nsamples = SignalFileNames[signaltype]->size();
+  //   for(UInt_t signalfile=0; signalfile<nsamples; signalfile++){
+  //     TFile *f_tmp = vec_signalfiles->at(fileidx);
+  //     TH2F *h2_tmp = (TH2F*)(f_tmp->Get("h_nSigBaseLep"));
+  //     h2_tmp->SetStats(0);
+  //     h2_tmp->SetMarkerSize(2.0);
+  //     h2_tmp->GetZaxis()->SetTitle("Events in 10k");
+  //     u->cdPad();
+  //     h2_tmp->DrawNormalized("colztext",10000)->GetZaxis()->SetRangeUser(0,1000);
+  //     myText(0.18,0.78,kBlack,
+  //            Form("MN2=%s,MN1=%s",
+  //                 SignalMN2[signaltype]->at(signalfile).Data(),
+  //                 SignalMN1[signaltype]->at(signalfile).Data()), 0.1);
+  //     fileidx++;
   //   }
   // }
 

@@ -224,6 +224,9 @@ class EventSelector : public TObject
   // Truth selection
   bool passLepTruthCut();
 
+  // Fake rate estimation
+  bool pass1stBaseIsSignal();
+
   ///////////////////////////////////////////////
   // Cut methods for acceptance challenge
   ///////////////////////////////////////////////
@@ -357,6 +360,7 @@ class EventSelector : public TObject
   virtual void Set2S3BZvetoDFSS();
   virtual void Set2S3BMetDFSS();
   virtual void Set2S3BZvetoBvetoMetDFSS();
+  virtual void SetGT1S3B();
 
   /* // Systematics */
   /* void setSystematics(ObjSys::OSys objSys=ObjSys::nom, bool doWeightSys=false){ */
@@ -566,6 +570,8 @@ class EventSelector : public TObject
   float               m_dEtaJJMin; // minimum DEtaJetJet cut 
   float               m_dEtaJJMax; // maximum DEtaJetJet cut 
   //end adding 
+
+  bool                m_1stBaseIsSignal; // require leading base lepton to be signal
 
   // Event counters
   int                n_initial;

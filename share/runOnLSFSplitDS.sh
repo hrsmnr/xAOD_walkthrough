@@ -1,5 +1,5 @@
 #For the people not using /bin/bash
-if [ $SHELL != '/bin/bash' ]; then
+if [ $0 != 'bash' ]; then
     echo 'Please change your shell to /bin/bash to use this script!!'
     return
 fi
@@ -102,8 +102,8 @@ done
 maxEve=-1
 queue=1d
 echo Starting testRun for DSID=$runnum ...
-echo bsub -q ${queue} -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG
-bsub -q ${queue} -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG
+echo bsub -q ${queue} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG
+bsub -q ${queue} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG
 echo ''
 done
 

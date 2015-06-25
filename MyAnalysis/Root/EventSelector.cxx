@@ -156,7 +156,8 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   m_productEtaEtaMin(-1),
   m_productEtaEtaMax(-1),
   m_dEtaJJMin(-1),
-  m_dEtaJJMax(-1)
+  m_dEtaJJMax(-1),
+  m_1stBaseIsSignal(false)
 {
   // event counters
   n_initial     = 0;
@@ -268,6 +269,7 @@ bool EventSelector::initialize()
   else if(m_sel=="2S3BZvetoDFSS") Set2S3BZvetoDFSS();
   else if(m_sel=="2S3BMetDFSS"  ) Set2S3BMetDFSS();
   else if(m_sel=="2S3BZvetoBvetoMetDFSS") Set2S3BZvetoBvetoMetDFSS();
+  else if(m_sel=="GT1S3B") SetGT1S3B(); // Fake rate estimation
   //Used for the legacy paper
   else if(m_sel=="VR0a") {
     TypSel(3,0,3,0,0,0);
@@ -384,7 +386,7 @@ bool EventSelector::initialize()
     MyError("initialize()",Form("EventSelector ERROR - selection %s not supported!!",m_sel.c_str()));
     return false;
   }
-  if(m_nLepMin!=3 || m_nLepMin!=3) m_is3SigLepSel = false;
+  if(m_nLepMin!=3 || m_nLepMax!=3) m_is3SigLepSel = false;
 
   m_vec_signalElectron = new std::vector<xAOD::Electron>();
   m_vec_baseElectron   = new std::vector<xAOD::Electron>();
@@ -682,6 +684,16 @@ void EventSelector::Set2S3BZvetoBvetoMetDFSS()
   m_selSFOS = true;
   m_selDFandSS4SigLep = true;
   m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::SetGT1S3B()
+{
+  m_nLepMin = 1;
+  m_nLepMax = 3;
+  m_nBaseLepMin = m_nBaseLepMax = 3;
+  m_applyTrig = false;
+  m_1stBaseIsSignal = true;
   return;
 }
 
@@ -1416,6 +1428,8 @@ bool EventSelector::selectEvent()
   //if(!passMtllCut(mySigLeptons, met)) return false;
   // PRINT_STEP(pass_other);
 
+  if(!pass1stBaseIsSignal()) return false;
+
 #undef PRINT_STEP
 
   return true;
@@ -1600,6 +1614,7 @@ bool EventSelector::passACCut_oneBjet   (){
 //   n_pass_cosmic++;
 //   return true;
 // }
+/*--------------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------------*/
 // Lepton/jet multiplicity
@@ -2541,6 +2556,17 @@ bool EventSelector::passLepTruthCut()
   if(m_isMC && (m_is3SigLepSel ? nSignalLeps() > 0 : nBaselineLeps() > 0)){
     bool lep1Real = isRealLepton(0);
     if(m_vetoRealLep1 && lep1Real) return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::pass1stBaseIsSignal(){
+  if(m_1stBaseIsSignal){
+    if(m_baseLepFlavor[0]==0){
+      if(not IsMySignalElectron( m_vec_baseElectron->at(m_baseLepIndex[0]) )) return false;
+    } else if (m_baseLepFlavor[0]==1){
+      if(not IsMySignalMuon    ( m_vec_baseMuon    ->at(m_baseLepIndex[0]) )) return false;
+    }
   }
   return true;
 }
