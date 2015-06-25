@@ -72,8 +72,8 @@ void SetDistType(void){
   DistTypeNames->push_back("llPt");
   DistTypeNames->push_back("sumLepPt");
   DistTypeNames->push_back("sumLepPtMet");
-  DistTypeNames->push_back("dPhiWZ");
-  DistTypeNames->push_back("nMuComb");
+  //  DistTypeNames->push_back("dPhiWZ");
+  //  DistTypeNames->push_back("nMuComb");
   DistTypeNames->push_back("elPtcone30");
   DistTypeNames->push_back("elEtcone30");
   DistTypeNames->push_back("muPtcone30");
@@ -94,105 +94,105 @@ void SetDistType(void){
   DistTypeNames->push_back("lep1Z0SinTheta");
   DistTypeNames->push_back("lep2Z0SinTheta");
   DistTypeNames->push_back("lep3Z0SinTheta");
-  DistTypeNames->push_back("lepOrigin");
-  DistTypeNames->push_back("lep1Origin");
-  DistTypeNames->push_back("lep2Origin");
-  DistTypeNames->push_back("lep3Origin");
+  // DistTypeNames->push_back("lepOrigin");
+  // DistTypeNames->push_back("lep1Origin");
+  // DistTypeNames->push_back("lep2Origin");
+  // DistTypeNames->push_back("lep3Origin");
   DistTypeNames->push_back("lepClass");
   DistTypeNames->push_back("lep1Class");
   DistTypeNames->push_back("lep2Class");
   DistTypeNames->push_back("lep3Class");
-  DistTypeNames->push_back("baselepOrigin");
-  DistTypeNames->push_back("baselep1Origin");
-  DistTypeNames->push_back("baselep2Origin");
-  DistTypeNames->push_back("baselep3Origin");
+  // DistTypeNames->push_back("baselepOrigin");
+  // DistTypeNames->push_back("baselep1Origin");
+  // DistTypeNames->push_back("baselep2Origin");
+  // DistTypeNames->push_back("baselep3Origin");
   DistTypeNames->push_back("baselepClass");
   DistTypeNames->push_back("baselep1Class");
   DistTypeNames->push_back("baselep2Class");
   DistTypeNames->push_back("baselep3Class");
-  DistTypeNames->push_back("hasSS");
-  DistTypeNames->push_back("nTau");
-  DistTypeNames->push_back("tauPt");
-  DistTypeNames->push_back("tau1Pt");
-  DistTypeNames->push_back("tau2Pt");
-  DistTypeNames->push_back("tau1Eta");
-  DistTypeNames->push_back("tau2Eta");
-  DistTypeNames->push_back("tauProng");
-  DistTypeNames->push_back("dPhiTauTau");
-  DistTypeNames->push_back("tauClass");
-  DistTypeNames->push_back("tau1Class");
-  DistTypeNames->push_back("tau2Class");
-  DistTypeNames->push_back("minDRLepLep");
-  DistTypeNames->push_back("dPhiLep1Met");
-  DistTypeNames->push_back("dPhiLep2Met");
-  DistTypeNames->push_back("dPhiLep3Met");
-  DistTypeNames->push_back("dPhiLLMet");
-  DistTypeNames->push_back("dPhiJet1Met");
-  DistTypeNames->push_back("dPhiJet2Met");
-  DistTypeNames->push_back("dPhiJJMet");
-  DistTypeNames->push_back("minDPhiLepLep");
-  DistTypeNames->push_back("minDPhiLepMet");
-  DistTypeNames->push_back("minDPhiJetJet");
-  DistTypeNames->push_back("minDPhiJetMet");
-  DistTypeNames->push_back("minDPhiTauMet");
-  DistTypeNames->push_back("minDRLepJet");
-  DistTypeNames->push_back("maxDPhiLepLep");
-  DistTypeNames->push_back("maxDPhiLepMet");
-  DistTypeNames->push_back("maxDPhiJetJet");
-  DistTypeNames->push_back("maxDPhiJetMet");
-  DistTypeNames->push_back("maxDRLepJet");
-  DistTypeNames->push_back("dEtaLL");
-  DistTypeNames->push_back("dEtaJetJet");
-  DistTypeNames->push_back("maxDEtaJetJet");
-  DistTypeNames->push_back("minDEtaJetJet");
+  // DistTypeNames->push_back("hasSS");
+  // DistTypeNames->push_back("nTau");
+  // DistTypeNames->push_back("tauPt");
+  // DistTypeNames->push_back("tau1Pt");
+  // DistTypeNames->push_back("tau2Pt");
+  // DistTypeNames->push_back("tau1Eta");
+  // DistTypeNames->push_back("tau2Eta");
+  // DistTypeNames->push_back("tauProng");
+  // DistTypeNames->push_back("dPhiTauTau");
+  // DistTypeNames->push_back("tauClass");
+  // DistTypeNames->push_back("tau1Class");
+  // DistTypeNames->push_back("tau2Class");
+  // DistTypeNames->push_back("minDRLepLep");
+  // DistTypeNames->push_back("dPhiLep1Met");
+  // DistTypeNames->push_back("dPhiLep2Met");
+  // DistTypeNames->push_back("dPhiLep3Met");
+  // DistTypeNames->push_back("dPhiLLMet");
+  // DistTypeNames->push_back("dPhiJet1Met");
+  // DistTypeNames->push_back("dPhiJet2Met");
+  // DistTypeNames->push_back("dPhiJJMet");
+  // DistTypeNames->push_back("minDPhiLepLep");
+  // DistTypeNames->push_back("minDPhiLepMet");
+  // DistTypeNames->push_back("minDPhiJetJet");
+  // DistTypeNames->push_back("minDPhiJetMet");
+  // DistTypeNames->push_back("minDPhiTauMet");
+  // DistTypeNames->push_back("minDRLepJet");
+  // DistTypeNames->push_back("maxDPhiLepLep");
+  // DistTypeNames->push_back("maxDPhiLepMet");
+  // DistTypeNames->push_back("maxDPhiJetJet");
+  // DistTypeNames->push_back("maxDPhiJetMet");
+  // DistTypeNames->push_back("maxDRLepJet");
+  // DistTypeNames->push_back("dEtaLL");
+  // DistTypeNames->push_back("dEtaJetJet");
+  // DistTypeNames->push_back("maxDEtaJetJet");
+  // DistTypeNames->push_back("minDEtaJetJet");
   DistTypeNames->push_back("met");
   DistTypeNames->push_back("meff");
   DistTypeNames->push_back("meffNoMet");
-  DistTypeNames->push_back("metEle");
-  DistTypeNames->push_back("metMuo");
-  DistTypeNames->push_back("metJet");
-  DistTypeNames->push_back("metCell");
+  // DistTypeNames->push_back("metEle");
+  // DistTypeNames->push_back("metMuo");
+  // DistTypeNames->push_back("metJet");
+  // DistTypeNames->push_back("metCell");
   DistTypeNames->push_back("metRel");
   DistTypeNames->push_back("nJet");
   DistTypeNames->push_back("nBJet");
   DistTypeNames->push_back("jetPt");
-  DistTypeNames->push_back("jet1Pt");
-  DistTypeNames->push_back("jet2Pt");
-  DistTypeNames->push_back("jet3Pt");
+  // DistTypeNames->push_back("jet1Pt");
+  // DistTypeNames->push_back("jet2Pt");
+  // DistTypeNames->push_back("jet3Pt");
   DistTypeNames->push_back("bJetPt");
-  DistTypeNames->push_back("bJet1Pt");
-  DistTypeNames->push_back("bJet2Pt");
-  DistTypeNames->push_back("bJet3Pt");
+  // DistTypeNames->push_back("bJet1Pt");
+  // DistTypeNames->push_back("bJet2Pt");
+  // DistTypeNames->push_back("bJet3Pt");
   DistTypeNames->push_back("jetEta");
   DistTypeNames->push_back("bJetEta");
-  DistTypeNames->push_back("bJet1Eta");
-  DistTypeNames->push_back("bJet2Eta");
-  DistTypeNames->push_back("bJet3Eta");
+  // DistTypeNames->push_back("bJet1Eta");
+  // DistTypeNames->push_back("bJet2Eta");
+  // DistTypeNames->push_back("bJet3Eta");
   DistTypeNames->push_back("jetPhi");
-  DistTypeNames->push_back("jetMV1");
-  DistTypeNames->push_back("jetJVF");
-  DistTypeNames->push_back("bJetJVF");
-  DistTypeNames->push_back("dijetM");
-  DistTypeNames->push_back("productEta1Eta2");
+  //  DistTypeNames->push_back("jetMV1");
+  //  DistTypeNames->push_back("jetJVF");
+  //  DistTypeNames->push_back("bJetJVF");
+  //  DistTypeNames->push_back("dijetM");
+  //  DistTypeNames->push_back("productEta1Eta2");
   DistTypeNames->push_back("mll");
   DistTypeNames->push_back("msfos");
   DistTypeNames->push_back("minMsfos");
-  DistTypeNames->push_back("msfss");
-  DistTypeNames->push_back("mlll");
-  DistTypeNames->push_back("mt");
-  DistTypeNames->push_back("mtL1");
-  DistTypeNames->push_back("mtL2");
+  //  DistTypeNames->push_back("msfss");
+  //  DistTypeNames->push_back("mlll");
+  //  DistTypeNames->push_back("mt");
+  //  DistTypeNames->push_back("mtL1");
+  //  DistTypeNames->push_back("mtL2");
   DistTypeNames->push_back("mt2");
-  DistTypeNames->push_back("mjj");
-  DistTypeNames->push_back("mlljj");
-  DistTypeNames->push_back("mlt");
-  DistTypeNames->push_back("mtt");
-  DistTypeNames->push_back("mbb");
+  // DistTypeNames->push_back("mjj");
+  // DistTypeNames->push_back("mlljj");
+  // DistTypeNames->push_back("mlt");
+  // DistTypeNames->push_back("mtt");
+  // DistTypeNames->push_back("mbb");
   DistTypeNames->push_back("mljj");
-  DistTypeNames->push_back("mljjFine");
-  DistTypeNames->push_back("mtll");
-  DistTypeNames->push_back("nVtx");
-  DistTypeNames->push_back("mu");
+  //  DistTypeNames->push_back("mljjFine");
+  // DistTypeNames->push_back("mtll");
+  // DistTypeNames->push_back("nVtx");
+  // DistTypeNames->push_back("mu");
 }
 
 enum FSType{allchan,eee,eem,emm,mmm,nFSType};
@@ -292,12 +292,12 @@ void SetDataType(void){
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
-enum BGType{WZ,ZZ,ttV,Higgs,ttbar,SingleTop,Zjets,nBGType};
-TString BGTypeNames[nBGType] = {"WZ","ZZ","ttV","Higgs","ttbar","SingleTop","Zjets"};
-Int_t BGTypeHistColors[nBGType] = {kAzure-3,kAzure-4,kCyan-1,kBlack,kOrange-2,kYellow-9,kViolet-9};
-Int_t BGTypeFillColors[nBGType] = {kAzure-3,kAzure-4,kCyan-1,kWhite,kOrange-2,kYellow-9,kViolet-9};
-Int_t BGStackOrder1[nBGType] = {WZ,ZZ,ttV,Higgs,SingleTop,ttbar,Zjets};
-Int_t BGStackOrder2[nBGType] = {Higgs,ttV,ZZ,SingleTop,WZ,Zjets,ttbar};
+enum BGType{WW,WZ,ZZ,ttV,Higgs,ttbar,SingleTop,Zjets,Wjets,nBGType};
+TString BGTypeNames[nBGType] = {"WW" "WZ","ZZ","ttV","Higgs","ttbar","SingleTop","Zjets","Wjets"};
+Int_t BGTypeHistColors[nBGType] = {kTeal-8,kAzure-3,kAzure-4,kCyan-1,kBlack,kOrange-2,kYellow-9,kViolet-9,kGray};
+Int_t BGTypeFillColors[nBGType] = {kTeal-8,kAzure-3,kAzure-4,kCyan-1,kWhite,kOrange-2,kYellow-9,kViolet-9,kGray};
+Int_t BGStackOrder1[nBGType] = {WZ,ZZ,ttV,Higgs,SingleTop,WW,ttbar,Zjets,Wjets};
+Int_t BGStackOrder2[nBGType] = {Higgs,ttV,ZZ,SingleTop,WZ,WW,Wjets,Zjets,ttbar};
 std::vector<TString> *BGFileNames  [nBGType];
 std::vector<TString> *BGIncludeFlag[nBGType]; //e.g. "00110" means the sample is included to the "eem" and "emm" channels.
 
@@ -338,15 +338,53 @@ void SetBGType(void){
   BGFileNames[ZZ]->push_back("187187"); BGIncludeFlag[ZZ]->push_back("01111");
   BGFileNames[ZZ]->push_back("187188"); BGIncludeFlag[ZZ]->push_back("01111");
 
+  //WW files
+  BGFileNames[WW]->push_back("187150"); BGIncludeFlag[WW]->push_back("01000");
+  BGFileNames[WW]->push_back("187151"); BGIncludeFlag[WW]->push_back("00110");
+  BGFileNames[WW]->push_back("187152"); BGIncludeFlag[WW]->push_back("01110");
+  BGFileNames[WW]->push_back("187153"); BGIncludeFlag[WW]->push_back("00001");
+  BGFileNames[WW]->push_back("187154"); BGIncludeFlag[WW]->push_back("00111");
+  BGFileNames[WW]->push_back("187155"); BGIncludeFlag[WW]->push_back("00111");
+  BGFileNames[WW]->push_back("187156"); BGIncludeFlag[WW]->push_back("01111");
+  BGFileNames[WW]->push_back("187157"); BGIncludeFlag[WW]->push_back("01111");
+  BGFileNames[WW]->push_back("187158"); BGIncludeFlag[WW]->push_back("01111");
+  BGFileNames[WW]->push_back("187401"); BGIncludeFlag[WW]->push_back("01000");
+  BGFileNames[WW]->push_back("187402"); BGIncludeFlag[WW]->push_back("00110");
+  BGFileNames[WW]->push_back("187403"); BGIncludeFlag[WW]->push_back("01110");
+  BGFileNames[WW]->push_back("187404"); BGIncludeFlag[WW]->push_back("00001");
+  BGFileNames[WW]->push_back("187405"); BGIncludeFlag[WW]->push_back("00111");
+  BGFileNames[WW]->push_back("187406"); BGIncludeFlag[WW]->push_back("00111");
+  BGFileNames[WW]->push_back("187407"); BGIncludeFlag[WW]->push_back("01111");
+  BGFileNames[WW]->push_back("187408"); BGIncludeFlag[WW]->push_back("01111");
+  BGFileNames[WW]->push_back("187409"); BGIncludeFlag[WW]->push_back("01111");
+
   //ttV files
   BGFileNames[ttV]->push_back("119353"); BGIncludeFlag[ttV]->push_back("01111");//ttW
   BGFileNames[ttV]->push_back("119355"); BGIncludeFlag[ttV]->push_back("01111");//ttZ
   BGFileNames[ttV]->push_back("119583"); BGIncludeFlag[ttV]->push_back("01111");//ttWW
+  BGFileNames[ttV]->push_back("174830"); BGIncludeFlag[ttV]->push_back("01111");//ttWjExcl
+  BGFileNames[ttV]->push_back("174831"); BGIncludeFlag[ttV]->push_back("01111");//ttWjjIncl
+  BGFileNames[ttV]->push_back("174832"); BGIncludeFlag[ttV]->push_back("01111");//ttZjExcl
+  BGFileNames[ttV]->push_back("174833"); BGIncludeFlag[ttV]->push_back("01111");//ttZjjIncl
 
   //Higgs
   BGFileNames[Higgs]->push_back("161105"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->WW(lnulnu)
   BGFileNames[Higgs]->push_back("161155"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->WW(lnulnu)
   BGFileNames[Higgs]->push_back("161305"); BGIncludeFlag[Higgs]->push_back("01111");//ttH:H->WW(incl.)
+  BGFileNames[Higgs]->push_back("161555"); BGIncludeFlag[Higgs]->push_back("01111");//ggH tautau(ll)
+  BGFileNames[Higgs]->push_back("161566"); BGIncludeFlag[Higgs]->push_back("01111");//ggH tautau(lh)
+  BGFileNames[Higgs]->push_back("161577"); BGIncludeFlag[Higgs]->push_back("01111");//ggH tautau(hh)
+  BGFileNames[Higgs]->push_back("161595"); BGIncludeFlag[Higgs]->push_back("01111");//VBF tautau(ll)
+  BGFileNames[Higgs]->push_back("161606"); BGIncludeFlag[Higgs]->push_back("01111");//VBF tautau(lh)
+  BGFileNames[Higgs]->push_back("161617"); BGIncludeFlag[Higgs]->push_back("01111");//VBF tautau(hh)
+  BGFileNames[Higgs]->push_back("161635"); BGIncludeFlag[Higgs]->push_back("01111");//WH tautau(ll)
+  BGFileNames[Higgs]->push_back("161646"); BGIncludeFlag[Higgs]->push_back("01111");//WH tautau(lh)
+  BGFileNames[Higgs]->push_back("161657"); BGIncludeFlag[Higgs]->push_back("01111");//WH tautau(hh)
+  BGFileNames[Higgs]->push_back("161675"); BGIncludeFlag[Higgs]->push_back("01111");//ZH tautau(ll)
+  //  BGFileNames[Higgs]->push_back("161686"); BGIncludeFlag[Higgs]->push_back("01111");//ZH tautau(lh)
+  BGFileNames[Higgs]->push_back("161697"); BGIncludeFlag[Higgs]->push_back("01111");//ZH tautau(hh)
+  BGFileNames[Higgs]->push_back("161827"); BGIncludeFlag[Higgs]->push_back("01111");//ZH llbb
+  BGFileNames[Higgs]->push_back("161849"); BGIncludeFlag[Higgs]->push_back("01111");//ZH nunubb
   //  BGFileNames[Higgs]->push_back("160755"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->ZZ(llnunu)
   //  BGFileNames[Higgs]->push_back("160805"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->ZZ(llnunu)
   //  BGFileNames[Higgs]->push_back("169072"); BGIncludeFlag[Higgs]->push_back("01111");//ttH:H->ZZ(incl.)
@@ -356,10 +394,6 @@ void SetBGType(void){
   //  BGFileNames[Higgs]->push_back("160305"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->ZZ(4l)
   //  BGFileNames[Higgs]->push_back("160505"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->ZZ(llqq)
   //  BGFileNames[Higgs]->push_back("160555"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->ZZ(llqq)
-  //  BGFileNames[Higgs]->push_back("XXXXXX"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->tautau(ll) ???
-  //  BGFileNames[Higgs]->push_back("161675"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->tautau(ll)
-  //  BGFileNames[Higgs]->push_back("161708"); BGIncludeFlag[Higgs]->push_back("01111");//ttH:H->tautau(ll)
-  //  BGFileNames[Higgs]->push_back("161686"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->tautau(lhad)
   //  BGFileNames[Higgs]->push_back("161719"); BGIncludeFlag[Higgs]->push_back("01111");//ttH:H->tautau(lhad)
   //  BGFileNames[Higgs]->push_back("XXXXXX"); BGIncludeFlag[Higgs]->push_back("00011");//WH:H->mumu ???
   //  BGFileNames[Higgs]->push_back("167418"); BGIncludeFlag[Higgs]->push_back("00111");//ZH:H->mumu
@@ -368,13 +402,23 @@ void SetBGType(void){
   BGFileNames[ttbar]->push_back("110401"); BGIncludeFlag[ttbar]->push_back("01111");//no all-had
 
   //SingleTop
+  BGFileNames[SingleTop]->push_back("110070"); BGIncludeFlag[SingleTop]->push_back("01111");//t t-chan
+  BGFileNames[SingleTop]->push_back("110071"); BGIncludeFlag[SingleTop]->push_back("01111");//tbar t-chan
   BGFileNames[SingleTop]->push_back("110302"); BGIncludeFlag[SingleTop]->push_back("01111");//s-chan
   BGFileNames[SingleTop]->push_back("110305"); BGIncludeFlag[SingleTop]->push_back("01111");//Wt
 
   //Zjets
   BGFileNames[Zjets]->push_back("147406"); BGIncludeFlag[Zjets]->push_back("01100");//Zee
   BGFileNames[Zjets]->push_back("147407"); BGIncludeFlag[Zjets]->push_back("00011");//Zmumu
-  BGFileNames[Zjets]->push_back("147408"); BGIncludeFlag[Zjets]->push_back("01111");//Ztautau
+  //  BGFileNames[Zjets]->push_back("147408"); BGIncludeFlag[Zjets]->push_back("01111");//Ztautau
+
+  //Wjets
+  BGFileNames[Wjets]->push_back("147400"); BGIncludeFlag[Wjets]->push_back("01100");//Wp->enu
+  BGFileNames[Wjets]->push_back("147401"); BGIncludeFlag[Wjets]->push_back("00011");//Wp->munu
+  BGFileNames[Wjets]->push_back("147402"); BGIncludeFlag[Wjets]->push_back("01111");//Wp->taunu
+  BGFileNames[Wjets]->push_back("147403"); BGIncludeFlag[Wjets]->push_back("01100");//Wm->enu
+  //  BGFileNames[Wjets]->push_back("147404"); BGIncludeFlag[Wjets]->push_back("00011");//Wm->munu
+  BGFileNames[Wjets]->push_back("147405"); BGIncludeFlag[Wjets]->push_back("01111");//Wm->taunu
 
 }
 
@@ -693,6 +737,7 @@ Int_t mkPlots(TString Tag, TString SelecReg){
   leg->SetTextFont(72);
   leg->SetTextSize(0.05);
   // leg->AddEntry(dist_data[0][0],"Data","lp");
+  leg->AddEntry(dist_bg[0][WW][0],"WW","f");
   leg->AddEntry(dist_bg[0][WZ][0],"WZ","f");
   leg->AddEntry(dist_bg[0][ZZ][0],"ZZ","f");
   leg->AddEntry(dist_bg[0][ttV][0],"t#bar{t}V","f");
@@ -701,7 +746,7 @@ Int_t mkPlots(TString Tag, TString SelecReg){
   TH1F* h_higgs4leg = (TH1F*)dist_bg[0][Higgs][0]->Clone("h_higgs4leg");
   h_higgs4leg->SetLineColor(kBlack);
   leg->AddEntry(h_higgs4leg,"Higgs","f");
-  // leg->AddEntry(dist_bg[0][Wjets][0],"W+jets","f");
+  leg->AddEntry(dist_bg[0][Wjets][0],"W+jets","f");
   leg->AddEntry(dist_bg[0][ttbar][0],"t#bar{t}","f");
   leg->AddEntry(dist_bg[0][SingleTop][0],"Single top","f");
   leg->AddEntry(dist_bg[0][Zjets][0],"Z/#gamma*+jets","f");

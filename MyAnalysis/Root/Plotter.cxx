@@ -1,9 +1,9 @@
 #define APP_NAME "Plotter"
-#define MyVerbose(a,b) if(m_dbg<=MSG::VERBOSE) std::cout<<"Verbose in <Plotter::"<<(a)<<">: "<< m_sel.c_str() << "," << m_sys << " : "<<(b)<<std::endl;
-#define MyDebug(a,b) if(m_dbg<=MSG::DEBUG) std::cout<<"Debug in <Plotter::"<<(a)<<">: "<< m_sel.c_str() << "," << m_sys << " : "<<(b)<<std::endl;
-#define MyInfo(a,b) if(m_dbg<=MSG::INFO) std::cout<<"Info in <Plotter::"<<(a)<<">: "<< m_sel.c_str() << "," << m_sys << " : "<<(b)<<std::endl;
-#define MyError(a,b) if(m_dbg<=MSG::ERROR) std::cout<<"Error in <Plotter::"<<(a)<<">: "<< m_sel.c_str() << "," << m_sys << " : "<<(b)<<std::endl;
-#define MyAlways(a,b) if(m_dbg<=MSG::ALWAYS) std::cout<<"In <Plotter::"<<(a)<<">: "<< m_sel.c_str() << "," << m_sys << " : "<<(b)<<std::endl;
+#define MyInfo(a,b)    if(m_dbg<=MSG::INFO  ) std::cout<<"Info    in <Plotter::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyError(a,b)   if(m_dbg<=MSG::ERROR ) std::cout<<"Error   in <Plotter::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyDebug(a,b)   if(m_dbg<=MSG::DEBUG ) std::cout<<"Debug   in <Plotter::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyVerbose(a,b) if(m_dbg<=MSG::DEBUG ) std::cout<<"Verbose in <Plotter::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyAlways(a,b)  if(m_dbg<=MSG::ALWAYS) std::cout<<"In         <Plotter::"<<(a)<<">: "<<(b)<<std::endl;
 
 #include<iostream>
 #include"MyAnalysis/Plotter.h"

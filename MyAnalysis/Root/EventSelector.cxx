@@ -1,9 +1,9 @@
 #define APP_NAME "EventSelector"
-#define MyVerbose(a,b) if(m_dbg<=MSG::VERBOSE) std::cout<<"Verbose in <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
-#define MyDebug(a,b) if(m_dbg<=MSG::DEBUG) std::cout<<"Debug in <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
-#define MyInfo(a,b) if(m_dbg<=MSG::INFO) std::cout<<"Info in <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
-#define MyError(a,b) if(m_dbg<=MSG::ERROR) std::cout<<"Error in <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
-#define MyAlways(a,b) if(m_dbg<=MSG::ALWAYS) std::cout<<"In <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyInfo(a,b)    if(m_dbg<=MSG::INFO  ) std::cout<<"Info    in <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyError(a,b)   if(m_dbg<=MSG::ERROR ) std::cout<<"Error   in <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyDebug(a,b)   if(m_dbg<=MSG::DEBUG ) std::cout<<"Debug   in <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyVerbose(a,b) if(m_dbg<=MSG::DEBUG ) std::cout<<"Verbose in <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyAlways(a,b)  if(m_dbg<=MSG::ALWAYS) std::cout<<"In         <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
 
 #include<iostream>
 #include"MyAnalysis/EventSelector.h"
@@ -248,6 +248,11 @@ bool EventSelector::initialize()
   else if(m_sel=="2S3BZveto") Set2S3BZveto();
   else if(m_sel=="2S3BMet"  ) Set2S3BMet();
   else if(m_sel=="2S3BZvetoBvetoMet") Set2S3BZvetoBvetoMet();
+  else if(m_sel=="2S3BDFandSS"     ) Set2S3BDFandSS();
+  else if(m_sel=="2S3BDFandSSBveto") Set2S3BDFandSSBveto();
+  else if(m_sel=="2S3BDFandSSZveto") Set2S3BDFandSSZveto();
+  else if(m_sel=="2S3BDFandSSMet"  ) Set2S3BDFandSSMet();
+  else if(m_sel=="2S3BDFandSSZvetoBvetoMet") Set2S3BDFandSSZvetoBvetoMet();
   else if(m_sel=="3S3B"     ) Set3S3B();
   else if(m_sel=="3S3BBveto") Set3S3BBveto();
   else if(m_sel=="3S3BZveto") Set3S3BZveto();
@@ -471,6 +476,59 @@ void EventSelector::Set2S3BZvetoBvetoMet()
   m_vetoExtZ = true;
   m_selSFOS = true;
   m_selDForSS4SigLep = true;
+  m_applyTrig = false;
+}
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BDFandSS()
+{
+  SetNSigNBase(2,3);
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BDFandSSBveto()
+{
+  SetNSigNBase(2,3);
+  SetBveto();
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BDFandSSZveto()
+{
+  SetNSigNBase(2,3);
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BDFandSSMet()
+{
+  SetNSigNBase(2,3);
+  m_metMin = 30;
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BDFandSSZvetoBvetoMet()
+{
+  SetNSigNBase(2,3);
+  SetBveto();
+  m_metMin = 30;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
   m_applyTrig = false;
 }
 /*--------------------------------------------------------------------------------*/
@@ -910,7 +968,11 @@ bool EventSelector::selectObject()
   for( ; el_itr!=el_end; ++el_itr){
     ST::IsSignalElectronExpCutArgs args; //default values are set by construnter.
     args.etcut(m_sigElPtCut);
-    m_susyObjTool->IsSignalElectronExp( **el_itr, ST::SignalIsoExp::TightIso, args); //Signal flag are set here.
+    if(m_sel=="ac"){
+      m_susyObjTool->IsSignalElectron( **el_itr ); //Signal flag are set here.
+    }else{
+      m_susyObjTool->IsSignalElectronExp( **el_itr, args); //Signal flag are set here.
+    }
   }
 
   ///////////////////////////////////////////////////
@@ -938,7 +1000,11 @@ bool EventSelector::selectObject()
   for( ; mu_itr!=mu_end; ++mu_itr){
     ST::IsSignalMuonExpCutArgs args; //default values are set by construnter.
     args.ptcut(m_sigMuPtCut);
-    m_susyObjTool->IsSignalMuonExp( **mu_itr, ST::SignalIsoExp::TightIso, args); //Signal flag are set here.
+    if(m_sel=="ac"){
+      m_susyObjTool->IsSignalMuon( **mu_itr ); //Signal flag are set here.
+    }else{
+      m_susyObjTool->IsSignalMuonExp( **mu_itr, args); //Signal flag are set here.
+    }
     m_susyObjTool->IsCosmicMuon   ( **mu_itr ); //Cosmic flag are set here.
     if(m_sel=="ac")passACCut_badMuon();
   }
@@ -957,7 +1023,11 @@ bool EventSelector::selectObject()
   xAOD::JetContainer::iterator jet_itr = (jets_copy)->begin();
   xAOD::JetContainer::iterator jet_end = (jets_copy)->end();
   for( ; jet_itr!=jet_end; ++jet_itr){
-    m_susyObjTool->IsBJet(**jet_itr,true,0.3511); //Making b-tagged jet flag.
+    if(m_sel=="ac"){
+      m_susyObjTool->IsBJet(**jet_itr); //Making b-tagged jet flag.
+    }else{
+      m_susyObjTool->IsBJet(**jet_itr,true,0.3511); //Making b-tagged jet flag.
+    }
     //(https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingBenchmarks)
     //MV1: Eff70%=0.3511, Eff80%=0.6073, Eff85%=0.3511
     m_vec_preJet->push_back(**jet_itr);
@@ -1000,8 +1070,7 @@ bool EventSelector::selectObject()
     MyError("selectObject()",Form("Failing to recode MySelJets%s to TStore.",m_sys.c_str()));
     rtrvFail = true;
   }
-  Bool_t doHarmonization = false;
-  if(m_susyObjTool->OverlapRemoval(electrons_copy, muons_copy, jets_copy, doHarmonization)==EL::StatusCode::FAILURE){
+  if(m_susyObjTool->OverlapRemoval(electrons_copy, muons_copy, jets_copy)==EL::StatusCode::FAILURE){
     MyError("selectObject()","Failing overlap removal process.");
     rtrvFail = true;
   }
@@ -1013,14 +1082,14 @@ bool EventSelector::selectObject()
   for( ; jet_itr != jet_end; ++jet_itr ){
     MyDebug("selectObject()",Form("jet: baseline=%d",(int)(*jet_itr)->auxdata<char>("baseline")));
     MyDebug("selectObject()",Form("jet: passOR=%d"  ,(int)(*jet_itr)->auxdata<char>("passOR"  )));
-    MyDebug("selectObject()",Form("jet: bad=%d"     ,(int)(*jet_itr)->auxdata<char>("bad"     )));
     MyDebug("selectObject()",Form("jet: bjet=%d"    ,(int)(*jet_itr)->auxdata<char>("bjet"    )));
     if(m_sel=="ac")passACCut_jetClean(**jet_itr);
     if( (*jet_itr)->auxdata<char>("baseline")==1 &&
-        (*jet_itr)->auxdata<char>("passOR"  )==1 &&
-        (*jet_itr)->auxdata<char>("bad"     )==0 ){
-      m_vec_baseJet->push_back(**jet_itr);
-      goodJets->push_back (*jet_itr);
+        (*jet_itr)->auxdata<char>("passOR"  )==1 ){
+      if((*jet_itr)->pt()>m_baseJetPtCut && fabs((*jet_itr)->eta())<m_baseJetEtaCut){
+        m_vec_baseJet->push_back(**jet_itr);
+        goodJets->push_back (*jet_itr);
+      }
     }
   }
 
@@ -1304,7 +1373,7 @@ bool EventSelector::selectObject()
 
   //For part of acceptance challenge
   if(m_sel=="ac"){
-    //    if(b_passAC_badMuon && b_passAC_jetClean && b_passAC_primVtx && b_passAC_cosmic){
+    if(b_passAC_badMuon && b_passAC_jetClean && b_passAC_primVtx && b_passAC_cosmic){
       passACCut_oneBaseLep();
       passACCut_oneSigLep ();
       passACCut_oneBaseJet();
@@ -1318,21 +1387,21 @@ bool EventSelector::selectObject()
       passACCut_oneBaseTau();
       passACCut_oneSigTau ();
       passACCut_oneBjet   ();
-    // }else{
-    //   b_passAC_oneBaseLep = false;
-    //   b_passAC_oneSigLep = false;
-    //   b_passAC_oneBaseJet = false;
-    //   b_passAC_oneSigJet = false;
-    //   b_passAC_twoBaseLep = false;
-    //   b_passAC_twoSigLep = false;
-    //   b_passAC_oneBaseEl = false;
-    //   b_passAC_oneSigEl = false;
-    //   b_passAC_oneBaseMu = false;
-    //   b_passAC_oneSigMu = false;
-    //   b_passAC_oneBaseTau = false;
-    //   b_passAC_oneSigTau = false;
-    //   b_passAC_oneBjet = false;
-    // }
+    }else{
+      b_passAC_oneBaseLep = false;
+      b_passAC_oneSigLep = false;
+      b_passAC_oneBaseJet = false;
+      b_passAC_oneSigJet = false;
+      b_passAC_twoBaseLep = false;
+      b_passAC_twoSigLep = false;
+      b_passAC_oneBaseEl = false;
+      b_passAC_oneSigEl = false;
+      b_passAC_oneBaseMu = false;
+      b_passAC_oneSigMu = false;
+      b_passAC_oneBaseTau = false;
+      b_passAC_oneSigTau = false;
+      b_passAC_oneBjet = false;
+    }
   }
 
   return true;
@@ -1427,13 +1496,14 @@ bool EventSelector::passACCut_badMuon   ()
 }
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::passACCut_jetClean  (xAOD::Jet& jet){
-  // if(not (b_passAC_badMuon)){
-  //   b_passAC_jetClean = false;
-  //   return false;
-  // }
-  if(jet.auxdata<char>("baseline")==1){
+  if(not (b_passAC_badMuon)){
+    b_passAC_jetClean = false;
+    return false;
+  }
+  if(jet.auxdata<char>("baseline")==1 && jet.auxdata<char>("passOR")==1){
     if(jet.pt()>m_baseJetPtCut && fabs(jet.eta())<m_baseJetEtaCut){
-      if(jet.auxdata<char>("bad")==1){
+      //This "if" is needed since "false" will be returned when we input a jet with pt<m_baseJetPtCut to IsGoodJet()...
+      if(not m_susyObjTool->IsGoodJet(jet, m_baseJetPtCut, m_baseJetEtaCut)){
         b_passAC_jetClean = false;
         return false;
       }
@@ -1443,19 +1513,19 @@ bool EventSelector::passACCut_jetClean  (xAOD::Jet& jet){
 }
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::passACCut_primVtx   (){
-  // if(not (b_passAC_badMuon && b_passAC_jetClean)){
-  //   b_passAC_primVtx = false;
-  //   return false;
-  // }
+  if(not (b_passAC_badMuon && b_passAC_jetClean)){
+    b_passAC_primVtx = false;
+    return false;
+  }
   return true;
 }
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::passACCut_cosmic    (xAOD::Muon& mu){
-  // if(not (b_passAC_badMuon && b_passAC_jetClean && b_passAC_primVtx)){
-  //   b_passAC_cosmic = false;
-  //   return false;
-  // }
-  if(mu.auxdata<char>("baseline")==1 && mu.auxdata<char>("cosmic")==1){
+  if(not (b_passAC_badMuon && b_passAC_jetClean && b_passAC_primVtx)){
+    b_passAC_cosmic = false;
+    return false;
+  }
+  if(mu.auxdata<char>("baseline")==1 && mu.auxdata<char>("passOR")==1 && mu.auxdata<char>("cosmic")==1){
     b_passAC_cosmic = false;
     return false;
   }

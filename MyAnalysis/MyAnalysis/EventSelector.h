@@ -337,6 +337,11 @@ class EventSelector : public TObject
   virtual void Set2S3BZveto();
   virtual void Set2S3BMet();
   virtual void Set2S3BZvetoBvetoMet();
+  virtual void Set2S3BDFandSS();
+  virtual void Set2S3BDFandSSBveto();
+  virtual void Set2S3BDFandSSZveto();
+  virtual void Set2S3BDFandSSMet();
+  virtual void Set2S3BDFandSSZvetoBvetoMet();
   virtual void Set3S3B();
   virtual void Set3S3BBveto();
   virtual void Set3S3BZveto();
