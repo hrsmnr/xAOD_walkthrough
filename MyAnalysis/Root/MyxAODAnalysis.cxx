@@ -112,7 +112,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   m_event = wk()->xaodEvent();
 
   //as a check, let's see the number of events in our xAOD
-  MyInfo("initialize()", Form("Number of events = %lli. %lli events will be processed.", m_event->getEntries(), m_maxEvent)); //print in long long int
+  MyAlways("initialize()", Form("Number of events = %lli. %lli events will be processed.", m_event->getEntries(), m_maxEvent)); //print in long long int
 
   m_eventCounter = 0;
   m_processedEvents = 0;
@@ -360,7 +360,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   Int_t EventNumber = -999;
   Int_t mcChannelNumber = -999; //DSID
   Int_t mcEventNumber   = -999; //Event number in generator?
-  m_eventWeight = -999.;
+  m_eventWeight = 0.;
   if(!m_isMC){ //For data
     RunNumber   = eventInfo->runNumber();
     LumiBlock   = eventInfo->lumiBlock();

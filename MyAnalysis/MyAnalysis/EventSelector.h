@@ -340,31 +340,41 @@ class EventSelector : public TObject
   virtual void Set2S3BZveto();
   virtual void Set2S3BMet();
   virtual void Set2S3BZvetoBvetoMet();
-  virtual void Set2S3BDFandSS();
-  virtual void Set2S3BDFandSSBveto();
-  virtual void Set2S3BDFandSSZveto();
-  virtual void Set2S3BDFandSSMet();
-  virtual void Set2S3BDFandSSZvetoBvetoMet();
-  virtual void Set3S3B();
-  virtual void Set3S3BBveto();
-  virtual void Set3S3BZveto();
-  virtual void Set3S3BMet();
-  virtual void Set3S3BZvetoBvetoMet();
-  virtual void Set3S4B();
-  virtual void Set3S4BBveto();
-  virtual void Set3S4BZveto();
-  virtual void Set3S4BMet();
-  virtual void Set3S4BZvetoBvetoMet();
-  virtual void Set2S3BTightBase();
-  virtual void Set2S3BBvetoTightBase();
-  virtual void Set2S3BZvetoTightBase();
-  virtual void Set2S3BMetTightBase();
-  virtual void Set2S3BZvetoBvetoMetTightBase();
+  virtual void Set2S3BDForSS();
+  virtual void Set2S3BDForSSBveto();
+  virtual void Set2S3BDForSSZveto();
+  virtual void Set2S3BDForSSMet();
+  virtual void Set2S3BDForSSZvetoBvetoMet();
   virtual void Set2S3BDFSS();
   virtual void Set2S3BBvetoDFSS();
   virtual void Set2S3BZvetoDFSS();
   virtual void Set2S3BMetDFSS();
   virtual void Set2S3BZvetoBvetoMetDFSS();
+  virtual void Set2S3BTightBase();
+  virtual void Set2S3BBvetoTightBase();
+  virtual void Set2S3BZvetoTightBase();
+  virtual void Set2S3BMetTightBase();
+  virtual void Set2S3BZvetoBvetoMetTightBase();
+  virtual void Set3S3B();
+  virtual void Set3S3BBveto();
+  virtual void Set3S3BZveto();
+  virtual void Set3S3BMet();
+  virtual void Set3S3BZvetoBvetoMet();
+  virtual void Set3S3BDFSS();
+  virtual void Set3S3BBvetoDFSS();
+  virtual void Set3S3BZvetoDFSS();
+  virtual void Set3S3BMetDFSS();
+  virtual void Set3S3BZvetoBvetoMetDFSS();
+  virtual void Set3S3BNotDFSS();
+  virtual void Set3S3BBvetoNotDFSS();
+  virtual void Set3S3BZvetoNotDFSS();
+  virtual void Set3S3BMetNotDFSS();
+  virtual void Set3S3BZvetoBvetoMetNotDFSS();
+  virtual void Set3S4B();
+  virtual void Set3S4BBveto();
+  virtual void Set3S4BZveto();
+  virtual void Set3S4BMet();
+  virtual void Set3S4BZvetoBvetoMet();
   virtual void SetGT1S3B();
 
   /* // Systematics */
@@ -516,8 +526,10 @@ class EventSelector : public TObject
   bool                m_selSS;          // flag to select SS leptons, no flav cut 
   bool                m_selSF;          // flag to select SF leptons, no charge cut
   bool                m_selDF;          // flag to select DF leptons, no charge cut
-  bool                m_selDForSS4SigLep;// flag to select (DF or SS) leptons in signal leptons
-  bool                m_selDFandSS4SigLep;// flag to select (DF and SS) leptons in signal leptons
+  bool                m_selDForSS4SigLep;  // flag to select (DF or SS) leptons in 1st and 2nd signal leptons
+  bool                m_vetoDForSS4SigLep; // flag to veto (DF or SS) leptons in 1st and 2nd signal leptons
+  bool                m_selDFandSS4SigLep; // flag to select (DF and SS) leptons in 1st and 2nd signal leptons
+  bool                m_vetoDFandSS4SigLep;// flag to veto (DF and SS) leptons in 1st and 2nd signal leptons
   bool                m_selOSTau;       // flag to select OS taus 
   bool                m_selOSLepTau;    // flag to select OS lep, tau 
   bool                m_specialCut;     // just a temporary cut for testing/hacking 

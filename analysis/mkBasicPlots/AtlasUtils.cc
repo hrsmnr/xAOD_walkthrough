@@ -263,10 +263,11 @@ TGraphErrors* TH1TOTGraph(TH1 *h1){
  return g1;
 }
 
-void myText(Double_t x,Double_t y,Color_t color,char *text,Double_t size) {
+void myText(Double_t x,Double_t y,Color_t color,char *text,Double_t size,Font_t tfont) {
 
   //Double_t tsize=0.05;
   TLatex l; //l.SetTextAlign(12);
+  l.SetTextFont(tfont); //Default Helvetica (See "class TAttText")
   l.SetTextSize(size); 
   l.SetNDC();
   l.SetTextColor(color);
