@@ -346,30 +346,30 @@ class EventSelector : public TObject
   virtual void Set2S3BDForSSMet();
   virtual void Set2S3BDForSSZvetoBvetoMet();
   virtual void Set2S3BDFSS();
-  virtual void Set2S3BBvetoDFSS();
-  virtual void Set2S3BZvetoDFSS();
-  virtual void Set2S3BMetDFSS();
-  virtual void Set2S3BZvetoBvetoMetDFSS();
+  virtual void Set2S3BDFSSBveto();
+  virtual void Set2S3BDFSSZveto();
+  virtual void Set2S3BDFSSMet();
+  virtual void Set2S3BDFSSZvetoBvetoMet();
   virtual void Set2S3BTightBase();
-  virtual void Set2S3BBvetoTightBase();
-  virtual void Set2S3BZvetoTightBase();
-  virtual void Set2S3BMetTightBase();
-  virtual void Set2S3BZvetoBvetoMetTightBase();
+  virtual void Set2S3BTightBaseBveto();
+  virtual void Set2S3BTightBaseZveto();
+  virtual void Set2S3BTightBaseMet();
+  virtual void Set2S3BTightBaseZvetoBvetoMet();
   virtual void Set3S3B();
   virtual void Set3S3BBveto();
   virtual void Set3S3BZveto();
   virtual void Set3S3BMet();
   virtual void Set3S3BZvetoBvetoMet();
   virtual void Set3S3BDFSS();
-  virtual void Set3S3BBvetoDFSS();
-  virtual void Set3S3BZvetoDFSS();
-  virtual void Set3S3BMetDFSS();
-  virtual void Set3S3BZvetoBvetoMetDFSS();
+  virtual void Set3S3BDFSSBveto();
+  virtual void Set3S3BDFSSZveto();
+  virtual void Set3S3BDFSSMet();
+  virtual void Set3S3BDFSSZvetoBvetoMet();
   virtual void Set3S3BNotDFSS();
-  virtual void Set3S3BBvetoNotDFSS();
-  virtual void Set3S3BZvetoNotDFSS();
-  virtual void Set3S3BMetNotDFSS();
-  virtual void Set3S3BZvetoBvetoMetNotDFSS();
+  virtual void Set3S3BNotDFSSBveto();
+  virtual void Set3S3BNotDFSSZveto();
+  virtual void Set3S3BNotDFSSMet();
+  virtual void Set3S3BNotDFSSZvetoBvetoMet();
   virtual void Set3S4B();
   virtual void Set3S4BBveto();
   virtual void Set3S4BZveto();
@@ -420,6 +420,7 @@ class EventSelector : public TObject
   /* std::string                 m_sample;         // sample name */
   std::string                    m_sel;            // event selection string
   std::string                    m_sys;            // systematic name string
+  std::vector<std::string>*      m_availableSel;   // all available selection regions (need to add manually...)
   bool                           m_is3SigLepSel;   // true if (m_nLepMin and m_nLepMax)!=3
   double                         m_sigElPtCut;     // signal electron Pt threshold
   double                         m_sigMuPtCut;     // signal muon Pt threshold
