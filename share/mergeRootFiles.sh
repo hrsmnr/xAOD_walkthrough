@@ -3,6 +3,7 @@ if [ $# -lt 1 ]; then
   echo 'Specify a target tag (e.g. h0001, h0002...)'
   return 1
 fi
+DIRECTORY='result'
 DSID=("110070" "110071" "110302" "110305" #single top
     "110401" #ttbar
     "119353" "119355" "119583" #ttV
@@ -22,9 +23,20 @@ DSID=("110070" "110071" "110302" "110305" #single top
     "205048" "205049" "205050" "205051" "205052" "205053"
     "205054" "205055" "205056" "205128" "205129" "205130" "205131" #Signal(N2C1toWZ)
 )
-REGION=("2S3B" "2S3BZveto" "2S3BBveto" "2S3BMet" "2S3BZvetoBvetoMet"  "2S3BDFandSS" "2S3BDFandSSBveto" "3S3B" "3S3BZveto" "3S3BBveto" "3S3BMet" "3S3BZvetoBvetoMet" "3S4B" "3S4BZveto" "3S4BBveto" "3S4BMet" "3S4BZvetoBvetoMet" "GT1S3B")
 
-DIRECTORY='result'
+###################################################
+## Preparing available selection regions
+###################################################
+REGION=()
+for fname in `ls -d $DIRECTORY/$TAG/${DSID}_1/data*`
+do
+    REG=`echo $fname | cut -d'.' -f2`
+    REGION+=($REG)
+done
+
+###################################################
+## Merging files
+###################################################
 for i in "${DSID[@]}"
 do
     for j in "${REGION[@]}"

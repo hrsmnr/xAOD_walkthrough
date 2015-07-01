@@ -1,5 +1,5 @@
 #For the people not using /bin/bash
-if [ $0 != 'bash' ]; then
+if [ ! `echo $0 | grep 'bash'` ]; then
     echo 'Please change your shell to /bin/bash to use this script!!'
     return
 fi
