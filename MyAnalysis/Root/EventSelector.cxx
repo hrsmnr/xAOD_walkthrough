@@ -2031,7 +2031,7 @@ bool EventSelector::passOFOSCut()
 bool EventSelector::passDFSSCut()
 {
   //Select events with different flavor or same sign leptons.
-  if(m_selDForSS4SigLep || m_selDForSS4SigLep){
+  if(m_selDForSS4SigLep || m_vetoDForSS4SigLep){
     bool df = false;
     if((m_leadLepFlavor[0]==0 && m_leadLepFlavor[1]==1) ||
        (m_leadLepFlavor[0]==1 && m_leadLepFlavor[1]==0) ) df = true;
