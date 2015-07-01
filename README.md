@@ -63,6 +63,13 @@ $python share/mkFaxFileList.py [optionally: target dataset list]
 ===================================================================  
 --- SUSYTools/Root/SUSYToolsInit.cxx    (revision 676240)  
 +++ SUSYTools/Root/SUSYToolsInit.cxx    (working copy)  
+@@ -145,6 +145,7 @@  
+     ATH_CHECK( muonCalibrationAndSmearingTool->setProperty("SmearingType", "q_pT") );  
+     ATH_CHECK( muonCalibrationAndSmearingTool->setProperty("Release", "Rel17.2Sum13") );  
+     ATH_CHECK( muonCalibrationAndSmearingTool->initialize() );  
++    muonCalibrationAndSmearingTool->msg().setLevel( MSG::ERROR );  
+     m_muonCalibrationAndSmearingTool = muonCalibrationAndSmearingTool;  
+   }  
 @@ -450,6 +450,7 @@  
      // ATH_CHECK( metRebuilder->setProperty("SoftTermType","Reference") );  
      ATH_CHECK( metRebuilder->setProperty("SoftTermType","") ); // ignore autoconfiguration  
