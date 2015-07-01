@@ -336,7 +336,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   //Added by minoru
   if(m_eventCounter==0) MyInfo("execute()", "Starting event by event processing.");
   // print every 5000 events, so we know where we are:
-  if(m_eventCounter%5000==0) MyAlways("execute()", Form("Event number = %lli", m_eventCounter));
+  if(m_eventCounter%2000==0) MyAlways("execute()", Form("Event number = %lli", m_eventCounter));
   m_eventCounter++; //Incrementing here since event might be rejected by some quality checks below.
   if( m_maxEvent>=0 && 
       ( m_eventCounter<=m_nSkipNum || (m_maxEvent+m_nSkipNum)<m_eventCounter ) ) return EL::StatusCode::SUCCESS;
@@ -444,7 +444,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
       ++isys;
     }
 
-    
+  
     MyDebug("execute()", "Store before .clear()");
     if(m_debugMode<=MSG::DEBUG) m_store.print();
     m_store.clear();

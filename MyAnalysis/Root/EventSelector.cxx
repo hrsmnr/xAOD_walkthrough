@@ -968,6 +968,8 @@ void EventSelector::finalize()
 {
   MyDebug("finalize()","EventSelector::finalize()");
 
+  delete m_availableSel;
+
   delete m_vec_signalElectron;
   delete m_vec_baseElectron;
   delete m_vec_signalMuon;
