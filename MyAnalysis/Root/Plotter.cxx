@@ -195,22 +195,22 @@ void Plotter::finalize()
       h_sumLepPtMet[iCh]->Write();
       h_dPhiWZ[iCh]->Write();
       h_nMuComb[iCh]->Write();
-      h_elPtcone30[iCh]->Write();
-      h_elEtcone30[iCh]->Write();
-      h_muPtcone30[iCh]->Write();
-      h_muEtcone30[iCh]->Write();
-      h_el1Ptcone30[iCh]->Write();
-      h_el1Etcone30[iCh]->Write();
-      h_mu1Ptcone30[iCh]->Write();
-      h_mu1Etcone30[iCh]->Write();
-      h_el2Ptcone30[iCh]->Write();
-      h_el2Etcone30[iCh]->Write();
-      h_mu2Ptcone30[iCh]->Write();
-      h_mu2Etcone30[iCh]->Write();
-      h_el3Ptcone30[iCh]->Write();
-      h_el3Etcone30[iCh]->Write();
-      h_mu3Ptcone30[iCh]->Write();
-      h_mu3Etcone30[iCh]->Write();
+      h_elTrackIso[iCh]->Write();
+      h_elCaloIso[iCh]->Write();
+      h_muTrackIso[iCh]->Write();
+      h_muCaloIso[iCh]->Write();
+      h_el1TrackIso[iCh]->Write();
+      h_el1CaloIso[iCh]->Write();
+      h_mu1TrackIso[iCh]->Write();
+      h_mu1CaloIso[iCh]->Write();
+      h_el2TrackIso[iCh]->Write();
+      h_el2CaloIso[iCh]->Write();
+      h_mu2TrackIso[iCh]->Write();
+      h_mu2CaloIso[iCh]->Write();
+      h_el3TrackIso[iCh]->Write();
+      h_el3CaloIso[iCh]->Write();
+      h_mu3TrackIso[iCh]->Write();
+      h_mu3CaloIso[iCh]->Write();
       h_lepD0[iCh]->Write();
       h_lep1D0[iCh]->Write();
       h_lep2D0[iCh]->Write();
@@ -553,40 +553,40 @@ bool Plotter::BookHistograms()
     NEWHIST( nMuComb, "Number of combined muons;Events", 4, -0.5, 3.5 );
 
     // isolation vars
-    NEWHIST( elPtcone30, "Electron ptcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( elEtcone30, "Electron topo etcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( muPtcone30, "Muon ptcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( muEtcone30, "Muon etcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( el1Ptcone30, "Leading electron ptcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( el1Etcone30, "Leading electron topo etcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( mu1Ptcone30, "Leading muon ptcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( mu1Etcone30, "Leading muon etcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( el2Ptcone30, "Second electron ptcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( el2Etcone30, "Second electron topo etcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( mu2Ptcone30, "Second muon ptcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( mu2Etcone30, "Second muon etcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( el3Ptcone30, "Third electron ptcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( el3Etcone30, "Third electron topo etcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( mu3Ptcone30, "Third muon ptcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( mu3Etcone30, "Third muon etcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( elTrackIso, "Electron TrackIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( elCaloIso, "Electron CaloIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( muTrackIso, "Muon TrackIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( muCaloIso, "Muon CaloIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( el1TrackIso, "Leading electron TrackIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( el1CaloIso, "Leading electron CaloIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( mu1TrackIso, "Leading muon TrackIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( mu1CaloIso, "Leading muon CaloIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( el2TrackIso, "Second electron TrackIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( el2CaloIso, "Second electron CaloIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( mu2TrackIso, "Second muon TrackIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( mu2CaloIso, "Second muon CaloIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( el3TrackIso, "Third electron TrackIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( el3CaloIso, "Third electron CaloIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( mu3TrackIso, "Third muon TrackIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( mu3CaloIso, "Third muon CaloIso/P_{T};Events", 50, 0, 1 );
 
     // impact parameters
-    NEWHIST( lepD0, "Lepton |d0| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lep1D0, "Leading lepton |d0| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lep2D0, "Second lepton |d0| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lep3D0, "Third lepton |d0| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lepZ0, "Lepton |z0| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lep1Z0, "Leading lepton |z0| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lep2Z0, "Second lepton |z0| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lep3Z0, "Third lepton |z0| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lepD0Sig, "Lepton |d0/#sigma_{d0}|;Events", 20, 0, 3.0 );
-    NEWHIST( lep1D0Sig, "Leading lepton |d0/#sigma_{d0}|;Events", 20, 0, 3.0 );
-    NEWHIST( lep2D0Sig, "Second lepton |d0/#sigma_{d0}|;Events", 20, 0, 3.0 );
-    NEWHIST( lep3D0Sig, "Third lepton |d0/#sigma_{d0}|;Events", 20, 0, 3.0 );
-    NEWHIST( lepZ0SinTheta, "Lepton |z0sin#theta| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lep1Z0SinTheta, "Leading lepton |z0sin#theta| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lep2Z0SinTheta, "Second lepton |z0sin#theta| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lep3Z0SinTheta, "Third lepton |z0sin#theta| [mm];Events", 20, 0, 0.5 );
+    NEWHIST( lepD0, "Lepton |d0| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lep1D0, "Leading lepton |d0| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lep2D0, "Second lepton |d0| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lep3D0, "Third lepton |d0| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lepZ0, "Lepton |z0| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lep1Z0, "Leading lepton |z0| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lep2Z0, "Second lepton |z0| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lep3Z0, "Third lepton |z0| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lepD0Sig, "Lepton |d0/#sigma_{d0}|;Events", 25, 0, 6.0 );
+    NEWHIST( lep1D0Sig, "Leading lepton |d0/#sigma_{d0}|;Events", 25, 0, 6.0 );
+    NEWHIST( lep2D0Sig, "Second lepton |d0/#sigma_{d0}|;Events", 25, 0, 6.0 );
+    NEWHIST( lep3D0Sig, "Third lepton |d0/#sigma_{d0}|;Events", 25, 0, 6.0 );
+    NEWHIST( lepZ0SinTheta, "Lepton |z0sin#theta| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lep1Z0SinTheta, "Leading lepton |z0sin#theta| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lep2Z0SinTheta, "Second lepton |z0sin#theta| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lep3Z0SinTheta, "Third lepton |z0sin#theta| [mm];Events", 25, 0, 0.5 );
 
     // lepton truth matching
     NEWHIST( lepOrigin, "Lepton truth origin;Leptons", PARTICLETYPES, 0, PARTICLETYPES );
@@ -966,33 +966,35 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   //Fill isolation values
   for(Int_t id=0; id<3; id++){
     if(lepIndex[id]==-1) continue;
-    float ptcone30 = EveSelec->getIsolationValue(lepIndex[id], lepFlavor[id], xAOD::Iso::ptcone30);
-    float etcone30 = EveSelec->getIsolationValue(lepIndex[id], lepFlavor[id], xAOD::Iso::etcone30);
     if(lepFlavor[id]==0){
-      FillChanHist( h_elPtcone30, ptcone30/1000., w);
-      FillChanHist( h_elEtcone30, etcone30/1000., w);
+      float TrackIso = EveSelec->getIsolationValue(lepIndex[id], lepFlavor[id], xAOD::Iso::ptvarcone20 );
+      float CaloIso  = EveSelec->getIsolationValue(lepIndex[id], lepFlavor[id], xAOD::Iso::topoetcone20);
+      FillChanHist( h_elTrackIso, TrackIso/lep[id].Pt(), w);
+      FillChanHist( h_elCaloIso , CaloIso /lep[id].Pt(), w);
       if(id==0){
-        FillChanHist( h_el1Ptcone30, ptcone30/1000., w);
-        FillChanHist( h_el1Etcone30, etcone30/1000., w);
+        FillChanHist( h_el1TrackIso, TrackIso/lep[id].Pt(), w);
+        FillChanHist( h_el1CaloIso , CaloIso /lep[id].Pt(), w);
       }else if(id==1){
-        FillChanHist( h_el2Ptcone30, ptcone30/1000., w);
-        FillChanHist( h_el2Etcone30, etcone30/1000., w);
+        FillChanHist( h_el2TrackIso, TrackIso/lep[id].Pt(), w);
+        FillChanHist( h_el2CaloIso , CaloIso /lep[id].Pt(), w);
       }else if(id==2){
-        FillChanHist( h_el3Ptcone30, ptcone30/1000., w);
-        FillChanHist( h_el3Etcone30, etcone30/1000., w);
+        FillChanHist( h_el3TrackIso, TrackIso/lep[id].Pt(), w);
+        FillChanHist( h_el3CaloIso , CaloIso /lep[id].Pt(), w);
       }
     }else{
-      FillChanHist( h_muPtcone30, ptcone30/1000., w);
-      FillChanHist( h_muEtcone30, etcone30/1000., w);
+      float TrackIso = EveSelec->getIsolationValue(lepIndex[id], lepFlavor[id], xAOD::Iso::ptvarcone30 );
+      float CaloIso  = EveSelec->getIsolationValue(lepIndex[id], lepFlavor[id], xAOD::Iso::topoetcone20);
+      FillChanHist( h_muTrackIso, TrackIso/lep[id].Pt(), w);
+      FillChanHist( h_muCaloIso , CaloIso /lep[id].Pt(), w);
       if(id==0){
-        FillChanHist( h_mu1Ptcone30, ptcone30/1000., w);
-        FillChanHist( h_mu1Etcone30, etcone30/1000., w);
+        FillChanHist( h_mu1TrackIso, TrackIso/lep[id].Pt(), w);
+        FillChanHist( h_mu1CaloIso , CaloIso /lep[id].Pt(), w);
       }else if(id==1){
-        FillChanHist( h_mu2Ptcone30, ptcone30/1000., w);
-        FillChanHist( h_mu2Etcone30, etcone30/1000., w);
+        FillChanHist( h_mu2TrackIso, TrackIso/lep[id].Pt(), w);
+        FillChanHist( h_mu2CaloIso , CaloIso /lep[id].Pt(), w);
       }else if(id==2){
-        FillChanHist( h_mu3Ptcone30, ptcone30/1000., w);
-        FillChanHist( h_mu3Etcone30, etcone30/1000., w);
+        FillChanHist( h_mu3TrackIso, TrackIso/lep[id].Pt(), w);
+        FillChanHist( h_mu3CaloIso , CaloIso /lep[id].Pt(), w);
       }
     }
   }

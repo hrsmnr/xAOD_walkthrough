@@ -266,6 +266,16 @@ bool EventSelector::initialize()
   m_availableSel->push_back("3S3BNotDFSSZveto"        );
   m_availableSel->push_back("3S3BNotDFSSMet"          );
   m_availableSel->push_back("3S3BNotDFSSZvetoBvetoMet");
+  m_availableSel->push_back("3S3BDForSS"             );
+  m_availableSel->push_back("3S3BDForSSBveto"        );
+  m_availableSel->push_back("3S3BDForSSZveto"        );
+  m_availableSel->push_back("3S3BDForSSMet"          );
+  m_availableSel->push_back("3S3BDForSSZvetoBvetoMet");
+  m_availableSel->push_back("3S3BNotDForSS"             );
+  m_availableSel->push_back("3S3BNotDForSSBveto"        );
+  m_availableSel->push_back("3S3BNotDForSSZveto"        );
+  m_availableSel->push_back("3S3BNotDForSSMet"          );
+  m_availableSel->push_back("3S3BNotDForSSZvetoBvetoMet");
   m_availableSel->push_back("3S4B"             );
   m_availableSel->push_back("3S4BBveto"        );
   m_availableSel->push_back("3S4BZveto"        );
@@ -332,6 +342,16 @@ bool EventSelector::initialize()
   else if(m_sel=="3S3BNotDFSSZveto") Set3S3BNotDFSSZveto();
   else if(m_sel=="3S3BNotDFSSMet"  ) Set3S3BNotDFSSMet();
   else if(m_sel=="3S3BNotDFSSZvetoBvetoMet") Set3S3BNotDFSSZvetoBvetoMet();
+  else if(m_sel=="3S3BDForSS"     ) Set3S3BDForSS();
+  else if(m_sel=="3S3BDForSSBveto") Set3S3BDForSSBveto();
+  else if(m_sel=="3S3BDForSSZveto") Set3S3BDForSSZveto();
+  else if(m_sel=="3S3BDForSSMet"  ) Set3S3BDForSSMet();
+  else if(m_sel=="3S3BDForSSZvetoBvetoMet") Set3S3BDForSSZvetoBvetoMet();
+  else if(m_sel=="3S3BNotDForSS"     ) Set3S3BNotDForSS();
+  else if(m_sel=="3S3BNotDForSSBveto") Set3S3BNotDForSSBveto();
+  else if(m_sel=="3S3BNotDForSSZveto") Set3S3BNotDForSSZveto();
+  else if(m_sel=="3S3BNotDForSSMet"  ) Set3S3BNotDForSSMet();
+  else if(m_sel=="3S3BNotDForSSZvetoBvetoMet") Set3S3BNotDForSSZvetoBvetoMet();
   else if(m_sel=="3S4B"     ) Set3S4B();
   else if(m_sel=="3S4BBveto") Set3S4BBveto();
   else if(m_sel=="3S4BZveto") Set3S4BZveto();
@@ -747,7 +767,7 @@ void EventSelector::Set3S3BZveto()
 void EventSelector::Set3S3BMet()
 {
   SetNSigNBase(3,3);
-  m_metMin = 30;
+  m_metMin = 70;
   m_selSFOS = true;
   m_applyTrig = false;
   return;
@@ -757,7 +777,7 @@ void EventSelector::Set3S3BZvetoBvetoMet()
 {
   SetNSigNBase(3,3);
   SetBveto();
-  m_metMin = 30;
+  m_metMin = 70;
   m_vetoZ = true;
   m_vetoExtZ = true;
   m_selSFOS = true;
@@ -800,7 +820,7 @@ void EventSelector::Set3S3BDFSSMet()
 {
   SetNSigNBase(3,3);
   m_selDFandSS4SigLep = true;
-  m_metMin = 30;
+  m_metMin = 50;
   m_selSFOS = true;
   m_applyTrig = false;
   return;
@@ -811,7 +831,7 @@ void EventSelector::Set3S3BDFSSZvetoBvetoMet()
   SetNSigNBase(3,3);
   m_selDFandSS4SigLep = true;
   SetBveto();
-  m_metMin = 30;
+  m_metMin = 50;
   m_vetoZ = true;
   m_vetoExtZ = true;
   m_selSFOS = true;
@@ -854,7 +874,7 @@ void EventSelector::Set3S3BNotDFSSMet()
 {
   SetNSigNBase(3,3);
   m_vetoDFandSS4SigLep = true;
-  m_metMin = 30;
+  m_metMin = 70;
   m_selSFOS = true;
   m_applyTrig = false;
   return;
@@ -865,7 +885,115 @@ void EventSelector::Set3S3BNotDFSSZvetoBvetoMet()
   SetNSigNBase(3,3);
   m_vetoDFandSS4SigLep = true;
   SetBveto();
-  m_metMin = 30;
+  m_metMin = 70;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BDForSS()
+{
+  SetNSigNBase(3,3);
+  m_selDForSS4SigLep = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BDForSSBveto()
+{
+  SetNSigNBase(3,3);
+  m_selDForSS4SigLep = true;
+  SetBveto();
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BDForSSZveto()
+{
+  SetNSigNBase(3,3);
+  m_selDForSS4SigLep = true;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BDForSSMet()
+{
+  SetNSigNBase(3,3);
+  m_selDForSS4SigLep = true;
+  m_metMin = 50;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BDForSSZvetoBvetoMet()
+{
+  SetNSigNBase(3,3);
+  m_vetoDForSS4SigLep = true;
+  SetBveto();
+  m_metMin = 50;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BNotDForSS()
+{
+  SetNSigNBase(3,3);
+  m_vetoDForSS4SigLep = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BNotDForSSBveto()
+{
+  SetNSigNBase(3,3);
+  m_vetoDForSS4SigLep = true;
+  SetBveto();
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BNotDForSSZveto()
+{
+  SetNSigNBase(3,3);
+  m_vetoDForSS4SigLep = true;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BNotDForSSMet()
+{
+  SetNSigNBase(3,3);
+  m_vetoDForSS4SigLep = true;
+  m_metMin = 50;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BNotDForSSZvetoBvetoMet()
+{
+  SetNSigNBase(3,3);
+  m_vetoDForSS4SigLep = true;
+  SetBveto();
+  m_metMin = 50;
   m_vetoZ = true;
   m_vetoExtZ = true;
   m_selSFOS = true;

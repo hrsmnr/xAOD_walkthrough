@@ -201,22 +201,22 @@ class Plotter : public TObject
   TH1F *h_nMuComb    [nChan]; // number of combined muons
 
   // Isolation
-  TH1F *h_elPtcone30[nChan]; // electron ptcone30
-  TH1F *h_elEtcone30[nChan]; // electron etcone30
-  TH1F *h_muPtcone30[nChan]; // muon ptcone30
-  TH1F *h_muEtcone30[nChan]; // muon etcone30
-  TH1F *h_el1Ptcone30[nChan]; // electron ptcone30
-  TH1F *h_el1Etcone30[nChan]; // electron etcone30
-  TH1F *h_mu1Ptcone30[nChan]; // muon ptcone30
-  TH1F *h_mu1Etcone30[nChan]; // muon etcone30
-  TH1F *h_el2Ptcone30[nChan]; // electron ptcone30
-  TH1F *h_el2Etcone30[nChan]; // electron etcone30
-  TH1F *h_mu2Ptcone30[nChan]; // muon ptcone30
-  TH1F *h_mu2Etcone30[nChan]; // muon etcone30
-  TH1F *h_el3Ptcone30[nChan]; // electron ptcone30
-  TH1F *h_el3Etcone30[nChan]; // electron etcone30
-  TH1F *h_mu3Ptcone30[nChan]; // muon ptcone30
-  TH1F *h_mu3Etcone30[nChan]; // muon etcone30
+  TH1F *h_elTrackIso[nChan]; // electron track iso.
+  TH1F *h_elCaloIso [nChan]; // electron calo iso.
+  TH1F *h_muTrackIso[nChan]; // muon track iso.
+  TH1F *h_muCaloIso [nChan]; // muon calo iso.
+  TH1F *h_el1TrackIso[nChan]; // electron track iso.
+  TH1F *h_el1CaloIso [nChan]; // electron calo iso.
+  TH1F *h_mu1TrackIso[nChan]; // muon track iso.
+  TH1F *h_mu1CaloIso [nChan]; // muon calo iso.
+  TH1F *h_el2TrackIso[nChan]; // electron track iso.
+  TH1F *h_el2CaloIso [nChan]; // electron calo iso.
+  TH1F *h_mu2TrackIso[nChan]; // muon track iso.
+  TH1F *h_mu2CaloIso [nChan]; // muon calo iso.
+  TH1F *h_el3TrackIso[nChan]; // electron track iso.
+  TH1F *h_el3CaloIso [nChan]; // electron calo iso.
+  TH1F *h_mu3TrackIso[nChan]; // muon track iso.
+  TH1F *h_mu3CaloIso [nChan]; // muon calo iso.
 
   // impact parameter histograms
   TH1F *h_lepD0 [nChan]; // all lepton d0
