@@ -24,7 +24,7 @@ void myAddtoBand(TGraphErrors* g1, TGraphAsymmErrors* g2);
 
 TGraphErrors* TH1TOTGraph(TH1 *h1);
 
-void myText(Double_t x,Double_t y,Color_t color,char *text,Double_t size=0.05);
+void myText(Double_t x,Double_t y,Color_t color,char *text,Double_t size=0.05,Font_t tfont=42);
 
 void myBoxText(Double_t x, Double_t y,Double_t boxsize,Int_t mcolor,char *text);
 

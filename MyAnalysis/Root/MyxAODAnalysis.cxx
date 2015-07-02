@@ -1,8 +1,8 @@
 #define APP_NAME "MyxAODAnalysis"
-#define MyInfo if(m_debugMode<=MSG::INFO) Info
-#define MyError if(m_debugMode<=MSG::ERROR) Error
-#define MyDebug(a,b) if(m_debugMode<=MSG::DEBUG) std::cout<<"Debug in <MyxAODAnalysis::"<<(a)<<">: "<<(b)<<std::endl;
-#define MyAlways(a,b) if(m_debugMode<=MSG::ALWAYS) std::cout<<"In <MyxAODAnalysis::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyInfo(a,b)   if(m_debugMode<=MSG::INFO  ) std::cout<<"Info  in <MyxAODAnalysis::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyError(a,b)  if(m_debugMode<=MSG::ERROR ) std::cout<<"Error in <MyxAODAnalysis::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyDebug(a,b)  if(m_debugMode<=MSG::DEBUG ) std::cout<<"Debug in <MyxAODAnalysis::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyAlways(a,b) if(m_debugMode<=MSG::ALWAYS) std::cout<<"In       <MyxAODAnalysis::"<<(a)<<">: "<<(b)<<std::endl;
 
 #include <EventLoop/Job.h>
 #include <EventLoop/StatusCode.h>
@@ -112,7 +112,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   m_event = wk()->xaodEvent();
 
   //as a check, let's see the number of events in our xAOD
-  MyInfo("initialize()", "Number of events = %lli. %lli events will be processed.", m_event->getEntries(), m_maxEvent); //print in long long int
+  MyAlways("initialize()", Form("Number of events = %lli. %lli events will be processed.", m_event->getEntries(), m_maxEvent)); //print in long long int
 
   m_eventCounter = 0;
   m_processedEvents = 0;
@@ -120,6 +120,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   m_eventWeight = 1.;
 
   // GRL tool initialization
+  MyDebug("initialize()", "Preparing GRL tool");
   m_grl = new GoodRunsListSelectionTool("GoodRunsListSelectionTool");
   std::vector<std::string> vecStringGRL;
   vecStringGRL.push_back("$ROOTCOREBIN/data/MyAnalysis/GRL/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml");
@@ -131,16 +132,17 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   }
 
   //Get meta-data from Sample Handler
+  MyDebug("initialize()", "Preparing meta data from Sample Handler");
   TFile *file = wk()->inputFile();
   TString sample_name = file->GetName();
-  MyInfo( "initialize()", "We will process the events in the dataset : %s", sample_name.Data());
+  MyInfo( "initialize()", Form("We will process the events in the dataset : %s", sample_name.Data()));
   int posAOD = sample_name.First("AOD");
   int posLastSlash = sample_name.Last('/');
   TString dstag = sample_name(posAOD+3,posLastSlash-posAOD-3);
   TString tmpname = sample_name(0,posLastSlash);
   int posSecondLastSlash = tmpname.Last('/');
   TString dsname = tmpname(posSecondLastSlash+1,tmpname.Length()-posSecondLastSlash-1);
-  MyInfo( "initialize()", "Dataset Name : %s", dsname.Data());
+  MyInfo( "initialize()", Form("Dataset Name : %s", dsname.Data()));
 
   std::string SampleType = wk()->metaData()->getString("SampleType");
   std::string MCType     = wk()->metaData()->getString("MCType"    );
@@ -148,9 +150,10 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   int isAtlFast = (MCType    =="AtlFast"?1:0);
   MyInfo( "initialize()", Form("SampleType=%s, MCType=%s",SampleType.c_str(),MCType.c_str()));
 
-  int datasource = isData ? ST::Data : (isAtlFast ? ST::AtlfastII : ST::FullSim);
+  ST::SettingDataSource datasource = isData ? ST::Data : (isAtlFast ? ST::AtlfastII : ST::FullSim);
 
   //  Create the tool(s) to test:
+  MyDebug("initialize()", "Preparing SUSYTools");
   m_susyObjTool = new ST::SUSYObjDef_xAOD("SUSYObjDef_xAOD");
   //  Configure the SUSYObjDef instance
   m_susyObjTool->msg().setLevel( m_debugMode );
@@ -164,7 +167,13 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   CHECK(m_susyObjTool->setProperty("MuId","Medium") );
   CHECK(m_susyObjTool->setProperty("TauId","Tight") );
 
-  CHECK(m_susyObjTool->setProperty("IsDerived",false) ) ; //??? need to check
+  CHECK(m_susyObjTool->setProperty("DoTruthBtag",true     ));
+  CHECK(m_susyObjTool->setProperty("btagCutType","FlatCut"));
+  CHECK(m_susyObjTool->setProperty("btagParamD" ,"1D"     ));
+  CHECK(m_susyObjTool->setProperty("btagAlg"    ,"MV2c00" ));
+  CHECK(m_susyObjTool->setProperty("btagEff"    ,"90"     ));//Modified from 70 to 90
+  
+  CHECK(m_susyObjTool->setProperty("IsDerived",true) ) ; //??? need to check
   // Set to true for DxAOD, false for primary xAOD
   CHECK(m_susyObjTool->setProperty("DoJetAreaCalib",true) ); //somehow "false" craches the process.
   // Set to false if not doing JetAreaCalib
@@ -186,17 +195,20 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
     MyInfo( "initialize()", "SUSYObjDef_xAOD initialized... " );
   }
 
+  /////////////////////////////////////////////////////
+  MyDebug("initialize()", "Preparing Cross-Section DB");
   std::string xsecFileName  = gSystem->ExpandPathName("$ROOTCOREBIN/data/SUSYTools");
   m_XSDB = new SUSY::CrossSectionDB(xsecFileName);
   if(isData) m_crossSection = 0.;
   else       m_crossSection = m_XSDB->xsectTimesEff(m_dsid);
   MyInfo("initialize()", Form("Cross section times filter efficiency for DSID #%i: %f pb", m_dsid, m_crossSection));
   if(m_crossSection<0.){
-    MyError("initialize()","Failed to obtain the cross section for DSID=%i.",m_dsid);
+    MyError("initialize()",Form("Failed to obtain the cross section for DSID=%i.",m_dsid));
     return EL::StatusCode::FAILURE;
   }
 
   // Now we can look at systematics:
+  MyDebug("initialize()", "Preparing recommended systematics");
   const CP::SystematicRegistry& registry = CP::SystematicRegistry::getInstance();
   const CP::SystematicSet& recommendedSystematics = registry.recommendedSystematics();
   // this is the nominal set
@@ -204,7 +216,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   for(CP::SystematicSet::const_iterator sysItr = recommendedSystematics.begin();
       sysItr != recommendedSystematics.end(); ++sysItr){
     
-    MyInfo("initialize()", "Found syst in global registry: %s", (sysItr->basename()).c_str());
+    MyInfo("initialize()", Form("Found syst in global registry: %s", (sysItr->basename()).c_str()));
     
     TString tmpSysName = sysItr->basename();
     if(IsConsideredSyst(tmpSysName)){
@@ -324,7 +336,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   //Added by minoru
   if(m_eventCounter==0) MyInfo("execute()", "Starting event by event processing.");
   // print every 5000 events, so we know where we are:
-  if(m_eventCounter%5000==0) MyAlways("execute()", Form("Event number = %lli", m_eventCounter));
+  if(m_eventCounter%2000==0) MyAlways("execute()", Form("Event number = %lli", m_eventCounter));
   m_eventCounter++; //Incrementing here since event might be rejected by some quality checks below.
   if( m_maxEvent>=0 && 
       ( m_eventCounter<=m_nSkipNum || (m_maxEvent+m_nSkipNum)<m_eventCounter ) ) return EL::StatusCode::SUCCESS;
@@ -348,18 +360,18 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   Int_t EventNumber = -999;
   Int_t mcChannelNumber = -999; //DSID
   Int_t mcEventNumber   = -999; //Event number in generator?
-  m_eventWeight = -999.;
+  m_eventWeight = 0.;
   if(!m_isMC){ //For data
     RunNumber   = eventInfo->runNumber();
     LumiBlock   = eventInfo->lumiBlock();
     EventNumber = eventInfo->eventNumber();
     m_eventWeight = 1.;
-    MyInfo("execute()", "RunNumber : %i, LumiBlock : %i, EventNumber : %i", RunNumber, LumiBlock, EventNumber);
+    MyInfo("execute()", Form("RunNumber : %i, LumiBlock : %i, EventNumber : %i", RunNumber, LumiBlock, EventNumber));
   }else{ //For MC, check DSID and 
     mcChannelNumber = eventInfo->mcChannelNumber(); //DSID
     mcEventNumber   = eventInfo->mcEventNumber(); //Event number in generator?
     m_eventWeight   = eventInfo->mcEventWeight();
-    MyInfo("execute()", "ChannelNumber : %i, EventNumber : %i, EventWeight : %f", mcChannelNumber, mcEventNumber, m_eventWeight);
+    MyInfo("execute()", Form("ChannelNumber : %i, EventNumber : %i, EventWeight : %f", mcChannelNumber, mcEventNumber, m_eventWeight));
     if(m_dsid!=mcChannelNumber){
       MyError("execute()",Form("mcChannelNumber(%d) by EventInfo is different from the one in testRun arugument(%d).",mcChannelNumber,m_dsid));
     }
@@ -392,12 +404,12 @@ EL::StatusCode MyxAODAnalysis :: execute ()
     size_t isys=0;
     for(sysListItr = m_sysList.begin(); sysListItr != m_sysList.end(); ++sysListItr){
       m_vec_watch->at(eveSelec).at(isys)->Start(m_processedEvents==1?kTRUE:kFALSE);
-      MyInfo("execute()", ">>>> Working on variation: sys=%i, \"%s\"", (int)isys, (sysListItr->name()).c_str());
+      MyInfo("execute()", Form(">>>> Working on variation: sys=%i, \"%s\"", (int)isys, (sysListItr->name()).c_str()));
       // Tell the SUSYObjDef_xAOD which variation to apply
       if(m_susyObjTool->applySystematicVariation(*sysListItr) != CP::SystematicCode::Ok){
-        MyError("execute()", "Cannot configure SUSYTools for systematic var. %s", (sysListItr->name()).c_str() );
+        MyError("execute()", Form("Cannot configure SUSYTools for systematic var. %s", (sysListItr->name()).c_str()) );
       }else{
-        MyInfo("execute()", "Variation \"%s\" configured...", (sysListItr->name()).c_str() );
+        MyInfo("execute()", Form("Variation \"%s\" configured...", (sysListItr->name()).c_str()) );
       }
 
       EventSelector* myEveSelec = 
@@ -432,7 +444,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
       ++isys;
     }
 
-    
+  
     MyDebug("execute()", "Store before .clear()");
     if(m_debugMode<=MSG::DEBUG) m_store.print();
     m_store.clear();

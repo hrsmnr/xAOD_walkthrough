@@ -16,6 +16,8 @@
 #include"TString.h"
 #include"THStack.h"
 #include"TLegend.h"
+//#include"Math/ProbFuncMathCore.h"
+#include"RooStats/NumberCountingUtils.h"
 
 #include"TUtil.cc"
 #include"AtlasUtils.cc"
@@ -36,33 +38,33 @@ void SetDistType(void){
   DistTypeNames->push_back("lep1Eta");
   DistTypeNames->push_back("lep2Eta");
   DistTypeNames->push_back("lep3Eta");
-  DistTypeNames->push_back("PRlep1Pt");
-  DistTypeNames->push_back("PRlep2Pt");
-  DistTypeNames->push_back("PRlep3Pt");
-  DistTypeNames->push_back("COlep1Pt");
-  DistTypeNames->push_back("COlep2Pt");
-  DistTypeNames->push_back("COlep3Pt");
-  DistTypeNames->push_back("HFlep1Pt");
-  DistTypeNames->push_back("HFlep2Pt");
-  DistTypeNames->push_back("HFlep3Pt");
-  DistTypeNames->push_back("LFlep1Pt");
-  DistTypeNames->push_back("LFlep2Pt");
-  DistTypeNames->push_back("LFlep3Pt");
-  DistTypeNames->push_back("UKlep1Pt");
-  DistTypeNames->push_back("UKlep2Pt");
-  DistTypeNames->push_back("UKlep3Pt");
-  DistTypeNames->push_back("baselep1Pt");
-  DistTypeNames->push_back("baselep2Pt");
-  DistTypeNames->push_back("baselep3Pt");
-  DistTypeNames->push_back("baseel1Pt");
-  DistTypeNames->push_back("baseel2Pt");
-  DistTypeNames->push_back("baseel3Pt");
-  DistTypeNames->push_back("basemu1Pt");
-  DistTypeNames->push_back("basemu2Pt");
-  DistTypeNames->push_back("basemu3Pt");
-  DistTypeNames->push_back("baselep1Eta");
-  DistTypeNames->push_back("baselep2Eta");
-  DistTypeNames->push_back("baselep3Eta");
+  // DistTypeNames->push_back("PRlep1Pt");
+  // DistTypeNames->push_back("PRlep2Pt");
+  // DistTypeNames->push_back("PRlep3Pt");
+  // DistTypeNames->push_back("COlep1Pt");
+  // DistTypeNames->push_back("COlep2Pt");
+  // DistTypeNames->push_back("COlep3Pt");
+  // DistTypeNames->push_back("HFlep1Pt");
+  // DistTypeNames->push_back("HFlep2Pt");
+  // DistTypeNames->push_back("HFlep3Pt");
+  // DistTypeNames->push_back("LFlep1Pt");
+  // DistTypeNames->push_back("LFlep2Pt");
+  // DistTypeNames->push_back("LFlep3Pt");
+  // DistTypeNames->push_back("UKlep1Pt");
+  // DistTypeNames->push_back("UKlep2Pt");
+  // DistTypeNames->push_back("UKlep3Pt");
+  // DistTypeNames->push_back("baselep1Pt");
+  // DistTypeNames->push_back("baselep2Pt");
+  // DistTypeNames->push_back("baselep3Pt");
+  // DistTypeNames->push_back("baseel1Pt");
+  // DistTypeNames->push_back("baseel2Pt");
+  // DistTypeNames->push_back("baseel3Pt");
+  // DistTypeNames->push_back("basemu1Pt");
+  // DistTypeNames->push_back("basemu2Pt");
+  // DistTypeNames->push_back("basemu3Pt");
+  // DistTypeNames->push_back("baselep1Eta");
+  // DistTypeNames->push_back("baselep2Eta");
+  // DistTypeNames->push_back("baselep3Eta");
   DistTypeNames->push_back("el1Eta");
   DistTypeNames->push_back("el2Eta");
   DistTypeNames->push_back("el3Eta");
@@ -72,12 +74,24 @@ void SetDistType(void){
   DistTypeNames->push_back("llPt");
   DistTypeNames->push_back("sumLepPt");
   DistTypeNames->push_back("sumLepPtMet");
-  DistTypeNames->push_back("dPhiWZ");
-  DistTypeNames->push_back("nMuComb");
+  //  DistTypeNames->push_back("dPhiWZ");
+  //  DistTypeNames->push_back("nMuComb");
   DistTypeNames->push_back("elPtcone30");
   DistTypeNames->push_back("elEtcone30");
   DistTypeNames->push_back("muPtcone30");
   DistTypeNames->push_back("muEtcone30");
+  DistTypeNames->push_back("el1Ptcone30");
+  DistTypeNames->push_back("el1Etcone30");
+  DistTypeNames->push_back("mu1Ptcone30");
+  DistTypeNames->push_back("mu1Etcone30");
+  DistTypeNames->push_back("el2Ptcone30");
+  DistTypeNames->push_back("el2Etcone30");
+  DistTypeNames->push_back("mu2Ptcone30");
+  DistTypeNames->push_back("mu2Etcone30");
+  DistTypeNames->push_back("el3Ptcone30");
+  DistTypeNames->push_back("el3Etcone30");
+  DistTypeNames->push_back("mu3Ptcone30");
+  DistTypeNames->push_back("mu3Etcone30");
   DistTypeNames->push_back("lepD0");
   DistTypeNames->push_back("lep1D0");
   DistTypeNames->push_back("lep2D0");
@@ -94,105 +108,105 @@ void SetDistType(void){
   DistTypeNames->push_back("lep1Z0SinTheta");
   DistTypeNames->push_back("lep2Z0SinTheta");
   DistTypeNames->push_back("lep3Z0SinTheta");
-  DistTypeNames->push_back("lepOrigin");
-  DistTypeNames->push_back("lep1Origin");
-  DistTypeNames->push_back("lep2Origin");
-  DistTypeNames->push_back("lep3Origin");
+  // DistTypeNames->push_back("lepOrigin");
+  // DistTypeNames->push_back("lep1Origin");
+  // DistTypeNames->push_back("lep2Origin");
+  // DistTypeNames->push_back("lep3Origin");
   DistTypeNames->push_back("lepClass");
   DistTypeNames->push_back("lep1Class");
   DistTypeNames->push_back("lep2Class");
   DistTypeNames->push_back("lep3Class");
-  DistTypeNames->push_back("baselepOrigin");
-  DistTypeNames->push_back("baselep1Origin");
-  DistTypeNames->push_back("baselep2Origin");
-  DistTypeNames->push_back("baselep3Origin");
-  DistTypeNames->push_back("baselepClass");
-  DistTypeNames->push_back("baselep1Class");
-  DistTypeNames->push_back("baselep2Class");
-  DistTypeNames->push_back("baselep3Class");
-  DistTypeNames->push_back("hasSS");
-  DistTypeNames->push_back("nTau");
-  DistTypeNames->push_back("tauPt");
-  DistTypeNames->push_back("tau1Pt");
-  DistTypeNames->push_back("tau2Pt");
-  DistTypeNames->push_back("tau1Eta");
-  DistTypeNames->push_back("tau2Eta");
-  DistTypeNames->push_back("tauProng");
-  DistTypeNames->push_back("dPhiTauTau");
-  DistTypeNames->push_back("tauClass");
-  DistTypeNames->push_back("tau1Class");
-  DistTypeNames->push_back("tau2Class");
-  DistTypeNames->push_back("minDRLepLep");
-  DistTypeNames->push_back("dPhiLep1Met");
-  DistTypeNames->push_back("dPhiLep2Met");
-  DistTypeNames->push_back("dPhiLep3Met");
-  DistTypeNames->push_back("dPhiLLMet");
-  DistTypeNames->push_back("dPhiJet1Met");
-  DistTypeNames->push_back("dPhiJet2Met");
-  DistTypeNames->push_back("dPhiJJMet");
-  DistTypeNames->push_back("minDPhiLepLep");
-  DistTypeNames->push_back("minDPhiLepMet");
-  DistTypeNames->push_back("minDPhiJetJet");
-  DistTypeNames->push_back("minDPhiJetMet");
-  DistTypeNames->push_back("minDPhiTauMet");
-  DistTypeNames->push_back("minDRLepJet");
-  DistTypeNames->push_back("maxDPhiLepLep");
-  DistTypeNames->push_back("maxDPhiLepMet");
-  DistTypeNames->push_back("maxDPhiJetJet");
-  DistTypeNames->push_back("maxDPhiJetMet");
-  DistTypeNames->push_back("maxDRLepJet");
-  DistTypeNames->push_back("dEtaLL");
-  DistTypeNames->push_back("dEtaJetJet");
-  DistTypeNames->push_back("maxDEtaJetJet");
-  DistTypeNames->push_back("minDEtaJetJet");
+  // DistTypeNames->push_back("baselepOrigin");
+  // DistTypeNames->push_back("baselep1Origin");
+  // DistTypeNames->push_back("baselep2Origin");
+  // DistTypeNames->push_back("baselep3Origin");
+  // DistTypeNames->push_back("baselepClass");
+  // DistTypeNames->push_back("baselep1Class");
+  // DistTypeNames->push_back("baselep2Class");
+  // DistTypeNames->push_back("baselep3Class");
+  // DistTypeNames->push_back("hasSS");
+  // DistTypeNames->push_back("nTau");
+  // DistTypeNames->push_back("tauPt");
+  // DistTypeNames->push_back("tau1Pt");
+  // DistTypeNames->push_back("tau2Pt");
+  // DistTypeNames->push_back("tau1Eta");
+  // DistTypeNames->push_back("tau2Eta");
+  // DistTypeNames->push_back("tauProng");
+  // DistTypeNames->push_back("dPhiTauTau");
+  // DistTypeNames->push_back("tauClass");
+  // DistTypeNames->push_back("tau1Class");
+  // DistTypeNames->push_back("tau2Class");
+  // DistTypeNames->push_back("minDRLepLep");
+  // DistTypeNames->push_back("dPhiLep1Met");
+  // DistTypeNames->push_back("dPhiLep2Met");
+  // DistTypeNames->push_back("dPhiLep3Met");
+  // DistTypeNames->push_back("dPhiLLMet");
+  // DistTypeNames->push_back("dPhiJet1Met");
+  // DistTypeNames->push_back("dPhiJet2Met");
+  // DistTypeNames->push_back("dPhiJJMet");
+  // DistTypeNames->push_back("minDPhiLepLep");
+  // DistTypeNames->push_back("minDPhiLepMet");
+  // DistTypeNames->push_back("minDPhiJetJet");
+  // DistTypeNames->push_back("minDPhiJetMet");
+  // DistTypeNames->push_back("minDPhiTauMet");
+  // DistTypeNames->push_back("minDRLepJet");
+  // DistTypeNames->push_back("maxDPhiLepLep");
+  // DistTypeNames->push_back("maxDPhiLepMet");
+  // DistTypeNames->push_back("maxDPhiJetJet");
+  // DistTypeNames->push_back("maxDPhiJetMet");
+  // DistTypeNames->push_back("maxDRLepJet");
+  // DistTypeNames->push_back("dEtaLL");
+  // DistTypeNames->push_back("dEtaJetJet");
+  // DistTypeNames->push_back("maxDEtaJetJet");
+  // DistTypeNames->push_back("minDEtaJetJet");
   DistTypeNames->push_back("met");
   DistTypeNames->push_back("meff");
   DistTypeNames->push_back("meffNoMet");
-  DistTypeNames->push_back("metEle");
-  DistTypeNames->push_back("metMuo");
-  DistTypeNames->push_back("metJet");
-  DistTypeNames->push_back("metCell");
+  // DistTypeNames->push_back("metEle");
+  // DistTypeNames->push_back("metMuo");
+  // DistTypeNames->push_back("metJet");
+  // DistTypeNames->push_back("metCell");
   DistTypeNames->push_back("metRel");
   DistTypeNames->push_back("nJet");
   DistTypeNames->push_back("nBJet");
   DistTypeNames->push_back("jetPt");
-  DistTypeNames->push_back("jet1Pt");
-  DistTypeNames->push_back("jet2Pt");
-  DistTypeNames->push_back("jet3Pt");
+  // DistTypeNames->push_back("jet1Pt");
+  // DistTypeNames->push_back("jet2Pt");
+  // DistTypeNames->push_back("jet3Pt");
   DistTypeNames->push_back("bJetPt");
-  DistTypeNames->push_back("bJet1Pt");
-  DistTypeNames->push_back("bJet2Pt");
-  DistTypeNames->push_back("bJet3Pt");
+  // DistTypeNames->push_back("bJet1Pt");
+  // DistTypeNames->push_back("bJet2Pt");
+  // DistTypeNames->push_back("bJet3Pt");
   DistTypeNames->push_back("jetEta");
   DistTypeNames->push_back("bJetEta");
-  DistTypeNames->push_back("bJet1Eta");
-  DistTypeNames->push_back("bJet2Eta");
-  DistTypeNames->push_back("bJet3Eta");
+  // DistTypeNames->push_back("bJet1Eta");
+  // DistTypeNames->push_back("bJet2Eta");
+  // DistTypeNames->push_back("bJet3Eta");
   DistTypeNames->push_back("jetPhi");
-  DistTypeNames->push_back("jetMV1");
-  DistTypeNames->push_back("jetJVF");
-  DistTypeNames->push_back("bJetJVF");
-  DistTypeNames->push_back("dijetM");
-  DistTypeNames->push_back("productEta1Eta2");
+  //  DistTypeNames->push_back("jetMV1");
+  //  DistTypeNames->push_back("jetJVF");
+  //  DistTypeNames->push_back("bJetJVF");
+  //  DistTypeNames->push_back("dijetM");
+  //  DistTypeNames->push_back("productEta1Eta2");
   DistTypeNames->push_back("mll");
   DistTypeNames->push_back("msfos");
   DistTypeNames->push_back("minMsfos");
-  DistTypeNames->push_back("msfss");
-  DistTypeNames->push_back("mlll");
-  DistTypeNames->push_back("mt");
-  DistTypeNames->push_back("mtL1");
-  DistTypeNames->push_back("mtL2");
+  //  DistTypeNames->push_back("msfss");
+  //  DistTypeNames->push_back("mlll");
+  //  DistTypeNames->push_back("mt");
+  //  DistTypeNames->push_back("mtL1");
+  //  DistTypeNames->push_back("mtL2");
   DistTypeNames->push_back("mt2");
-  DistTypeNames->push_back("mjj");
-  DistTypeNames->push_back("mlljj");
-  DistTypeNames->push_back("mlt");
-  DistTypeNames->push_back("mtt");
-  DistTypeNames->push_back("mbb");
+  // DistTypeNames->push_back("mjj");
+  // DistTypeNames->push_back("mlljj");
+  // DistTypeNames->push_back("mlt");
+  // DistTypeNames->push_back("mtt");
+  // DistTypeNames->push_back("mbb");
   DistTypeNames->push_back("mljj");
-  DistTypeNames->push_back("mljjFine");
-  DistTypeNames->push_back("mtll");
-  DistTypeNames->push_back("nVtx");
-  DistTypeNames->push_back("mu");
+  //  DistTypeNames->push_back("mljjFine");
+  // DistTypeNames->push_back("mtll");
+  // DistTypeNames->push_back("nVtx");
+  // DistTypeNames->push_back("mu");
 }
 
 enum FSType{allchan,eee,eem,emm,mmm,nFSType};
@@ -292,12 +306,12 @@ void SetDataType(void){
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
-enum BGType{WZ,ZZ,ttV,Higgs,ttbar,SingleTop,Zjets,nBGType};
-TString BGTypeNames[nBGType] = {"WZ","ZZ","ttV","Higgs","ttbar","SingleTop","Zjets"};
-Int_t BGTypeHistColors[nBGType] = {kAzure-3,kAzure-4,kCyan-1,kBlack,kOrange-2,kYellow-9,kViolet-9};
-Int_t BGTypeFillColors[nBGType] = {kAzure-3,kAzure-4,kCyan-1,kWhite,kOrange-2,kYellow-9,kViolet-9};
-Int_t BGStackOrder1[nBGType] = {WZ,ZZ,ttV,Higgs,SingleTop,ttbar,Zjets};
-Int_t BGStackOrder2[nBGType] = {Higgs,ttV,ZZ,SingleTop,WZ,Zjets,ttbar};
+enum BGType{WW,WZ,ZZ,ttV,Higgs,ttbar,SingleTop,Zjets,Wjets,nBGType};
+TString BGTypeNames[nBGType] = {"WW","WZ","ZZ","ttV","Higgs","ttbar","SingleTop","Zjets","Wjets"};
+Int_t BGTypeHistColors[nBGType] = {kTeal-8,kAzure-3,kAzure-4,kCyan-1,kBlack,kOrange-2,kYellow-9,kViolet-9,kGray};
+Int_t BGTypeFillColors[nBGType] = {kTeal-8,kAzure-3,kAzure-4,kCyan-1,kWhite,kOrange-2,kYellow-9,kViolet-9,kGray};
+Int_t BGStackOrder1[nBGType] = {WZ,ZZ,ttV,Higgs,SingleTop,WW,ttbar,Zjets,Wjets};
+Int_t BGStackOrder2[nBGType] = {Higgs,ttV,ZZ,SingleTop,WZ,WW,Wjets,Zjets,ttbar};
 std::vector<TString> *BGFileNames  [nBGType];
 std::vector<TString> *BGIncludeFlag[nBGType]; //e.g. "00110" means the sample is included to the "eem" and "emm" channels.
 
@@ -338,15 +352,53 @@ void SetBGType(void){
   BGFileNames[ZZ]->push_back("187187"); BGIncludeFlag[ZZ]->push_back("01111");
   BGFileNames[ZZ]->push_back("187188"); BGIncludeFlag[ZZ]->push_back("01111");
 
+  //WW files
+  BGFileNames[WW]->push_back("187150"); BGIncludeFlag[WW]->push_back("01000");
+  BGFileNames[WW]->push_back("187151"); BGIncludeFlag[WW]->push_back("00110");
+  BGFileNames[WW]->push_back("187152"); BGIncludeFlag[WW]->push_back("01110");
+  BGFileNames[WW]->push_back("187153"); BGIncludeFlag[WW]->push_back("00001");
+  BGFileNames[WW]->push_back("187154"); BGIncludeFlag[WW]->push_back("00111");
+  BGFileNames[WW]->push_back("187155"); BGIncludeFlag[WW]->push_back("00111");
+  BGFileNames[WW]->push_back("187156"); BGIncludeFlag[WW]->push_back("01111");
+  BGFileNames[WW]->push_back("187157"); BGIncludeFlag[WW]->push_back("01111");
+  BGFileNames[WW]->push_back("187158"); BGIncludeFlag[WW]->push_back("01111");
+  BGFileNames[WW]->push_back("187401"); BGIncludeFlag[WW]->push_back("01000");
+  BGFileNames[WW]->push_back("187402"); BGIncludeFlag[WW]->push_back("00110");
+  BGFileNames[WW]->push_back("187403"); BGIncludeFlag[WW]->push_back("01110");
+  BGFileNames[WW]->push_back("187404"); BGIncludeFlag[WW]->push_back("00001");
+  BGFileNames[WW]->push_back("187405"); BGIncludeFlag[WW]->push_back("00111");
+  BGFileNames[WW]->push_back("187406"); BGIncludeFlag[WW]->push_back("00111");
+  BGFileNames[WW]->push_back("187407"); BGIncludeFlag[WW]->push_back("01111");
+  BGFileNames[WW]->push_back("187408"); BGIncludeFlag[WW]->push_back("01111");
+  BGFileNames[WW]->push_back("187409"); BGIncludeFlag[WW]->push_back("01111");
+
   //ttV files
   BGFileNames[ttV]->push_back("119353"); BGIncludeFlag[ttV]->push_back("01111");//ttW
   BGFileNames[ttV]->push_back("119355"); BGIncludeFlag[ttV]->push_back("01111");//ttZ
   BGFileNames[ttV]->push_back("119583"); BGIncludeFlag[ttV]->push_back("01111");//ttWW
+  BGFileNames[ttV]->push_back("174830"); BGIncludeFlag[ttV]->push_back("01111");//ttWjExcl
+  BGFileNames[ttV]->push_back("174831"); BGIncludeFlag[ttV]->push_back("01111");//ttWjjIncl
+  BGFileNames[ttV]->push_back("174832"); BGIncludeFlag[ttV]->push_back("01111");//ttZjExcl
+  BGFileNames[ttV]->push_back("174833"); BGIncludeFlag[ttV]->push_back("01111");//ttZjjIncl
 
   //Higgs
   BGFileNames[Higgs]->push_back("161105"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->WW(lnulnu)
   BGFileNames[Higgs]->push_back("161155"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->WW(lnulnu)
   BGFileNames[Higgs]->push_back("161305"); BGIncludeFlag[Higgs]->push_back("01111");//ttH:H->WW(incl.)
+  BGFileNames[Higgs]->push_back("161555"); BGIncludeFlag[Higgs]->push_back("01111");//ggH tautau(ll)
+  BGFileNames[Higgs]->push_back("161566"); BGIncludeFlag[Higgs]->push_back("01111");//ggH tautau(lh)
+  BGFileNames[Higgs]->push_back("161577"); BGIncludeFlag[Higgs]->push_back("01111");//ggH tautau(hh)
+  BGFileNames[Higgs]->push_back("161595"); BGIncludeFlag[Higgs]->push_back("01111");//VBF tautau(ll)
+  BGFileNames[Higgs]->push_back("161606"); BGIncludeFlag[Higgs]->push_back("01111");//VBF tautau(lh)
+  BGFileNames[Higgs]->push_back("161617"); BGIncludeFlag[Higgs]->push_back("01111");//VBF tautau(hh)
+  BGFileNames[Higgs]->push_back("161635"); BGIncludeFlag[Higgs]->push_back("01111");//WH tautau(ll)
+  BGFileNames[Higgs]->push_back("161646"); BGIncludeFlag[Higgs]->push_back("01111");//WH tautau(lh)
+  BGFileNames[Higgs]->push_back("161657"); BGIncludeFlag[Higgs]->push_back("01111");//WH tautau(hh)
+  BGFileNames[Higgs]->push_back("161675"); BGIncludeFlag[Higgs]->push_back("01111");//ZH tautau(ll)
+  //  BGFileNames[Higgs]->push_back("161686"); BGIncludeFlag[Higgs]->push_back("01111");//ZH tautau(lh)
+  BGFileNames[Higgs]->push_back("161697"); BGIncludeFlag[Higgs]->push_back("01111");//ZH tautau(hh)
+  BGFileNames[Higgs]->push_back("161827"); BGIncludeFlag[Higgs]->push_back("01111");//ZH llbb
+  BGFileNames[Higgs]->push_back("161849"); BGIncludeFlag[Higgs]->push_back("01111");//ZH nunubb
   //  BGFileNames[Higgs]->push_back("160755"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->ZZ(llnunu)
   //  BGFileNames[Higgs]->push_back("160805"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->ZZ(llnunu)
   //  BGFileNames[Higgs]->push_back("169072"); BGIncludeFlag[Higgs]->push_back("01111");//ttH:H->ZZ(incl.)
@@ -356,10 +408,6 @@ void SetBGType(void){
   //  BGFileNames[Higgs]->push_back("160305"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->ZZ(4l)
   //  BGFileNames[Higgs]->push_back("160505"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->ZZ(llqq)
   //  BGFileNames[Higgs]->push_back("160555"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->ZZ(llqq)
-  //  BGFileNames[Higgs]->push_back("XXXXXX"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->tautau(ll) ???
-  //  BGFileNames[Higgs]->push_back("161675"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->tautau(ll)
-  //  BGFileNames[Higgs]->push_back("161708"); BGIncludeFlag[Higgs]->push_back("01111");//ttH:H->tautau(ll)
-  //  BGFileNames[Higgs]->push_back("161686"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->tautau(lhad)
   //  BGFileNames[Higgs]->push_back("161719"); BGIncludeFlag[Higgs]->push_back("01111");//ttH:H->tautau(lhad)
   //  BGFileNames[Higgs]->push_back("XXXXXX"); BGIncludeFlag[Higgs]->push_back("00011");//WH:H->mumu ???
   //  BGFileNames[Higgs]->push_back("167418"); BGIncludeFlag[Higgs]->push_back("00111");//ZH:H->mumu
@@ -368,13 +416,23 @@ void SetBGType(void){
   BGFileNames[ttbar]->push_back("110401"); BGIncludeFlag[ttbar]->push_back("01111");//no all-had
 
   //SingleTop
+  BGFileNames[SingleTop]->push_back("110070"); BGIncludeFlag[SingleTop]->push_back("01111");//t t-chan
+  BGFileNames[SingleTop]->push_back("110071"); BGIncludeFlag[SingleTop]->push_back("01111");//tbar t-chan
   BGFileNames[SingleTop]->push_back("110302"); BGIncludeFlag[SingleTop]->push_back("01111");//s-chan
   BGFileNames[SingleTop]->push_back("110305"); BGIncludeFlag[SingleTop]->push_back("01111");//Wt
 
   //Zjets
   BGFileNames[Zjets]->push_back("147406"); BGIncludeFlag[Zjets]->push_back("01100");//Zee
   BGFileNames[Zjets]->push_back("147407"); BGIncludeFlag[Zjets]->push_back("00011");//Zmumu
-  BGFileNames[Zjets]->push_back("147408"); BGIncludeFlag[Zjets]->push_back("01111");//Ztautau
+  //  BGFileNames[Zjets]->push_back("147408"); BGIncludeFlag[Zjets]->push_back("01111");//Ztautau
+
+  //Wjets
+  BGFileNames[Wjets]->push_back("147400"); BGIncludeFlag[Wjets]->push_back("01100");//Wp->enu
+  BGFileNames[Wjets]->push_back("147401"); BGIncludeFlag[Wjets]->push_back("00011");//Wp->munu
+  BGFileNames[Wjets]->push_back("147402"); BGIncludeFlag[Wjets]->push_back("01111");//Wp->taunu
+  BGFileNames[Wjets]->push_back("147403"); BGIncludeFlag[Wjets]->push_back("01100");//Wm->enu
+  //  BGFileNames[Wjets]->push_back("147404"); BGIncludeFlag[Wjets]->push_back("00011");//Wm->munu
+  BGFileNames[Wjets]->push_back("147405"); BGIncludeFlag[Wjets]->push_back("01111");//Wm->taunu
 
 }
 
@@ -640,9 +698,9 @@ Int_t mkPlots(TString Tag, TString SelecReg){
       std::cout<<"Preparing THStack for "<<FSTypeNames[fstype]<<" based on "<<Form("all_%s;1",distname.c_str())<<"."<<std::endl;
       hs_bg[fstype][disttype] = new THStack(Form("hs_bg_%d_%d",fstype,disttype),FSTypeNames[fstype]+":Total");
       for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
-        std::cout<<"Adding "<<BGTypeNames[BGStackOrder2[bgtype]]<<" to THStack..."<<std::endl;
+        std::cout<<"Adding "<<BGTypeNames[BGStackOrder2[bgtype]]<<" to THStack... "
+                 <<"#Eve="<<dist_bg[fstype][BGStackOrder2[bgtype]][disttype]->Integral()<<std::endl;
         hs_bg[fstype][disttype]->Add(dist_bg[fstype][BGStackOrder2[bgtype]][disttype]);
-        //std::cout<<"Adding "<<BGTypeNames[bgtype]<<" to THStack..."<<std::endl;
         //hs_bg[fstype][disttype]->Add(dist_bg[fstype][bgtype][disttype]);
       }
     }
@@ -693,6 +751,7 @@ Int_t mkPlots(TString Tag, TString SelecReg){
   leg->SetTextFont(72);
   leg->SetTextSize(0.05);
   // leg->AddEntry(dist_data[0][0],"Data","lp");
+  leg->AddEntry(dist_bg[0][WW][0],"WW","f");
   leg->AddEntry(dist_bg[0][WZ][0],"WZ","f");
   leg->AddEntry(dist_bg[0][ZZ][0],"ZZ","f");
   leg->AddEntry(dist_bg[0][ttV][0],"t#bar{t}V","f");
@@ -701,7 +760,7 @@ Int_t mkPlots(TString Tag, TString SelecReg){
   TH1F* h_higgs4leg = (TH1F*)dist_bg[0][Higgs][0]->Clone("h_higgs4leg");
   h_higgs4leg->SetLineColor(kBlack);
   leg->AddEntry(h_higgs4leg,"Higgs","f");
-  // leg->AddEntry(dist_bg[0][Wjets][0],"W+jets","f");
+  leg->AddEntry(dist_bg[0][Wjets][0],"W+jets","f");
   leg->AddEntry(dist_bg[0][ttbar][0],"t#bar{t}","f");
   leg->AddEntry(dist_bg[0][SingleTop][0],"Single top","f");
   leg->AddEntry(dist_bg[0][Zjets][0],"Z/#gamma*+jets","f");
@@ -741,8 +800,11 @@ Int_t mkPlots(TString Tag, TString SelecReg){
     }
   }
 
-  u->SetPadNumXY(1,3);
-  //  u->SetPadNumXY(3,4);
+  TH1F* dist_zNminusOneAbove[nFSType][nDistType][nDrawnSignal];
+  TH1F* dist_zNminusOneBelow[nFSType][nDistType][nDrawnSignal];
+  //  u->SetPadNumXY(1,3);
+  u->SetPadNumXY(1,5);
+  std::vector<std::string> vec_yieldStr;
   for(Int_t fstype=0; fstype<nFSType; fstype++){
     for(Int_t disttype=0; disttype<nDistType; disttype++){
       //      u->Draw(dist_totalbgErr[fstype][disttype],"E2",010);
@@ -759,13 +821,33 @@ Int_t mkPlots(TString Tag, TString SelecReg){
       Double_t entry = dist_totalbg[fstype][disttype]->GetEntries();
       Double_t integral = dist_totalbg[fstype][disttype]->Integral();
       if(fstype==0 && DistTypeNames->at(disttype)=="nJet"){
-        std::cout<<"*********************************************"<<std::endl;
-        std::cout<<"Total BG : "<<integral<<std::endl;
-        std::cout<<"*********************************************"<<std::endl;
+        vec_yieldStr.push_back("*************************************************");
+        vec_yieldStr.push_back(Form("Total BG : %f",integral));
+        for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
+          vec_yieldStr.push_back(Form("--------- %9s: #Eve=%9.3f, (%5.1f%%)",BGTypeNames[BGStackOrder2[bgtype]].Data(),
+                                      dist_bg[fstype][BGStackOrder2[bgtype]][disttype]->Integral(),
+                                      dist_bg[fstype][BGStackOrder2[bgtype]][disttype]->Integral()/integral*100)
+                                 );
+        }
+        vec_yieldStr.push_back("=================================================");
+        for(Int_t signaltype=0; signaltype<nSignalType; signaltype++){
+          UInt_t nsamples = SignalFileNames[signaltype]->size();
+          for(UInt_t signalfile=0; signalfile<SignalFileNames[signaltype]->size(); signalfile++){
+            Double_t sigyields = vec_dist_signal[fstype][signaltype][disttype]->at(signalfile)->Integral();
+            Double_t p0 = RooStats::NumberCountingUtils::BinomialExpP(sigyields, integral, 0.30);
+            Double_t Zn = RooStats::NumberCountingUtils::BinomialExpZ(sigyields, integral, 0.30);
+            vec_yieldStr.push_back(Form("(%s,%5s): %7.1f, p0=%9.7f, Zn=%5.3f",SignalMN2[signaltype]->at(signalfile).Data(),
+                                        SignalMN1[signaltype]->at(signalfile).Data(),sigyields,p0,Zn)
+                                   );
+          }
+        }
+        vec_yieldStr.push_back("*************************************************");
       }
       if(entry==0.){ //to avoid error in PostScript
         u->Draw(dist_totalbg[fstype][disttype],"hist");
         u->Draw(dist_totalbg[fstype][disttype],"hist",010);
+        u->cdPad();
+        u->cdPad();
       }else{
         //////////////////////////////////////////////////////////////
         // Linear version
@@ -786,7 +868,7 @@ Int_t mkPlots(TString Tag, TString SelecReg){
           h_sig[cnt]->SetMarkerColor(DrawnSignalColor->at(cnt));
           h_sig[cnt]->SetFillColor(0);
           h_sig[cnt]->SetLineStyle(DrawnSignalStyle->at(cnt));
-          h_sig[cnt]->Draw("samehist");
+          h_sig[cnt]->Draw("samehisttext");
           if(fstype==0&&disttype==0) leg->AddEntry(h_sig[cnt],DrawnSignalLegend->at(cnt).c_str(),"l");
         }
         //////////////////////////////////////////////////////////////
@@ -802,8 +884,87 @@ Int_t mkPlots(TString Tag, TString SelecReg){
         u->Draw(dist_totalbgErr[fstype][disttype],"sameE2");
         for(Int_t cnt=0; cnt<nDrawnSignal; cnt++) h_sig[cnt]->Draw("samehist");
         gPad->SetLogy();
+        ////////////////////////////////////////////////////////////
+        //Preparing Z(n-1) plots
+        ////////////////////////////////////////////////////////////
+        for(Int_t cnt=0; cnt<nDrawnSignal; cnt++){
+          dist_zNminusOneAbove[fstype][disttype][cnt] = (TH1F*)dist_totalbg[fstype][disttype]->Clone(Form("dist_zNminusOneAbove_%d_%d_%d",fstype,disttype,cnt));
+          dist_zNminusOneAbove[fstype][disttype][cnt]->Reset();
+          dist_zNminusOneAbove[fstype][disttype][cnt]->GetYaxis()->SetTitle("Z_{n-1}");
+          dist_zNminusOneAbove[fstype][disttype][cnt]->SetLineColor(DrawnSignalColor->at(cnt));
+          dist_zNminusOneAbove[fstype][disttype][cnt]->SetMarkerColor(DrawnSignalColor->at(cnt));
+          dist_zNminusOneAbove[fstype][disttype][cnt]->SetFillColor(0);
+          dist_zNminusOneAbove[fstype][disttype][cnt]->SetLineStyle(DrawnSignalStyle->at(cnt));
+          dist_zNminusOneBelow[fstype][disttype][cnt] = (TH1F*)dist_totalbg[fstype][disttype]->Clone(Form("dist_zNminusOneBelow_%d_%d_%d",fstype,disttype,cnt));
+          dist_zNminusOneBelow[fstype][disttype][cnt]->Reset();
+          dist_zNminusOneBelow[fstype][disttype][cnt]->GetYaxis()->SetTitle("Z_{n-1}");
+          dist_zNminusOneBelow[fstype][disttype][cnt]->SetLineColor(DrawnSignalColor->at(cnt));
+          dist_zNminusOneBelow[fstype][disttype][cnt]->SetMarkerColor(DrawnSignalColor->at(cnt));
+          dist_zNminusOneBelow[fstype][disttype][cnt]->SetFillColor(0);
+          dist_zNminusOneBelow[fstype][disttype][cnt]->SetLineStyle(DrawnSignalStyle->at(cnt));
+          h_sig[cnt] = vec_dist_signal[fstype][DrawnSignalType->at(cnt)][disttype]->at(DrawnSignalFile->at(cnt));
+          Int_t nBins = h_sig[cnt]->GetNbinsX()+2; //+2 is needed to look through all bins (with under/overflow bins).
+          //Loop for Zn-1 culculation (looking all bins)
+          for(Int_t cntBin=0; cntBin<nBins; cntBin++){
+            //Loop for summing up bin contetnts toword bin on right(look all bins above cntBin)
+            Double_t binContSumAboveSig = 0.;
+            Double_t binContSumAboveBG  = 0.;
+            for(Int_t tmpBin=cntBin; tmpBin<nBins; tmpBin++){ //+2 is needed to look through all bins.
+              binContSumAboveSig += h_sig[cnt]                    ->GetBinContent(tmpBin);
+              binContSumAboveBG  += dist_totalbg[fstype][disttype]->GetBinContent(tmpBin);
+            }
+            if(binContSumAboveSig>0. && binContSumAboveBG>0.){
+              Double_t ZnAbove = RooStats::NumberCountingUtils::BinomialExpZ(binContSumAboveSig, binContSumAboveBG, 0.30);
+              dist_zNminusOneAbove[fstype][disttype][cnt]->SetBinContent(cntBin,ZnAbove);
+            }
+            //Loop for summing up bin contetnts toword bin on left(look all bins below cntBin)
+            Double_t binContSumBelowSig = 0.;
+            Double_t binContSumBelowBG  = 1E-20;
+            for(Int_t tmpBin=nBins-cntBin-1; tmpBin>=0; tmpBin--){ //+2 is needed to look through all bins.
+              binContSumBelowSig += h_sig[cnt]                    ->GetBinContent(tmpBin);
+              binContSumBelowBG  += dist_totalbg[fstype][disttype]->GetBinContent(tmpBin);
+            }
+            if(binContSumBelowSig>0. && binContSumBelowBG>0.){
+              Double_t ZnBelow = RooStats::NumberCountingUtils::BinomialExpZ(binContSumBelowSig, binContSumBelowBG, 0.30);
+              dist_zNminusOneBelow[fstype][disttype][cnt]->SetBinContent(nBins-cntBin-1,ZnBelow);
+            }
+            // std::cout<<"SigAbove="<<binContSumAboveSig<<", BGAbove="<<binContSumAboveBG<<std::endl;
+            // std::cout<<"SigBelow="<<binContSumBelowSig<<", BGBelow="<<binContSumBelowBG<<std::endl;
+            // std::cout<<"ZnAbove="<<ZnAbove<<", ZnBelow="<<ZnBelow<<std::endl;
+            // getchar();
+          }
+        }
+        ////////////////////////////////////////////////////////////
+        //Drawing Z(n-1) plots
+        ////////////////////////////////////////////////////////////
+        u->cdPad();
+        Double_t maxZnAbove = -10.;
+        Double_t minZnAbove =  10.;
+        for(Int_t cnt=0; cnt<nDrawnSignal; cnt++){
+          Double_t tmpMax = dist_zNminusOneAbove[fstype][disttype][cnt]->GetMaximum();
+          Double_t tmpMin = dist_zNminusOneAbove[fstype][disttype][cnt]->GetMinimum();
+          maxZnAbove = (tmpMax>maxZnAbove?tmpMax:maxZnAbove);
+          minZnAbove = (tmpMin>minZnAbove?minZnAbove:tmpMin);
+          dist_zNminusOneAbove[fstype][disttype][cnt]->Draw(cnt==0?"text":"same");
+        }
+        Double_t diffAbove = maxZnAbove-minZnAbove;
+        dist_zNminusOneAbove[fstype][disttype][0]->GetYaxis()->SetRangeUser(minZnAbove-0.2*diffAbove,maxZnAbove+0.2*diffAbove);
+        u->cdPad();
+        Double_t maxZnBelow = -10.;
+        Double_t minZnBelow =  10.;
+        for(Int_t cnt=0; cnt<nDrawnSignal; cnt++){
+          Double_t tmpMax = dist_zNminusOneBelow[fstype][disttype][cnt]->GetMaximum();
+          Double_t tmpMin = dist_zNminusOneBelow[fstype][disttype][cnt]->GetMinimum();
+          maxZnBelow = (tmpMax>maxZnBelow?tmpMax:maxZnBelow);
+          minZnBelow = (tmpMin>minZnBelow?minZnBelow:tmpMin);
+          dist_zNminusOneBelow[fstype][disttype][cnt]->Draw(cnt==0?"text":"same");
+        }        
+        Double_t diffBelow = maxZnBelow-minZnBelow;
+        dist_zNminusOneBelow[fstype][disttype][0]->GetYaxis()->SetRangeUser(minZnBelow-0.2*diffBelow,maxZnBelow+0.2*diffBelow);
       }
+      ////////////////////////////////////////////////////////////
       //Ratio plot
+      ////////////////////////////////////////////////////////////
       u->cdPad(); //not needed when we include ratio plot in the future
       // //should be drawn in this order
       // Double_t ratioWidth = 1.0;
@@ -850,8 +1011,21 @@ Int_t mkPlots(TString Tag, TString SelecReg){
   //   }
   // }
 
-  //drawing legends again...
+  //dump signal/background yields
   u->SetPadNumXY(1,1);
+  u->Update();
+  u->cdPad();
+  for(yield=0; yield<vec_yieldStr.size(); yield++){
+    std::cout<<vec_yieldStr.at(yield)<<std::endl;
+    Double_t top = 0.9;
+    Double_t bottom = 0.1;
+    Double_t diff = top-bottom;
+    myText(0.07,top-(diff/(vec_yieldStr.size()-1))*yield,kBlack,const_cast<char*>(vec_yieldStr.at(yield).c_str()),0.03,82);
+  }
+
+  //drawing legends again...
+  u->Update();
+  u->cdPad();
   leg->Draw();
 
   delete vec_datafiles;

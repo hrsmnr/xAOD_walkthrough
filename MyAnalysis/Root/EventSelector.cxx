@@ -1,9 +1,9 @@
 #define APP_NAME "EventSelector"
-#define MyVerbose(a,b) if(m_dbg<=MSG::VERBOSE) std::cout<<"Verbose in <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
-#define MyDebug(a,b) if(m_dbg<=MSG::DEBUG) std::cout<<"Debug in <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
-#define MyInfo(a,b) if(m_dbg<=MSG::INFO) std::cout<<"Info in <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
-#define MyError(a,b) if(m_dbg<=MSG::ERROR) std::cout<<"Error in <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
-#define MyAlways(a,b) if(m_dbg<=MSG::ALWAYS) std::cout<<"In <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyInfo(a,b)    if(m_dbg<=MSG::INFO  ) std::cout<<"Info    in <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyError(a,b)   if(m_dbg<=MSG::ERROR ) std::cout<<"Error   in <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyDebug(a,b)   if(m_dbg<=MSG::DEBUG ) std::cout<<"Debug   in <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyVerbose(a,b) if(m_dbg<=MSG::DEBUG ) std::cout<<"Verbose in <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
+#define MyAlways(a,b)  if(m_dbg<=MSG::ALWAYS) std::cout<<"In         <EventSelector::"<<(a)<<">: "<<(b)<<std::endl;
 
 #include<iostream>
 #include"MyAnalysis/EventSelector.h"
@@ -31,6 +31,7 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   m_totalSF(1.),
   m_sel(sel),
   m_sys(sys),
+  m_availableSel(NULL),
   m_is3SigLepSel(true),
   m_sigElPtCut(5000),
   m_sigMuPtCut(5000),
@@ -103,7 +104,9 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   m_selSF(false),
   m_selDF(false),
   m_selDForSS4SigLep(false),
+  m_vetoDForSS4SigLep(false),
   m_selDFandSS4SigLep(false),
+  m_vetoDFandSS4SigLep(false),
   m_selOSTau(false),
   m_selOSLepTau(false),
   //m_specialCut(false),
@@ -220,6 +223,56 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
 bool EventSelector::initialize()
 {
   MyDebug("initialize()","EventSelector::initialize()");
+
+  /////////////////////////////////////////////////////////////////////
+  // storing all available regions just for execution convenience...
+  ////////////////////////////////////////////////////////////////////
+  m_availableSel = new std::vector<std::string>();
+  m_availableSel->push_back("none");
+  m_availableSel->push_back("3SAnyB");
+  m_availableSel->push_back("3SAnyBBveto");
+  m_availableSel->push_back("2S3B"             );
+  m_availableSel->push_back("2S3BBveto"        );
+  m_availableSel->push_back("2S3BZveto"        );
+  m_availableSel->push_back("2S3BMet"          );
+  m_availableSel->push_back("2S3BZvetoBvetoMet");
+  m_availableSel->push_back("2S3BDForSS"             );
+  m_availableSel->push_back("2S3BDForSSBveto"        );
+  m_availableSel->push_back("2S3BDForSSZveto"        );
+  m_availableSel->push_back("2S3BDForSSMet"          );
+  m_availableSel->push_back("2S3BDForSSZvetoBvetoMet");
+  m_availableSel->push_back("2S3BDFSS"             );
+  m_availableSel->push_back("2S3BDFSSBveto"        );
+  m_availableSel->push_back("2S3BDFSSZveto"        );
+  m_availableSel->push_back("2S3BDFSSMet"          );
+  m_availableSel->push_back("2S3BDFSSZvetoBvetoMet");
+  m_availableSel->push_back("2S3BTightBase"             );
+  m_availableSel->push_back("2S3BTightBaseBveto"        );
+  m_availableSel->push_back("2S3BTightBaseZveto"        );
+  m_availableSel->push_back("2S3BTightBaseMet"          );
+  m_availableSel->push_back("2S3BTightBaseZvetoBvetoMet");
+  m_availableSel->push_back("3S3B"             );
+  m_availableSel->push_back("3S3BBveto"        );
+  m_availableSel->push_back("3S3BZveto"        );
+  m_availableSel->push_back("3S3BMet"          );
+  m_availableSel->push_back("3S3BZvetoBvetoMet");
+  m_availableSel->push_back("3S3BDFSS"             );
+  m_availableSel->push_back("3S3BDFSSBveto"        );
+  m_availableSel->push_back("3S3BDFSSZveto"        );
+  m_availableSel->push_back("3S3BDFSSMet"          );
+  m_availableSel->push_back("3S3BDFSSZvetoBvetoMet");
+  m_availableSel->push_back("3S3BNotDFSS"             );
+  m_availableSel->push_back("3S3BNotDFSSBveto"        );
+  m_availableSel->push_back("3S3BNotDFSSZveto"        );
+  m_availableSel->push_back("3S3BNotDFSSMet"          );
+  m_availableSel->push_back("3S3BNotDFSSZvetoBvetoMet");
+  m_availableSel->push_back("3S4B"             );
+  m_availableSel->push_back("3S4BBveto"        );
+  m_availableSel->push_back("3S4BZveto"        );
+  m_availableSel->push_back("3S4BMet"          );
+  m_availableSel->push_back("3S4BZvetoBvetoMet");
+  m_availableSel->push_back("GT1S3B");
+
   //////////////////////////////////////////////
   // Set selection cut variables
   //////////////////////////////////////////////
@@ -249,26 +302,41 @@ bool EventSelector::initialize()
   else if(m_sel=="2S3BZveto") Set2S3BZveto();
   else if(m_sel=="2S3BMet"  ) Set2S3BMet();
   else if(m_sel=="2S3BZvetoBvetoMet") Set2S3BZvetoBvetoMet();
+  else if(m_sel=="2S3BDForSS"     ) Set2S3BDForSS();
+  else if(m_sel=="2S3BDForSSBveto") Set2S3BDForSSBveto();
+  else if(m_sel=="2S3BDForSSZveto") Set2S3BDForSSZveto();
+  else if(m_sel=="2S3BDForSSMet"  ) Set2S3BDForSSMet();
+  else if(m_sel=="2S3BDForSSZvetoBvetoMet") Set2S3BDForSSZvetoBvetoMet();
+  else if(m_sel=="2S3BDFSS"     ) Set2S3BDFSS();
+  else if(m_sel=="2S3BDFSSBveto") Set2S3BDFSSBveto();
+  else if(m_sel=="2S3BDFSSZveto") Set2S3BDFSSZveto();
+  else if(m_sel=="2S3BDFSSMet"  ) Set2S3BDFSSMet();
+  else if(m_sel=="2S3BDFSSZvetoBvetoMet") Set2S3BDFSSZvetoBvetoMet();
+  else if(m_sel=="2S3BTightBase"     ) Set2S3BTightBase();
+  else if(m_sel=="2S3BTightBaseBveto") Set2S3BTightBaseBveto();
+  else if(m_sel=="2S3BTightBaseZveto") Set2S3BTightBaseZveto();
+  else if(m_sel=="2S3BTightBaseMet"  ) Set2S3BTightBaseMet();
+  else if(m_sel=="2S3BTightBaseZvetoBvetoMet") Set2S3BTightBaseZvetoBvetoMet();
   else if(m_sel=="3S3B"     ) Set3S3B();
   else if(m_sel=="3S3BBveto") Set3S3BBveto();
   else if(m_sel=="3S3BZveto") Set3S3BZveto();
   else if(m_sel=="3S3BMet"  ) Set3S3BMet();
   else if(m_sel=="3S3BZvetoBvetoMet") Set3S3BZvetoBvetoMet();
+  else if(m_sel=="3S3BDFSS"     ) Set3S3BDFSS();
+  else if(m_sel=="3S3BDFSSBveto") Set3S3BDFSSBveto();
+  else if(m_sel=="3S3BDFSSZveto") Set3S3BDFSSZveto();
+  else if(m_sel=="3S3BDFSSMet"  ) Set3S3BDFSSMet();
+  else if(m_sel=="3S3BDFSSZvetoBvetoMet") Set3S3BDFSSZvetoBvetoMet();
+  else if(m_sel=="3S3BNotDFSS"     ) Set3S3BNotDFSS();
+  else if(m_sel=="3S3BNotDFSSBveto") Set3S3BNotDFSSBveto();
+  else if(m_sel=="3S3BNotDFSSZveto") Set3S3BNotDFSSZveto();
+  else if(m_sel=="3S3BNotDFSSMet"  ) Set3S3BNotDFSSMet();
+  else if(m_sel=="3S3BNotDFSSZvetoBvetoMet") Set3S3BNotDFSSZvetoBvetoMet();
   else if(m_sel=="3S4B"     ) Set3S4B();
   else if(m_sel=="3S4BBveto") Set3S4BBveto();
   else if(m_sel=="3S4BZveto") Set3S4BZveto();
   else if(m_sel=="3S4BMet"  ) Set3S4BMet();
   else if(m_sel=="3S4BZvetoBvetoMet") Set3S4BZvetoBvetoMet();
-  else if(m_sel=="2S3BTightBase"     ) Set2S3BTightBase();
-  else if(m_sel=="2S3BBvetoTightBase") Set2S3BBvetoTightBase();
-  else if(m_sel=="2S3BZvetoTightBase") Set2S3BZvetoTightBase();
-  else if(m_sel=="2S3BMetTightBase"  ) Set2S3BMetTightBase();
-  else if(m_sel=="2S3BZvetoBvetoMetTightBase") Set2S3BZvetoBvetoMetTightBase();
-  else if(m_sel=="2S3BDFSS"     ) Set2S3BDFSS();
-  else if(m_sel=="2S3BBvetoDFSS") Set2S3BBvetoDFSS();
-  else if(m_sel=="2S3BZvetoDFSS") Set2S3BZvetoDFSS();
-  else if(m_sel=="2S3BMetDFSS"  ) Set2S3BMetDFSS();
-  else if(m_sel=="2S3BZvetoBvetoMetDFSS") Set2S3BZvetoBvetoMetDFSS();
   else if(m_sel=="GT1S3B") SetGT1S3B(); // Fake rate estimation
   //Used for the legacy paper
   else if(m_sel=="VR0a") {
@@ -384,6 +452,17 @@ bool EventSelector::initialize()
   }
   else{
     MyError("initialize()",Form("EventSelector ERROR - selection %s not supported!!",m_sel.c_str()));
+    MyVerbose("initialize()","Available regions are...");
+    if(m_dbg<=MSG::VERBOSE){
+      for(UInt_t sel=0; sel<m_availableSel->size(); sel++){
+        std::cout<<Form("-S %s ",m_availableSel->at(sel).c_str());
+      }
+      std::cout<<std::endl;
+      for(UInt_t sel=0; sel<m_availableSel->size(); sel++){
+        std::cout<<Form("%s ",m_availableSel->at(sel).c_str());
+      }
+      std::cout<<std::endl;
+    }
     return false;
   }
   if(m_nLepMin!=3 || m_nLepMax!=3) m_is3SigLepSel = false;
@@ -428,7 +507,6 @@ void EventSelector::Set2S3B()
 {
   SetNSigNBase(2,3);
   m_selSFOS = true;
-  m_selDForSS4SigLep = true;
   m_applyTrig = false;
   return;
 }
@@ -438,7 +516,6 @@ void EventSelector::Set2S3BBveto()
   SetNSigNBase(2,3);
   SetBveto();
   m_selSFOS = true;
-  m_selDForSS4SigLep = true;
   m_applyTrig = false;
   return;
 }
@@ -449,7 +526,6 @@ void EventSelector::Set2S3BZveto()
   m_vetoZ = true;
   m_vetoExtZ = true;
   m_selSFOS = true;
-  m_selDForSS4SigLep = true;
   m_applyTrig = false;
   return;
 }
@@ -459,7 +535,6 @@ void EventSelector::Set2S3BMet()
   SetNSigNBase(2,3);
   m_metMin = 30;
   m_selSFOS = true;
-  m_selDForSS4SigLep = true;
   m_applyTrig = false;
   return;
 }
@@ -472,8 +547,173 @@ void EventSelector::Set2S3BZvetoBvetoMet()
   m_vetoZ = true;
   m_vetoExtZ = true;
   m_selSFOS = true;
+  m_applyTrig = false;
+}
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BDForSS()
+{
+  SetNSigNBase(2,3);
+  m_selSFOS = true;
   m_selDForSS4SigLep = true;
   m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BDForSSBveto()
+{
+  SetNSigNBase(2,3);
+  SetBveto();
+  m_selSFOS = true;
+  m_selDForSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BDForSSZveto()
+{
+  SetNSigNBase(2,3);
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_selDForSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BDForSSMet()
+{
+  SetNSigNBase(2,3);
+  m_metMin = 30;
+  m_selSFOS = true;
+  m_selDForSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BDForSSZvetoBvetoMet()
+{
+  SetNSigNBase(2,3);
+  SetBveto();
+  m_metMin = 30;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_selDForSS4SigLep = true;
+  m_applyTrig = false;
+}
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BDFSS()
+{
+  SetNSigNBase(2,3);
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BDFSSBveto()
+{
+  SetNSigNBase(2,3);
+  SetBveto();
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BDFSSZveto()
+{
+  SetNSigNBase(2,3);
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BDFSSMet()
+{
+  SetNSigNBase(2,3);
+  m_metMin = 30;
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BDFSSZvetoBvetoMet()
+{
+  SetNSigNBase(2,3);
+  SetBveto();
+  m_metMin = 30;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BTightBase()
+{
+  SetNSigNBase(2,3);
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  m_isoBase = true;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BTightBaseBveto()
+{
+  SetNSigNBase(2,3);
+  SetBveto();
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  m_isoBase = true;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BTightBaseZveto()
+{
+  SetNSigNBase(2,3);
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  m_isoBase = true;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BTightBaseMet()
+{
+  SetNSigNBase(2,3);
+  m_metMin = 30;
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  m_isoBase = true;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set2S3BTightBaseZvetoBvetoMet()
+{
+  SetNSigNBase(2,3);
+  SetBveto();
+  m_metMin = 30;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_selDFandSS4SigLep = true;
+  m_applyTrig = false;
+  m_isoBase = true;
+  return;
 }
 /*--------------------------------------------------------------------------------*/
 /*--------------------------------------------------------------------------------*/
@@ -516,6 +756,114 @@ void EventSelector::Set3S3BMet()
 void EventSelector::Set3S3BZvetoBvetoMet()
 {
   SetNSigNBase(3,3);
+  SetBveto();
+  m_metMin = 30;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BDFSS()
+{
+  SetNSigNBase(3,3);
+  m_selDFandSS4SigLep = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BDFSSBveto()
+{
+  SetNSigNBase(3,3);
+  m_selDFandSS4SigLep = true;
+  SetBveto();
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BDFSSZveto()
+{
+  SetNSigNBase(3,3);
+  m_selDFandSS4SigLep = true;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BDFSSMet()
+{
+  SetNSigNBase(3,3);
+  m_selDFandSS4SigLep = true;
+  m_metMin = 30;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BDFSSZvetoBvetoMet()
+{
+  SetNSigNBase(3,3);
+  m_selDFandSS4SigLep = true;
+  SetBveto();
+  m_metMin = 30;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BNotDFSS()
+{
+  SetNSigNBase(3,3);
+  m_vetoDFandSS4SigLep = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BNotDFSSBveto()
+{
+  SetNSigNBase(3,3);
+  m_vetoDFandSS4SigLep = true;
+  SetBveto();
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BNotDFSSZveto()
+{
+  SetNSigNBase(3,3);
+  m_vetoDFandSS4SigLep = true;
+  m_vetoZ = true;
+  m_vetoExtZ = true;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BNotDFSSMet()
+{
+  SetNSigNBase(3,3);
+  m_vetoDFandSS4SigLep = true;
+  m_metMin = 30;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::Set3S3BNotDFSSZvetoBvetoMet()
+{
+  SetNSigNBase(3,3);
+  m_vetoDFandSS4SigLep = true;
   SetBveto();
   m_metMin = 30;
   m_vetoZ = true;
@@ -574,119 +922,6 @@ void EventSelector::Set3S4BZvetoBvetoMet()
   return;
 }
 /*--------------------------------------------------------------------------------*/
-/*--------------------------------------------------------------------------------*/
-void EventSelector::Set2S3BTightBase()
-{
-  SetNSigNBase(2,3);
-  m_selSFOS = true;
-  m_selDForSS4SigLep = true;
-  m_applyTrig = false;
-  m_isoBase = true;
-  return;
-}
-/*--------------------------------------------------------------------------------*/
-void EventSelector::Set2S3BBvetoTightBase()
-{
-  SetNSigNBase(2,3);
-  SetBveto();
-  m_selSFOS = true;
-  m_selDForSS4SigLep = true;
-  m_applyTrig = false;
-  m_isoBase = true;
-  return;
-}
-/*--------------------------------------------------------------------------------*/
-void EventSelector::Set2S3BZvetoTightBase()
-{
-  SetNSigNBase(2,3);
-  m_vetoZ = true;
-  m_vetoExtZ = true;
-  m_selSFOS = true;
-  m_selDForSS4SigLep = true;
-  m_applyTrig = false;
-  m_isoBase = true;
-  return;
-}
-/*--------------------------------------------------------------------------------*/
-void EventSelector::Set2S3BMetTightBase()
-{
-  SetNSigNBase(2,3);
-  m_metMin = 30;
-  m_selSFOS = true;
-  m_selDForSS4SigLep = true;
-  m_applyTrig = false;
-  m_isoBase = true;
-  return;
-}
-/*--------------------------------------------------------------------------------*/
-void EventSelector::Set2S3BZvetoBvetoMetTightBase()
-{
-  SetNSigNBase(2,3);
-  SetBveto();
-  m_metMin = 30;
-  m_vetoZ = true;
-  m_vetoExtZ = true;
-  m_selSFOS = true;
-  m_selDForSS4SigLep = true;
-  m_applyTrig = false;
-  m_isoBase = true;
-  return;
-}
-/*--------------------------------------------------------------------------------*/
-/*--------------------------------------------------------------------------------*/
-void EventSelector::Set2S3BDFSS()
-{
-  SetNSigNBase(2,3);
-  m_selSFOS = true;
-  m_selDFandSS4SigLep = true;
-  m_applyTrig = false;
-  return;
-}
-/*--------------------------------------------------------------------------------*/
-void EventSelector::Set2S3BBvetoDFSS()
-{
-  SetNSigNBase(2,3);
-  SetBveto();
-  m_selSFOS = true;
-  m_selDFandSS4SigLep = true;
-  m_applyTrig = false;
-  return;
-}
-/*--------------------------------------------------------------------------------*/
-void EventSelector::Set2S3BZvetoDFSS()
-{
-  SetNSigNBase(2,3);
-  m_vetoZ = true;
-  m_vetoExtZ = true;
-  m_selSFOS = true;
-  m_selDFandSS4SigLep = true;
-  m_applyTrig = false;
-  return;
-}
-/*--------------------------------------------------------------------------------*/
-void EventSelector::Set2S3BMetDFSS()
-{
-  SetNSigNBase(2,3);
-  m_metMin = 30;
-  m_selSFOS = true;
-  m_selDFandSS4SigLep = true;
-  m_applyTrig = false;
-  return;
-}
-/*--------------------------------------------------------------------------------*/
-void EventSelector::Set2S3BZvetoBvetoMetDFSS()
-{
-  SetNSigNBase(2,3);
-  SetBveto();
-  m_metMin = 30;
-  m_vetoZ = true;
-  m_vetoExtZ = true;
-  m_selSFOS = true;
-  m_selDFandSS4SigLep = true;
-  m_applyTrig = false;
-  return;
-}
-/*--------------------------------------------------------------------------------*/
 void EventSelector::SetGT1S3B()
 {
   m_nLepMin = 1;
@@ -732,6 +967,8 @@ void EventSelector::setBaseJetPtEtaThreshold(double jetPtCut, double jetEtaCut)
 void EventSelector::finalize()
 {
   MyDebug("finalize()","EventSelector::finalize()");
+
+  delete m_availableSel;
 
   delete m_vec_signalElectron;
   delete m_vec_baseElectron;
@@ -922,7 +1159,11 @@ bool EventSelector::selectObject()
   for( ; el_itr!=el_end; ++el_itr){
     ST::IsSignalElectronExpCutArgs args; //default values are set by construnter.
     args.etcut(m_sigElPtCut);
-    m_susyObjTool->IsSignalElectronExp( **el_itr, ST::SignalIsoExp::TightIso, args); //Signal flag are set here.
+    if(m_sel=="ac"){
+      m_susyObjTool->IsSignalElectron( **el_itr ); //Signal flag are set here.
+    }else{
+      m_susyObjTool->IsSignalElectronExp( **el_itr, args); //Signal flag are set here.
+    }
   }
 
   ///////////////////////////////////////////////////
@@ -950,7 +1191,11 @@ bool EventSelector::selectObject()
   for( ; mu_itr!=mu_end; ++mu_itr){
     ST::IsSignalMuonExpCutArgs args; //default values are set by construnter.
     args.ptcut(m_sigMuPtCut);
-    m_susyObjTool->IsSignalMuonExp( **mu_itr, ST::SignalIsoExp::TightIso, args); //Signal flag are set here.
+    if(m_sel=="ac"){
+      m_susyObjTool->IsSignalMuon( **mu_itr ); //Signal flag are set here.
+    }else{
+      m_susyObjTool->IsSignalMuonExp( **mu_itr, args); //Signal flag are set here.
+    }
     m_susyObjTool->IsCosmicMuon   ( **mu_itr ); //Cosmic flag are set here.
     if(m_sel=="ac")passACCut_badMuon();
   }
@@ -969,7 +1214,11 @@ bool EventSelector::selectObject()
   xAOD::JetContainer::iterator jet_itr = (jets_copy)->begin();
   xAOD::JetContainer::iterator jet_end = (jets_copy)->end();
   for( ; jet_itr!=jet_end; ++jet_itr){
-    m_susyObjTool->IsBJet(**jet_itr,true,0.3511); //Making b-tagged jet flag.
+    if(m_sel=="ac"){
+      m_susyObjTool->IsBJet(**jet_itr); //Making b-tagged jet flag.
+    }else{
+      m_susyObjTool->IsBJet(**jet_itr,true,0.3511); //Making b-tagged jet flag.
+    }
     //(https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingBenchmarks)
     //MV1: Eff70%=0.3511, Eff80%=0.6073, Eff85%=0.3511
     m_vec_preJet->push_back(**jet_itr);
@@ -1012,8 +1261,7 @@ bool EventSelector::selectObject()
     MyError("selectObject()",Form("Failing to recode MySelJets%s to TStore.",m_sys.c_str()));
     rtrvFail = true;
   }
-  Bool_t doHarmonization = false;
-  if(m_susyObjTool->OverlapRemoval(electrons_copy, muons_copy, jets_copy, doHarmonization)==EL::StatusCode::FAILURE){
+  if(m_susyObjTool->OverlapRemoval(electrons_copy, muons_copy, jets_copy)==EL::StatusCode::FAILURE){
     MyError("selectObject()","Failing overlap removal process.");
     rtrvFail = true;
   }
@@ -1025,14 +1273,14 @@ bool EventSelector::selectObject()
   for( ; jet_itr != jet_end; ++jet_itr ){
     MyDebug("selectObject()",Form("jet: baseline=%d",(int)(*jet_itr)->auxdata<char>("baseline")));
     MyDebug("selectObject()",Form("jet: passOR=%d"  ,(int)(*jet_itr)->auxdata<char>("passOR"  )));
-    MyDebug("selectObject()",Form("jet: bad=%d"     ,(int)(*jet_itr)->auxdata<char>("bad"     )));
     MyDebug("selectObject()",Form("jet: bjet=%d"    ,(int)(*jet_itr)->auxdata<char>("bjet"    )));
     if(m_sel=="ac")passACCut_jetClean(**jet_itr);
     if( (*jet_itr)->auxdata<char>("baseline")==1 &&
-        (*jet_itr)->auxdata<char>("passOR"  )==1 &&
-        (*jet_itr)->auxdata<char>("bad"     )==0 ){
-      m_vec_baseJet->push_back(**jet_itr);
-      goodJets->push_back (*jet_itr);
+        (*jet_itr)->auxdata<char>("passOR"  )==1 ){
+      if((*jet_itr)->pt()>m_baseJetPtCut && fabs((*jet_itr)->eta())<m_baseJetEtaCut){
+        m_vec_baseJet->push_back(**jet_itr);
+        goodJets->push_back (*jet_itr);
+      }
     }
   }
 
@@ -1316,7 +1564,7 @@ bool EventSelector::selectObject()
 
   //For part of acceptance challenge
   if(m_sel=="ac"){
-    //    if(b_passAC_badMuon && b_passAC_jetClean && b_passAC_primVtx && b_passAC_cosmic){
+    if(b_passAC_badMuon && b_passAC_jetClean && b_passAC_primVtx && b_passAC_cosmic){
       passACCut_oneBaseLep();
       passACCut_oneSigLep ();
       passACCut_oneBaseJet();
@@ -1330,21 +1578,21 @@ bool EventSelector::selectObject()
       passACCut_oneBaseTau();
       passACCut_oneSigTau ();
       passACCut_oneBjet   ();
-    // }else{
-    //   b_passAC_oneBaseLep = false;
-    //   b_passAC_oneSigLep = false;
-    //   b_passAC_oneBaseJet = false;
-    //   b_passAC_oneSigJet = false;
-    //   b_passAC_twoBaseLep = false;
-    //   b_passAC_twoSigLep = false;
-    //   b_passAC_oneBaseEl = false;
-    //   b_passAC_oneSigEl = false;
-    //   b_passAC_oneBaseMu = false;
-    //   b_passAC_oneSigMu = false;
-    //   b_passAC_oneBaseTau = false;
-    //   b_passAC_oneSigTau = false;
-    //   b_passAC_oneBjet = false;
-    // }
+    }else{
+      b_passAC_oneBaseLep = false;
+      b_passAC_oneSigLep = false;
+      b_passAC_oneBaseJet = false;
+      b_passAC_oneSigJet = false;
+      b_passAC_twoBaseLep = false;
+      b_passAC_twoSigLep = false;
+      b_passAC_oneBaseEl = false;
+      b_passAC_oneSigEl = false;
+      b_passAC_oneBaseMu = false;
+      b_passAC_oneSigMu = false;
+      b_passAC_oneBaseTau = false;
+      b_passAC_oneSigTau = false;
+      b_passAC_oneBjet = false;
+    }
   }
 
   return true;
@@ -1441,13 +1689,14 @@ bool EventSelector::passACCut_badMuon   ()
 }
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::passACCut_jetClean  (xAOD::Jet& jet){
-  // if(not (b_passAC_badMuon)){
-  //   b_passAC_jetClean = false;
-  //   return false;
-  // }
-  if(jet.auxdata<char>("baseline")==1){
+  if(not (b_passAC_badMuon)){
+    b_passAC_jetClean = false;
+    return false;
+  }
+  if(jet.auxdata<char>("baseline")==1 && jet.auxdata<char>("passOR")==1){
     if(jet.pt()>m_baseJetPtCut && fabs(jet.eta())<m_baseJetEtaCut){
-      if(jet.auxdata<char>("bad")==1){
+      //This "if" is needed since "false" will be returned when we input a jet with pt<m_baseJetPtCut to IsGoodJet()...
+      if(not m_susyObjTool->IsGoodJet(jet, m_baseJetPtCut, m_baseJetEtaCut)){
         b_passAC_jetClean = false;
         return false;
       }
@@ -1457,19 +1706,19 @@ bool EventSelector::passACCut_jetClean  (xAOD::Jet& jet){
 }
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::passACCut_primVtx   (){
-  // if(not (b_passAC_badMuon && b_passAC_jetClean)){
-  //   b_passAC_primVtx = false;
-  //   return false;
-  // }
+  if(not (b_passAC_badMuon && b_passAC_jetClean)){
+    b_passAC_primVtx = false;
+    return false;
+  }
   return true;
 }
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::passACCut_cosmic    (xAOD::Muon& mu){
-  // if(not (b_passAC_badMuon && b_passAC_jetClean && b_passAC_primVtx)){
-  //   b_passAC_cosmic = false;
-  //   return false;
-  // }
-  if(mu.auxdata<char>("baseline")==1 && mu.auxdata<char>("cosmic")==1){
+  if(not (b_passAC_badMuon && b_passAC_jetClean && b_passAC_primVtx)){
+    b_passAC_cosmic = false;
+    return false;
+  }
+  if(mu.auxdata<char>("baseline")==1 && mu.auxdata<char>("passOR")==1 && mu.auxdata<char>("cosmic")==1){
     b_passAC_cosmic = false;
     return false;
   }
@@ -1784,7 +2033,7 @@ bool EventSelector::passOFOSCut()
 bool EventSelector::passDFSSCut()
 {
   //Select events with different flavor or same sign leptons.
-  if(m_selDForSS4SigLep){
+  if(m_selDForSS4SigLep || m_vetoDForSS4SigLep){
     bool df = false;
     if((m_leadLepFlavor[0]==0 && m_leadLepFlavor[1]==1) ||
        (m_leadLepFlavor[0]==1 && m_leadLepFlavor[1]==0) ) df = true;
@@ -1795,9 +2044,10 @@ bool EventSelector::passDFSSCut()
     else if(m_leadLepFlavor[1]==1) charge2 = (m_vec_signalMuon    ->at(m_leadLepIndex[1])).charge();
     bool ss = isSS(charge1,charge2);
     if(m_selDForSS4SigLep && not (df || ss)) return false;
+    if(m_vetoDForSS4SigLep && (df || ss)) return false;
   }
   //Select events with different flavor and same sign leptons.
-  if(m_selDFandSS4SigLep){
+  if(m_selDFandSS4SigLep || m_vetoDFandSS4SigLep){
     bool dfss = false;
     Int_t charge1(0), charge2(0);
     if     (m_leadLepFlavor[0]==0) charge1 = (m_vec_signalElectron->at(m_leadLepIndex[0])).charge();
@@ -1809,6 +2059,7 @@ bool EventSelector::passDFSSCut()
         ( (m_leadLepFlavor[0]==1 && m_leadLepFlavor[1]==0) && (charge1==-1 && charge2==-1) ) ||
         ( (m_leadLepFlavor[0]==1 && m_leadLepFlavor[1]==0) && (charge1== 1 && charge2== 1) ) ) dfss = true;
     if(m_selDFandSS4SigLep && !dfss) return false;
+    if(m_vetoDFandSS4SigLep && dfss) return false;
   }
   return true;
 }
