@@ -77,3 +77,27 @@ $python share/mkFaxFileList.py [optionally: target dataset list]
 +    metRebuilder->msg().setLevel( MSG::ERROR );  
      m_metRebuilder = metRebuilder;  
    }  
+===================================================================  
+--- SUSYTools/Root/SUSYObjDef_xAOD.cxx  (revision 676240)  
++++ SUSYTools/Root/SUSYObjDef_xAOD.cxx  (working copy)  
+@@ -1353,7 +1353,8 @@  
+   bool isbjet = (weight > opcut);  
+ 
+   if (m_doTruthBtag) {  
+-    m_btagEffReader.setRandomSeed(int( 1e5 + 5 * fabs(input.eta()))); //set a unique seed for each jet  
++    //    m_btagEffReader.setRandomSeed(int( 1e5 + 5 * fabs(input.eta()))); //set a unique seed for each jet  
++    m_btagEffReader.setRandomSeed(int( 1e5 * 5 * fabs(input.eta()))); //set a unique seed for each jet  
+     isbjet = m_btagEffReader.performTruthTagging(&input);  
+   }  
+@@ -1466,7 +1470,8 @@  
+       std::vector<int> nTrkVec;  
+       (*jet_itr)->getAttribute(xAOD::JetAttribute::NumTrkPt500, nTrkVec);  
+-      int jet_nTrk = nTrkVec[this->GetPrimVtx()->index()];  
++      int jet_nTrk = (this->GetPrimVtx() == 0 || nTrkVec.size() == 0) ? 0 : nTrkVec[this->GetPrimVtx()->index()];  
++      //      int jet_nTrk = nTrkVec[this->GetPrimVtx()->index()];  
+@@ -1705,7 +1712,8 @@  
+        std::vector<int> nTrkVec;  
+       (*jet_itr)->getAttribute(xAOD::JetAttribute::NumTrkPt500, nTrkVec);  
+-      int jet_nTrk = nTrkVec[this->GetPrimVtx()->index()];  
++      int jet_nTrk = (this->GetPrimVtx() == 0 || nTrkVec.size() == 0) ? 0 : nTrkVec[this->GetPrimVtx()->index()];  
++      //      int jet_nTrk = nTrkVec[this->GetPrimVtx()->index()];  

@@ -31,6 +31,7 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   m_totalSF(1.),
   m_sel(sel),
   m_sys(sys),
+  m_runMM(false),
   m_availableSel(NULL),
   m_is3SigLepSel(true),
   m_sigElPtCut(5000),
@@ -484,6 +485,12 @@ bool EventSelector::initialize()
       std::cout<<std::endl;
     }
     return false;
+  }
+  if(m_runMM){
+    m_nLepMin = 1;
+    m_nLepMax = -1;
+    m_1stBaseIsSignal = true;
+    m_is3SigLepSel = false;
   }
   if(m_nLepMin!=3 || m_nLepMax!=3) m_is3SigLepSel = false;
 
@@ -1384,7 +1391,7 @@ bool EventSelector::selectObject()
   // do overlap removal
   ///////////////////////////////////////////////////
   xAOD::JetContainer* goodJets = new xAOD::JetContainer(SG::VIEW_ELEMENTS);
-  MyDebug("",Form("m_sys=%s",m_sys.c_str()));
+  MyDebug("selectObject()",Form("m_sys=%s",m_sys.c_str()));
   if(m_store->record(goodJets, Form("MySelJets%s",m_sys.c_str()))==EL::StatusCode::FAILURE){
     MyError("selectObject()",Form("Failing to recode MySelJets%s to TStore.",m_sys.c_str()));
     rtrvFail = true;
@@ -1396,6 +1403,7 @@ bool EventSelector::selectObject()
   //////////////////////////////////////////////////////////////////////
   // preparing the goodJets container
   //////////////////////////////////////////////////////////////////////
+  MyDebug("selectObject()","Preparing GoodJets Container");
   jet_itr = (jets_copy)->begin();
   jet_end = (jets_copy)->end();
   for( ; jet_itr != jet_end; ++jet_itr ){
@@ -1420,6 +1428,7 @@ bool EventSelector::selectObject()
   ///////////////////////////////////////////////////
   // Retrieving Missing Et
   ///////////////////////////////////////////////////
+  MyDebug("selectObject()","Preparing MissingEt");
   //MET CST
   xAOD::MissingETContainer* metcst = new xAOD::MissingETContainer;
   xAOD::MissingETAuxContainer* metcst_aux = new xAOD::MissingETAuxContainer;
@@ -1551,6 +1560,7 @@ bool EventSelector::selectObject()
     m_baseLepIndex [id] = -1;
     m_baseLepFlavor[id] = -1;
     m_baseLeps     [id].SetPxPyPzE(0.,0.,0.,0.);
+    m_baseLepIsSig [id] = -1;
     m_leadLepIndex [id] = -1;
     m_leadLepFlavor[id] = -1;
     m_leadLeps     [id].SetPxPyPzE(0.,0.,0.,0.);
@@ -1559,6 +1569,7 @@ bool EventSelector::selectObject()
   MyDebug("selectObject()",Form("Baseline : elSize=%d, muSize=%d",(int)m_vec_baseElectron->size(),(int)m_vec_baseMuon->size()));
   for(UInt_t elIndex=0; elIndex<m_vec_baseElectron->size(); elIndex++){
     Double_t elPt = m_vec_baseElectron->at(elIndex).pt();
+    Double_t elIsSig = IsMySignalElectron(m_vec_baseElectron->at(elIndex));
     for(Int_t id=0; id<nAnaLep; id++){
       if(elPt>m_baseLeps[id].Pt()){
         if(id!=nAnaLep-1){
@@ -1566,11 +1577,13 @@ bool EventSelector::selectObject()
             m_baseLepIndex [index] = m_baseLepIndex [index-1];
             m_baseLepFlavor[index] = m_baseLepFlavor[index-1];
             m_baseLeps     [index] = m_baseLeps     [index-1];
+            m_baseLepIsSig [index] = m_baseLepIsSig [index-1];
           }
         }
         m_baseLepIndex [id] = elIndex;
         m_baseLepFlavor[id] = 0;
         m_baseLeps     [id] = m_vec_baseElectron->at(elIndex).p4();
+        m_baseLepIsSig [id] = elIsSig;
         break;
       }else{
       }
@@ -1578,6 +1591,7 @@ bool EventSelector::selectObject()
   }
   for(UInt_t muIndex=0; muIndex<m_vec_baseMuon->size(); muIndex++){
     Double_t muPt = m_vec_baseMuon->at(muIndex).pt();
+    Double_t muIsSig = IsMySignalMuon(m_vec_baseMuon->at(muIndex));
     for(Int_t id=0; id<nAnaLep; id++){
       if(muPt>m_baseLeps[id].Pt()){
         if(id!=nAnaLep-1){
@@ -1585,11 +1599,13 @@ bool EventSelector::selectObject()
             m_baseLepIndex [index] = m_baseLepIndex [index-1];
             m_baseLepFlavor[index] = m_baseLepFlavor[index-1];
             m_baseLeps     [index] = m_baseLeps     [index-1];
+            m_baseLepIsSig [index] = m_baseLepIsSig [index-1];
           }
         }
         m_baseLepIndex [id] = muIndex;
         m_baseLepFlavor[id] = 1;
         m_baseLeps     [id] = m_vec_baseMuon->at(muIndex).p4();
+        m_baseLepIsSig [id] = muIsSig;
         break;
       }else{
       }
@@ -2941,11 +2957,12 @@ bool EventSelector::passLepTruthCut()
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::pass1stBaseIsSignal(){
   if(m_1stBaseIsSignal){
-    if(m_baseLepFlavor[0]==0){
-      if(not IsMySignalElectron( m_vec_baseElectron->at(m_baseLepIndex[0]) )) return false;
-    } else if (m_baseLepFlavor[0]==1){
-      if(not IsMySignalMuon    ( m_vec_baseMuon    ->at(m_baseLepIndex[0]) )) return false;
-    }
+    if(m_baseLepIsSig[0]==0) return false;
+    // if(m_baseLepFlavor[0]==0){
+    //   if(not IsMySignalElectron( m_vec_baseElectron->at(m_baseLepIndex[0]) )) return false;
+    // } else if (m_baseLepFlavor[0]==1){
+    //   if(not IsMySignalMuon    ( m_vec_baseMuon    ->at(m_baseLepIndex[0]) )) return false;
+    // }
   }
   return true;
 }

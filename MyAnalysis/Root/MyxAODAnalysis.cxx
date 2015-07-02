@@ -306,6 +306,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
       std::string eveSelecName = m_vec_eveSelec->at(eveSelec);
       std::string systName     = sysListItr->name();
       Plotter* tmp_plotter = new Plotter(eveSelecName.c_str(), systName.c_str(), m_debugMode);
+      tmp_plotter->SetRunMM(m_runMM);
       m_vec_plotter->at(eveSelec).push_back(tmp_plotter);
       if(systName==""){
         TFile *outfile = wk()->getOutputFile(Form("%d.%s.AnaHists",m_dsid,m_vec_eveSelec->at(eveSelec).c_str()));
@@ -414,6 +415,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 
       EventSelector* myEveSelec = 
         new EventSelector(m_susyObjTool, eveSelecName.c_str(), (sysListItr->name()).c_str(), (m_isMC?1:0), m_debugMode);
+      myEveSelec->setRunMM(m_runMM);//Need to be called before initialize();
       bool initDone = myEveSelec->initialize();
       if(initDone==false){
         if(m_processedEvents==1) MyError("execute()", Form("Not supported event selection was detected!! : %s",eveSelecName.c_str()));

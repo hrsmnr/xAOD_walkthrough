@@ -23,6 +23,7 @@ class Plotter : public TObject
 
   virtual void initialize(const char* path, int dsid, double XS=0., TFile* file=NULL);
   virtual void finalize();
+  void SetRunMM(Bool_t runMM){m_runMM = runMM;};
 
   bool FillHistoPreSelec(EventSelector *EveSelec, double weight);
   bool FillHistograms(EventSelector *EveSelec, double weight);
@@ -34,12 +35,15 @@ class Plotter : public TObject
   MSG::Level m_dbg; // debug level
   std::string m_sel;
   std::string m_sys;
+  Bool_t m_runMM;
   std::string m_filename;
   double m_crossSection;
   Bool_t m_isMC;
   TFile *m_rootfile;
 
   bool BookHistograms();
+  Double_t getMMWeight(Double_t pt2, Double_t eta2, Int_t flav2, Bool_t is2ndSignal,
+                       Double_t pt3, Double_t eta3, Int_t flav3, Bool_t is3rdSignal);
 
   // Declaration of histograms
   TH1F *h_xsec; //cross section for the processed sample (for data, 0. is filled.)

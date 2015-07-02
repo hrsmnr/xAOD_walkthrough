@@ -70,6 +70,7 @@ public:
   long long int m_nSkipNum;
   std::vector<std::string> *m_vec_eveSelec;
   std::string m_outputDir;
+  bool m_runMM;
 
 #ifndef __CINT__
   ST::SUSYObjDef_xAOD *m_susyObjTool; //!
@@ -95,6 +96,7 @@ public:
   void SetSkipNum(long long int nskip){m_nSkipNum = nskip;};
   void SetSelectionRegion(const char* selec){m_vec_eveSelec->push_back(selec);};
   void SetOutputDir(const char* path){m_outputDir = path;};
+  void SetRunMM(bool runMM){m_runMM = runMM;};
 
   // Event counters
   // First index is for selection regions and second for systematic variation.

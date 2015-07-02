@@ -46,6 +46,7 @@ class EventSelector : public TObject
   virtual void setBaseElMuPtThreshold(double elPtCut=5000, double muPtCut=5000);
   virtual void setSigJetPtEtaThreshold(double jetPtCut=20000, double jetEtaCut=2.8);
   virtual void setBaseJetPtEtaThreshold(double jetPtCut=20000, double jetEtaCut=2.8);
+  virtual void setRunMM(Bool_t runMM){m_runMM = runMM;};
 
   // Preselection, before object selection
   //    virtual bool preSelectEvent();
@@ -58,6 +59,7 @@ class EventSelector : public TObject
   Int_t getBaseLepIndex (Int_t id){return m_baseLepIndex [id];};
   Int_t getBaseLepFlavor(Int_t id){return m_baseLepFlavor[id];};
   TLorentzVector getBaseLep(Int_t id){return m_baseLeps[id];};
+  Int_t getBaseLepIsSig (Int_t id){return m_baseLepIsSig [id];};
   Int_t getLeadLepIndex (Int_t id){return m_leadLepIndex [id];};
   Int_t getLeadLepFlavor(Int_t id){return m_leadLepFlavor[id];};
   TLorentzVector getLeadLep(Int_t id){return m_leadLeps[id];};
@@ -430,6 +432,7 @@ class EventSelector : public TObject
   /* std::string                 m_sample;         // sample name */
   std::string                    m_sel;            // event selection string
   std::string                    m_sys;            // systematic name string
+  Bool_t                         m_runMM;          // modify cut selection to run MM
   std::vector<std::string>*      m_availableSel;   // all available selection regions (need to add manually...)
   bool                           m_is3SigLepSel;   // true if (m_nLepMin and m_nLepMax)!=3
   double                         m_sigElPtCut;     // signal electron Pt threshold
@@ -461,6 +464,7 @@ class EventSelector : public TObject
   Int_t m_baseLepIndex [nAnaLep];
   Int_t m_baseLepFlavor[nAnaLep]; //0:Electron, 1:Muon, -1:Initial
   TLorentzVector m_baseLeps[nAnaLep];
+  Int_t m_baseLepIsSig [nAnaLep];
   Int_t m_leadLepIndex [nAnaLep];
   Int_t m_leadLepFlavor[nAnaLep]; //0:Electron, 1:Muon, -1:Initial
   TLorentzVector m_leadLeps[nAnaLep];

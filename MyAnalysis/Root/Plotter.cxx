@@ -53,6 +53,7 @@ Plotter::Plotter(const std::string& sel, const std::string& sys, const MSG::Leve
   m_dbg(dbg),
   m_sel(sel),
   m_sys(sys),
+  m_runMM(false),
   m_filename(""),
   m_crossSection(0.),
   m_isMC(kFALSE)
@@ -847,10 +848,12 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   Int_t baseLepIndex[3];
   Int_t baseLepFlavor[3];
   TLorentzVector baseLep[3];
+  Int_t baseLepIsSig[3];
   for(Int_t id=0; id<3; id++){
     baseLepIndex [id] = EveSelec->getBaseLepIndex (id);
     baseLepFlavor[id] = EveSelec->getBaseLepFlavor(id);
     baseLep      [id] = EveSelec->getBaseLep      (id);
+    baseLepIsSig [id] = EveSelec->getBaseLepIsSig (id);
   }
 
   //Prepare 1st-3rd lepton's used for the analysis (can treat events with less than three signal lepton region)
@@ -873,6 +876,18 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
 
   //===========================================================================
   Double_t w = weight*EveSelec->getTotalSF();
+  if(m_runMM){
+    Double_t pt2 = baseLep[1].Pt(); //in GeV
+    Double_t pt3 = baseLep[2].Pt(); //in GeV
+    Double_t eta2 = baseLep[1].Eta();
+    Double_t eta3 = baseLep[2].Eta();
+    Int_t flav2 = baseLepFlavor[1];
+    Int_t flav3 = baseLepFlavor[2];
+    Bool_t is2ndSignal = baseLepIsSig[1];
+    Bool_t is3rdSignal = baseLepIsSig[2];
+    //    w *= m_MMTool->getMMWeight(pt2,eta2,flav2,is2ndSignal,pt3,eta3,flav3,is3rdSignal);
+    w *= this->getMMWeight(pt2,eta2,flav2,is2ndSignal,pt3,eta3,flav3,is3rdSignal);
+  }
 
   // Preprocessor convenience
   // All this does is append the corrent indices to the histo for sys and channel
@@ -1479,4 +1494,39 @@ bool Plotter::FillNEvent(double weight)
   MyDebug("FillNEvent()","Plotter::FillNEvent()");
   h_nEve->Fill(0., weight);
   return true;
+}
+
+Double_t Plotter::getMMWeight(Double_t pt2, Double_t eta2, Int_t flav2, Bool_t is2ndSignal,
+                              Double_t pt3, Double_t eta3, Int_t flav3, Bool_t is3rdSignal)
+{
+  Double_t mmWeight=0.;
+  MyDebug("getMMWeight()","Calculating MM Weight");
+
+  Double_t r1 = 0.7;  Double_t R1 = 1. - r1;
+  Double_t f1 = 0.1;  Double_t F1 = 1. - f1;
+  Double_t r2 = 0.7;  Double_t R2 = 1. - r2;
+  Double_t f2 = 0.1;  Double_t F2 = 1. - f2;
+  Int_t Nxx[4]={0,0,0,0}; //Nxx[0]=Ntt, Nxx[1]=Ntl, Nxx[2]=Nlt, Nxx[3]=Nll
+  if( is2ndSignal &&  is3rdSignal) Nxx[0]=1;
+  if( is2ndSignal && !is3rdSignal) Nxx[1]=1;
+  if(!is2ndSignal &&  is3rdSignal) Nxx[2]=1;
+  if(!is2ndSignal && !is3rdSignal) Nxx[3]=1;
+
+  Double_t Nrr =   F1 * F2 * Nxx[0] - F1 * f2 * Nxx[1] - f1 * F2 * Nxx[2] + f1 * f2 * Nxx[3];
+  Double_t Nrf = - F1 * R2 * Nxx[0] + F1 * r2 * Nxx[1] + f1 * R2 * Nxx[2] - f1 * r2 * Nxx[3];
+  Double_t Nfr = - R1 * F2 * Nxx[0] + R1 * f2 * Nxx[1] + r1 * F2 * Nxx[2] - r1 * f2 * Nxx[3];
+  Double_t Nff =   R1 * R2 * Nxx[0] - R1 * r2 * Nxx[1] - r1 * R2 * Nxx[2] + r1 * r2 * Nxx[3];
+
+  MyDebug("getMMWeight()",Form("==== Num of evts: Ntt=%d, Ntl=%d, Nlt=%d, Nll=%d",Nxx[0],Nxx[1],Nxx[2],Nxx[3]));
+  MyDebug("getMMWeight()",Form("==== Fake Rates : r1=%f, f1=%f, r2=%f, f2=%f",r1,f1,r2,f2));
+  MyDebug("getMMWeight()",Form("==== Fake vector: Nrr=%f, Nrf=%f, Nfr=%f, Nff=%f",Nrr,Nrf,Nfr,Nff));
+
+  if (r1-f1==0 || r2-f2==0) return 0.;
+  Double_t det2leps = 1./(r1-f1)/(r2-f2);
+
+  mmWeight = det2leps * (r1*f2*Nrf + f1*r2*Nfr + f1*f2*Nff);
+
+  MyDebug("getMMWeight()",Form("Total fake weight: %f",mmWeight));
+
+  return mmWeight;
 }
