@@ -19,8 +19,11 @@ done
 ###################################################
 ## Merging files
 ###################################################
+queue=30m
 for reg in "${REGION[@]}"
 do
-    echo $reg
-    root -q -b 'mkPlots.C("'${TAG}'","'${reg}'")'
+#    echo root -q -b 'mkPlots.C("'${TAG}'","'${reg}'")'
+#    root -q -b 'mkPlots.C("'${TAG}'","'${reg}'")'
+    echo bsub -q ${queue} -e ./plots/${TAG}.${reg}.err -o ./plots/${TAG}.${reg}.log root -q -b 'mkPlots.C("'${TAG}'","'${reg}'")'
+    bsub -q ${queue} -e ./plots/${TAG}.${reg}.err -o ./plots/${TAG}.${reg}.log root -q -b 'mkPlots.C("'${TAG}'","'${reg}'")'
 done

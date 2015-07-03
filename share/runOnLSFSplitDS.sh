@@ -99,11 +99,36 @@ do
 done
 ######################################################
 
+###################################################################
+# Finding MC samples with fake leptons for MM
+###################################################################
+FakeDSID=("110070" "110071" "110302" "110305" #single top
+    "110401" #ttbar
+    "147400" "147401" "147402" "147403" "147404" "147405" #W+jets
+    "147406" "147407" "147408" #Z+jets
+    "161555" "161566" "161577" "161595" "161606" "161617"
+    "161646" "161657" "161697" "161827" "161849" #Higgs
+    "187150" "187151" "187152" "187153" "187154"
+    "187155" "187156" "187157" "187158" #WW
+    "187401" "187402" "187403" "187404" "187405" "187406" "187407" "187408" "187409" #gg->WW
+)
+runMM=''
+#for fakeDS in "${FakeDSID[@]}"
+#do
+#    if [ "$runnum" = "$fakeDS" ]; then
+#        echo 'MC samples for fake leptons was found!!'
+#        runMM='--runMM'
+#    fi
+#done
+
+###################################################################
+# Submitting jobs to LSF
+###################################################################
 maxEve=-1
 queue=1d
 echo Starting testRun for DSID=$runnum ...
-echo bsub -q ${queue} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG
-bsub -q ${queue} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG
+echo bsub -q ${queue} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM}
+bsub -q ${queue} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM}
 echo ''
 done
 
