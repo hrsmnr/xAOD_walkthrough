@@ -28,6 +28,8 @@ class Plotter : public TObject
   bool FillHistograms(EventSelector *EveSelec, double weight);
   bool FillNEvent(double weight);
 
+  bool isRealLepton(Int_t type, Int_t origin, Int_t pdgid);
+
   ClassDef(Plotter, 1);
 
  protected:
@@ -109,6 +111,26 @@ class Plotter : public TObject
   TH1F *h_HFlep2and3Eta[nChan]; // 2nd and 3rd HF lepton Eta
   TH1F *h_LFlep2and3Eta[nChan]; // 2nd and 3rd LF lepton Eta
   TH1F *h_UKlep2and3Eta[nChan]; // 2nd and 3rd UK lepton Eta
+  TH1F *h_PRel2and3Pt  [nChan]; // 2nd and 3rd PR electron Pt
+  TH1F *h_COel2and3Pt  [nChan]; // 2nd and 3rd CO electron Pt
+  TH1F *h_HFel2and3Pt  [nChan]; // 2nd and 3rd HF electron Pt
+  TH1F *h_LFel2and3Pt  [nChan]; // 2nd and 3rd LF electron Pt
+  TH1F *h_UKel2and3Pt  [nChan]; // 2nd and 3rd UK electron Pt
+  TH1F *h_PRel2and3Eta [nChan]; // 2nd and 3rd PR electron Eta
+  TH1F *h_COel2and3Eta [nChan]; // 2nd and 3rd CO electron Eta
+  TH1F *h_HFel2and3Eta [nChan]; // 2nd and 3rd HF electron Eta
+  TH1F *h_LFel2and3Eta [nChan]; // 2nd and 3rd LF electron Eta
+  TH1F *h_UKel2and3Eta [nChan]; // 2nd and 3rd UK electron Eta
+  TH1F *h_PRmu2and3Pt  [nChan]; // 2nd and 3rd PR muon Pt
+  TH1F *h_COmu2and3Pt  [nChan]; // 2nd and 3rd CO muon Pt
+  TH1F *h_HFmu2and3Pt  [nChan]; // 2nd and 3rd HF muon Pt
+  TH1F *h_LFmu2and3Pt  [nChan]; // 2nd and 3rd LF muon Pt
+  TH1F *h_UKmu2and3Pt  [nChan]; // 2nd and 3rd UK muon Pt
+  TH1F *h_PRmu2and3Eta [nChan]; // 2nd and 3rd PR muon Eta
+  TH1F *h_COmu2and3Eta [nChan]; // 2nd and 3rd CO muon Eta
+  TH1F *h_HFmu2and3Eta [nChan]; // 2nd and 3rd HF muon Eta
+  TH1F *h_LFmu2and3Eta [nChan]; // 2nd and 3rd LF muon Eta
+  TH1F *h_UKmu2and3Eta [nChan]; // 2nd and 3rd UK muon Eta
 
   // Fake baseline lepton
   TH1F *h_PRbaselep1Pt [nChan]; // 1st PR base lepton Pt
@@ -153,6 +175,26 @@ class Plotter : public TObject
   TH1F *h_HFbaselep2and3Eta[nChan]; // 2nd and 3rd HF base lepton Eta
   TH1F *h_LFbaselep2and3Eta[nChan]; // 2nd and 3rd LF base lepton Eta
   TH1F *h_UKbaselep2and3Eta[nChan]; // 2nd and 3rd UK base lepton Eta
+  TH1F *h_PRbaseel2and3Pt  [nChan]; // 2nd and 3rd PR base electron Pt
+  TH1F *h_CObaseel2and3Pt  [nChan]; // 2nd and 3rd CO base electron Pt
+  TH1F *h_HFbaseel2and3Pt  [nChan]; // 2nd and 3rd HF base electron Pt
+  TH1F *h_LFbaseel2and3Pt  [nChan]; // 2nd and 3rd LF base electron Pt
+  TH1F *h_UKbaseel2and3Pt  [nChan]; // 2nd and 3rd UK base electron Pt
+  TH1F *h_PRbaseel2and3Eta [nChan]; // 2nd and 3rd PR base electron Eta
+  TH1F *h_CObaseel2and3Eta [nChan]; // 2nd and 3rd CO base electron Eta
+  TH1F *h_HFbaseel2and3Eta [nChan]; // 2nd and 3rd HF base electron Eta
+  TH1F *h_LFbaseel2and3Eta [nChan]; // 2nd and 3rd LF base electron Eta
+  TH1F *h_UKbaseel2and3Eta [nChan]; // 2nd and 3rd UK base electron Eta
+  TH1F *h_PRbasemu2and3Pt  [nChan]; // 2nd and 3rd PR base muon Pt
+  TH1F *h_CObasemu2and3Pt  [nChan]; // 2nd and 3rd CO base muon Pt
+  TH1F *h_HFbasemu2and3Pt  [nChan]; // 2nd and 3rd HF base muon Pt
+  TH1F *h_LFbasemu2and3Pt  [nChan]; // 2nd and 3rd LF base muon Pt
+  TH1F *h_UKbasemu2and3Pt  [nChan]; // 2nd and 3rd UK base muon Pt
+  TH1F *h_PRbasemu2and3Eta [nChan]; // 2nd and 3rd PR base muon Eta
+  TH1F *h_CObasemu2and3Eta [nChan]; // 2nd and 3rd CO base muon Eta
+  TH1F *h_HFbasemu2and3Eta [nChan]; // 2nd and 3rd HF base muon Eta
+  TH1F *h_LFbasemu2and3Eta [nChan]; // 2nd and 3rd LF base muon Eta
+  TH1F *h_UKbasemu2and3Eta [nChan]; // 2nd and 3rd UK base muon Eta
 
   // Fake signal lepton
   TH1F *h_PRlepPt [nChan]; // PR lepton Pt
@@ -177,6 +219,10 @@ class Plotter : public TObject
   TH1F *h_HFbaselepEta[nChan]; // HF base lepton Eta
   TH1F *h_LFbaselepEta[nChan]; // LF base lepton Eta
   TH1F *h_UKbaselepEta[nChan]; // UK base lepton Eta
+
+  // Summary of real efficiency/fake rate
+  TH1F *h_sgnlfakelepClass[nChan]; // signal lepton, 0: all, 1:electron, 2:muon
+  TH1F *h_basefakelepClass[nChan]; //   base lepton, 0: all, 1:electron, 2:muon
 
   // base lepton kinematics
   TH1F *h_baselepChan[nChan];
@@ -245,6 +291,10 @@ class Plotter : public TObject
   TH1F *h_lep1Class[nChan]; // truth classifcation from LeptonTruthTools
   TH1F *h_lep2Class[nChan]; // truth classifcation from LeptonTruthTools
   TH1F *h_lep3Class[nChan]; // truth classifcation from LeptonTruthTools
+  TH1F *h_fakeEl2and3Origin[nChan]; // fake electron truth classification
+  TH1F *h_fakeMu2and3Origin[nChan]; // fake muon truth classification
+  TH1F *h_fakeEl2and3Class[nChan];  // fake electron truth classification
+  TH1F *h_fakeMu2and3Class[nChan];  // fake muon truth classification
 
   TH1F *h_hasSS[nChan];     // event has SS leptons
 
@@ -257,6 +307,10 @@ class Plotter : public TObject
   TH1F *h_baselep1Class[nChan]; // truth classifcation from LeptonTruthTools
   TH1F *h_baselep2Class[nChan]; // truth classifcation from LeptonTruthTools
   TH1F *h_baselep3Class[nChan]; // truth classifcation from LeptonTruthTools
+  TH1F *h_fakebaseEl2and3Origin[nChan]; // fake electron truth classification from McTruthClassifier
+  TH1F *h_fakebaseMu2and3Origin[nChan]; // fake muon truth classification from McTruthClassifier
+  TH1F *h_fakebaseEl2and3Class[nChan];  // fake electron truth classification from LeptonTruthTools
+  TH1F *h_fakebaseMu2and3Class[nChan];  // fake muon truth classification from LeptonTruthTools
 
   // Tau kinematics
   TH1F *h_nTau      [nChan]; // number of signal taus
