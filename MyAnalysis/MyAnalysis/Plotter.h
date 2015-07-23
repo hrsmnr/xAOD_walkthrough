@@ -409,5 +409,9 @@ class Plotter : public TObject
   TH1F *h_nVtx[nChan]; // number of vtx with at least 5 tracks
   TH1F *h_mu  [nChan]; // average interactions per bunch crossing
 
+  // PDGID of parents
+  TH1F *h_elParentPdgId[nChan];
+  TH1F *h_muParentPdgId[nChan];
+
 };
 #endif

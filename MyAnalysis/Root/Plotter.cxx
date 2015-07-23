@@ -398,6 +398,8 @@ void Plotter::finalize()
       h_mtll_mt[iCh]->Write();
       h_nVtx[iCh]->Write();
       h_mu[iCh]->Write();
+      h_elParentPdgId[iCh]->Write();
+      h_muParentPdgId[iCh]->Write();
     }
   }
 
@@ -917,6 +919,10 @@ bool Plotter::BookHistograms()
     NEWHIST( nVtx, "Number of good vertices;Events", 40, 0, 40 );
     NEWHIST( mu, "Avg interactions per bunch crossing;Events", 40, 0, 40 );
 
+    // To look into pdgId of parents
+    NEWHIST( elParentPdgId, "PDG ID of parents of electron;Events", 100, -50, 50);
+    NEWHIST( muParentPdgId, "PDG ID of parents of muon;Events",     100, -50, 50);
+
   }
 
 #undef PT1HIST
@@ -1194,22 +1200,16 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
       if(lepIndex[id]==-1) continue;
       Int_t type   = -1;
       Int_t origin = -1;
-      Int_t pdgid  = -1;
       std::vector< xAOD::Electron >* vec_electron = EveSelec->is3SigLepSel() ? vec_signalElectron : vec_baseElectron;
       std::vector< xAOD::Muon >*     vec_muon     = EveSelec->is3SigLepSel() ? vec_signalMuon     : vec_baseMuon;
       if(lepFlavor[id]==0){
         type   = xAOD::EgammaHelpers::getParticleTruthType  (&(vec_electron->at(lepIndex[id])));
         origin = xAOD::EgammaHelpers::getParticleTruthOrigin(&(vec_electron->at(lepIndex[id])));
-        pdgid  = xAOD::EgammaHelpers::getTruthParticle      (&(vec_electron->at(lepIndex[id])))->pdgId();
       }else{
         const xAOD::TrackParticle* trackParticle = (&(vec_muon->at(lepIndex[id])))->primaryTrackParticle();
         if(trackParticle){
           static SG::AuxElement::Accessor<int> acc_truthType  ("truthType"  );
           static SG::AuxElement::Accessor<int> acc_truthOrigin("truthOrigin");
-          static SG::AuxElement::Accessor<int> acc_truthPdgId ("PdgId"      );
-          if(acc_truthType  .isAvailable(*trackParticle)) type   = acc_truthType  (*trackParticle);
-          if(acc_truthOrigin.isAvailable(*trackParticle)) origin = acc_truthOrigin(*trackParticle);
-          if(acc_truthPdgId .isAvailable(*trackParticle)) pdgid  = acc_truthPdgId (*trackParticle);
         }
       }
       //For origin
@@ -1217,12 +1217,8 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
       if     (id==0) { FillChanHist( h_lep1Origin, type, w);
       } else if(id==1) { 
         FillChanHist( h_lep2Origin, type, w);
-        // FillElHist(id, h_fakeEl2and3Origin, type, w);
-        // FillMuHist(id, h_fakeMu2and3Origin, type, w);
       } else if(id==2) {
         FillChanHist( h_lep3Origin, type, w);
-        // FillElHist(id, h_fakeEl2and3Origin, type, w);
-        // FillMuHist(id, h_fakeMu2and3Origin, type, w);
       }
       // Classification of Primary/Conversion/HeavyFlavor/LightFlavor/Unknown
       // Primary
@@ -1230,38 +1226,10 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
         FillChanHist( h_lepClass, 0., w);
         if       (id==0){ 
           FillChanHist( h_lep1Class, 0., w);
-          FillChanHist( h_PRlepPt,   leadLep[0].Pt()/1000., w );
-          FillChanHist( h_PRlep1Pt,  leadLep[0].Pt()/1000., w );
-          FillChanHist( h_PRlepEta,  leadLep[0].Eta(), w );
-          FillChanHist( h_PRlep1Eta, leadLep[0].Eta(), w );
         } else if(id==1){ 
           FillChanHist( h_lep2Class, 0., w);
-          FillChanHist( h_PRlepPt,       leadLep[1].Pt()/1000., w );
-          FillChanHist( h_PRlep2Pt,      leadLep[1].Pt()/1000., w );
-          FillChanHist( h_PRlep2and3Pt,  leadLep[1].Pt()/1000., w );
-          FillChanHist( h_PRlepEta,      leadLep[1].Eta(), w );
-          FillChanHist( h_PRlep2Eta,     leadLep[1].Eta(), w );
-          FillChanHist( h_PRlep2and3Eta, leadLep[1].Eta(), w );
-          FillElHist( 1, h_sgnlfakelepClass, 0., w);
-          FillElHist( 1, h_sgnlfakelepClass, 2., w);
-          FillMuHist( 1, h_sgnlfakelepClass, 0., w);
-          FillMuHist( 1, h_sgnlfakelepClass, 4., w);
-          FillElHist( 1, h_fakeEl2and3Class, 0., w);
-          FillMuHist( 1, h_fakeMu2and3Class, 0., w);
         } else if(id==2){ 
           FillChanHist( h_lep3Class, 0., w);
-          FillChanHist( h_PRlepPt,       leadLep[2].Pt()/1000., w );
-          FillChanHist( h_PRlep3Pt,      leadLep[2].Pt()/1000., w );
-          FillChanHist( h_PRlep2and3Pt,  leadLep[2].Pt()/1000., w );
-          FillChanHist( h_PRlepEta,      leadLep[2].Eta(), w );
-          FillChanHist( h_PRlep3Eta,     leadLep[2].Eta(), w );
-          FillChanHist( h_PRlep2and3Eta, leadLep[2].Eta(), w );
-          FillElHist( 2, h_sgnlfakelepClass, 0., w);
-          FillElHist( 2, h_sgnlfakelepClass, 2., w);
-          FillMuHist( 2, h_sgnlfakelepClass, 0., w);
-          FillMuHist( 2, h_sgnlfakelepClass, 4., w);
-          FillElHist( 2, h_fakeEl2and3Class, 0., w);
-          FillMuHist( 2, h_fakeMu2and3Class, 0., w);
         }
       }
       // Conversion
@@ -1269,38 +1237,10 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
         FillChanHist( h_lepClass, 1., w);
         if       (id==0){ 
           FillChanHist( h_lep1Class, 1., w);
-          FillChanHist( h_COlepPt,   leadLep[0].Pt()/1000., w );
-          FillChanHist( h_COlep1Pt,  leadLep[0].Pt()/1000., w );
-          FillChanHist( h_COlepEta,  leadLep[0].Eta(), w );
-          FillChanHist( h_COlep1Eta, leadLep[0].Eta(), w );
         } else if(id==1){ 
           FillChanHist( h_lep2Class, 1., w);
-          FillChanHist( h_COlepPt,       leadLep[1].Pt()/1000., w );
-          FillChanHist( h_COlep2Pt,      leadLep[1].Pt()/1000., w );
-          FillChanHist( h_COlep2and3Pt,  leadLep[1].Pt()/1000., w );
-          FillChanHist( h_COlepEta,      leadLep[1].Eta(), w );
-          FillChanHist( h_COlep2Eta,     leadLep[1].Eta(), w );
-          FillChanHist( h_COlep2and3Eta, leadLep[1].Eta(), w );
-          FillElHist( 1, h_sgnlfakelepClass, 1., w);
-          FillElHist( 1, h_sgnlfakelepClass, 3., w);
-          FillMuHist( 1, h_sgnlfakelepClass, 1., w);
-          FillMuHist( 1, h_sgnlfakelepClass, 5., w);
-          FillElHist( 1, h_fakeEl2and3Class, 1., w);
-          FillMuHist( 1, h_fakeMu2and3Class, 1., w);
         } else if(id==2){ 
           FillChanHist( h_lep3Class, 1., w);
-          FillChanHist( h_COlepPt,       leadLep[2].Pt()/1000., w );
-          FillChanHist( h_COlep3Pt,      leadLep[2].Pt()/1000., w );
-          FillChanHist( h_COlep2and3Pt,  leadLep[2].Pt()/1000., w );
-          FillChanHist( h_COlepEta,      leadLep[2].Eta(), w );
-          FillChanHist( h_COlep3Eta,     leadLep[2].Eta(), w );
-          FillChanHist( h_COlep2and3Eta, leadLep[2].Eta(), w );
-          FillElHist( 2, h_sgnlfakelepClass, 1., w);
-          FillElHist( 2, h_sgnlfakelepClass, 3., w);
-          FillMuHist( 2, h_sgnlfakelepClass, 1., w);
-          FillMuHist( 2, h_sgnlfakelepClass, 5., w);
-          FillElHist( 2, h_fakeEl2and3Class, 1., w);
-          FillMuHist( 2, h_fakeMu2and3Class, 1., w);
         }
       }
       // Heavy Flavor
@@ -1309,38 +1249,10 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
         FillChanHist( h_lepClass, 2., w);
         if       (id==0){ 
           FillChanHist( h_lep1Class, 2., w);
-          FillChanHist( h_HFlepPt,   leadLep[0].Pt()/1000., w );
-          FillChanHist( h_HFlep1Pt,  leadLep[0].Pt()/1000., w );
-          FillChanHist( h_HFlepEta,  leadLep[0].Eta(), w );
-          FillChanHist( h_HFlep1Eta, leadLep[0].Eta(), w );
         } else if(id==1){ 
           FillChanHist( h_lep2Class, 2., w);
-          FillChanHist( h_HFlepPt,       leadLep[1].Pt()/1000., w );
-          FillChanHist( h_HFlep2Pt,      leadLep[1].Pt()/1000., w );
-          FillChanHist( h_HFlep2and3Pt,  leadLep[1].Pt()/1000., w );
-          FillChanHist( h_HFlepEta,      leadLep[1].Eta(), w );
-          FillChanHist( h_HFlep2Eta,     leadLep[1].Eta(), w );
-          FillChanHist( h_HFlep2and3Eta, leadLep[1].Eta(), w );
-          FillElHist( 1, h_sgnlfakelepClass, 1., w);
-          FillElHist( 1, h_sgnlfakelepClass, 3., w);
-          FillMuHist( 1, h_sgnlfakelepClass, 1., w);
-          FillMuHist( 1, h_sgnlfakelepClass, 5., w);
-          FillElHist( 1, h_fakeEl2and3Class, 2., w);
-          FillMuHist( 1, h_fakeMu2and3Class, 2., w);
         } else if(id==2){ 
           FillChanHist( h_lep3Class, 2., w);
-          FillChanHist( h_HFlepPt,       leadLep[2].Pt()/1000., w );
-          FillChanHist( h_HFlep3Pt,      leadLep[2].Pt()/1000., w );
-          FillChanHist( h_HFlep2and3Pt,  leadLep[2].Pt()/1000., w );
-          FillChanHist( h_HFlepEta,      leadLep[2].Eta(), w );
-          FillChanHist( h_HFlep3Eta,     leadLep[2].Eta(), w );
-          FillChanHist( h_HFlep2and3Eta, leadLep[2].Eta(), w );
-          FillElHist( 2, h_sgnlfakelepClass, 1., w);
-          FillElHist( 2, h_sgnlfakelepClass, 3., w);
-          FillMuHist( 2, h_sgnlfakelepClass, 1., w);
-          FillMuHist( 2, h_sgnlfakelepClass, 5., w);
-          FillElHist( 2, h_fakeEl2and3Class, 2., w);
-          FillMuHist( 2, h_fakeMu2and3Class, 2., w);
         }
       }
       // LightFlavor
@@ -1348,68 +1260,20 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
         FillChanHist( h_lepClass, 3., w);
         if       (id==0){ 
           FillChanHist( h_lep1Class, 3., w);
-          FillChanHist( h_LFlepPt,   leadLep[0].Pt()/1000., w );
-          FillChanHist( h_LFlep1Pt,  leadLep[0].Pt()/1000., w );
-          FillChanHist( h_LFlepEta,  leadLep[0].Eta(), w );
-          FillChanHist( h_LFlep1Eta, leadLep[0].Eta(), w );
         } else if(id==1){ 
           FillChanHist( h_lep2Class, 3., w);
-          FillChanHist( h_LFlepPt,       leadLep[1].Pt()/1000., w );
-          FillChanHist( h_LFlep2Pt,      leadLep[1].Pt()/1000., w );
-          FillChanHist( h_LFlep2and3Pt,  leadLep[1].Pt()/1000., w );
-          FillChanHist( h_LFlepEta,      leadLep[1].Eta(), w );
-          FillChanHist( h_LFlep2Eta,     leadLep[1].Eta(), w );
-          FillChanHist( h_LFlep2and3Eta, leadLep[1].Eta(), w );
-          FillElHist( 1, h_sgnlfakelepClass, 1., w);
-          FillElHist( 1, h_sgnlfakelepClass, 3., w);
-          FillMuHist( 1, h_sgnlfakelepClass, 1., w);
-          FillMuHist( 1, h_sgnlfakelepClass, 5., w);
-          FillElHist( 1, h_fakeEl2and3Class, 3., w);
-          FillMuHist( 1, h_fakeMu2and3Class, 3., w);
         } else if(id==2){ 
           FillChanHist( h_lep3Class, 3., w);
-          FillChanHist( h_LFlepPt,       leadLep[2].Pt()/1000., w );
-          FillChanHist( h_LFlep3Pt,      leadLep[2].Pt()/1000., w );
-          FillChanHist( h_LFlep2and3Pt,  leadLep[2].Pt()/1000., w );
-          FillChanHist( h_LFlepEta,      leadLep[2].Eta(), w );
-          FillChanHist( h_LFlep3Eta,     leadLep[2].Eta(), w );
-          FillChanHist( h_LFlep2and3Eta, leadLep[2].Eta(), w );
-          FillElHist( 2, h_sgnlfakelepClass, 1., w);
-          FillElHist( 2, h_sgnlfakelepClass, 3., w);
-          FillMuHist( 2, h_sgnlfakelepClass, 1., w);
-          FillMuHist( 2, h_sgnlfakelepClass, 5., w);
-          FillElHist( 2, h_fakeEl2and3Class, 3., w);
-          FillMuHist( 2, h_fakeMu2and3Class, 3., w);
         }
       // Unknown
       }else{
         FillChanHist( h_lepClass, 4., w);
         if       (id==0){ 
           FillChanHist( h_lep1Class, 4., w);
-          FillChanHist( h_UKlepPt,   leadLep[0].Pt()/1000., w );
-          FillChanHist( h_UKlep1Pt,  leadLep[0].Pt()/1000., w );
-          FillChanHist( h_UKlepEta,  leadLep[0].Eta(), w );
-          FillChanHist( h_UKlep1Eta, leadLep[0].Eta(), w );
         } else if(id==1){ 
           FillChanHist( h_lep2Class, 4., w);
-          FillChanHist( h_UKlepPt,       leadLep[1].Pt()/1000., w );
-          FillChanHist( h_UKlep2Pt,      leadLep[1].Pt()/1000., w );
-          FillChanHist( h_UKlep2and3Pt,  leadLep[1].Pt()/1000., w );
-          FillChanHist( h_UKlepEta,      leadLep[1].Eta(), w );
-          FillChanHist( h_UKlep2Eta,     leadLep[1].Eta(), w );
-          FillChanHist( h_UKlep2and3Eta, leadLep[1].Eta(), w );
-          FillElHist( 1, h_fakeEl2and3Class, 4., w);
-          FillMuHist( 1, h_fakeMu2and3Class, 4., w);
         } else if(id==2){ 
           FillChanHist( h_lep3Class, 4., w);
-          FillChanHist( h_UKlepPt,       leadLep[2].Pt()/1000., w );
-          FillChanHist( h_UKlep3Pt,      leadLep[2].Pt()/1000., w );
-          FillChanHist( h_UKlep2and3Pt,  leadLep[2].Pt()/1000., w );
-          FillChanHist( h_UKlepEta,      leadLep[2].Eta(), w );
-          FillChanHist( h_UKlep3Eta,     leadLep[2].Eta(), w );
-          FillChanHist( h_UKlep2and3Eta, leadLep[2].Eta(), w );
-          FillElHist( 2, h_fakeEl2and3Class, 4., w);
-          FillMuHist( 2, h_fakeMu2and3Class, 4., w);
         }
       }
     } // for loop (lead lepton)
@@ -1419,11 +1283,20 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
       if(baseLepIndex[id]==-1) continue;
       Int_t type   = -1;
       Int_t origin = -1;
-      Int_t pdgid  = -1;
+      Int_t pdgid  = 0;
+      Int_t pdgid_parent = 0;
       if(baseLepFlavor[id]==0){
         type   = xAOD::EgammaHelpers::getParticleTruthType  (&(vec_baseElectron->at(baseLepIndex[id])));
         origin = xAOD::EgammaHelpers::getParticleTruthOrigin(&(vec_baseElectron->at(baseLepIndex[id])));
-        pdgid  = xAOD::EgammaHelpers::getTruthParticle      (&(vec_baseElectron->at(lepIndex[id])))->pdgId();
+        const xAOD::TruthParticle* etrue = xAOD::EgammaHelpers::getTruthParticle(&(vec_baseElectron->at(baseLepIndex[id])));
+        if(etrue) pdgid = etrue->pdgId();
+        if(etrue){
+          const xAOD::TruthParticle* etrue_parent = etrue->parent();
+          if (etrue_parent!=0){
+            pdgid_parent = etrue_parent->pdgId();
+          }
+          FillChanHist( h_elParentPdgId, pdgid_parent, w);
+        }
       }else{
         const xAOD::TrackParticle* trackParticle = (&(vec_baseMuon->at(baseLepIndex[id])))->primaryTrackParticle();
         if(trackParticle){
@@ -1433,6 +1306,18 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           if(acc_truthType  .isAvailable(*trackParticle)) type   = acc_truthType  (*trackParticle);
           if(acc_truthOrigin.isAvailable(*trackParticle)) origin = acc_truthOrigin(*trackParticle);
           if(acc_truthPdgId .isAvailable(*trackParticle)) pdgid  = acc_truthPdgId (*trackParticle);
+          if(acc_truthParticle.isAvailable(*trackParticle)) {
+            // try {
+            const xAOD::TruthParticle* mtrue = *trackParticle->auxdata< ElementLink<xAOD::TruthParticleContainer> >("truthParticleLink");
+            if(mtrue!=0){
+              const xAOD::TruthParticle* mtrue_parent = mtrue->parent();
+              if(mtrue_parent!=0){
+                pdgid_parent = mtrue_parent->pdgId();
+              }
+              FillChanHist( h_muParentPdgId, pdgid_parent, w);
+            }
+            // } catch (...) {}
+          }
         }
       }
       //For origin
@@ -1472,6 +1357,21 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           FillBaseMuHist( 1, h_basefakelepClass, 4., w);
           FillBaseElHist( 1, h_fakebaseEl2and3Class, 0., w);
           FillBaseMuHist( 1, h_fakebaseMu2and3Class, 0., w);
+          // To estimate fake rate, looking into whether the base lepton passes tight criteria or not
+          if(baseLepFlavor[id]==0){
+            if(EveSelec->IsMySignalElectron(vec_baseElectron->at(baseLepIndex[id]))){
+              FillElHist(1, h_sgnlfakelepClass, 0., w);
+              FillElHist(1, h_sgnlfakelepClass, 2., w);
+              FillElHist(1, h_fakeEl2and3Class, 0., w);
+              // FillElHist( h_PRlep2and3Pt, ,w);
+            }
+          } else {
+            if(EveSelec->IsMySignalMuon(vec_baseMuon->at(baseLepIndex[id]))){
+              FillMuHist(1, h_sgnlfakelepClass, 0., w);
+              FillMuHist(1, h_sgnlfakelepClass, 4., w);
+              FillMuHist(1, h_fakeMu2and3Class, 0., w);
+            }
+          }
         } else if(id==2) {
           FillChanHist( h_baselep3Class, 0., w);
           FillChanHist( h_PRbaselepPt,   baseLep[2].Pt()/1000., w );
@@ -1486,10 +1386,22 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           FillBaseMuHist( 2, h_basefakelepClass, 4., w);
           FillBaseElHist( 2, h_fakebaseEl2and3Class, 0., w);
           FillBaseMuHist( 2, h_fakebaseMu2and3Class, 0., w);
+          if(baseLepFlavor[id]==0){
+            if(EveSelec->IsMySignalElectron(vec_baseElectron->at(baseLepIndex[id]))){
+              FillElHist(2, h_sgnlfakelepClass, 0., w);
+              FillElHist(2, h_sgnlfakelepClass, 2., w);
+              FillElHist(2, h_fakeEl2and3Class, 0., w);
+            }
+          } else {
+            if(EveSelec->IsMySignalMuon(vec_baseMuon->at(baseLepIndex[id]))){
+              FillMuHist(2, h_sgnlfakelepClass, 0., w);
+              FillMuHist(2, h_sgnlfakelepClass, 4., w);
+              FillMuHist(2, h_fakeMu2and3Class, 0., w);
+            }
+          }
         }
       }
       // Conversion
-      // else if(origin==5){
       else if(origin==5 || origin==6 || origin==7){
         FillChanHist( h_baselepClass, 1., w);
         if       (id==0) {
@@ -1512,6 +1424,19 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           FillBaseMuHist( 1, h_basefakelepClass, 5., w);
           FillBaseElHist( 1, h_fakebaseEl2and3Class, 1., w);
           FillBaseMuHist( 1, h_fakebaseMu2and3Class, 1., w);
+          if(baseLepFlavor[id]==0){
+            if(EveSelec->IsMySignalElectron(vec_baseElectron->at(baseLepIndex[id]))){
+              FillElHist(1, h_sgnlfakelepClass, 1., w);
+              FillElHist(1, h_sgnlfakelepClass, 3., w);
+              FillElHist(1, h_fakeEl2and3Class, 1., w);
+            }
+          } else {
+            if(EveSelec->IsMySignalMuon(vec_baseMuon->at(baseLepIndex[id]))){
+              FillMuHist(1, h_sgnlfakelepClass, 1., w);
+              FillMuHist(1, h_sgnlfakelepClass, 5., w);
+              FillMuHist(1, h_fakeMu2and3Class, 1., w);
+            }
+          }
         } else if(id==2) {
           FillChanHist( h_baselep3Class, 1., w);
           FillChanHist( h_CObaselepPt,   baseLep[2].Pt()/1000., w );
@@ -1526,6 +1451,19 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           FillBaseMuHist( 2, h_basefakelepClass, 5., w);
           FillBaseElHist( 2, h_fakebaseEl2and3Class, 1., w);
           FillBaseMuHist( 2, h_fakebaseMu2and3Class, 1., w);
+          if(baseLepFlavor[id]==0){
+            if(EveSelec->IsMySignalElectron(vec_baseElectron->at(baseLepIndex[id]))){
+              FillElHist(2, h_sgnlfakelepClass, 1., w);
+              FillElHist(2, h_sgnlfakelepClass, 3., w);
+              FillElHist(2, h_fakeEl2and3Class, 1., w);
+            }
+          } else {
+            if(EveSelec->IsMySignalMuon(vec_baseMuon->at(baseLepIndex[id]))){
+              FillMuHist(2, h_sgnlfakelepClass, 1., w);
+              FillMuHist(2, h_sgnlfakelepClass, 5., w);
+              FillMuHist(2, h_fakeMu2and3Class, 1., w);
+            }
+          }
         }
       }
       // Heavy Flavor
@@ -1552,6 +1490,19 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           FillBaseMuHist( 1, h_basefakelepClass, 5., w);
           FillBaseElHist( 1, h_fakebaseEl2and3Class, 2., w);
           FillBaseMuHist( 1, h_fakebaseMu2and3Class, 2., w);
+          if(baseLepFlavor[id]==0){
+            if(EveSelec->IsMySignalElectron(vec_baseElectron->at(baseLepIndex[id]))){
+              FillElHist(1, h_sgnlfakelepClass, 1., w);
+              FillElHist(1, h_sgnlfakelepClass, 3., w);
+              FillElHist(1, h_fakeEl2and3Class, 2., w);
+            }
+          } else {
+            if(EveSelec->IsMySignalMuon(vec_baseMuon->at(baseLepIndex[id]))){
+              FillMuHist(1, h_sgnlfakelepClass, 1., w);
+              FillMuHist(1, h_sgnlfakelepClass, 5., w);
+              FillMuHist(1, h_fakeMu2and3Class, 2., w);
+            }
+          }
         } else if(id==2) {
           FillChanHist( h_baselep3Class, 2., w);
           FillChanHist( h_HFbaselepPt,   baseLep[2].Pt()/1000., w );
@@ -1566,6 +1517,19 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           FillBaseMuHist( 2, h_basefakelepClass, 5., w);
           FillBaseElHist( 2, h_fakebaseEl2and3Class, 2., w);
           FillBaseMuHist( 2, h_fakebaseMu2and3Class, 2., w);
+          if(baseLepFlavor[id]==0){
+            if(EveSelec->IsMySignalElectron(vec_baseElectron->at(baseLepIndex[id]))){
+              FillElHist(2, h_sgnlfakelepClass, 1., w);
+              FillElHist(2, h_sgnlfakelepClass, 3., w);
+              FillElHist(2, h_fakeEl2and3Class, 2., w);
+            }
+          } else {
+            if(EveSelec->IsMySignalMuon(vec_baseMuon->at(baseLepIndex[id]))){
+              FillMuHist(2, h_sgnlfakelepClass, 1., w);
+              FillMuHist(2, h_sgnlfakelepClass, 5., w);
+              FillMuHist(2, h_fakeMu2and3Class, 2., w);
+            }
+          }
         }
       }
       // Light Flavor
@@ -1591,6 +1555,19 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           FillBaseMuHist( 1, h_basefakelepClass, 5., w);
           FillBaseElHist( 1, h_fakebaseEl2and3Class, 3., w);
           FillBaseMuHist( 1, h_fakebaseMu2and3Class, 3., w);
+          if(baseLepFlavor[id]==0){
+            if(EveSelec->IsMySignalElectron(vec_baseElectron->at(baseLepIndex[id]))){
+              FillElHist(1, h_sgnlfakelepClass, 1., w);
+              FillElHist(1, h_sgnlfakelepClass, 3., w);
+              FillElHist(1, h_fakeEl2and3Class, 3., w);
+            }
+          } else {
+            if(EveSelec->IsMySignalMuon(vec_baseMuon->at(baseLepIndex[id]))){
+              FillMuHist(1, h_sgnlfakelepClass, 1., w);
+              FillMuHist(1, h_sgnlfakelepClass, 5., w);
+              FillMuHist(1, h_fakeMu2and3Class, 3., w);
+            }
+          }
         } else if(id==2) {
           FillChanHist( h_baselep3Class, 3., w);
           FillChanHist( h_LFbaselepPt,   baseLep[2].Pt()/1000., w );
@@ -1605,6 +1582,19 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           FillBaseMuHist( 2, h_basefakelepClass, 5., w);
           FillBaseElHist( 2, h_fakebaseEl2and3Class, 3., w);
           FillBaseMuHist( 2, h_fakebaseMu2and3Class, 3., w);
+          if(baseLepFlavor[id]==0){
+            if(EveSelec->IsMySignalElectron(vec_baseElectron->at(baseLepIndex[id]))){
+              FillElHist(2, h_sgnlfakelepClass, 1., w);
+              FillElHist(2, h_sgnlfakelepClass, 3., w);
+              FillElHist(2, h_fakeEl2and3Class, 3., w);
+            }
+          } else {
+            if(EveSelec->IsMySignalMuon(vec_baseMuon->at(baseLepIndex[id]))){
+              FillMuHist(2, h_sgnlfakelepClass, 1., w);
+              FillMuHist(2, h_sgnlfakelepClass, 5., w);
+              FillMuHist(2, h_fakeMu2and3Class, 3., w);
+            }
+          }
         }
       // UnKnown
       }else{
@@ -1624,7 +1614,16 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           FillChanHist( h_UKbaselep2and3Pt,  baseLep[1].Pt()/1000., w );
           FillChanHist( h_UKbaselep2and3Eta, baseLep[1].Eta(),w );
           FillBaseElHist( 1, h_fakebaseEl2and3Class, 4., w);
-          FillBaseMuHist( 1, h_fakebaseMu2and3Class, 4., w);
+          FillBaseMuHist( 2, h_fakebaseMu2and3Class, 4., w);
+          if(baseLepFlavor[id]==0){
+            if(EveSelec->IsMySignalElectron(vec_baseElectron->at(baseLepIndex[id]))){
+              FillElHist(1, h_fakeEl2and3Class, 4., w);
+            }
+          } else {
+            if(EveSelec->IsMySignalMuon(vec_baseMuon->at(baseLepIndex[id]))){
+              FillMuHist(1, h_fakeMu2and3Class, 4., w);
+            }
+          }
         } else if(id==2) {
           FillChanHist( h_baselep3Class, 4., w);
           FillChanHist( h_UKbaselepPt,   baseLep[2].Pt()/1000., w );
@@ -1635,6 +1634,15 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           FillChanHist( h_UKbaselep2and3Eta, baseLep[2].Eta(),w );
           FillBaseElHist( 2, h_fakebaseEl2and3Class, 4., w);
           FillBaseMuHist( 2, h_fakebaseMu2and3Class, 4., w);
+          if(baseLepFlavor[id]==0){
+            if(EveSelec->IsMySignalElectron(vec_baseElectron->at(baseLepIndex[id]))){
+              FillElHist(2, h_fakeEl2and3Class, 4., w);
+            }
+          } else {
+            if(EveSelec->IsMySignalMuon(vec_baseMuon->at(baseLepIndex[id]))){
+              FillMuHist(2, h_fakeMu2and3Class, 4., w);
+            }
+          }
         }
       }
     }
@@ -1758,5 +1766,5 @@ bool Plotter::isRealLepton(Int_t type, Int_t origin, Int_t pdgid) {
   /// when reco ele from conversion of photon radiated from a truth muon, conversions are conversions always, never prompt electrons
   if(fabs(pdgid)==13 && type==4 && origin==5) return false;
   // avoid returning true if type is not electron or muon (ex: type 17 by chance close to prompt lep)
-  return (type==21||type==1||type==2||type==3||type==4||type==5||type==6||type==7||type==8);
+  return ((type==21||type==1||type==2||type==3||type==4||type==5||type==6||type==7||type==8) && (origin==12 or origin==13 or origin==22));
 }
