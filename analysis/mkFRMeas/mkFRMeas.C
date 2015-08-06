@@ -23,62 +23,70 @@
 std::vector<TString> *DistTypeNames;
 void SetDistType(void){
   DistTypeNames = new std::vector<TString>();
-  //  DistTypeNames->push_back("lepChan"); //cannot draw this with this macro.
-  // DistTypeNames->push_back("lep1Pt");                DistTypeNames->push_back("baselep1Pt");
-  // DistTypeNames->push_back("lep1Eta");               DistTypeNames->push_back("baselep1Eta");
-  // DistTypeNames->push_back("lep2Pt");                DistTypeNames->push_back("baselep2Pt");
-  // DistTypeNames->push_back("lep2Eta");               DistTypeNames->push_back("baselep2Eta");
-  // DistTypeNames->push_back("lep3Pt");                DistTypeNames->push_back("baselep3Pt");
-  // DistTypeNames->push_back("lep3Eta");               DistTypeNames->push_back("baselep3Eta");
-  // DistTypeNames->push_back("PRlep2and3Pt");          DistTypeNames->push_back("PRbaselep2and3Pt");
-  // DistTypeNames->push_back("PRlep2and3Eta");         DistTypeNames->push_back("PRbaselep2and3Eta");
-  // DistTypeNames->push_back("COlep2and3Pt");          DistTypeNames->push_back("CObaselep2and3Pt");
-  // DistTypeNames->push_back("COlep2and3Eta");         DistTypeNames->push_back("CObaselep2and3Eta");
-  // DistTypeNames->push_back("HFlep2and3Pt");          DistTypeNames->push_back("HFbaselep2and3Pt");
-  // DistTypeNames->push_back("HFlep2and3Eta");         DistTypeNames->push_back("HFbaselep2and3Eta");
-  // DistTypeNames->push_back("LFlep2and3Pt");          DistTypeNames->push_back("LFbaselep2and3Pt");
-  // DistTypeNames->push_back("LFlep2and3Eta");         DistTypeNames->push_back("LFbaselep2and3Eta");
-  // DistTypeNames->push_back("UKlep2and3Pt");          DistTypeNames->push_back("UKbaselep2and3Pt");
-  // DistTypeNames->push_back("UKlep2and3Eta");         DistTypeNames->push_back("UKbaselep2and3Eta");
-  // DistTypeNames->push_back("PRlep1Pt");              DistTypeNames->push_back("PRbaselep1Pt");
-  // DistTypeNames->push_back("PRlep1Eta");             DistTypeNames->push_back("PRbaselep1Eta");
-  // DistTypeNames->push_back("PRlep2Pt");              DistTypeNames->push_back("PRbaselep2Pt");
-  // DistTypeNames->push_back("PRlep2Eta");             DistTypeNames->push_back("PRbaselep2Eta");
-  // DistTypeNames->push_back("PRlep3Pt");              DistTypeNames->push_back("PRbaselep3Pt");
-  // DistTypeNames->push_back("PRlep3Eta");             DistTypeNames->push_back("PRbaselep3Eta");
-  // DistTypeNames->push_back("COlep1Pt");              DistTypeNames->push_back("CObaselep1Pt");
-  // DistTypeNames->push_back("COlep1Eta");             DistTypeNames->push_back("CObaselep1Eta");
-  // DistTypeNames->push_back("COlep2Pt");              DistTypeNames->push_back("CObaselep2Pt");
-  // DistTypeNames->push_back("COlep2Eta");             DistTypeNames->push_back("CObaselep2Eta");
-  // DistTypeNames->push_back("COlep3Pt");              DistTypeNames->push_back("CObaselep3Pt");
-  // DistTypeNames->push_back("COlep3Eta");             DistTypeNames->push_back("CObaselep3Eta");
-  // DistTypeNames->push_back("HFlep1Pt");              DistTypeNames->push_back("HFbaselep1Pt");
-  // DistTypeNames->push_back("HFlep1Eta");             DistTypeNames->push_back("HFbaselep1Eta");
-  // DistTypeNames->push_back("HFlep2Pt");              DistTypeNames->push_back("HFbaselep2Pt");
-  // DistTypeNames->push_back("HFlep2Eta");             DistTypeNames->push_back("HFbaselep2Eta");
-  // DistTypeNames->push_back("HFlep3Pt");              DistTypeNames->push_back("HFbaselep3Pt");
-  // DistTypeNames->push_back("HFlep3Eta");             DistTypeNames->push_back("HFbaselep3Eta");
-  // DistTypeNames->push_back("LFlep1Pt");              DistTypeNames->push_back("LFbaselep1Pt");
-  // DistTypeNames->push_back("LFlep1Eta");             DistTypeNames->push_back("LFbaselep1Eta");
-  // DistTypeNames->push_back("LFlep2Pt");              DistTypeNames->push_back("LFbaselep2Pt");
-  // DistTypeNames->push_back("LFlep2Eta");             DistTypeNames->push_back("LFbaselep2Eta");
-  // DistTypeNames->push_back("LFlep3Pt");              DistTypeNames->push_back("LFbaselep3Pt");
-  // DistTypeNames->push_back("LFlep3Eta");             DistTypeNames->push_back("LFbaselep3Eta");
-  // DistTypeNames->push_back("UKlep1Pt");              DistTypeNames->push_back("UKbaselep1Pt");
-  // DistTypeNames->push_back("UKlep1Eta");             DistTypeNames->push_back("UKbaselep1Eta");
-  // DistTypeNames->push_back("UKlep2Pt");              DistTypeNames->push_back("UKbaselep2Pt");
-  // DistTypeNames->push_back("UKlep2Eta");             DistTypeNames->push_back("UKbaselep2Eta");
-  // DistTypeNames->push_back("UKlep3Pt");              DistTypeNames->push_back("UKbaselep3Pt");
-  // DistTypeNames->push_back("UKlep3Eta");             DistTypeNames->push_back("UKbaselep3Eta");
-  // DistTypeNames->push_back("lep1Class");             DistTypeNames->push_back("baselep1Class");
-  // DistTypeNames->push_back("lep2Class");             DistTypeNames->push_back("baselep2Class");
-  // DistTypeNames->push_back("lep3Class");             DistTypeNames->push_back("baselep3Class");
-  // DistTypeNames->push_back("lepClass");              DistTypeNames->push_back("baselepClass");
-  DistTypeNames->push_back("sgnlfakelepClass");      DistTypeNames->push_back("basefakelepClass");
+  DistTypeNames->push_back("PREl2and3Pt");          DistTypeNames->push_back("PRbaseEl2and3Pt");
+  DistTypeNames->push_back("PREl2and3Eta");         DistTypeNames->push_back("PRbaseEl2and3Eta");
+  DistTypeNames->push_back("COEl2and3Pt");          DistTypeNames->push_back("CObaseEl2and3Pt");
+  DistTypeNames->push_back("COEl2and3Eta");         DistTypeNames->push_back("CObaseEl2and3Eta");
+  DistTypeNames->push_back("HFEl2and3Pt");          DistTypeNames->push_back("HFbaseEl2and3Pt");
+  DistTypeNames->push_back("HFEl2and3Eta");         DistTypeNames->push_back("HFbaseEl2and3Eta");
+  DistTypeNames->push_back("LFEl2and3Pt");          DistTypeNames->push_back("LFbaseEl2and3Pt");
+  DistTypeNames->push_back("LFEl2and3Eta");         DistTypeNames->push_back("LFbaseEl2and3Eta");
+  DistTypeNames->push_back("UKEl2and3Pt");          DistTypeNames->push_back("UKbaseEl2and3Pt");
+  DistTypeNames->push_back("UKEl2and3Eta");         DistTypeNames->push_back("UKbaseEl2and3Eta");
+  DistTypeNames->push_back("PRMu2and3Pt");          DistTypeNames->push_back("PRbaseMu2and3Pt");
+  DistTypeNames->push_back("PRMu2and3Eta");         DistTypeNames->push_back("PRbaseMu2and3Eta");
+  DistTypeNames->push_back("COMu2and3Pt");          DistTypeNames->push_back("CObaseMu2and3Pt");
+  DistTypeNames->push_back("COMu2and3Eta");         DistTypeNames->push_back("CObaseMu2and3Eta");
+  DistTypeNames->push_back("HFMu2and3Pt");          DistTypeNames->push_back("HFbaseMu2and3Pt");
+  DistTypeNames->push_back("HFMu2and3Eta");         DistTypeNames->push_back("HFbaseMu2and3Eta");
+  DistTypeNames->push_back("LFMu2and3Pt");          DistTypeNames->push_back("LFbaseMu2and3Pt");
+  DistTypeNames->push_back("LFMu2and3Eta");         DistTypeNames->push_back("LFbaseMu2and3Eta");
+  DistTypeNames->push_back("UKMu2and3Pt");          DistTypeNames->push_back("UKbaseMu2and3Pt");
+  DistTypeNames->push_back("UKMu2and3Eta");         DistTypeNames->push_back("UKbaseMu2and3Eta");
+
   DistTypeNames->push_back("fakeEl2and3Class");      DistTypeNames->push_back("fakebaseEl2and3Class");
   DistTypeNames->push_back("fakeMu2and3Class");      DistTypeNames->push_back("fakebaseMu2and3Class");
+  DistTypeNames->push_back("sgnlfakelepClass");      DistTypeNames->push_back("basefakelepClass");
   DistTypeNames->push_back("elParentPdgId"   );      DistTypeNames->push_back("muParentPdgId"       );
 
+  // DistTypeNames->push_back("PREl2Pt");              DistTypeNames->push_back("PRbaseEl2Pt");
+  // DistTypeNames->push_back("PREl2Eta");             DistTypeNames->push_back("PRbaseEl2Eta");
+  // DistTypeNames->push_back("PREl3Pt");              DistTypeNames->push_back("PRbaseEl3Pt");
+  // DistTypeNames->push_back("PREl3Eta");             DistTypeNames->push_back("PRbaseEl3Eta");
+  // DistTypeNames->push_back("COEl2Pt");              DistTypeNames->push_back("CObaseEl2Pt");
+  // DistTypeNames->push_back("COEl2Eta");             DistTypeNames->push_back("CObaseEl2Eta");
+  // DistTypeNames->push_back("COEl3Pt");              DistTypeNames->push_back("CObaseEl3Pt");
+  // DistTypeNames->push_back("COEl3Eta");             DistTypeNames->push_back("CObaseEl3Eta");
+  // DistTypeNames->push_back("HFEl2Eta");             DistTypeNames->push_back("HFbaseEl2Eta");
+  // DistTypeNames->push_back("HFEl3Pt");              DistTypeNames->push_back("HFbaseEl3Pt");
+  // DistTypeNames->push_back("HFEl3Eta");             DistTypeNames->push_back("HFbaseEl3Eta");
+  // DistTypeNames->push_back("LFEl2Pt");              DistTypeNames->push_back("LFbaseEl2Pt");
+  // DistTypeNames->push_back("LFEl2Eta");             DistTypeNames->push_back("LFbaseEl2Eta");
+  // DistTypeNames->push_back("LFEl3Pt");              DistTypeNames->push_back("LFbaseEl3Pt");
+  // DistTypeNames->push_back("LFEl3Eta");             DistTypeNames->push_back("LFbaseEl3Eta");
+  // DistTypeNames->push_back("UKEl2Pt");              DistTypeNames->push_back("UKbaseEl2Pt");
+  // DistTypeNames->push_back("UKEl2Eta");             DistTypeNames->push_back("UKbaseEl2Eta");
+  // DistTypeNames->push_back("UKEl3Pt");              DistTypeNames->push_back("UKbaseEl3Pt");
+  // DistTypeNames->push_back("UKEl3Eta");             DistTypeNames->push_back("UKbaseEl3Eta");
+  // DistTypeNames->push_back("PRMu2Pt");              DistTypeNames->push_back("PRbaseMu2Pt");
+  // DistTypeNames->push_back("PRMu2Eta");             DistTypeNames->push_back("PRbaseMu2Eta");
+  // DistTypeNames->push_back("PRMu3Pt");              DistTypeNames->push_back("PRbaseMu3Pt");
+  // DistTypeNames->push_back("PRMu3Eta");             DistTypeNames->push_back("PRbaseMu3Eta");
+  // DistTypeNames->push_back("COMu2Pt");              DistTypeNames->push_back("CObaseMu2Pt");
+  // DistTypeNames->push_back("COMu2Eta");             DistTypeNames->push_back("CObaseMu2Eta");
+  // DistTypeNames->push_back("COMu3Pt");              DistTypeNames->push_back("CObaseMu3Pt");
+  // DistTypeNames->push_back("COMu3Eta");             DistTypeNames->push_back("CObaseMu3Eta");
+  // DistTypeNames->push_back("HFMu2Eta");             DistTypeNames->push_back("HFbaseMu2Eta");
+  // DistTypeNames->push_back("HFMu3Pt");              DistTypeNames->push_back("HFbaseMu3Pt");
+  // DistTypeNames->push_back("HFMu3Eta");             DistTypeNames->push_back("HFbaseMu3Eta");
+  // DistTypeNames->push_back("LFMu2Pt");              DistTypeNames->push_back("LFbaseMu2Pt");
+  // DistTypeNames->push_back("LFMu2Eta");             DistTypeNames->push_back("LFbaseMu2Eta");
+  // DistTypeNames->push_back("LFMu3Pt");              DistTypeNames->push_back("LFbaseMu3Pt");
+  // DistTypeNames->push_back("LFMu3Eta");             DistTypeNames->push_back("LFbaseMu3Eta");
+  // DistTypeNames->push_back("UKMu2Pt");              DistTypeNames->push_back("UKbaseMu2Pt");
+  // DistTypeNames->push_back("UKMu2Eta");             DistTypeNames->push_back("UKbaseMu2Eta");
+  // DistTypeNames->push_back("UKMu3Pt");              DistTypeNames->push_back("UKbaseMu3Pt");
+  // DistTypeNames->push_back("UKEl3Eta");             DistTypeNames->push_back("UKbaseMu3Eta");
   // DistTypeNames->push_back("baselepOrigin");
   // DistTypeNames->push_back("baselep1Origin");
   // DistTypeNames->push_back("baselep2Origin");
@@ -540,7 +548,7 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
   ////////////////////////////////////////////////////
 
   Bool_t debugPlot = kTRUE;
-  TUtil *u = new TUtil(("plots/"+Tag+"."+SelecReg+".ps").Data(),("plots/"+Tag+"."+SelecReg+".root").Data(),debugPlot);
+  TUtil *u  = new TUtil(("plots/"+Tag+"."+SelecReg+".ps").Data(),("plots/"+Tag+"."+SelecReg+".root").Data(),debugPlot);
   gStyle->SetPalette(1);
   
   u->SetPadNumXY(1,1);
@@ -558,15 +566,15 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
   //   }
   // }
 
-  u->SetPadNumXY(3,4);
-  for(Int_t disttype=0; disttype<nDistType; disttype++){
-    for(Int_t sorb=0; sorb<2; sorb++){
-      u->cdPad();
-      for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
-        dist_bg[allchan][bgtype][disttype][sorb]->DrawNormalized(bgtype==0?"":"same");
-      }
-    }
-  }
+  // u->SetPadNumXY(3,4);
+  // for(Int_t disttype=0; disttype<nDistType; disttype++){
+  //   for(Int_t sorb=0; sorb<2; sorb++){
+  //     u->cdPad();
+  //     for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
+  //       dist_bg[allchan][bgtype][disttype][sorb]->DrawNormalized(bgtype==0?"":"same");
+  //     }
+  //   }
+  // }
 
   u->SetPadNumXY(1,3);
   //  u->SetPadNumXY(3,4);
@@ -668,7 +676,7 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
       fakerate_bg[fstype][disttype]->Divide(hist_tmp0[fstype][disttype],hist_tmp1[fstype][disttype],1,1,"B");
       fakerate_bg[fstype][disttype]->SetMarkerColor(kBlack);
       fakerate_bg[fstype][disttype]->SetLineColor(kBlack);
-      fakerate_bg[fstype][disttype]->SetStats(0);
+      fakerate_bg[fstype][disttype]->SetStats(1);
       fakerate_bgErr[fstype][disttype]->Divide(hist_tmp0Err[fstype][disttype],hist_tmp1Err[fstype][disttype],1,1,"B");
       fakerate_bg[fstype][disttype]->GetYaxis()->SetTitle("Ratio");
       if(disttype%2==0 ) u->Update();
@@ -685,27 +693,6 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
       // fakerate_bg[fstype][disttype]->Draw("hist");
     }
   }
-
-  // Plotting #signal vs #baseline leptons
-  // fileidx=0;
-  // u->Update();
-  // for(Int_t signaltype=0; signaltype<nSignalType; signaltype++){
-  //   UInt_t nsamples = SignalFileNames[signaltype]->size();
-  //   for(UInt_t signalfile=0; signalfile<nsamples; signalfile++){
-  //     TFile *f_tmp = vec_signalfiles->at(fileidx);
-  //     TH2F *h2_tmp = (TH2F*)(f_tmp->Get("h_nSigBaseLep"));
-  //     h2_tmp->SetStats(0);
-  //     h2_tmp->SetMarkerSize(2.0);
-  //     h2_tmp->GetZaxis()->SetTitle("Events in 10k");
-  //     u->cdPad();
-  //     h2_tmp->DrawNormalized("colztext",10000)->GetZaxis()->SetRangeUser(0,1000);
-  //     myText(0.18,0.78,kBlack,
-  //            Form("MN2=%s,MN1=%s",
-  //                 SignalMN2[signaltype]->at(signalfile).Data(),
-  //                 SignalMN1[signaltype]->at(signalfile).Data()), 0.1);
-  //     fileidx++;
-  //   }
-  // }
 
   //drawing legends again...
   u->SetPadNumXY(1,1);

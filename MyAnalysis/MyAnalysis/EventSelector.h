@@ -221,6 +221,9 @@ class EventSelector : public TObject
   //  bool passSumTauPtCut();
   bool passLepTauPtCuts();
 
+  // Lepton/tau eta requirements
+  bool passBaseLepEtaCut();
+
   // Truth selection
   bool passLepTruthCut();
 
@@ -376,6 +379,7 @@ class EventSelector : public TObject
   virtual void Set3S4BMet();
   virtual void Set3S4BZvetoBvetoMet();
   virtual void SetGT1S3B();
+  virtual void SetGT1S3BForward();
 
   /* // Systematics */
   /* void setSystematics(ObjSys::OSys objSys=ObjSys::nom, bool doWeightSys=false){ */
@@ -564,6 +568,8 @@ class EventSelector : public TObject
   float               m_lepPtMax;       // lepton pt cuts 
   float               m_lep1PtMin;      // leading lepton pt cut 
   float               m_lep2PtMin;      // leading lepton pt cut 
+  float               m_baseLepEtaMax;  // base lepton eta cuts
+  float               m_baseLepEtaMin;  // base lepton eta cuts
   float               m_sumLepPtMin;    // sum lepton pt cut 
   float               m_tau1PtMin;      // tau pt cuts 
   float               m_tau2PtMin;      // tau pt cuts 

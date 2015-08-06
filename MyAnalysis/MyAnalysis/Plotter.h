@@ -130,6 +130,18 @@ class Plotter : public TObject
   TH1F *h_UKbaseMu2Eta    [nChan];
   TH1F *h_UKbaseMu3Eta    [nChan];
   TH1F *h_UKbaseMu2and3Eta[nChan];
+  TH1F *h_fakeBaseEl2Pt     [nChan];
+  TH1F *h_fakeBaseEl3Pt     [nChan];
+  TH1F *h_fakeBaseEl2and3Pt [nChan];
+  TH1F *h_fakeBaseEl2Eta    [nChan];
+  TH1F *h_fakeBaseEl3Eta    [nChan];
+  TH1F *h_fakeBaseEl2and3Eta[nChan];
+  TH1F *h_fakeBaseMu2Pt     [nChan];
+  TH1F *h_fakeBaseMu3Pt     [nChan];
+  TH1F *h_fakeBaseMu2and3Pt [nChan];
+  TH1F *h_fakeBaseMu2Eta    [nChan];
+  TH1F *h_fakeBaseMu3Eta    [nChan];
+  TH1F *h_fakeBaseMu2and3Eta[nChan];
 
   // Fake baseline lepton which can pass signal selection
   TH1F *h_PREl2Pt     [nChan];
@@ -162,6 +174,12 @@ class Plotter : public TObject
   TH1F *h_UKEl2Eta    [nChan];
   TH1F *h_UKEl3Eta    [nChan];
   TH1F *h_UKEl2and3Eta[nChan];
+  TH1F *h_fakeEl2Pt     [nChan];
+  TH1F *h_fakeEl3Pt     [nChan];
+  TH1F *h_fakeEl2and3Pt [nChan];
+  TH1F *h_fakeEl2Eta    [nChan];
+  TH1F *h_fakeEl3Eta    [nChan];
+  TH1F *h_fakeEl2and3Eta[nChan];
   TH1F *h_PRMu2Pt     [nChan];
   TH1F *h_PRMu3Pt     [nChan];
   TH1F *h_PRMu2and3Pt [nChan];
@@ -192,6 +210,12 @@ class Plotter : public TObject
   TH1F *h_UKMu2Eta    [nChan];
   TH1F *h_UKMu3Eta    [nChan];
   TH1F *h_UKMu2and3Eta[nChan];
+  TH1F *h_fakeMu2Pt     [nChan];
+  TH1F *h_fakeMu3Pt     [nChan];
+  TH1F *h_fakeMu2and3Pt [nChan];
+  TH1F *h_fakeMu2Eta    [nChan];
+  TH1F *h_fakeMu3Eta    [nChan];
+  TH1F *h_fakeMu2and3Eta[nChan];
 
   // Summary of real efficiency/fake rate
   TH1F *h_sgnlfakelepClass[nChan]; // signal lepton, 0: all, 1:electron, 2:muon

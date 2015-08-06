@@ -140,6 +140,8 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   m_lepPtMax(-1),
   m_lep1PtMin(-1),
   m_lep2PtMin(-1),
+  m_baseLepEtaMax(-1),
+  m_baseLepEtaMin(-1),
   m_sumLepPtMin(-1),
   m_tau1PtMin(-1),
   m_tau2PtMin(-1),
@@ -272,6 +274,7 @@ bool EventSelector::initialize()
   m_availableSel->push_back("3S4BMet"          );
   m_availableSel->push_back("3S4BZvetoBvetoMet");
   m_availableSel->push_back("GT1S3B");
+  m_availableSel->push_back("GT1S3BForward");
 
   //////////////////////////////////////////////
   // Set selection cut variables
@@ -337,7 +340,8 @@ bool EventSelector::initialize()
   else if(m_sel=="3S4BZveto") Set3S4BZveto();
   else if(m_sel=="3S4BMet"  ) Set3S4BMet();
   else if(m_sel=="3S4BZvetoBvetoMet") Set3S4BZvetoBvetoMet();
-  else if(m_sel=="GT1S3B") SetGT1S3B(); // Fake rate estimation
+  else if(m_sel=="GT1S3B") SetGT1S3B();               // Fake rate estimation
+  else if(m_sel=="GT1S3BForward") SetGT1S3BForward(); // Fake rate estimation
   //Used for the legacy paper
   else if(m_sel=="VR0a") {
     TypSel(3,0,3,0,0,0);
@@ -929,6 +933,18 @@ void EventSelector::SetGT1S3B()
   m_nBaseLepMin = m_nBaseLepMax = 3;
   m_applyTrig = false;
   m_1stBaseIsSignal = true;
+  //m_baseLepEtaMax = 1.5; // require all baseline lepton's |eta| < 1.5
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::SetGT1S3BForward()
+{
+  m_nLepMin = 1;
+  m_nLepMax = 3;
+  m_nBaseLepMin = m_nBaseLepMax = 3;
+  m_applyTrig = false;
+  m_1stBaseIsSignal = true;
+  // m_baseLepEtaMin = 1.5; // require all baseline lepton's |eta| > 1.5
   return;
 }
 
@@ -1644,6 +1660,7 @@ bool EventSelector::selectEvent()
 
   if(!passLepTauPtCuts()) return false;
   PRINT_STEP(pass_lepPt);
+  if(!passBaseLepEtaCut()) return false;
 
   if(!passUpsilonCut()) return false;
   if(!passZCut()) return false;
@@ -2758,6 +2775,21 @@ bool EventSelector::passSumLepPtCut()
       sumPt += lepPtInGeV;
     }
     if(sumPt < m_sumLepPtMin) return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+// Lepton and tau eta requirements
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passBaseLepEtaCut()
+{
+  Double_t lepEta[3] = {-3.,-3.,-3.};
+  Int_t* lepIndex  = m_baseLepIndex ;
+  Int_t* lepFlavor = m_baseLepFlavor;
+  for (int i_l=0;i_l<3;i_l++){
+    if(lepIndex[i_l]!=-1) lepEta[i_l] = getFourVector(lepIndex[i_l], lepFlavor[i_l]).Eta();
+    if(m_baseLepEtaMax > 0 and fabs(lepEta[i_l]) > m_baseLepEtaMax) return false;
+    if(m_baseLepEtaMin > 0 and fabs(lepEta[i_l]) < m_baseLepEtaMin) return false;
   }
   return true;
 }
