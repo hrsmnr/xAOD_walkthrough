@@ -1234,7 +1234,8 @@ bool EventSelector::selectObject()
   xAOD::JetContainer::iterator jet_itr = (jets_copy)->begin();
   xAOD::JetContainer::iterator jet_end = (jets_copy)->end();
   for( ; jet_itr!=jet_end; ++jet_itr){
-    if(m_sel=="ac" || m_isMC==false){
+  MyDebug("selectObject()", "");
+    if(m_sel=="ac"){
       m_susyObjTool->IsBJet(**jet_itr); //Making b-tagged jet flag.
     }else{
       m_susyObjTool->IsBJet(**jet_itr,true,0.3511); //Making b-tagged jet flag.
