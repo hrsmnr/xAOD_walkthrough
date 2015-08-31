@@ -928,9 +928,11 @@ void EventSelector::Set3S4BZvetoBvetoMet()
 /*--------------------------------------------------------------------------------*/
 void EventSelector::SetGT1S3B()
 {
+  SetBveto(); // require b veto
   m_nLepMin = 1;
   m_nLepMax = 3;
   m_nBaseLepMin = m_nBaseLepMax = 3;
+  m_selSFOS = true;
   m_applyTrig = false;
   m_1stBaseIsSignal = true;
   m_baseLepEtaMax = 1.5; // require all baseline lepton's |eta| < 1.5
@@ -944,7 +946,7 @@ void EventSelector::SetGT1S3BForward()
   m_nBaseLepMin = m_nBaseLepMax = 3;
   m_applyTrig = false;
   m_1stBaseIsSignal = true;
-  // m_baseLepEtaMin = 1.5; // require all baseline lepton's |eta| > 1.5
+  m_baseLepEtaMin = 1.5; // require all baseline lepton's |eta| > 1.5
   return;
 }
 
