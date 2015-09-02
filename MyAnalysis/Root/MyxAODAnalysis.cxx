@@ -11,7 +11,7 @@
 #include <MyAnalysis/MyxAODAnalysis.h>
 
 //added by minoru
-#include"GoodRunsLists/GoodRunsListSelectionTool.h"
+// #include"GoodRunsLists/GoodRunsListSelectionTool.h"
 #include"SUSYTools/SUSYObjDef_xAOD.h"
 #include"SUSYTools/SUSYCrossSection.h"
 
