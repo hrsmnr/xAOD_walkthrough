@@ -12,6 +12,8 @@
 #include"MyAnalysis/MCTruthClassifierDefs.h"
 #include"EventPrimitives/EventPrimitivesHelpers.h"
 
+#include"MMTool/MMTool.h"
+
 #include"TFile.h"
 #include"TH1F.h"
 #include"TH2F.h"
@@ -54,6 +56,7 @@ Plotter::Plotter(const std::string& sel, const std::string& sys, const MSG::Leve
   m_sel(sel),
   m_sys(sys),
   m_runMM(false),
+  m_MMTool(NULL),
   m_filename(""),
   m_crossSection(0.),
   m_isMC(kFALSE)
@@ -84,6 +87,22 @@ void Plotter::initialize(const char* path, int dsid, double XS, TFile* file)
   // Booking histograms
   BookHistograms();
 
+  if(m_runMM){
+    m_MMTool = new MM::MMTool(MM::TwoLepMM,m_dbg);
+    std::string prefix = gSystem->ExpandPathName("$ROOTCOREBIN/data/MMTool/");
+    Int_t nDimForEff = 1;
+    if     (nDimForEff==0) m_MMTool->prepEffHists(prefix+"h0026.GT1S3B.root",nDimForEff);
+    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0032.GT1S3B.root",nDimForEff);
+    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0033.GT1S3B.root",nDimForEff);
+    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0034.GT1S3B.root",nDimForEff);
+    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0035.GT1S3B.root",nDimForEff);
+    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0036.GT1S3B.root",nDimForEff);
+    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0037.GT1S3B.root",nDimForEff);
+    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0038.GT1S3B.root",nDimForEff);
+    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0039.GT1S3B.root",nDimForEff);
+    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0041.GT1S3B.root",nDimForEff);
+  }
+
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -101,6 +120,7 @@ void Plotter::finalize()
     h_lepChan[Ch_all]->Write();
     h_baselepChan[Ch_all]->Write();
     for(uint iCh=0; iCh<nChan; iCh++){
+      h_mmWeight[iCh]->Write();
       h_lep1Pt[iCh]->Write();
       h_lep2Pt[iCh]->Write();
       h_lep3Pt[iCh]->Write();
@@ -332,6 +352,8 @@ void Plotter::finalize()
     }
   }
 
+  delete m_MMTool;
+
   MyAlways("finalize()",Form("Finalizing TFile: %s",m_rootfile->GetName()));
   if(m_sys!=""){
     m_rootfile->Close();
@@ -391,6 +413,8 @@ bool Plotter::BookHistograms()
     std::string chanName = vec_chan.at(iCh);
     h_lepChan[Ch_all]->GetXaxis()->SetBinLabel(iCh+1, chanName.c_str());
     h_baselepChan[Ch_all]->GetXaxis()->SetBinLabel(iCh+1, chanName.c_str());
+    // MM weight
+    NEWHIST( mmWeight, "MM Weight;Events", 100, -3., 3.);
     // lep pt - my choice of binning                                                                            
     NEWVARHIST( lep1Pt, "Leading lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
     NEWVARHIST( lep2Pt, "Second lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
@@ -835,9 +859,9 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
 
   //Prepare 1st-3rd leading signal lepton's four-vector
   const Int_t nSigLeps = EveSelec->nSignalLeps();
-  Int_t leadLepIndex[nSigLeps];
-  Int_t leadLepFlavor[nSigLeps];
-  TLorentzVector leadLep[nSigLeps];
+  std::vector<Int_t> leadLepIndex(nSigLeps);
+  std::vector<Int_t> leadLepFlavor(nSigLeps);
+  std::vector<TLorentzVector> leadLep(nSigLeps);
   for(Int_t id=0; id<nSigLeps; id++){
     leadLepIndex [id] = EveSelec->getLeadLepIndex (id);
     leadLepFlavor[id] = EveSelec->getLeadLepFlavor(id);
@@ -876,17 +900,18 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
 
   //===========================================================================
   Double_t w = weight*EveSelec->getTotalSF();
+  Double_t mmWeight = 0.;
   if(m_runMM){
-    Double_t pt2 = baseLep[1].Pt(); //in GeV
-    Double_t pt3 = baseLep[2].Pt(); //in GeV
-    Double_t eta2 = baseLep[1].Eta();
-    Double_t eta3 = baseLep[2].Eta();
-    Int_t flav2 = baseLepFlavor[1];
-    Int_t flav3 = baseLepFlavor[2];
-    Bool_t is2ndSignal = baseLepIsSig[1];
-    Bool_t is3rdSignal = baseLepIsSig[2];
-    //    w *= m_MMTool->getMMWeight(pt2,eta2,flav2,is2ndSignal,pt3,eta3,flav3,is3rdSignal);
-    w *= this->getMMWeight(pt2,eta2,flav2,is2ndSignal,pt3,eta3,flav3,is3rdSignal);
+    MM::LepProp lepProp[2];
+    for(Int_t lep=0; lep<2; lep++){
+      lepProp[lep].pt       = baseLep      [lep+1].Pt(); //in GeV
+      lepProp[lep].eta      = baseLep      [lep+1].Eta();
+      lepProp[lep].flav     = (MM::LepFlav)baseLepFlavor[lep+1];
+      lepProp[lep].isSignal = baseLepIsSig [lep+1];
+      m_MMTool->setLepProp(lep,lepProp[lep]);
+    }
+    mmWeight = m_MMTool->getMMWeight();
+    w *= mmWeight;
   }
 
   // Preprocessor convenience
@@ -927,6 +952,9 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   h_lepChan    [Ch_all]->Fill(chan,w);
   h_baselepChan[Ch_all]->Fill(Ch_all,w);
   h_baselepChan[Ch_all]->Fill(chan,w);
+
+  //MM Weight
+  FillChanHist( h_mmWeight, mmWeight, 1.);
 
   //Fill lead lepton
   for(Int_t id=0; id<nSigLeps; id++){
@@ -1494,39 +1522,4 @@ bool Plotter::FillNEvent(double weight)
   MyDebug("FillNEvent()","Plotter::FillNEvent()");
   h_nEve->Fill(0., weight);
   return true;
-}
-
-Double_t Plotter::getMMWeight(Double_t pt2, Double_t eta2, Int_t flav2, Bool_t is2ndSignal,
-                              Double_t pt3, Double_t eta3, Int_t flav3, Bool_t is3rdSignal)
-{
-  Double_t mmWeight=0.;
-  MyDebug("getMMWeight()","Calculating MM Weight");
-
-  Double_t r1 = 0.7;  Double_t R1 = 1. - r1;
-  Double_t f1 = 0.1;  Double_t F1 = 1. - f1;
-  Double_t r2 = 0.7;  Double_t R2 = 1. - r2;
-  Double_t f2 = 0.1;  Double_t F2 = 1. - f2;
-  Int_t Nxx[4]={0,0,0,0}; //Nxx[0]=Ntt, Nxx[1]=Ntl, Nxx[2]=Nlt, Nxx[3]=Nll
-  if( is2ndSignal &&  is3rdSignal) Nxx[0]=1;
-  if( is2ndSignal && !is3rdSignal) Nxx[1]=1;
-  if(!is2ndSignal &&  is3rdSignal) Nxx[2]=1;
-  if(!is2ndSignal && !is3rdSignal) Nxx[3]=1;
-
-  Double_t Nrr =   F1 * F2 * Nxx[0] - F1 * f2 * Nxx[1] - f1 * F2 * Nxx[2] + f1 * f2 * Nxx[3];
-  Double_t Nrf = - F1 * R2 * Nxx[0] + F1 * r2 * Nxx[1] + f1 * R2 * Nxx[2] - f1 * r2 * Nxx[3];
-  Double_t Nfr = - R1 * F2 * Nxx[0] + R1 * f2 * Nxx[1] + r1 * F2 * Nxx[2] - r1 * f2 * Nxx[3];
-  Double_t Nff =   R1 * R2 * Nxx[0] - R1 * r2 * Nxx[1] - r1 * R2 * Nxx[2] + r1 * r2 * Nxx[3];
-
-  MyDebug("getMMWeight()",Form("==== Num of evts: Ntt=%d, Ntl=%d, Nlt=%d, Nll=%d",Nxx[0],Nxx[1],Nxx[2],Nxx[3]));
-  MyDebug("getMMWeight()",Form("==== Fake Rates : r1=%f, f1=%f, r2=%f, f2=%f",r1,f1,r2,f2));
-  MyDebug("getMMWeight()",Form("==== Fake vector: Nrr=%f, Nrf=%f, Nfr=%f, Nff=%f",Nrr,Nrf,Nfr,Nff));
-
-  if (r1-f1==0 || r2-f2==0) return 0.;
-  Double_t det2leps = 1./(r1-f1)/(r2-f2);
-
-  mmWeight = det2leps * (r1*f2*Nrf + f1*r2*Nfr + f1*f2*Nff);
-
-  MyDebug("getMMWeight()",Form("Total fake weight: %f",mmWeight));
-
-  return mmWeight;
 }

@@ -223,6 +223,9 @@ class EventSelector : public TObject
   //  bool passSumTauPtCut();
   bool passLepTauPtCuts();
 
+  // Lepton/tau eta requirements
+  bool passBaseLepEtaCut();
+
   // Truth selection
   bool passLepTruthCut();
 
@@ -578,6 +581,8 @@ class EventSelector : public TObject
   float               m_lepPtMax;       // lepton pt cuts 
   float               m_lep1PtMin;      // leading lepton pt cut 
   float               m_lep2PtMin;      // leading lepton pt cut 
+  float               m_baseLepEtaMax;  // base lepton eta cuts
+  float               m_baseLepEtaMin;  // base lepton eta cuts
   float               m_sumLepPtMin;    // sum lepton pt cut 
   float               m_tau1PtMin;      // tau pt cuts 
   float               m_tau2PtMin;      // tau pt cuts 

@@ -9,6 +9,9 @@
 
 #include"MyAnalysis/EventSelector.h"
 
+namespace MM {
+  class MMTool;
+}
 class TFile;
 class TH1F;
 class TH2F;
@@ -36,20 +39,20 @@ class Plotter : public TObject
   std::string m_sel;
   std::string m_sys;
   Bool_t m_runMM;
+  MM::MMTool *m_MMTool;
   std::string m_filename;
   double m_crossSection;
   Bool_t m_isMC;
   TFile *m_rootfile;
 
   bool BookHistograms();
-  Double_t getMMWeight(Double_t pt2, Double_t eta2, Int_t flav2, Bool_t is2ndSignal,
-                       Double_t pt3, Double_t eta3, Int_t flav3, Bool_t is3rdSignal);
 
   // Declaration of histograms
   TH1F *h_xsec; //cross section for the processed sample (for data, 0. is filled.)
   TH1F *h_nEve; //#processed events to make histograms (not #events for whole dataset)
   TH2F *h_nSigBaseLep; // #signal vs #baseline leptons
   TH1F *h_lepChan[nChan]; //count entries for each final state
+  TH1F *h_mmWeight[nChan];//MM weight
   //Lepton kinematics
   TH1F *h_lep1Pt [nChan]; //1st lepton Pt
   TH1F *h_lep2Pt [nChan]; //2nd lepton Pt

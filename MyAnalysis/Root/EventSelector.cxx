@@ -141,6 +141,8 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   m_lepPtMax(-1),
   m_lep1PtMin(-1),
   m_lep2PtMin(-1),
+  m_baseLepEtaMax(-1),
+  m_baseLepEtaMin(-1),
   m_sumLepPtMin(-1),
   m_tau1PtMin(-1),
   m_tau2PtMin(-1),
@@ -488,7 +490,7 @@ bool EventSelector::initialize()
   }
   if(m_runMM){
     m_nLepMin = 1;
-    m_nLepMax = -1;
+    m_nLepMax = 3;
     m_1stBaseIsSignal = true;
     m_is3SigLepSel = false;
   }
@@ -1788,6 +1790,7 @@ bool EventSelector::selectEvent()
 
   if(!passLepTauPtCuts()) return false;
   PRINT_STEP(pass_lepPt);
+  if(!passBaseLepEtaCut()) return false;
 
   if(!passUpsilonCut()) return false;
   if(!passZCut()) return false;
@@ -2902,6 +2905,21 @@ bool EventSelector::passSumLepPtCut()
       sumPt += lepPtInGeV;
     }
     if(sumPt < m_sumLepPtMin) return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+// Lepton and tau eta requirements
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passBaseLepEtaCut()
+{
+  Double_t lepEta[3] = {-3.,-3.,-3.};
+  Int_t* lepIndex  = m_baseLepIndex ;
+  Int_t* lepFlavor = m_baseLepFlavor;
+  for (int i_l=0;i_l<3;i_l++){
+    if(lepIndex[i_l]!=-1) lepEta[i_l] = getFourVector(lepIndex[i_l], lepFlavor[i_l]).Eta();
+    if(m_baseLepEtaMax > 0 and fabs(lepEta[i_l]) > m_baseLepEtaMax) return false;
+    if(m_baseLepEtaMin > 0 and fabs(lepEta[i_l]) < m_baseLepEtaMin) return false;
   }
   return true;
 }
