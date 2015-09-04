@@ -1814,6 +1814,7 @@ bool EventSelector::selectEvent()
   if(!passLepTauPtCuts()) return false;
   PRINT_STEP(pass_lepPt);
   if(!passBaseLepEtaCut()) return false;
+  if(!pass1stBaseIsSignal()) return false;
 
   if(!passUpsilonCut()) return false;
   if(!passZCut()) return false;
@@ -1845,8 +1846,6 @@ bool EventSelector::selectEvent()
   // PRINT_STEP(pass_mljj);
   //if(!passMtllCut(mySigLeptons, met)) return false;
   // PRINT_STEP(pass_other);
-
-  if(!pass1stBaseIsSignal()) return false;
 
 #undef PRINT_STEP
 

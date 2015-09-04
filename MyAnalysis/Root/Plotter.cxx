@@ -1172,30 +1172,71 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   //MM Weight
   FillChanHist( h_mmWeight, mmWeight, 1.);
 
-  //Fill lead lepton
-  for(Int_t id=0; id<nSigLeps; id++){
+  //Fill lepton
+  for(Int_t id=0; id<3; id++){
+    if(lepIndex[id]==-1) continue;
     if(id==0){
-      FillChanHist( h_lep1Pt, leadLep[0].Pt()/1000., w );
-      FillElHist( 0, h_el1Pt, vec_signalElectron->at(leadLepIndex[0]).pt()/1000., w );
-      FillMuHist( 0, h_mu1Pt, vec_signalMuon    ->at(leadLepIndex[0]).pt()/1000., w );
-      FillChanHist( h_lep1Eta, leadLep[0].Eta(), w );
-      FillElHist( 0, h_el1Eta, vec_signalElectron->at(leadLepIndex[0]).eta(), w );
-      FillMuHist( 0, h_mu1Eta, vec_signalMuon    ->at(leadLepIndex[0]).eta(), w );
-    } else if (id==1) {
-      FillChanHist( h_lep2Pt, leadLep[1].Pt()/1000., w );
-      FillElHist( 1, h_el2Pt, vec_signalElectron->at(leadLepIndex[1]).pt()/1000., w );
-      FillMuHist( 1, h_mu2Pt, vec_signalMuon    ->at(leadLepIndex[1]).pt()/1000., w );
-      FillChanHist( h_lep2Eta, leadLep[1].Eta(), w );
-      FillElHist( 1, h_el2Eta, vec_signalElectron->at(leadLepIndex[1]).eta(), w );
-      FillMuHist( 1, h_mu2Eta, vec_signalMuon    ->at(leadLepIndex[1]).eta(), w );
-    } else if (id==2) {
-      FillChanHist( h_lep3Pt, leadLep[2].Pt()/1000., w );
-      FillElHist( 2, h_el3Pt, vec_signalElectron->at(leadLepIndex[2]).pt()/1000., w );
-      FillMuHist( 2, h_mu3Pt, vec_signalMuon    ->at(leadLepIndex[2]).pt()/1000., w );
-      FillChanHist( h_lep3Eta, leadLep[2].Eta(), w );
-      FillElHist( 2, h_el3Eta, vec_signalElectron->at(leadLepIndex[2]).eta(), w );
-      FillMuHist( 2, h_mu3Eta, vec_signalMuon    ->at(leadLepIndex[2]).eta(), w );
+      FillChanHist( h_lep1Pt , lep[id].Pt()/1000., w );
+      FillChanHist( h_lep1Eta, lep[id].Eta(), w );
+      if(lepFlavor[id]==0){
+        if(EveSelec->is3SigLepSel()){
+          FillElHist( id, h_el1Pt,  vec_signalElectron->at(leadLepIndex[id]).pt()/1000., w );
+          FillElHist( id, h_el1Eta, vec_signalElectron->at(leadLepIndex[id]).eta(), w );
+        }else{
+          FillBaseElHist( id, h_el1Pt,  vec_baseElectron->at(baseLepIndex[id]).pt()/1000., w );
+          FillBaseElHist( id, h_el1Eta, vec_baseElectron->at(baseLepIndex[id]).eta(), w );
+        }
+      }else if(lepFlavor[id]==1){
+        if(EveSelec->is3SigLepSel()){
+          FillMuHist( id, h_mu1Pt,  vec_signalMuon->at(leadLepIndex[id]).pt()/1000., w );
+          FillMuHist( id, h_mu1Eta, vec_signalMuon->at(leadLepIndex[id]).eta(), w );
+        }else{
+          FillBaseMuHist( id, h_mu1Pt,  vec_baseMuon->at(baseLepIndex[id]).pt()/1000., w );
+          FillBaseMuHist( id, h_mu1Eta, vec_baseMuon->at(baseLepIndex[id]).eta(), w );
+        }
+      }
+    }else if(id==1){
+      FillChanHist( h_lep2Pt , lep[id].Pt()/1000., w );
+      FillChanHist( h_lep2Eta, lep[id].Eta(), w );
+      if(lepFlavor[id]==0){
+        if(EveSelec->is3SigLepSel()){
+          FillElHist( id, h_el2Pt,  vec_signalElectron->at(leadLepIndex[id]).pt()/1000., w );
+          FillElHist( id, h_el2Eta, vec_signalElectron->at(leadLepIndex[id]).eta(), w );
+        }else{
+          FillBaseElHist( id, h_el2Pt,  vec_baseElectron->at(baseLepIndex[id]).pt()/1000., w );
+          FillBaseElHist( id, h_el2Eta, vec_baseElectron->at(baseLepIndex[id]).eta(), w );
+        }
+      }else if(lepFlavor[id]==1){
+        if(EveSelec->is3SigLepSel()){
+          FillMuHist( id, h_mu2Pt,  vec_signalMuon->at(leadLepIndex[id]).pt()/1000., w );
+          FillMuHist( id, h_mu2Eta, vec_signalMuon->at(leadLepIndex[id]).eta(), w );
+        }else{
+          FillBaseMuHist( id, h_mu2Pt,  vec_baseMuon->at(baseLepIndex[id]).pt()/1000., w );
+          FillBaseMuHist( id, h_mu2Eta, vec_baseMuon->at(baseLepIndex[id]).eta(), w );
+        }
+      }
+    }else if(id==2){
+      FillChanHist( h_lep3Pt , lep[id].Pt()/1000., w );
+      FillChanHist( h_lep3Eta, lep[id].Eta(), w );
+      if(lepFlavor[id]==0){
+        if(EveSelec->is3SigLepSel()){
+          FillElHist( id, h_el3Pt,  vec_signalElectron->at(leadLepIndex[id]).pt()/1000., w );
+          FillElHist( id, h_el3Eta, vec_signalElectron->at(leadLepIndex[id]).eta(), w );
+        }else{
+          FillBaseElHist( id, h_el3Pt,  vec_baseElectron->at(baseLepIndex[id]).pt()/1000., w );
+          FillBaseElHist( id, h_el3Eta, vec_baseElectron->at(baseLepIndex[id]).eta(), w );
+        }
+      }else if(lepFlavor[id]==1){
+        if(EveSelec->is3SigLepSel()){
+          FillMuHist( id, h_mu3Pt,  vec_signalMuon->at(leadLepIndex[id]).pt()/1000., w );
+          FillMuHist( id, h_mu3Eta, vec_signalMuon->at(leadLepIndex[id]).eta(), w );
+        }else{
+          FillBaseMuHist( id, h_mu3Pt,  vec_baseMuon->at(baseLepIndex[id]).pt()/1000., w );
+          FillBaseMuHist( id, h_mu3Eta, vec_baseMuon->at(baseLepIndex[id]).eta(), w );
+        }
+      }
     }
+
   }
 
   //Fill lepton system, sum Pt
