@@ -139,51 +139,21 @@ void Plotter::finalize()
       h_mu1Eta[iCh]->Write();
       h_mu2Eta[iCh]->Write();
       h_mu3Eta[iCh]->Write();
-      h_PRlep1Pt[iCh]->Write();
-      h_PRlep2Pt[iCh]->Write();
-      h_PRlep3Pt[iCh]->Write();
-      h_COlep1Pt[iCh]->Write();
-      h_COlep2Pt[iCh]->Write();
-      h_COlep3Pt[iCh]->Write();
-      h_HFlep1Pt[iCh]->Write();
-      h_HFlep2Pt[iCh]->Write();
-      h_HFlep3Pt[iCh]->Write();
-      h_LFlep1Pt[iCh]->Write();
-      h_LFlep2Pt[iCh]->Write();
-      h_LFlep3Pt[iCh]->Write();
-      h_UKlep1Pt[iCh]->Write();
-      h_UKlep2Pt[iCh]->Write();
-      h_UKlep3Pt[iCh]->Write();
-      h_PRlep1Eta[iCh]->Write();
-      h_PRlep2Eta[iCh]->Write();
-      h_PRlep3Eta[iCh]->Write();
-      h_COlep1Eta[iCh]->Write();
-      h_COlep2Eta[iCh]->Write();
-      h_COlep3Eta[iCh]->Write();
-      h_HFlep1Eta[iCh]->Write();
-      h_HFlep2Eta[iCh]->Write();
-      h_HFlep3Eta[iCh]->Write();
-      h_LFlep1Eta[iCh]->Write();
-      h_LFlep2Eta[iCh]->Write();
-      h_LFlep3Eta[iCh]->Write();
-      h_UKlep1Eta[iCh]->Write();
-      h_UKlep2Eta[iCh]->Write();
-      h_UKlep3Eta[iCh]->Write();
-      h_PRbaselep1Pt[iCh]->Write();
-      h_PRbaselep2Pt[iCh]->Write();
-      h_PRbaselep3Pt[iCh]->Write();
-      h_CObaselep1Pt[iCh]->Write();
-      h_CObaselep2Pt[iCh]->Write();
-      h_CObaselep3Pt[iCh]->Write();
-      h_HFbaselep1Pt[iCh]->Write();
-      h_HFbaselep2Pt[iCh]->Write();
-      h_HFbaselep3Pt[iCh]->Write();
-      h_LFbaselep1Pt[iCh]->Write();
-      h_LFbaselep2Pt[iCh]->Write();
-      h_LFbaselep3Pt[iCh]->Write();
-      h_UKbaselep1Pt[iCh]->Write();
-      h_UKbaselep2Pt[iCh]->Write();
-      h_UKbaselep3Pt[iCh]->Write();
+      h_PRbaselep1Pt [iCh]->Write();
+      h_PRbaselep2Pt [iCh]->Write();
+      h_PRbaselep3Pt [iCh]->Write();
+      h_CObaselep1Pt [iCh]->Write();
+      h_CObaselep2Pt [iCh]->Write();
+      h_CObaselep3Pt [iCh]->Write();
+      h_HFbaselep1Pt [iCh]->Write();
+      h_HFbaselep2Pt [iCh]->Write();
+      h_HFbaselep3Pt [iCh]->Write();
+      h_LFbaselep1Pt [iCh]->Write();
+      h_LFbaselep2Pt [iCh]->Write();
+      h_LFbaselep3Pt [iCh]->Write();
+      h_UKbaselep1Pt [iCh]->Write();
+      h_UKbaselep2Pt [iCh]->Write();
+      h_UKbaselep3Pt [iCh]->Write();
       h_PRbaselep1Eta[iCh]->Write();
       h_PRbaselep2Eta[iCh]->Write();
       h_PRbaselep3Eta[iCh]->Write();
@@ -199,18 +169,160 @@ void Plotter::finalize()
       h_UKbaselep1Eta[iCh]->Write();
       h_UKbaselep2Eta[iCh]->Write();
       h_UKbaselep3Eta[iCh]->Write();
-      h_baselep1Pt[iCh]->Write();
-      h_baselep2Pt[iCh]->Write();
-      h_baselep3Pt[iCh]->Write();
-      h_baseel1Pt[iCh]->Write();
-      h_baseel2Pt[iCh]->Write();
-      h_baseel3Pt[iCh]->Write();
-      h_basemu1Pt[iCh]->Write();
-      h_basemu2Pt[iCh]->Write();
-      h_basemu3Pt[iCh]->Write();
-      h_baselep1Eta[iCh]->Write();
-      h_baselep2Eta[iCh]->Write();
-      h_baselep3Eta[iCh]->Write();
+      h_CObaselep2and3Pt [iCh]->Write();
+      h_LFbaselep2and3Pt [iCh]->Write();
+      h_PRbaselep2and3Eta[iCh]->Write();
+      h_HFbaselep2and3Eta[iCh]->Write();
+      h_LFbaselep2and3Eta[iCh]->Write();
+      h_UKbaselep2and3Eta[iCh]->Write();
+      h_PRbaseEl2Pt     [iCh]->Write();
+      h_PRbaseEl3Pt     [iCh]->Write();
+      h_PRbaseEl2and3Pt [iCh]->Write();
+      h_PRbaseEl2Eta    [iCh]->Write();
+      h_PRbaseEl3Eta    [iCh]->Write();
+      h_PRbaseEl2and3Eta[iCh]->Write();
+      h_CObaseEl2Pt     [iCh]->Write();
+      h_CObaseEl3Pt     [iCh]->Write();
+      h_CObaseEl2and3Pt [iCh]->Write();
+      h_CObaseEl2Eta    [iCh]->Write();
+      h_CObaseEl3Eta    [iCh]->Write();
+      h_CObaseEl2and3Eta[iCh]->Write();
+      h_HFbaseEl2Pt     [iCh]->Write();
+      h_HFbaseEl3Pt     [iCh]->Write();
+      h_HFbaseEl2and3Pt [iCh]->Write();
+      h_HFbaseEl2Eta    [iCh]->Write();
+      h_HFbaseEl3Eta    [iCh]->Write();
+      h_HFbaseEl2and3Eta[iCh]->Write();
+      h_LFbaseEl2Pt     [iCh]->Write();
+      h_LFbaseEl3Pt     [iCh]->Write();
+      h_LFbaseEl2and3Pt [iCh]->Write();
+      h_LFbaseEl2Eta    [iCh]->Write();
+      h_LFbaseEl3Eta    [iCh]->Write();
+      h_LFbaseEl2and3Eta[iCh]->Write();
+      h_UKbaseEl2Pt     [iCh]->Write();
+      h_UKbaseEl3Pt     [iCh]->Write();
+      h_UKbaseEl2and3Pt [iCh]->Write();
+      h_UKbaseEl2Eta    [iCh]->Write();
+      h_UKbaseEl3Eta    [iCh]->Write();
+      h_UKbaseEl2and3Eta[iCh]->Write();
+      h_PRbaseMu2Pt     [iCh]->Write();
+      h_PRbaseMu3Pt     [iCh]->Write();
+      h_PRbaseMu2and3Pt [iCh]->Write();
+      h_PRbaseMu2Eta    [iCh]->Write();
+      h_PRbaseMu3Eta    [iCh]->Write();
+      h_PRbaseMu2and3Eta[iCh]->Write();
+      h_CObaseMu2Pt     [iCh]->Write();
+      h_CObaseMu3Pt     [iCh]->Write();
+      h_CObaseMu2and3Pt [iCh]->Write();
+      h_CObaseMu2Eta    [iCh]->Write();
+      h_CObaseMu3Eta    [iCh]->Write();
+      h_CObaseMu2and3Eta[iCh]->Write();
+      h_HFbaseMu2Pt     [iCh]->Write();
+      h_HFbaseMu3Pt     [iCh]->Write();
+      h_HFbaseMu2and3Pt [iCh]->Write();
+      h_HFbaseMu2Eta    [iCh]->Write();
+      h_HFbaseMu3Eta    [iCh]->Write();
+      h_HFbaseMu2and3Eta[iCh]->Write();
+      h_LFbaseMu2Pt     [iCh]->Write();
+      h_LFbaseMu3Pt     [iCh]->Write();
+      h_LFbaseMu2and3Pt [iCh]->Write();
+      h_LFbaseMu2Eta    [iCh]->Write();
+      h_LFbaseMu3Eta    [iCh]->Write();
+      h_LFbaseMu2and3Eta[iCh]->Write();
+      h_UKbaseMu2Pt     [iCh]->Write();
+      h_UKbaseMu3Pt     [iCh]->Write();
+      h_UKbaseMu2and3Pt [iCh]->Write();
+      h_UKbaseMu2Eta    [iCh]->Write();
+      h_UKbaseMu3Eta    [iCh]->Write();
+      h_UKbaseMu2and3Eta[iCh]->Write();
+      h_PREl2Pt     [iCh]->Write();
+      h_PREl3Pt     [iCh]->Write();
+      h_PREl2and3Pt [iCh]->Write();
+      h_PREl2Eta    [iCh]->Write();
+      h_PREl3Eta    [iCh]->Write();
+      h_PREl2and3Eta[iCh]->Write();
+      h_COEl2Pt     [iCh]->Write();
+      h_COEl3Pt     [iCh]->Write();
+      h_COEl2and3Pt [iCh]->Write();
+      h_COEl2Eta    [iCh]->Write();
+      h_COEl3Eta    [iCh]->Write();
+      h_COEl2and3Eta[iCh]->Write();
+      h_HFEl2Pt     [iCh]->Write();
+      h_HFEl3Pt     [iCh]->Write();
+      h_HFEl2and3Pt [iCh]->Write();
+      h_HFEl2Eta    [iCh]->Write();
+      h_HFEl3Eta    [iCh]->Write();
+      h_HFEl2and3Eta[iCh]->Write();
+      h_LFEl2Pt     [iCh]->Write();
+      h_LFEl3Pt     [iCh]->Write();
+      h_LFEl2and3Pt [iCh]->Write();
+      h_LFEl2Eta    [iCh]->Write();
+      h_LFEl3Eta    [iCh]->Write();
+      h_LFEl2and3Eta[iCh]->Write();
+      h_UKEl2Pt     [iCh]->Write();
+      h_UKEl3Pt     [iCh]->Write();
+      h_UKEl2and3Pt [iCh]->Write();
+      h_UKEl2Eta    [iCh]->Write();
+      h_UKEl3Eta    [iCh]->Write();
+      h_UKEl2and3Eta[iCh]->Write();
+      h_PRMu2Pt     [iCh]->Write();
+      h_PRMu3Pt     [iCh]->Write();
+      h_PRMu2and3Pt [iCh]->Write();
+      h_PRMu2Eta    [iCh]->Write();
+      h_PRMu3Eta    [iCh]->Write();
+      h_PRMu2and3Eta[iCh]->Write();
+      h_COMu2Pt     [iCh]->Write();
+      h_COMu3Pt     [iCh]->Write();
+      h_COMu2and3Pt [iCh]->Write();
+      h_COMu2Eta    [iCh]->Write();
+      h_COMu3Eta    [iCh]->Write();
+      h_COMu2and3Eta[iCh]->Write();
+      h_HFMu2Pt     [iCh]->Write();
+      h_HFMu3Pt     [iCh]->Write();
+      h_HFMu2and3Pt [iCh]->Write();
+      h_HFMu2Eta    [iCh]->Write();
+      h_HFMu3Eta    [iCh]->Write();
+      h_HFMu2and3Eta[iCh]->Write();
+      h_LFMu2Pt     [iCh]->Write();
+      h_LFMu3Pt     [iCh]->Write();
+      h_LFMu2and3Pt [iCh]->Write();
+      h_LFMu2Eta    [iCh]->Write();
+      h_LFMu3Eta    [iCh]->Write();
+      h_LFMu2and3Eta[iCh]->Write();
+      h_UKMu2Pt     [iCh]->Write();
+      h_UKMu3Pt     [iCh]->Write();
+      h_UKMu2and3Pt [iCh]->Write();
+      h_UKMu2Eta    [iCh]->Write();
+      h_UKMu3Eta    [iCh]->Write();
+      h_UKMu2and3Eta[iCh]->Write();
+      h_fakeEl2Pt     [iCh]->Write();
+      h_fakeEl3Pt     [iCh]->Write();
+      h_fakeEl2and3Pt [iCh]->Write();
+      h_fakeEl2Eta    [iCh]->Write();
+      h_fakeEl3Eta    [iCh]->Write();
+      h_fakeEl2and3Eta[iCh]->Write();
+      h_fakeMu2Pt     [iCh]->Write();
+      h_fakeMu3Pt     [iCh]->Write();
+      h_fakeMu2and3Pt [iCh]->Write();
+      h_fakeMu2Eta    [iCh]->Write();
+      h_fakeMu3Eta    [iCh]->Write();
+      h_fakeMu2and3Eta[iCh]->Write();
+      h_sgnlfakelepClass    [iCh]->Write();
+      h_fakeEl2and3Class    [iCh]->Write();
+      h_fakeMu2and3Class    [iCh]->Write();
+      h_basefakelepClass    [iCh]->Write();
+      h_fakebaseEl2and3Class[iCh]->Write();
+      h_fakebaseMu2and3Class[iCh]->Write(); 
+      h_fakebaseEl2and3Class[iCh]->Write();
+      h_fakebaseMu2and3Class[iCh]->Write(); 
+      h_baselepOrigin       [iCh]->Write();
+      h_baselep1Origin      [iCh]->Write();
+      h_baselep2Origin      [iCh]->Write();
+      h_baselep3Origin      [iCh]->Write();
+      h_baselepClass        [iCh]->Write();
+      h_baselep1Class       [iCh]->Write();
+      h_baselep2Class       [iCh]->Write();
+      h_baselep3Class       [iCh]->Write();
       h_llPt[iCh]->Write();
       h_sumLepPt[iCh]->Write();
       h_sumLepPtMet[iCh]->Write();
@@ -257,14 +369,6 @@ void Plotter::finalize()
       h_lep2Class[iCh]->Write();
       h_lep3Class[iCh]->Write();
       h_hasSS[iCh]->Write();
-      h_baselepOrigin[iCh]->Write();
-      h_baselep1Origin[iCh]->Write();
-      h_baselep2Origin[iCh]->Write();
-      h_baselep3Origin[iCh]->Write();
-      h_baselepClass[iCh]->Write();
-      h_baselep1Class[iCh]->Write();
-      h_baselep2Class[iCh]->Write();
-      h_baselep3Class[iCh]->Write();
       h_nTau[iCh]->Write();
       h_tauPt[iCh]->Write();
       h_tau1Pt[iCh]->Write();
@@ -349,6 +453,8 @@ void Plotter::finalize()
       h_mtll_mt[iCh]->Write();
       h_nVtx[iCh]->Write();
       h_mu[iCh]->Write();
+      h_elParentPdgId[iCh]->Write();
+      h_muParentPdgId[iCh]->Write();
     }
   }
 
@@ -425,28 +531,128 @@ bool Plotter::BookHistograms()
     NEWVARHIST( mu1Pt, "Leading muon_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
     NEWVARHIST( mu2Pt, "Second muon_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
     NEWVARHIST( mu3Pt, "Third muon_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
+    NEWVARHIST( PREl2Pt,               "Second PR electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( PREl3Pt,                "Third PR electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( PREl2and3Pt, "Second and Third PR electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( COEl2Pt,               "Second CO electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( COEl3Pt,                "Third CO electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( COEl2and3Pt, "Second and Third CO electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( HFEl2Pt,               "Second HF electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( HFEl3Pt,                "Third HF electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( HFEl2and3Pt, "Second and Third HF electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( LFEl2Pt,               "Second LF electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( LFEl3Pt,                "Third LF electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( LFEl2and3Pt, "Second and Third LF electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( UKEl2Pt,               "Second UK electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( UKEl3Pt,                "Third UK electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( UKEl2and3Pt, "Second and Third UK electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( PRMu2Pt,               "Second PR muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( PRMu3Pt,                "Third PR muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( PRMu2and3Pt, "Second and Third PR muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( COMu2Pt,               "Second CO muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( COMu3Pt,                "Third CO muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( COMu2and3Pt, "Second and Third CO muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( HFMu2Pt,               "Second HF muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( HFMu3Pt,                "Third HF muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( HFMu2and3Pt, "Second and Third HF muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( LFMu2Pt,               "Second LF muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( LFMu3Pt,                "Third LF muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( LFMu2and3Pt, "Second and Third LF muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( UKMu2Pt,               "Second UK muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( UKMu3Pt,                "Third UK muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( UKMu2and3Pt, "Second and Third UK muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( fakeEl2Pt,               "Second fake electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( fakeEl3Pt,                "Third fake electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( fakeEl2and3Pt, "Second and Third fake electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( fakeMu2Pt,               "Second fake muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( fakeMu3Pt,                "Third fake muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( fakeMu2and3Pt, "Second and Third fake muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
 
-    NEWVARHIST( PRlep1Pt, "Leading PR lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
-    NEWVARHIST( PRlep2Pt,  "Second PR lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( PRlep3Pt,   "Third PR lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
-    NEWVARHIST( COlep1Pt, "Leading CO lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
-    NEWVARHIST( COlep2Pt,  "Second CO lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( COlep3Pt,   "Third CO lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
-    NEWVARHIST( HFlep1Pt, "Leading HF lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
-    NEWVARHIST( HFlep2Pt,  "Second HF lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( HFlep3Pt,   "Third HF lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
-    NEWVARHIST( LFlep1Pt, "Leading LF lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
-    NEWVARHIST( LFlep2Pt,  "Second LF lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( LFlep3Pt,   "Third LF lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
-    NEWVARHIST( UKlep1Pt, "Leading UK lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
-    NEWVARHIST( UKlep2Pt,  "Second UK lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( UKlep3Pt,   "Third UK lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
 
-    NEWVARHIST( PRlep2and3Pt, "Second and third PR lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( COlep2and3Pt, "Second and third CO lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( HFlep2and3Pt, "Second and third HF lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( LFlep2and3Pt, "Second and third LF lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( UKlep2and3Pt, "Second and third UK lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    // lep eta
+    ETAHIST( lep1Eta, "Leading lepton #eta;Events" );
+    ETAHIST( lep2Eta, "Second lepton #eta;Events" );
+    ETAHIST( lep3Eta, "Third lepton #eta;Events" );
+    ETAHIST( el1Eta, "Leading electron #eta;Events" );
+    ETAHIST( el2Eta, "Second electron #eta;Events" );
+    ETAHIST( el3Eta, "Third electron #eta;Events" );
+    ETAHIST( mu1Eta, "Leading muon #eta;Events" );
+    ETAHIST( mu2Eta, "Second muon #eta;Events" );
+    ETAHIST( mu3Eta, "Third muon #eta;Events" );
+    ETAHIST( PREl2Eta,               "Second PR electron_{} #eta;Events" );
+    ETAHIST( PREl3Eta,                "Third PR electron_{} #eta;Events" );
+    ETAHIST( PREl2and3Eta, "Second and Third PR electron_{} #eta;Events" );
+    ETAHIST( COEl2Eta,               "Second CO electron_{} #eta;Events" );
+    ETAHIST( COEl3Eta,                "Third CO electron_{} #eta;Events" );
+    ETAHIST( COEl2and3Eta, "Second and Third CO electron_{} #eta;Events" );
+    ETAHIST( HFEl2Eta,               "Second HF electron_{} #eta;Events" );
+    ETAHIST( HFEl3Eta,                "Third HF electron_{} #eta;Events" );
+    ETAHIST( HFEl2and3Eta, "Second and Third HF electron_{} #eta;Events" );
+    ETAHIST( LFEl2Eta,               "Second LF electron_{} #eta;Events" );
+    ETAHIST( LFEl3Eta,                "Third LF electron_{} #eta;Events" );
+    ETAHIST( LFEl2and3Eta, "Second and Third LF electron_{} #eta;Events" );
+    ETAHIST( UKEl2Eta,               "Second UK electron_{} #eta;Events" );
+    ETAHIST( UKEl3Eta,                "Third UK electron_{} #eta;Events" );
+    ETAHIST( UKEl2and3Eta, "Second and Third UK electron_{} #eta;Events" );
+    ETAHIST( PRMu2Eta,               "Second PR muon_{} #eta;Events" );
+    ETAHIST( PRMu3Eta,                "Third PR muon_{} #eta;Events" );
+    ETAHIST( PRMu2and3Eta, "Second and Third PR muon_{} #eta;Events" );
+    ETAHIST( COMu2Eta,               "Second CO muon_{} #eta;Events" );
+    ETAHIST( COMu3Eta,                "Third CO muon_{} #eta;Events" );
+    ETAHIST( COMu2and3Eta, "Second and Third CO muon_{} #eta;Events" );
+    ETAHIST( HFMu2Eta,               "Second HF muon_{} #eta;Events" );
+    ETAHIST( HFMu3Eta,                "Third HF muon_{} #eta;Events" );
+    ETAHIST( HFMu2and3Eta, "Second and Third HF muon_{} #eta;Events" );
+    ETAHIST( LFMu2Eta,               "Second LF muon_{} #eta;Events" );
+    ETAHIST( LFMu3Eta,                "Third LF muon_{} #eta;Events" );
+    ETAHIST( LFMu2and3Eta, "Second and Third LF muon_{} #eta;Events" );
+    ETAHIST( UKMu2Eta,               "Second UK muon_{} #eta;Events" );
+    ETAHIST( UKMu3Eta,                "Third UK muon_{} #eta;Events" );
+    ETAHIST( UKMu2and3Eta, "Second and Third UK muon_{} #eta;Events" );
+    ETAHIST( fakeEl2Eta,               "Second fake electron_{} #eta;Events" );
+    ETAHIST( fakeEl3Eta,                "Third fake electron_{} #eta;Events" );
+    ETAHIST( fakeEl2and3Eta, "Second and Third fake electron_{} #eta;Events" );
+    ETAHIST( fakeMu2Eta,               "Second fake muon_{} #eta;Events" );
+    ETAHIST( fakeMu3Eta,                "Third fake muon_{} #eta;Events" );
+    ETAHIST( fakeMu2and3Eta, "Second and Third fake muon_{} #eta;Events" );
+
+    // baseline lep pt
+    NEWVARHIST( PRbaseEl2Pt,               "Second PR baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( PRbaseEl3Pt,                "Third PR baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( PRbaseEl2and3Pt, "Second and Third PR baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( CObaseEl2Pt,               "Second CO baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( CObaseEl3Pt,                "Third CO baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( CObaseEl2and3Pt, "Second and Third CO baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( HFbaseEl2Pt,               "Second HF baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( HFbaseEl3Pt,                "Third HF baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( HFbaseEl2and3Pt, "Second and Third HF baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( LFbaseEl2Pt,               "Second LF baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( LFbaseEl3Pt,                "Third LF baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( LFbaseEl2and3Pt, "Second and Third LF baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( UKbaseEl2Pt,               "Second UK baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( UKbaseEl3Pt,                "Third UK baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( UKbaseEl2and3Pt, "Second and Third UK baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( PRbaseMu2Pt,               "Second PR baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( PRbaseMu3Pt,                "Third PR baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( PRbaseMu2and3Pt, "Second and Third PR baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( CObaseMu2Pt,               "Second CO baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( CObaseMu3Pt,                "Third CO baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( CObaseMu2and3Pt, "Second and Third CO baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( HFbaseMu2Pt,               "Second HF baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( HFbaseMu3Pt,                "Third HF baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( HFbaseMu2and3Pt, "Second and Third HF baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( LFbaseMu2Pt,               "Second LF baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( LFbaseMu3Pt,                "Third LF baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( LFbaseMu2and3Pt, "Second and Third LF baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( UKbaseMu2Pt,               "Second UK baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( UKbaseMu3Pt,                "Third UK baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( UKbaseMu2and3Pt, "Second and Third UK baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( fakeBaseEl2Pt,               "Second fake baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( fakeBaseEl3Pt,                "Third fake baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( fakeBaseEl2and3Pt, "Second and Third fake baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( fakeBaseMu2Pt,               "Second fake baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( fakeBaseMu3Pt,                "Third fake baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( fakeBaseMu2and3Pt, "Second and Third fake baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
 
     NEWVARHIST( PRbaselep1Pt, "Leading PR base lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
     NEWVARHIST( PRbaselep2Pt,  "Second PR base lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
@@ -469,50 +675,43 @@ bool Plotter::BookHistograms()
     NEWVARHIST( HFbaselep2and3Pt, "Second and third HF base lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
     NEWVARHIST( LFbaselep2and3Pt, "Second and third LF base lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
     NEWVARHIST( UKbaselep2and3Pt, "Second and third UK base lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-
-    NEWVARHIST( PRlepPt, "PR lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( COlepPt, "CO lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( HFlepPt, "HF lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( LFlepPt, "LF lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( UKlepPt, "UK lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-
-    NEWVARHIST( PRbaselepPt, "PR base lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( CObaselepPt, "CO base lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( HFbaselepPt, "HF base lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( LFbaselepPt, "LF base lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( UKbaselepPt, "UK base lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-
-    // lep eta
-    ETAHIST( lep1Eta, "Leading lepton #eta;Events" );
-    ETAHIST( lep2Eta, "Second lepton #eta;Events" );
-    ETAHIST( lep3Eta, "Third lepton #eta;Events" );
-    ETAHIST( el1Eta, "Leading electron #eta;Events" );
-    ETAHIST( el2Eta, "Second electron #eta;Events" );
-    ETAHIST( el3Eta, "Third electron #eta;Events" );
-    ETAHIST( mu1Eta, "Leading muon #eta;Events" );
-    ETAHIST( mu2Eta, "Second muon #eta;Events" );
-    ETAHIST( mu3Eta, "Third muon #eta;Events" );
-    ETAHIST( PRlep1Eta, "Leading PR lepton #eta;Events" );
-    ETAHIST( PRlep2Eta,  "Second PR lepton #eta;Events" );
-    ETAHIST( PRlep3Eta,   "Third PR lepton #eta;Events" );
-    ETAHIST( COlep1Eta, "Leading CO lepton #eta;Events" );
-    ETAHIST( COlep2Eta,  "Second CO lepton #eta;Events" );
-    ETAHIST( COlep3Eta,   "Third CO lepton #eta;Events" );
-    ETAHIST( HFlep1Eta, "Leading HF lepton #eta;Events" );
-    ETAHIST( HFlep2Eta,  "Second HF lepton #eta;Events" );
-    ETAHIST( HFlep3Eta,   "Third HF lepton #eta;Events" );
-    ETAHIST( LFlep1Eta, "Leading LF lepton #eta;Events" );
-    ETAHIST( LFlep2Eta,  "Second LF lepton #eta;Events" );
-    ETAHIST( LFlep3Eta,   "Third LF lepton #eta;Events" );
-    ETAHIST( UKlep1Eta, "Leading UK lepton #eta;Events" );
-    ETAHIST( UKlep2Eta,  "Second UK lepton #eta;Events" );
-    ETAHIST( UKlep3Eta,   "Third UK lepton #eta;Events" );
-
-    ETAHIST( PRlep2and3Eta, "Second and third PR lepton #eta;Events" );
-    ETAHIST( COlep2and3Eta, "Second and third CO lepton #eta;Events" );
-    ETAHIST( HFlep2and3Eta, "Second and third HF lepton #eta;Events" );
-    ETAHIST( LFlep2and3Eta, "Second and third LF lepton #eta;Events" );
-    ETAHIST( UKlep2and3Eta, "Second and third UK lepton #eta;Events" );
+    // baseline lep eta
+    ETAHIST( PRbaseEl2Eta,               "Second PR baseline electron_{} #eta;Events" );
+    ETAHIST( PRbaseEl3Eta,                "Third PR baseline electron_{} #eta;Events" );
+    ETAHIST( PRbaseEl2and3Eta, "Second and Third PR baseline electron_{} #eta;Events" );
+    ETAHIST( CObaseEl2Eta,               "Second CO baseline electron_{} #eta;Events" );
+    ETAHIST( CObaseEl3Eta,                "Third CO baseline electron_{} #eta;Events" );
+    ETAHIST( CObaseEl2and3Eta, "Second and Third CO baseline electron_{} #eta;Events" );
+    ETAHIST( HFbaseEl2Eta,               "Second HF baseline electron_{} #eta;Events" );
+    ETAHIST( HFbaseEl3Eta,                "Third HF baseline electron_{} #eta;Events" );
+    ETAHIST( HFbaseEl2and3Eta, "Second and Third HF baseline electron_{} #eta;Events" );
+    ETAHIST( LFbaseEl2Eta,               "Second LF baseline electron_{} #eta;Events" );
+    ETAHIST( LFbaseEl3Eta,                "Third LF baseline electron_{} #eta;Events" );
+    ETAHIST( LFbaseEl2and3Eta, "Second and Third LF baseline electron_{} #eta;Events" );
+    ETAHIST( UKbaseEl2Eta,               "Second UK baseline electron_{} #eta;Events" );
+    ETAHIST( UKbaseEl3Eta,                "Third UK baseline electron_{} #eta;Events" );
+    ETAHIST( UKbaseEl2and3Eta, "Second and Third UK baseline electron_{} #eta;Events" );
+    ETAHIST( PRbaseMu2Eta,               "Second PR baseline muon_{} #eta;Events" );
+    ETAHIST( PRbaseMu3Eta,                "Third PR baseline muon_{} #eta;Events" );
+    ETAHIST( PRbaseMu2and3Eta, "Second and Third PR baseline muon_{} #eta;Events" );
+    ETAHIST( CObaseMu2Eta,               "Second CO baseline muon_{} #eta;Events" );
+    ETAHIST( CObaseMu3Eta,                "Third CO baseline muon_{} #eta;Events" );
+    ETAHIST( CObaseMu2and3Eta, "Second and Third CO baseline muon_{} #eta;Events" );
+    ETAHIST( HFbaseMu2Eta,               "Second HF baseline muon_{} #eta;Events" );
+    ETAHIST( HFbaseMu3Eta,                "Third HF baseline muon_{} #eta;Events" );
+    ETAHIST( HFbaseMu2and3Eta, "Second and Third HF baseline muon_{} #eta;Events" );
+    ETAHIST( LFbaseMu2Eta,               "Second LF baseline muon_{} #eta;Events" );
+    ETAHIST( LFbaseMu3Eta,                "Third LF baseline muon_{} #eta;Events" );
+    ETAHIST( LFbaseMu2and3Eta, "Second and Third LF baseline muon_{} #eta;Events" );
+    ETAHIST( UKbaseMu2Eta,               "Second UK baseline muon_{} #eta;Events" );
+    ETAHIST( UKbaseMu3Eta,                "Third UK baseline muon_{} #eta;Events" );
+    ETAHIST( UKbaseMu2and3Eta, "Second and Third UK baseline muon_{} #eta;Events" );
+    ETAHIST( fakeBaseEl2Eta,               "Second fake baseline electron_{} #eta;Events" );
+    ETAHIST( fakeBaseEl3Eta,                "Third fake baseline electron_{} #eta;Events" );
+    ETAHIST( fakeBaseEl2and3Eta, "Second and Third fake baseline electron_{} #eta;Events" );
+    ETAHIST( fakeBaseMu2Eta,               "Second fake baseline muon_{} #eta;Events" );
+    ETAHIST( fakeBaseMu3Eta,                "Third fake baseline muon_{} #eta;Events" );
+    ETAHIST( fakeBaseMu2and3Eta, "Second and Third fake baseline muon_{} #eta;Events" );
 
     ETAHIST( PRbaselep1Eta, "Leading PR base lepton #eta;Events" );
     ETAHIST( PRbaselep2Eta,  "Second PR base lepton #eta;Events" );
@@ -536,33 +735,22 @@ bool Plotter::BookHistograms()
     ETAHIST( LFbaselep2and3Eta, "Second and third LF base lepton #eta;Events" );
     ETAHIST( UKbaselep2and3Eta, "Second and third UK base lepton #eta;Events" );
 
-    ETAHIST( PRlepEta, "PR lepton #eta;Events" );
-    ETAHIST( COlepEta, "CO lepton #eta;Events" );
-    ETAHIST( HFlepEta, "HF lepton #eta;Events" );
-    ETAHIST( LFlepEta, "LF lepton #eta;Events" );
-    ETAHIST( UKlepEta, "UK lepton #eta;Events" );
 
-    ETAHIST( PRbaselepEta, "PR base lepton #eta;Events" );
-    ETAHIST( CObaselepEta, "CO base lepton #eta;Events" );
-    ETAHIST( HFbaselepEta, "HF base lepton #eta;Events" );
-    ETAHIST( LFbaselepEta, "LF base lepton #eta;Events" );
-    ETAHIST( UKbaselepEta, "UK base lepton #eta;Events" );
-
-    // baseline lep pt
-    NEWVARHIST( baselep1Pt, "Leading baseline lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
-    NEWVARHIST( baselep2Pt, "Second baseline lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( baselep3Pt, "Third baseline lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
-    NEWVARHIST( baseel1Pt, "Leading baseline electron_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
-    NEWVARHIST( baseel2Pt, "Second baseline electron_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( baseel3Pt, "Third baseline electron_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
-    NEWVARHIST( basemu1Pt, "Leading baseline muon_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
-    NEWVARHIST( basemu2Pt, "Second baseline muon_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( basemu3Pt, "Third baseline muon_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
-
-    // baseline lep eta
-    ETAHIST( baselep1Eta, "Leading baseline lepton #eta;Events" );
-    ETAHIST( baselep2Eta, "Second baseline lepton #eta;Events" );
-    ETAHIST( baselep3Eta, "Third baseline lepton #eta;Events" );
+    // signal/base lepton for real efficiency/fake rate
+    NEWHIST( sgnlfakelepClass,      "signal lepton classcation", 6, 0, 6 );
+    NEWHIST( basefakelepClass, "baseline lepton classification", 6, 0, 6 );
+    SETBINLABEL( sgnlfakelepClass, 1, "El+Mu Real" ); 
+    SETBINLABEL( sgnlfakelepClass, 2, "El+Mu Fake" ); 
+    SETBINLABEL( sgnlfakelepClass, 3,    "El Real" ); 
+    SETBINLABEL( sgnlfakelepClass, 4,    "El Fake" ); 
+    SETBINLABEL( sgnlfakelepClass, 5,    "Mu Real" ); 
+    SETBINLABEL( sgnlfakelepClass, 6,    "Mu Fake" ); 
+    SETBINLABEL( basefakelepClass, 1, "El+Mu Real" ); 
+    SETBINLABEL( basefakelepClass, 2, "El+Mu Fake" ); 
+    SETBINLABEL( basefakelepClass, 3,    "El Real" ); 
+    SETBINLABEL( basefakelepClass, 4,    "El Fake" ); 
+    SETBINLABEL( basefakelepClass, 5,    "Mu Real" ); 
+    SETBINLABEL( basefakelepClass, 6,    "Mu Fake" ); 
 
     // lepton system pt
     NEWVARHIST( llPt, "P_{T}(lep,lep) [GeV];Events", nLep1PtBins, lep1PtBins );
@@ -622,26 +810,38 @@ bool Plotter::BookHistograms()
     NEWHIST( lep1Class, "Leading lepton truth classification;Events", 5, 0, 5 );
     NEWHIST( lep2Class, "Second lepton truth classification;Events", 5, 0, 5 );
     NEWHIST( lep3Class, "Third lepton truth classification;Events", 5, 0, 5 );
+    NEWHIST( fakeEl2and3Class, "Second and third fake electron truth classification;Events", 5, 0, 5 );
+    NEWHIST( fakeMu2and3Class, "Second and third fake muon truth classification;Events", 5, 0, 5 );
     SETBINLABEL( lepClass, 1, "PR" ); 
     SETBINLABEL( lep1Class, 1, "PR" ); 
     SETBINLABEL( lep2Class, 1, "PR" );
     SETBINLABEL( lep3Class, 1, "PR" );
+    SETBINLABEL( fakeEl2and3Class, 1, "PR" );
+    SETBINLABEL( fakeMu2and3Class, 1, "PR" );
     SETBINLABEL( lepClass, 2, "CO" ); 
     SETBINLABEL( lep1Class, 2, "CO" ); 
     SETBINLABEL( lep2Class, 2, "CO" );
     SETBINLABEL( lep3Class, 2, "CO" );
+    SETBINLABEL( fakeEl2and3Class, 2, "CO" );
+    SETBINLABEL( fakeMu2and3Class, 2, "CO" );
     SETBINLABEL( lepClass, 3, "HF" ); 
     SETBINLABEL( lep1Class, 3, "HF" ); 
     SETBINLABEL( lep2Class, 3, "HF" );
     SETBINLABEL( lep3Class, 3, "HF" );
+    SETBINLABEL( fakeEl2and3Class, 3, "HF" );
+    SETBINLABEL( fakeMu2and3Class, 3, "HF" );
     SETBINLABEL( lepClass, 4, "LF" ); 
     SETBINLABEL( lep1Class, 4, "LF" ); 
     SETBINLABEL( lep2Class, 4, "LF" );
     SETBINLABEL( lep3Class, 4, "LF" );
+    SETBINLABEL( fakeEl2and3Class, 4, "LF" );
+    SETBINLABEL( fakeMu2and3Class, 4, "LF" );
     SETBINLABEL( lepClass, 5, "UK" ); 
     SETBINLABEL( lep1Class, 5, "UK" ); 
     SETBINLABEL( lep2Class, 5, "UK" );
     SETBINLABEL( lep3Class, 5, "UK" );
+    SETBINLABEL( fakeEl2and3Class, 5, "UK" );
+    SETBINLABEL( fakeMu2and3Class, 5, "UK" );
 
     NEWHIST( hasSS, "has SS light leptons;Events", 2, 0, 2 );
 
@@ -674,6 +874,18 @@ bool Plotter::BookHistograms()
     SETBINLABEL( baselep1Class, 5, "UK" ); 
     SETBINLABEL( baselep2Class, 5, "UK" );
     SETBINLABEL( baselep3Class, 5, "UK" );
+    NEWHIST( fakebaseEl2and3Class, "Second and third fake base electron truth classification;Events", 5, 0, 5 );
+    NEWHIST( fakebaseMu2and3Class, "Second and third fake base muon truth classification;Events", 5, 0, 5 );
+    SETBINLABEL( fakebaseEl2and3Class, 1, "PR" );
+    SETBINLABEL( fakebaseMu2and3Class, 1, "PR" );
+    SETBINLABEL( fakebaseEl2and3Class, 2, "CO" );
+    SETBINLABEL( fakebaseMu2and3Class, 2, "CO" );
+    SETBINLABEL( fakebaseEl2and3Class, 3, "HF" );
+    SETBINLABEL( fakebaseMu2and3Class, 3, "HF" );
+    SETBINLABEL( fakebaseEl2and3Class, 4, "LF" );
+    SETBINLABEL( fakebaseMu2and3Class, 4, "LF" );
+    SETBINLABEL( fakebaseEl2and3Class, 5, "UK" );
+    SETBINLABEL( fakebaseMu2and3Class, 5, "UK" );
 
     // tau kinematics
     NEWHIST( nTau, "Number of taus;Events", 6, -0.5, 5.5 );
@@ -791,6 +1003,10 @@ bool Plotter::BookHistograms()
     // Pileup hists
     NEWHIST( nVtx, "Number of good vertices;Events", 40, 0, 40 );
     NEWHIST( mu, "Avg interactions per bunch crossing;Events", 40, 0, 40 );
+
+    // To look into pdgId of parents
+    NEWHIST( elParentPdgId, "PDG ID of parents of electron;Events", 100, -50, 50);
+    NEWHIST( muParentPdgId, "PDG ID of parents of muon;Events",     100, -50, 50);
 
   }
 
@@ -982,22 +1198,6 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
     }
   }
 
-  //Fill base lepton Pt
-  FillChanHist( h_baselep1Pt, baseLep[0].Pt()/1000., w );
-  FillChanHist( h_baselep2Pt, baseLep[1].Pt()/1000., w );
-  FillChanHist( h_baselep3Pt, baseLep[2].Pt()/1000., w );
-  FillBaseElHist( 0, h_baseel1Pt, vec_baseElectron->at(baseLepIndex[0]).pt()/1000., w );
-  FillBaseMuHist( 0, h_basemu1Pt, vec_baseMuon    ->at(baseLepIndex[0]).pt()/1000., w );
-  FillBaseElHist( 1, h_baseel2Pt, vec_baseElectron->at(baseLepIndex[1]).pt()/1000., w );
-  FillBaseMuHist( 1, h_basemu2Pt, vec_baseMuon    ->at(baseLepIndex[1]).pt()/1000., w );
-  FillBaseElHist( 2, h_baseel3Pt, vec_baseElectron->at(baseLepIndex[2]).pt()/1000., w );
-  FillBaseMuHist( 2, h_basemu3Pt, vec_baseMuon    ->at(baseLepIndex[2]).pt()/1000., w );
-
-  // Fill base lepton Eta
-  FillChanHist( h_baselep1Eta, baseLep[0].Eta(), w );
-  FillChanHist( h_baselep2Eta, baseLep[1].Eta(), w );
-  FillChanHist( h_baselep3Eta, baseLep[2].Eta(), w );
-
   //Fill lepton system, sum Pt
   FillChanHist( h_llPt, (lep[0]+lep[1]).Pt()/1000., w );
   FillChanHist( h_sumLepPt, (lep[0].Pt()+lep[1].Pt()+lep[2].Pt())/1000., w );
@@ -1089,322 +1289,734 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
       if(lepIndex[id]==-1) continue;
       Int_t type   = -1;
       Int_t origin = -1;
+      Int_t pdgid  = 0;
       std::vector< xAOD::Electron >* vec_electron = EveSelec->is3SigLepSel() ? vec_signalElectron : vec_baseElectron;
       std::vector< xAOD::Muon >*     vec_muon     = EveSelec->is3SigLepSel() ? vec_signalMuon     : vec_baseMuon;
       if(lepFlavor[id]==0){
         type   = xAOD::EgammaHelpers::getParticleTruthType  (&(vec_electron->at(lepIndex[id])));
         origin = xAOD::EgammaHelpers::getParticleTruthOrigin(&(vec_electron->at(lepIndex[id])));
+        const xAOD::TruthParticle* etrue = xAOD::EgammaHelpers::getTruthParticle(&(vec_electron->at(lepIndex[id])));
+        if(etrue) pdgid = etrue->pdgId();
       }else{
         const xAOD::TrackParticle* trackParticle = (&(vec_muon->at(lepIndex[id])))->primaryTrackParticle();
         if(trackParticle){
           static SG::AuxElement::Accessor<int> acc_truthType  ("truthType"  );
           static SG::AuxElement::Accessor<int> acc_truthOrigin("truthOrigin");
+          static SG::AuxElement::Accessor<int> acc_truthPdgId ("PdgId"      );
           if(acc_truthType  .isAvailable(*trackParticle)) type   = acc_truthType  (*trackParticle);
           if(acc_truthOrigin.isAvailable(*trackParticle)) origin = acc_truthOrigin(*trackParticle);
+          if(acc_truthPdgId .isAvailable(*trackParticle)) pdgid  = acc_truthPdgId (*trackParticle);
         }
       }
       //For origin
       FillChanHist( h_lepOrigin, type, w);
-      if     (id==0) FillChanHist( h_lep1Origin, type, w);
-      else if(id==1) FillChanHist( h_lep2Origin, type, w);
-      else if(id==2) FillChanHist( h_lep3Origin, type, w);
+      if     (id==0) { FillChanHist( h_lep1Origin, type, w);
+      } else if(id==1) { 
+        FillChanHist( h_lep2Origin, type, w);
+      } else if(id==2) {
+        FillChanHist( h_lep3Origin, type, w);
+      }
       // Classification of Primary/Conversion/HeavyFlavor/LightFlavor/Unknown
       // Primary
-      if(origin==12 || origin==13 || origin==22){
+      if(isRealLepton(type, origin, pdgid)){
         FillChanHist( h_lepClass, 0., w);
         if       (id==0){ 
           FillChanHist( h_lep1Class, 0., w);
-          FillChanHist( h_PRlepPt,   leadLep[0].Pt()/1000., w );
-          FillChanHist( h_PRlep1Pt,  leadLep[0].Pt()/1000., w );
-          FillChanHist( h_PRlepEta,  leadLep[0].Eta(), w );
-          FillChanHist( h_PRlep1Eta, leadLep[0].Eta(), w );
         } else if(id==1){ 
           FillChanHist( h_lep2Class, 0., w);
-          FillChanHist( h_PRlepPt,       leadLep[1].Pt()/1000., w );
-          FillChanHist( h_PRlep2Pt,      leadLep[1].Pt()/1000., w );
-          FillChanHist( h_PRlep2and3Pt,  leadLep[1].Pt()/1000., w );
-          FillChanHist( h_PRlepEta,      leadLep[1].Eta(), w );
-          FillChanHist( h_PRlep2Eta,     leadLep[1].Eta(), w );
-          FillChanHist( h_PRlep2and3Eta, leadLep[1].Eta(), w );
         } else if(id==2){ 
           FillChanHist( h_lep3Class, 0., w);
-          FillChanHist( h_PRlepPt,       leadLep[2].Pt()/1000., w );
-          FillChanHist( h_PRlep3Pt,      leadLep[2].Pt()/1000., w );
-          FillChanHist( h_PRlep2and3Pt,  leadLep[2].Pt()/1000., w );
-          FillChanHist( h_PRlepEta,      leadLep[2].Eta(), w );
-          FillChanHist( h_PRlep3Eta,     leadLep[2].Eta(), w );
-          FillChanHist( h_PRlep2and3Eta, leadLep[2].Eta(), w );
         }
       }
       // Conversion
-      else if(origin==5){
+      else if(origin==5 || origin==6 || origin==7){
         FillChanHist( h_lepClass, 1., w);
         if       (id==0){ 
           FillChanHist( h_lep1Class, 1., w);
-          FillChanHist( h_COlepPt,   leadLep[0].Pt()/1000., w );
-          FillChanHist( h_COlep1Pt,  leadLep[0].Pt()/1000., w );
-          FillChanHist( h_COlepEta,  leadLep[0].Eta(), w );
-          FillChanHist( h_COlep1Eta, leadLep[0].Eta(), w );
         } else if(id==1){ 
           FillChanHist( h_lep2Class, 1., w);
-          FillChanHist( h_COlepPt,       leadLep[1].Pt()/1000., w );
-          FillChanHist( h_COlep2Pt,      leadLep[1].Pt()/1000., w );
-          FillChanHist( h_COlep2and3Pt,  leadLep[1].Pt()/1000., w );
-          FillChanHist( h_COlepEta,      leadLep[1].Eta(), w );
-          FillChanHist( h_COlep2Eta,     leadLep[1].Eta(), w );
-          FillChanHist( h_COlep2and3Eta, leadLep[1].Eta(), w );
         } else if(id==2){ 
           FillChanHist( h_lep3Class, 1., w);
-          FillChanHist( h_COlepPt,       leadLep[2].Pt()/1000., w );
-          FillChanHist( h_COlep3Pt,      leadLep[2].Pt()/1000., w );
-          FillChanHist( h_COlep2and3Pt,  leadLep[2].Pt()/1000., w );
-          FillChanHist( h_COlepEta,      leadLep[2].Eta(), w );
-          FillChanHist( h_COlep3Eta,     leadLep[2].Eta(), w );
-          FillChanHist( h_COlep2and3Eta, leadLep[2].Eta(), w );
         }
       }
       // Heavy Flavor
-      else if(origin==25 || origin==26 || origin==27 ||
+      else if(origin==25 || origin==26 || origin==27 || origin==28 ||
               origin==29 || origin==32 || origin==33 ){
         FillChanHist( h_lepClass, 2., w);
         if       (id==0){ 
           FillChanHist( h_lep1Class, 2., w);
-          FillChanHist( h_HFlepPt,   leadLep[0].Pt()/1000., w );
-          FillChanHist( h_HFlep1Pt,  leadLep[0].Pt()/1000., w );
-          FillChanHist( h_HFlepEta,  leadLep[0].Eta(), w );
-          FillChanHist( h_HFlep1Eta, leadLep[0].Eta(), w );
         } else if(id==1){ 
           FillChanHist( h_lep2Class, 2., w);
-          FillChanHist( h_HFlepPt,       leadLep[1].Pt()/1000., w );
-          FillChanHist( h_HFlep2Pt,      leadLep[1].Pt()/1000., w );
-          FillChanHist( h_HFlep2and3Pt,  leadLep[1].Pt()/1000., w );
-          FillChanHist( h_HFlepEta,      leadLep[1].Eta(), w );
-          FillChanHist( h_HFlep2Eta,     leadLep[1].Eta(), w );
-          FillChanHist( h_HFlep2and3Eta, leadLep[1].Eta(), w );
         } else if(id==2){ 
           FillChanHist( h_lep3Class, 2., w);
-          FillChanHist( h_HFlepPt,       leadLep[2].Pt()/1000., w );
-          FillChanHist( h_HFlep3Pt,      leadLep[2].Pt()/1000., w );
-          FillChanHist( h_HFlep2and3Pt,  leadLep[2].Pt()/1000., w );
-          FillChanHist( h_HFlepEta,      leadLep[2].Eta(), w );
-          FillChanHist( h_HFlep3Eta,     leadLep[2].Eta(), w );
-          FillChanHist( h_HFlep2and3Eta, leadLep[2].Eta(), w );
         }
       }
       // LightFlavor
-      else if(origin==23 || origin==24 || origin==30 ||
-              origin==31 || origin==34 || origin==35 || 
-              origin==41 || origin==45 ){
+      else if( !(type==0 && origin==0)) {
         FillChanHist( h_lepClass, 3., w);
         if       (id==0){ 
           FillChanHist( h_lep1Class, 3., w);
-          FillChanHist( h_LFlepPt,   leadLep[0].Pt()/1000., w );
-          FillChanHist( h_LFlep1Pt,  leadLep[0].Pt()/1000., w );
-          FillChanHist( h_LFlepEta,  leadLep[0].Eta(), w );
-          FillChanHist( h_LFlep1Eta, leadLep[0].Eta(), w );
         } else if(id==1){ 
           FillChanHist( h_lep2Class, 3., w);
-          FillChanHist( h_LFlepPt,       leadLep[1].Pt()/1000., w );
-          FillChanHist( h_LFlep2Pt,      leadLep[1].Pt()/1000., w );
-          FillChanHist( h_LFlep2and3Pt,  leadLep[1].Pt()/1000., w );
-          FillChanHist( h_LFlepEta,      leadLep[1].Eta(), w );
-          FillChanHist( h_LFlep2Eta,     leadLep[1].Eta(), w );
-          FillChanHist( h_LFlep2and3Eta, leadLep[1].Eta(), w );
         } else if(id==2){ 
           FillChanHist( h_lep3Class, 3., w);
-          FillChanHist( h_LFlepPt,       leadLep[2].Pt()/1000., w );
-          FillChanHist( h_LFlep3Pt,      leadLep[2].Pt()/1000., w );
-          FillChanHist( h_LFlep2and3Pt,  leadLep[2].Pt()/1000., w );
-          FillChanHist( h_LFlepEta,      leadLep[2].Eta(), w );
-          FillChanHist( h_LFlep3Eta,     leadLep[2].Eta(), w );
-          FillChanHist( h_LFlep2and3Eta, leadLep[2].Eta(), w );
         }
       // Unknown
       }else{
         FillChanHist( h_lepClass, 4., w);
         if       (id==0){ 
           FillChanHist( h_lep1Class, 4., w);
-          FillChanHist( h_UKlepPt,   leadLep[0].Pt()/1000., w );
-          FillChanHist( h_UKlep1Pt,  leadLep[0].Pt()/1000., w );
-          FillChanHist( h_UKlepEta,  leadLep[0].Eta(), w );
-          FillChanHist( h_UKlep1Eta, leadLep[0].Eta(), w );
         } else if(id==1){ 
           FillChanHist( h_lep2Class, 4., w);
-          FillChanHist( h_UKlepPt,       leadLep[1].Pt()/1000., w );
-          FillChanHist( h_UKlep2Pt,      leadLep[1].Pt()/1000., w );
-          FillChanHist( h_UKlep2and3Pt,  leadLep[1].Pt()/1000., w );
-          FillChanHist( h_UKlepEta,      leadLep[1].Eta(), w );
-          FillChanHist( h_UKlep2Eta,     leadLep[1].Eta(), w );
-          FillChanHist( h_UKlep2and3Eta, leadLep[1].Eta(), w );
         } else if(id==2){ 
           FillChanHist( h_lep3Class, 4., w);
-          FillChanHist( h_UKlepPt,       leadLep[2].Pt()/1000., w );
-          FillChanHist( h_UKlep3Pt,      leadLep[2].Pt()/1000., w );
-          FillChanHist( h_UKlep2and3Pt,  leadLep[2].Pt()/1000., w );
-          FillChanHist( h_UKlepEta,      leadLep[2].Eta(), w );
-          FillChanHist( h_UKlep3Eta,     leadLep[2].Eta(), w );
-          FillChanHist( h_UKlep2and3Eta, leadLep[2].Eta(), w );
         }
       }
     } // for loop (lead lepton)
-    //Fill base lepton truth information
+
+    // Fill base lepton truth information
     for(Int_t id=0; id<3; id++){
       if(baseLepIndex[id]==-1) continue;
       Int_t type   = -1;
       Int_t origin = -1;
+      Int_t pdgid  = 0;
+      Int_t pdgid_parent = 0;
       if(baseLepFlavor[id]==0){
         type   = xAOD::EgammaHelpers::getParticleTruthType  (&(vec_baseElectron->at(baseLepIndex[id])));
         origin = xAOD::EgammaHelpers::getParticleTruthOrigin(&(vec_baseElectron->at(baseLepIndex[id])));
+        const xAOD::TruthParticle* etrue = xAOD::EgammaHelpers::getTruthParticle(&(vec_baseElectron->at(baseLepIndex[id])));
+        if(etrue) pdgid = etrue->pdgId();
+        if(etrue){
+          const xAOD::TruthParticle* etrue_parent = etrue->parent();
+          if (etrue_parent!=0){
+            pdgid_parent = etrue_parent->pdgId();
+          }
+          FillChanHist( h_elParentPdgId, pdgid_parent, w);
+        }
       }else{
         const xAOD::TrackParticle* trackParticle = (&(vec_baseMuon->at(baseLepIndex[id])))->primaryTrackParticle();
         if(trackParticle){
           static SG::AuxElement::Accessor<int> acc_truthType  ("truthType"  );
           static SG::AuxElement::Accessor<int> acc_truthOrigin("truthOrigin");
+          static SG::AuxElement::Accessor<int> acc_truthPdgId ("PdgId"      );
+          // static SG::AuxElement::Accessor< ElementLink< xAOD::TruthParticleContainer > > acc_truthParticle( "truthParticleLink" );
           if(acc_truthType  .isAvailable(*trackParticle)) type   = acc_truthType  (*trackParticle);
           if(acc_truthOrigin.isAvailable(*trackParticle)) origin = acc_truthOrigin(*trackParticle);
+          if(acc_truthPdgId .isAvailable(*trackParticle)) pdgid  = acc_truthPdgId (*trackParticle);
+          // if(acc_truthParticle.isAvailable(*trackParticle)) {
+          if(trackParticle->isAvailable< ElementLink<xAOD::TruthParticleContainer> >("truthParticleLink")) {
+            // try {
+            const xAOD::TruthParticle* mtrue = *trackParticle->auxdata< ElementLink<xAOD::TruthParticleContainer> >("truthParticleLink");
+            if(mtrue!=0){
+              const xAOD::TruthParticle* mtrue_parent = mtrue->parent();
+              if(mtrue_parent!=0){
+                pdgid_parent = mtrue_parent->pdgId();
+              }
+              FillChanHist( h_muParentPdgId, pdgid_parent, w);
+            }
+            FillChanHist( h_muParentPdgId, -1, w); // debug
+            // } catch (...) {}
+          }
+          FillChanHist( h_muParentPdgId, -2, w); // debug
         }
       }
       //For origin
       FillChanHist( h_baselepOrigin, type, w);
-      if     (id==0) FillChanHist( h_baselep1Origin, type, w);
-      else if(id==1) FillChanHist( h_baselep2Origin, type, w);
-      else if(id==2) FillChanHist( h_baselep3Origin, type, w);
+      if     (id==0) {
+        FillChanHist( h_baselep1Origin, type, w);
+      } else if(id==1) {
+        FillChanHist( h_baselep2Origin, type, w);
+        // FillBaseElHist( h_fakebaseEl2and3Origin, type, w);
+        // FillBaseMuHist( h_fakebaseMu2and3Origin, type, w);
+      } else if(id==2) {
+        FillChanHist( h_baselep3Origin, type, w);
+        // FillBaseElHist( h_fakebaseEl2and3Origin, type, w);
+        // FillBaseMuHist( h_fakebaseMu2and3Origin, type, w);
+      }
       // Classification of Primary/Conversion/HeavyFlavor/LightFlavor/Unknown
       // Primary
-      if(origin==12 || origin==13 || origin==22){
+      if(isRealLepton(type,origin,pdgid)){
         FillChanHist( h_baselepClass, 0., w);
         if       (id==0) {
           FillChanHist( h_baselep1Class, 0., w);
-          FillChanHist( h_PRbaselepPt,   baseLep[0].Pt()/1000., w );
           FillChanHist( h_PRbaselep1Pt,  baseLep[0].Pt()/1000., w );
-          FillChanHist( h_PRbaselepEta,  baseLep[0].Eta()     , w );
           FillChanHist( h_PRbaselep1Eta, baseLep[0].Eta()     , w );
         } else if(id==1) {
           FillChanHist( h_baselep2Class, 0., w);
-          FillChanHist( h_PRbaselepPt,   baseLep[1].Pt()/1000., w );
           FillChanHist( h_PRbaselep2Pt,  baseLep[1].Pt()/1000., w );
-          FillChanHist( h_PRbaselepEta,  baseLep[1].Eta()     , w );
           FillChanHist( h_PRbaselep2Eta, baseLep[1].Eta()     , w );
           FillChanHist( h_PRbaselep2and3Pt,  baseLep[1].Pt()/1000., w );
           FillChanHist( h_PRbaselep2and3Eta, baseLep[1].Eta(),w );
+          FillBaseElHist( id, h_basefakelepClass,     0., w);
+          FillBaseElHist( id, h_basefakelepClass,     2., w);
+          FillBaseElHist( id, h_fakebaseEl2and3Class, 0., w);
+          FillBaseMuHist( id, h_basefakelepClass,     0., w);
+          FillBaseMuHist( id, h_basefakelepClass,     4., w);
+          FillBaseMuHist( id, h_fakebaseMu2and3Class, 0., w);
+          FillBaseElHist( id, h_PRbaseEl2Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_PRbaseEl2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_PRbaseEl2Eta,     baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_PRbaseEl2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_PRbaseMu2Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_PRbaseMu2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_PRbaseMu2Eta,     baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_PRbaseMu2and3Eta, baseLep[id].Eta(),      w );
+          // To estimate fake rate, looking into whether the base lepton passes tight criteria or not
+          if(baseLepFlavor[id]==0){
+            if(EveSelec->IsMySignalElectron(vec_baseElectron->at(baseLepIndex[id]))){
+              FillBaseElHist( id, h_sgnlfakelepClass, 0., w );
+              FillBaseElHist( id, h_sgnlfakelepClass, 2., w );
+              FillBaseElHist( id, h_fakeEl2and3Class, 0., w );
+              FillBaseElHist( id, h_PREl2Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_PREl2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_PREl2Eta,     baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_PREl2and3Eta, baseLep[id].Eta(),      w );
+            }
+          } else {
+            if(EveSelec->IsMySignalMuon(vec_baseMuon->at(baseLepIndex[id]))){
+              FillBaseMuHist( id, h_sgnlfakelepClass, 0., w);
+              FillBaseMuHist( id, h_sgnlfakelepClass, 4., w);
+              FillBaseMuHist( id, h_fakeMu2and3Class, 0., w);
+              FillBaseMuHist( id, h_PRMu2Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_PRMu2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_PRMu2Eta,     baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_PRMu2and3Eta, baseLep[id].Eta(),      w );
+            }
+          }
         } else if(id==2) {
           FillChanHist( h_baselep3Class, 0., w);
-          FillChanHist( h_PRbaselepPt,   baseLep[2].Pt()/1000., w );
           FillChanHist( h_PRbaselep3Pt,  baseLep[2].Pt()/1000., w );
-          FillChanHist( h_PRbaselepEta,  baseLep[2].Eta()     , w );
           FillChanHist( h_PRbaselep3Eta, baseLep[2].Eta()     , w );
           FillChanHist( h_PRbaselep2and3Pt,  baseLep[2].Pt()/1000., w );
           FillChanHist( h_PRbaselep2and3Eta, baseLep[2].Eta()     , w );
+          FillBaseElHist( id, h_basefakelepClass,     0., w);
+          FillBaseElHist( id, h_basefakelepClass,     2., w);
+          FillBaseElHist( id, h_fakebaseEl2and3Class, 0., w);
+          FillBaseMuHist( id, h_basefakelepClass,     0., w);
+          FillBaseMuHist( id, h_basefakelepClass,     4., w);
+          FillBaseMuHist( id, h_fakebaseMu2and3Class, 0., w);
+          FillBaseElHist( id, h_PRbaseEl3Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_PRbaseEl2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_PRbaseEl3Eta,     baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_PRbaseEl2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_PRbaseMu3Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_PRbaseMu2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_PRbaseMu3Eta,     baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_PRbaseMu2and3Eta, baseLep[id].Eta(),      w );
+          // To estimate fake rate, looking into whether the base lepton passes tight criteria or not
+          if(baseLepFlavor[id]==0){
+            if(EveSelec->IsMySignalElectron(vec_baseElectron->at(baseLepIndex[id]))){
+              FillBaseElHist( id, h_sgnlfakelepClass, 0., w );
+              FillBaseElHist( id, h_sgnlfakelepClass, 2., w );
+              FillBaseElHist( id, h_fakeEl2and3Class, 0., w );
+              FillBaseElHist( id, h_PREl3Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_PREl2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_PREl3Eta,     baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_PREl2and3Eta, baseLep[id].Eta(),      w );
+            }
+          } else {
+            if(EveSelec->IsMySignalMuon(vec_baseMuon->at(baseLepIndex[id]))){
+              FillBaseMuHist( id, h_sgnlfakelepClass, 0., w );
+              FillBaseMuHist( id, h_sgnlfakelepClass, 4., w );
+              FillBaseMuHist( id, h_fakeMu2and3Class, 0., w );
+              FillBaseMuHist( id, h_PRMu3Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_PRMu2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_PRMu3Eta,     baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_PRMu2and3Eta, baseLep[id].Eta(),      w );
+            }
+          }
         }
       }
       // Conversion
-      else if(origin==5){
-        FillChanHist( h_baselepClass, 1., w);
+      else if(origin==5 || origin==6 || origin==7){
+        FillChanHist( h_baselepClass, 1., w );
         if       (id==0) {
-          FillChanHist( h_baselep1Class, 1., w);
-          FillChanHist( h_CObaselepPt,   baseLep[0].Pt()/1000., w );
+          FillChanHist( h_baselep1Class, 1., w );
           FillChanHist( h_CObaselep1Pt,  baseLep[0].Pt()/1000., w );
-          FillChanHist( h_CObaselepEta,  baseLep[0].Eta()     , w );
           FillChanHist( h_CObaselep1Eta, baseLep[0].Eta()     , w );
         } else if(id==1) {
-          FillChanHist( h_baselep2Class, 1., w);
-          FillChanHist( h_CObaselepPt,   baseLep[1].Pt()/1000., w );
+          FillChanHist( h_baselep2Class, 1., w );
           FillChanHist( h_CObaselep2Pt,  baseLep[1].Pt()/1000., w );
-          FillChanHist( h_CObaselepEta,  baseLep[1].Eta()     , w );
           FillChanHist( h_CObaselep2Eta, baseLep[1].Eta()     , w );
           FillChanHist( h_CObaselep2and3Pt,  baseLep[1].Pt()/1000., w );
           FillChanHist( h_CObaselep2and3Eta, baseLep[1].Eta()     , w );
+          FillBaseElHist( id, h_basefakelepClass,     1., w );
+          FillBaseElHist( id, h_basefakelepClass,     3., w );
+          FillBaseElHist( id, h_fakebaseEl2and3Class, 1., w );
+          FillBaseMuHist( id, h_basefakelepClass,     1., w );
+          FillBaseMuHist( id, h_basefakelepClass,     5., w );
+          FillBaseMuHist( id, h_fakebaseMu2and3Class, 1., w );
+          FillBaseElHist( id, h_CObaseEl2Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_CObaseEl2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_CObaseEl2Eta,     baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_CObaseEl2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_CObaseMu2Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_CObaseMu2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_CObaseMu2Eta,     baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_CObaseMu2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_fakeBaseEl2Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_fakeBaseEl2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_fakeBaseEl2Eta,     baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_fakeBaseEl2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_fakeBaseMu2Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_fakeBaseMu2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_fakeBaseMu2Eta,     baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_fakeBaseMu2and3Eta, baseLep[id].Eta(),      w );
+          if(baseLepFlavor[id]==0){
+            if(EveSelec->IsMySignalElectron(vec_baseElectron->at(baseLepIndex[id]))){
+              FillBaseElHist( id, h_sgnlfakelepClass, 1., w );
+              FillBaseElHist( id, h_sgnlfakelepClass, 3., w );
+              FillBaseElHist( id, h_fakeEl2and3Class, 1., w );
+              FillBaseElHist( id, h_COEl2Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_COEl2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_COEl2Eta,     baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_COEl2and3Eta, baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_fakeEl2Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_fakeEl2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_fakeEl2Eta,     baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_fakeEl2and3Eta, baseLep[id].Eta(),      w );
+            }
+          } else {
+            if(EveSelec->IsMySignalMuon(vec_baseMuon->at(baseLepIndex[id]))){
+              FillBaseMuHist( id, h_sgnlfakelepClass, 1., w );
+              FillBaseMuHist( id, h_sgnlfakelepClass, 5., w );
+              FillBaseMuHist( id, h_fakeMu2and3Class, 1., w );
+              FillBaseMuHist( id, h_COMu2Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_COMu2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_COMu2Eta,     baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_COMu2and3Eta, baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_fakeMu2Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_fakeMu2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_fakeMu2Eta,     baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_fakeMu2and3Eta, baseLep[id].Eta(),      w );
+            }
+          }
         } else if(id==2) {
-          FillChanHist( h_baselep3Class, 1., w);
-          FillChanHist( h_CObaselepPt,   baseLep[2].Pt()/1000., w );
+          FillChanHist( h_baselep3Class, 1., w );
           FillChanHist( h_CObaselep3Pt,  baseLep[2].Pt()/1000., w );
-          FillChanHist( h_CObaselepEta,  baseLep[2].Eta()     , w );
           FillChanHist( h_CObaselep3Eta, baseLep[2].Eta()     , w );
           FillChanHist( h_CObaselep2and3Pt,  baseLep[2].Pt()/1000., w );
           FillChanHist( h_CObaselep2and3Eta, baseLep[2].Eta()     , w );
+          FillBaseElHist( id, h_basefakelepClass,     1., w );
+          FillBaseElHist( id, h_basefakelepClass,     3., w );
+          FillBaseElHist( id, h_fakebaseEl2and3Class, 1., w );
+          FillBaseMuHist( id, h_basefakelepClass,     1., w );
+          FillBaseMuHist( id, h_basefakelepClass,     5., w );
+          FillBaseMuHist( id, h_fakebaseMu2and3Class, 1., w );
+          FillBaseElHist( id, h_CObaseEl3Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_CObaseEl2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_CObaseEl3Eta,     baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_CObaseEl2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_CObaseMu3Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_CObaseMu2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_CObaseMu3Eta,     baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_CObaseMu2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_fakeBaseEl3Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_fakeBaseEl2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_fakeBaseEl3Eta,     baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_fakeBaseEl2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_fakeBaseMu3Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_fakeBaseMu2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_fakeBaseMu3Eta,     baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_fakeBaseMu2and3Eta, baseLep[id].Eta(),      w );
+          if(baseLepFlavor[id]==0){
+            if(EveSelec->IsMySignalElectron(vec_baseElectron->at(baseLepIndex[id]))){
+              FillBaseElHist( id, h_sgnlfakelepClass, 1., w );
+              FillBaseElHist( id, h_sgnlfakelepClass, 3., w );
+              FillBaseElHist( id, h_fakeEl2and3Class, 1., w );
+              FillBaseElHist( id, h_COEl3Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_COEl2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_COEl3Eta,     baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_COEl2and3Eta, baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_fakeEl3Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_fakeEl2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_fakeEl3Eta,     baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_fakeEl2and3Eta, baseLep[id].Eta(),      w );
+            }
+          } else {
+            if(EveSelec->IsMySignalMuon(vec_baseMuon->at(baseLepIndex[id]))){
+              FillBaseMuHist( id, h_sgnlfakelepClass, 1., w );
+              FillBaseMuHist( id, h_sgnlfakelepClass, 5., w );
+              FillBaseMuHist( id, h_fakeMu2and3Class, 1., w );
+              FillBaseMuHist( id, h_COMu3Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_COMu2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_COMu3Eta,     baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_COMu2and3Eta, baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_fakeMu3Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_fakeMu2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_fakeMu3Eta,     baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_fakeMu2and3Eta, baseLep[id].Eta(),      w );
+            }
+          }
         }
       }
       // Heavy Flavor
-      else if(origin==25 || origin==26 || origin==27 ||
+      else if(origin==25 || origin==26 || origin==27 || origin==28 ||
               origin==29 || origin==32 || origin==33 ){
         FillChanHist( h_baselepClass, 2., w);
         if     (id==0)   { 
           FillChanHist( h_baselep1Class, 2., w);
-          FillChanHist( h_HFbaselepPt,   baseLep[0].Pt()/1000., w );
           FillChanHist( h_HFbaselep1Pt,  baseLep[0].Pt()/1000., w );
-          FillChanHist( h_HFbaselepEta,  baseLep[0].Eta()     , w );
           FillChanHist( h_HFbaselep1Eta, baseLep[0].Eta()     , w );
         } else if(id==1) {
           FillChanHist( h_baselep2Class, 2., w);
-          FillChanHist( h_HFbaselepPt,   baseLep[1].Pt()/1000., w );
           FillChanHist( h_HFbaselep2Pt,  baseLep[1].Pt()/1000., w );
-          FillChanHist( h_HFbaselepEta,  baseLep[1].Eta()     , w );
           FillChanHist( h_HFbaselep2Eta, baseLep[1].Eta()     , w );
           FillChanHist( h_HFbaselep2and3Pt,  baseLep[1].Pt()/1000., w );
           FillChanHist( h_HFbaselep2and3Eta, baseLep[1].Eta()     , w );
+          FillBaseElHist( id, h_basefakelepClass,     1., w);
+          FillBaseElHist( id, h_basefakelepClass,     3., w);
+          FillBaseElHist( id, h_fakebaseEl2and3Class, 2., w);
+          FillBaseMuHist( id, h_basefakelepClass,     1., w);
+          FillBaseMuHist( id, h_basefakelepClass,     5., w);
+          FillBaseMuHist( id, h_fakebaseMu2and3Class, 2., w);
+          FillBaseElHist( id, h_HFbaseEl2Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_HFbaseEl2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_HFbaseEl2Eta,     baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_HFbaseEl2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_HFbaseMu2Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_HFbaseMu2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_HFbaseMu2Eta,     baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_HFbaseMu2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_fakeBaseEl2Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_fakeBaseEl2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_fakeBaseEl2Eta,     baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_fakeBaseEl2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_fakeBaseMu2Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_fakeBaseMu2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_fakeBaseMu2Eta,     baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_fakeBaseMu2and3Eta, baseLep[id].Eta(),      w );
+          if(baseLepFlavor[id]==0){
+            if(EveSelec->IsMySignalElectron(vec_baseElectron->at(baseLepIndex[id]))){
+              FillBaseElHist( id, h_sgnlfakelepClass, 1., w );
+              FillBaseElHist( id, h_sgnlfakelepClass, 3., w );
+              FillBaseElHist( id, h_fakeEl2and3Class, 2., w );
+              FillBaseElHist( id, h_HFEl2Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_HFEl2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_HFEl2Eta,     baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_HFEl2and3Eta, baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_fakeEl2Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_fakeEl2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_fakeEl2Eta,     baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_fakeEl2and3Eta, baseLep[id].Eta(),      w );
+            }
+          } else {
+            if(EveSelec->IsMySignalMuon(vec_baseMuon->at(baseLepIndex[id]))){
+              FillBaseMuHist( id, h_sgnlfakelepClass, 1., w );
+              FillBaseMuHist( id, h_sgnlfakelepClass, 5., w );
+              FillBaseMuHist( id, h_fakeMu2and3Class, 2., w );
+              FillBaseMuHist( id, h_HFMu2Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_HFMu2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_HFMu2Eta,     baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_HFMu2and3Eta, baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_fakeMu2Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_fakeMu2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_fakeMu2Eta,     baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_fakeMu2and3Eta, baseLep[id].Eta(),      w );
+            }
+          }
         } else if(id==2) {
           FillChanHist( h_baselep3Class, 2., w);
-          FillChanHist( h_HFbaselepPt,   baseLep[2].Pt()/1000., w );
           FillChanHist( h_HFbaselep3Pt,  baseLep[2].Pt()/1000., w );
-          FillChanHist( h_HFbaselepEta,  baseLep[2].Eta()     , w );
           FillChanHist( h_HFbaselep3Eta, baseLep[2].Eta()     , w );
           FillChanHist( h_HFbaselep2and3Pt,  baseLep[2].Pt()/1000., w );
           FillChanHist( h_HFbaselep2and3Eta, baseLep[2].Eta()     , w );
+          FillBaseElHist( id, h_basefakelepClass,     1., w);
+          FillBaseElHist( id, h_basefakelepClass,     3., w);
+          FillBaseElHist( id, h_fakebaseEl2and3Class, 2., w);
+          FillBaseMuHist( id, h_basefakelepClass,     1., w);
+          FillBaseMuHist( id, h_basefakelepClass,     5., w);
+          FillBaseMuHist( id, h_fakebaseMu2and3Class, 2., w);
+          FillBaseElHist( id, h_HFbaseEl3Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_HFbaseEl2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_HFbaseEl3Eta,     baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_HFbaseEl2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_HFbaseMu3Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_HFbaseMu2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_HFbaseMu3Eta,     baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_HFbaseMu2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_fakeBaseEl3Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_fakeBaseEl2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_fakeBaseEl3Eta,     baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_fakeBaseEl2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_fakeBaseMu3Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_fakeBaseMu2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_fakeBaseMu3Eta,     baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_fakeBaseMu2and3Eta, baseLep[id].Eta(),      w );
+          if(baseLepFlavor[id]==0){
+            if(EveSelec->IsMySignalElectron(vec_baseElectron->at(baseLepIndex[id]))){
+              FillBaseElHist( id, h_sgnlfakelepClass, 1., w );
+              FillBaseElHist( id, h_sgnlfakelepClass, 3., w );
+              FillBaseElHist( id, h_fakeEl2and3Class, 2., w );
+              FillBaseElHist( id, h_HFEl3Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_HFEl2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_HFEl3Eta,     baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_HFEl2and3Eta, baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_fakeEl3Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_fakeEl2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_fakeEl3Eta,     baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_fakeEl2and3Eta, baseLep[id].Eta(),      w );
+            }
+          } else {
+            if(EveSelec->IsMySignalMuon(vec_baseMuon->at(baseLepIndex[id]))){
+              FillBaseMuHist( id, h_sgnlfakelepClass, 1., w );
+              FillBaseMuHist( id, h_sgnlfakelepClass, 5., w );
+              FillBaseMuHist( id, h_fakeMu2and3Class, 2., w );
+              FillBaseMuHist( id, h_HFMu3Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_HFMu2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_HFMu3Eta,     baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_HFMu2and3Eta, baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_fakeMu3Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_fakeMu2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_fakeMu3Eta,     baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_fakeMu2and3Eta, baseLep[id].Eta(),      w );
+            }
+          }
         }
       }
       // Light Flavor
-      else if(origin==23 || origin==24 || origin==30 ||
-              origin==31 || origin==34 || origin==35 || 
-              origin==41 || origin==45 ){
+      else if( !(type==0 && origin==0)) {
         FillChanHist( h_baselepClass, 3., w);
         if     (id==0)   { 
           FillChanHist( h_baselep1Class, 3., w);
-          FillChanHist( h_LFbaselepPt,   baseLep[0].Pt()/1000., w );
           FillChanHist( h_LFbaselep1Pt,  baseLep[0].Pt()/1000., w );
-          FillChanHist( h_LFbaselepEta,  baseLep[0].Eta()     , w );
           FillChanHist( h_LFbaselep1Eta, baseLep[0].Eta()     , w );
         } else if(id==1) {
           FillChanHist( h_baselep2Class, 3., w);
-          FillChanHist( h_LFbaselepPt,   baseLep[1].Pt()/1000., w );
           FillChanHist( h_LFbaselep2Pt,  baseLep[1].Pt()/1000., w );
-          FillChanHist( h_LFbaselepEta,  baseLep[1].Eta()     , w );
           FillChanHist( h_LFbaselep2Eta, baseLep[1].Eta()     , w );
           FillChanHist( h_LFbaselep2and3Pt,  baseLep[1].Pt()/1000., w );
           FillChanHist( h_LFbaselep2and3Eta, baseLep[1].Eta()     , w );
+          FillBaseElHist( id, h_basefakelepClass,     1., w );
+          FillBaseElHist( id, h_basefakelepClass,     3., w );
+          FillBaseElHist( id, h_fakebaseEl2and3Class, 3., w );
+          FillBaseMuHist( id, h_basefakelepClass,     1., w );
+          FillBaseMuHist( id, h_basefakelepClass,     5., w );
+          FillBaseMuHist( id, h_fakebaseMu2and3Class, 3., w );
+          FillBaseElHist( id, h_LFbaseEl2Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_LFbaseEl2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_LFbaseEl2Eta,     baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_LFbaseEl2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_LFbaseMu2Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_LFbaseMu2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_LFbaseMu2Eta,     baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_LFbaseMu2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_fakeBaseEl2Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_fakeBaseEl2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_fakeBaseEl2Eta,     baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_fakeBaseEl2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_fakeBaseMu2Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_fakeBaseMu2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_fakeBaseMu2Eta,     baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_fakeBaseMu2and3Eta, baseLep[id].Eta(),      w );
+          if(baseLepFlavor[id]==0){
+            if(EveSelec->IsMySignalElectron(vec_baseElectron->at(baseLepIndex[id]))){
+              FillBaseElHist( id, h_sgnlfakelepClass, 1., w );
+              FillBaseElHist( id, h_sgnlfakelepClass, 3., w );
+              FillBaseElHist( id, h_fakeEl2and3Class, 3., w );
+              FillBaseElHist( id, h_LFEl2Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_LFEl2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_LFEl2Eta,     baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_LFEl2and3Eta, baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_fakeEl2Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_fakeEl2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_fakeEl2Eta,     baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_fakeEl2and3Eta, baseLep[id].Eta(),      w );
+            }
+          } else {
+            if(EveSelec->IsMySignalMuon(vec_baseMuon->at(baseLepIndex[id]))){
+              FillBaseMuHist( id, h_sgnlfakelepClass, 1., w );
+              FillBaseMuHist( id, h_sgnlfakelepClass, 5., w );
+              FillBaseMuHist( id, h_fakeMu2and3Class, 3., w );
+              FillBaseMuHist( id, h_LFMu2Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_LFMu2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_LFMu2Eta,     baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_LFMu2and3Eta, baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_fakeMu2Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_fakeMu2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_fakeMu2Eta,     baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_fakeMu2and3Eta, baseLep[id].Eta(),      w );
+            }
+          }
         } else if(id==2) {
           FillChanHist( h_baselep3Class, 3., w);
-          FillChanHist( h_LFbaselepPt,   baseLep[2].Pt()/1000., w );
           FillChanHist( h_LFbaselep3Pt,  baseLep[2].Pt()/1000., w );
-          FillChanHist( h_LFbaselepEta,  baseLep[2].Eta()     , w );
           FillChanHist( h_LFbaselep3Eta, baseLep[2].Eta()     , w );
           FillChanHist( h_LFbaselep2and3Pt,  baseLep[2].Pt()/1000., w );
           FillChanHist( h_LFbaselep2and3Eta, baseLep[2].Eta()     , w );
+          FillBaseElHist( id, h_basefakelepClass,     1., w );
+          FillBaseElHist( id, h_basefakelepClass,     3., w );
+          FillBaseElHist( id, h_fakebaseEl2and3Class, 3., w );
+          FillBaseMuHist( id, h_basefakelepClass,     1., w );
+          FillBaseMuHist( id, h_basefakelepClass,     5., w );
+          FillBaseMuHist( id, h_fakebaseMu2and3Class, 3., w );
+          FillBaseElHist( id, h_LFbaseEl3Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_LFbaseEl2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_LFbaseEl3Eta,     baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_LFbaseEl2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_LFbaseMu3Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_LFbaseMu2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_LFbaseMu3Eta,     baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_LFbaseMu2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_fakeBaseEl3Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_fakeBaseEl2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_fakeBaseEl3Eta,     baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_fakeBaseEl2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_fakeBaseMu3Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_fakeBaseMu2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_fakeBaseMu3Eta,     baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_fakeBaseMu2and3Eta, baseLep[id].Eta(),      w );
+          if(baseLepFlavor[id]==0){
+            if(EveSelec->IsMySignalElectron(vec_baseElectron->at(baseLepIndex[id]))){
+              FillBaseElHist( id, h_sgnlfakelepClass, 1., w );
+              FillBaseElHist( id, h_sgnlfakelepClass, 3., w );
+              FillBaseElHist( id, h_fakeEl2and3Class, 3., w );
+              FillBaseElHist( id, h_LFEl3Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_LFEl2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_LFEl3Eta,     baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_LFEl2and3Eta, baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_fakeEl3Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_fakeEl2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_fakeEl3Eta,     baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_fakeEl2and3Eta, baseLep[id].Eta(),      w );
+            }
+          } else {
+            if(EveSelec->IsMySignalMuon(vec_baseMuon->at(baseLepIndex[id]))){
+              FillBaseMuHist( id, h_sgnlfakelepClass, 1., w );
+              FillBaseMuHist( id, h_sgnlfakelepClass, 5., w );
+              FillBaseMuHist( id, h_fakeMu2and3Class, 3., w );
+              FillBaseMuHist( id, h_LFMu3Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_LFMu2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_LFMu3Eta,     baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_LFMu2and3Eta, baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_fakeMu3Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_fakeMu2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_fakeMu3Eta,     baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_fakeMu2and3Eta, baseLep[id].Eta(),      w );
+            }
+          }
         }
       // UnKnown
       }else{
         FillChanHist( h_baselepClass, 4., w);
         if     (id==0)   { 
           FillChanHist( h_baselep1Class, 4., w);
-          FillChanHist( h_UKbaselepPt,   baseLep[0].Pt()/1000., w );
           FillChanHist( h_UKbaselep1Pt,  baseLep[0].Pt()/1000., w );
-          FillChanHist( h_UKbaselepEta,  baseLep[0].Eta(),w );
           FillChanHist( h_UKbaselep1Eta, baseLep[0].Eta()     , w );
         } else if(id==1) {
           FillChanHist( h_baselep2Class, 4., w);
-          FillChanHist( h_UKbaselepPt,   baseLep[1].Pt()/1000., w );
           FillChanHist( h_UKbaselep2Pt,  baseLep[1].Pt()/1000., w );
-          FillChanHist( h_UKbaselepEta,  baseLep[1].Eta(),w );
           FillChanHist( h_UKbaselep2Eta, baseLep[1].Eta()     , w );
           FillChanHist( h_UKbaselep2and3Pt,  baseLep[1].Pt()/1000., w );
           FillChanHist( h_UKbaselep2and3Eta, baseLep[1].Eta(),w );
+          FillBaseElHist( id, h_basefakelepClass,     1., w );
+          FillBaseElHist( id, h_basefakelepClass,     3., w );
+          FillBaseElHist( id, h_fakebaseEl2and3Class, 4., w );
+          FillBaseMuHist( id, h_basefakelepClass,     1., w );
+          FillBaseMuHist( id, h_basefakelepClass,     5., w );
+          FillBaseMuHist( id, h_fakebaseMu2and3Class, 4., w );
+          FillBaseElHist( id, h_UKbaseEl2Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_UKbaseEl2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_UKbaseEl2Eta,     baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_UKbaseEl2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_UKbaseMu2Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_UKbaseMu2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_UKbaseMu2Eta,     baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_UKbaseMu2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_fakeBaseEl2Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_fakeBaseEl2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_fakeBaseEl2Eta,     baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_fakeBaseEl2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_fakeBaseMu2Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_fakeBaseMu2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_fakeBaseMu2Eta,     baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_fakeBaseMu2and3Eta, baseLep[id].Eta(),      w );
+          if(baseLepFlavor[id]==0){
+            if(EveSelec->IsMySignalElectron(vec_baseElectron->at(baseLepIndex[id]))){
+              FillBaseElHist( id, h_sgnlfakelepClass, 1., w );
+              FillBaseElHist( id, h_sgnlfakelepClass, 3., w );
+              FillBaseElHist( id, h_fakeEl2and3Class, 4., w );
+              FillBaseElHist( id, h_UKEl2Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_UKEl2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_UKEl2Eta,     baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_UKEl2and3Eta, baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_fakeEl2Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_fakeEl2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_fakeEl2Eta,     baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_fakeEl2and3Eta, baseLep[id].Eta(),      w );
+            }
+          } else {
+            if(EveSelec->IsMySignalMuon(vec_baseMuon->at(baseLepIndex[id]))){
+              FillBaseMuHist( id, h_sgnlfakelepClass, 1., w );
+              FillBaseMuHist( id, h_sgnlfakelepClass, 5., w );
+              FillBaseMuHist( id, h_fakeMu2and3Class, 4., w );
+              FillBaseMuHist( id, h_UKMu2Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_UKMu2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_UKMu2Eta,     baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_UKMu2and3Eta, baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_fakeMu2Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_fakeMu2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_fakeMu2Eta,     baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_fakeMu2and3Eta, baseLep[id].Eta(),      w );
+            }
+          }
         } else if(id==2) {
           FillChanHist( h_baselep3Class, 4., w);
-          FillChanHist( h_UKbaselepPt,   baseLep[2].Pt()/1000., w );
           FillChanHist( h_UKbaselep3Pt,  baseLep[2].Pt()/1000., w );
-          FillChanHist( h_UKbaselepEta,  baseLep[2].Eta(),w );
           FillChanHist( h_UKbaselep3Eta, baseLep[2].Eta()     , w );
           FillChanHist( h_UKbaselep2and3Pt,  baseLep[2].Pt()/1000., w );
           FillChanHist( h_UKbaselep2and3Eta, baseLep[2].Eta(),w );
+          FillBaseElHist( id, h_basefakelepClass,     1., w );
+          FillBaseElHist( id, h_basefakelepClass,     3., w );
+          FillBaseElHist( id, h_fakebaseEl2and3Class, 4., w );
+          FillBaseMuHist( id, h_basefakelepClass,     1., w );
+          FillBaseMuHist( id, h_basefakelepClass,     5., w );
+          FillBaseMuHist( id, h_fakebaseMu2and3Class, 4., w );
+          FillBaseElHist( id, h_UKbaseEl3Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_UKbaseEl2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_UKbaseEl3Eta,     baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_UKbaseEl2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_UKbaseMu3Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_UKbaseMu2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_UKbaseMu3Eta,     baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_UKbaseMu2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_fakeBaseEl3Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_fakeBaseEl2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseElHist( id, h_fakeBaseEl3Eta,     baseLep[id].Eta(),      w );
+          FillBaseElHist( id, h_fakeBaseEl2and3Eta, baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_fakeBaseMu3Pt,      baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_fakeBaseMu2and3Pt,  baseLep[id].Pt()/1000., w );
+          FillBaseMuHist( id, h_fakeBaseMu3Eta,     baseLep[id].Eta(),      w );
+          FillBaseMuHist( id, h_fakeBaseMu2and3Eta, baseLep[id].Eta(),      w );
+          if(baseLepFlavor[id]==0){
+            if(EveSelec->IsMySignalElectron(vec_baseElectron->at(baseLepIndex[id]))){
+              FillBaseElHist( id, h_sgnlfakelepClass, 1., w );
+              FillBaseElHist( id, h_sgnlfakelepClass, 3., w );
+              FillBaseElHist( id, h_fakeEl2and3Class, 4., w );
+              FillBaseElHist( id, h_UKEl3Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_UKEl2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_UKEl3Eta,     baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_UKEl2and3Eta, baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_fakeEl3Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_fakeEl2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseElHist( id, h_fakeEl3Eta,     baseLep[id].Eta(),      w );
+              FillBaseElHist( id, h_fakeEl2and3Eta, baseLep[id].Eta(),      w );
+            }
+          } else {
+            if(EveSelec->IsMySignalMuon(vec_baseMuon->at(baseLepIndex[id]))){
+              FillBaseMuHist( id, h_sgnlfakelepClass, 1., w );
+              FillBaseMuHist( id, h_sgnlfakelepClass, 5., w );
+              FillBaseMuHist( id, h_fakeMu2and3Class, 4., w );
+              FillBaseMuHist( id, h_UKMu3Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_UKMu2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_UKMu3Eta,     baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_UKMu2and3Eta, baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_fakeMu3Pt,      baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_fakeMu2and3Pt,  baseLep[id].Pt()/1000., w );
+              FillBaseMuHist( id, h_fakeMu3Eta,     baseLep[id].Eta(),      w );
+              FillBaseMuHist( id, h_fakeMu2and3Eta, baseLep[id].Eta(),      w );
+            }
+          }
         }
       }
     }
@@ -1522,4 +2134,11 @@ bool Plotter::FillNEvent(double weight)
   MyDebug("FillNEvent()","Plotter::FillNEvent()");
   h_nEve->Fill(0., weight);
   return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool Plotter::isRealLepton(Int_t type, Int_t origin, Int_t pdgid) {
+  /// when reco ele from conversion of photon radiated from a truth muon, conversions are conversions always, never prompt electrons
+  if(fabs(pdgid)==13 && type==4 && origin==5) return false;
+  // avoid returning true if type is not electron or muon (ex: type 17 by chance close to prompt lep)
+  return ((type==21||type==1||type==2||type==3||type==4||type==5||type==6||type==7||type==8) && (origin==12 or origin==13 or origin==22));
 }

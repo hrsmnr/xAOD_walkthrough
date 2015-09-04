@@ -10,6 +10,8 @@
 #include"CPAnalysisExamples/errorcheck.h"
 #include"AsgTools/MsgLevel.h"
 
+#include "GoodRunsLists/GoodRunsListSelectionTool.h"
+
 #include "PATInterfaces/SystematicVariation.h"
 #include "PATInterfaces/SystematicRegistry.h"
 #include "PATInterfaces/SystematicCode.h"

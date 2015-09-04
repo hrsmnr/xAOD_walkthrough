@@ -23,59 +23,70 @@
 std::vector<TString> *DistTypeNames;
 void SetDistType(void){
   DistTypeNames = new std::vector<TString>();
-  //  DistTypeNames->push_back("lepChan"); //cannot draw this with this macro.
-  DistTypeNames->push_back("lep1Pt");                DistTypeNames->push_back("baselep1Pt");
-  DistTypeNames->push_back("lep2Pt");                DistTypeNames->push_back("baselep2Pt");
-  DistTypeNames->push_back("lep3Pt");                DistTypeNames->push_back("baselep3Pt");
-  DistTypeNames->push_back("lep1Eta");               DistTypeNames->push_back("baselep1Eta");
-  DistTypeNames->push_back("lep2Eta");               DistTypeNames->push_back("baselep2Eta");
-  DistTypeNames->push_back("lep3Eta");               DistTypeNames->push_back("baselep3Eta");
-  DistTypeNames->push_back("PRlep2and3Pt");          DistTypeNames->push_back("PRbaselep2and3Pt");
-  DistTypeNames->push_back("COlep2and3Pt");          DistTypeNames->push_back("CObaselep2and3Pt");
-  DistTypeNames->push_back("HFlep2and3Pt");          DistTypeNames->push_back("HFbaselep2and3Pt");
-  DistTypeNames->push_back("LFlep2and3Pt");          DistTypeNames->push_back("LFbaselep2and3Pt");
-  DistTypeNames->push_back("UKlep2and3Pt");          DistTypeNames->push_back("UKbaselep2and3Pt");
-  DistTypeNames->push_back("PRlep2and3Eta");         DistTypeNames->push_back("PRbaselep2and3Eta");
-  DistTypeNames->push_back("COlep2and3Eta");         DistTypeNames->push_back("CObaselep2and3Eta");
-  DistTypeNames->push_back("HFlep2and3Eta");         DistTypeNames->push_back("HFbaselep2and3Eta");
-  DistTypeNames->push_back("LFlep2and3Eta");         DistTypeNames->push_back("LFbaselep2and3Eta");
-  DistTypeNames->push_back("UKlep2and3Eta");         DistTypeNames->push_back("UKbaselep2and3Eta");
-  DistTypeNames->push_back("lepClass");              DistTypeNames->push_back("baselepClass");
-  DistTypeNames->push_back("lep1Class");             DistTypeNames->push_back("baselep1Class");
-  DistTypeNames->push_back("lep2Class");             DistTypeNames->push_back("baselep2Class");
-  DistTypeNames->push_back("lep3Class");             DistTypeNames->push_back("baselep3Class");
+  DistTypeNames->push_back("PREl2and3Pt");          DistTypeNames->push_back("PRbaseEl2and3Pt");
+  DistTypeNames->push_back("PREl2and3Eta");         DistTypeNames->push_back("PRbaseEl2and3Eta");
+  DistTypeNames->push_back("COEl2and3Pt");          DistTypeNames->push_back("CObaseEl2and3Pt");
+  DistTypeNames->push_back("COEl2and3Eta");         DistTypeNames->push_back("CObaseEl2and3Eta");
+  DistTypeNames->push_back("HFEl2and3Pt");          DistTypeNames->push_back("HFbaseEl2and3Pt");
+  DistTypeNames->push_back("HFEl2and3Eta");         DistTypeNames->push_back("HFbaseEl2and3Eta");
+  DistTypeNames->push_back("LFEl2and3Pt");          DistTypeNames->push_back("LFbaseEl2and3Pt");
+  DistTypeNames->push_back("LFEl2and3Eta");         DistTypeNames->push_back("LFbaseEl2and3Eta");
+  DistTypeNames->push_back("UKEl2and3Pt");          DistTypeNames->push_back("UKbaseEl2and3Pt");
+  DistTypeNames->push_back("UKEl2and3Eta");         DistTypeNames->push_back("UKbaseEl2and3Eta");
+  DistTypeNames->push_back("PRMu2and3Pt");          DistTypeNames->push_back("PRbaseMu2and3Pt");
+  DistTypeNames->push_back("PRMu2and3Eta");         DistTypeNames->push_back("PRbaseMu2and3Eta");
+  DistTypeNames->push_back("COMu2and3Pt");          DistTypeNames->push_back("CObaseMu2and3Pt");
+  DistTypeNames->push_back("COMu2and3Eta");         DistTypeNames->push_back("CObaseMu2and3Eta");
+  DistTypeNames->push_back("HFMu2and3Pt");          DistTypeNames->push_back("HFbaseMu2and3Pt");
+  DistTypeNames->push_back("HFMu2and3Eta");         DistTypeNames->push_back("HFbaseMu2and3Eta");
+  DistTypeNames->push_back("LFMu2and3Pt");          DistTypeNames->push_back("LFbaseMu2and3Pt");
+  DistTypeNames->push_back("LFMu2and3Eta");         DistTypeNames->push_back("LFbaseMu2and3Eta");
+  DistTypeNames->push_back("UKMu2and3Pt");          DistTypeNames->push_back("UKbaseMu2and3Pt");
+  DistTypeNames->push_back("UKMu2and3Eta");         DistTypeNames->push_back("UKbaseMu2and3Eta");
 
-  // DistTypeNames->push_back("PRlep1Pt");
-  // DistTypeNames->push_back("PRlep2Pt");
-  // DistTypeNames->push_back("PRlep3Pt");
-  // DistTypeNames->push_back("COlep1Pt");
-  // DistTypeNames->push_back("COlep2Pt");
-  // DistTypeNames->push_back("COlep3Pt");
-  // DistTypeNames->push_back("HFlep1Pt");
-  // DistTypeNames->push_back("HFlep2Pt");
-  // DistTypeNames->push_back("HFlep3Pt");
-  // DistTypeNames->push_back("LFlep1Pt");
-  // DistTypeNames->push_back("LFlep2Pt");
-  // DistTypeNames->push_back("LFlep3Pt");
-  // DistTypeNames->push_back("UKlep1Pt");
-  // DistTypeNames->push_back("UKlep2Pt");
-  // DistTypeNames->push_back("UKlep3Pt");
-  // DistTypeNames->push_back("PRlep1Eta");
-  // DistTypeNames->push_back("PRlep2Eta");
-  // DistTypeNames->push_back("PRlep3Eta");
-  // DistTypeNames->push_back("COlep1Eta");
-  // DistTypeNames->push_back("COlep2Eta");
-  // DistTypeNames->push_back("COlep3Eta");
-  // DistTypeNames->push_back("HFlep1Eta");
-  // DistTypeNames->push_back("HFlep2Eta");
-  // DistTypeNames->push_back("HFlep3Eta");
-  // DistTypeNames->push_back("LFlep1Eta");
-  // DistTypeNames->push_back("LFlep2Eta");
-  // DistTypeNames->push_back("LFlep3Eta");
-  // DistTypeNames->push_back("UKlep1Eta");
-  // DistTypeNames->push_back("UKlep2Eta");
-  // DistTypeNames->push_back("UKlep3Eta");
+  DistTypeNames->push_back("fakeEl2and3Class");      DistTypeNames->push_back("fakebaseEl2and3Class");
+  DistTypeNames->push_back("fakeMu2and3Class");      DistTypeNames->push_back("fakebaseMu2and3Class");
+  DistTypeNames->push_back("sgnlfakelepClass");      DistTypeNames->push_back("basefakelepClass");
+  DistTypeNames->push_back("elParentPdgId"   );      DistTypeNames->push_back("muParentPdgId"       );
 
+  // DistTypeNames->push_back("PREl2Pt");              DistTypeNames->push_back("PRbaseEl2Pt");
+  // DistTypeNames->push_back("PREl2Eta");             DistTypeNames->push_back("PRbaseEl2Eta");
+  // DistTypeNames->push_back("PREl3Pt");              DistTypeNames->push_back("PRbaseEl3Pt");
+  // DistTypeNames->push_back("PREl3Eta");             DistTypeNames->push_back("PRbaseEl3Eta");
+  // DistTypeNames->push_back("COEl2Pt");              DistTypeNames->push_back("CObaseEl2Pt");
+  // DistTypeNames->push_back("COEl2Eta");             DistTypeNames->push_back("CObaseEl2Eta");
+  // DistTypeNames->push_back("COEl3Pt");              DistTypeNames->push_back("CObaseEl3Pt");
+  // DistTypeNames->push_back("COEl3Eta");             DistTypeNames->push_back("CObaseEl3Eta");
+  // DistTypeNames->push_back("HFEl2Eta");             DistTypeNames->push_back("HFbaseEl2Eta");
+  // DistTypeNames->push_back("HFEl3Pt");              DistTypeNames->push_back("HFbaseEl3Pt");
+  // DistTypeNames->push_back("HFEl3Eta");             DistTypeNames->push_back("HFbaseEl3Eta");
+  // DistTypeNames->push_back("LFEl2Pt");              DistTypeNames->push_back("LFbaseEl2Pt");
+  // DistTypeNames->push_back("LFEl2Eta");             DistTypeNames->push_back("LFbaseEl2Eta");
+  // DistTypeNames->push_back("LFEl3Pt");              DistTypeNames->push_back("LFbaseEl3Pt");
+  // DistTypeNames->push_back("LFEl3Eta");             DistTypeNames->push_back("LFbaseEl3Eta");
+  // DistTypeNames->push_back("UKEl2Pt");              DistTypeNames->push_back("UKbaseEl2Pt");
+  // DistTypeNames->push_back("UKEl2Eta");             DistTypeNames->push_back("UKbaseEl2Eta");
+  // DistTypeNames->push_back("UKEl3Pt");              DistTypeNames->push_back("UKbaseEl3Pt");
+  // DistTypeNames->push_back("UKEl3Eta");             DistTypeNames->push_back("UKbaseEl3Eta");
+  // DistTypeNames->push_back("PRMu2Pt");              DistTypeNames->push_back("PRbaseMu2Pt");
+  // DistTypeNames->push_back("PRMu2Eta");             DistTypeNames->push_back("PRbaseMu2Eta");
+  // DistTypeNames->push_back("PRMu3Pt");              DistTypeNames->push_back("PRbaseMu3Pt");
+  // DistTypeNames->push_back("PRMu3Eta");             DistTypeNames->push_back("PRbaseMu3Eta");
+  // DistTypeNames->push_back("COMu2Pt");              DistTypeNames->push_back("CObaseMu2Pt");
+  // DistTypeNames->push_back("COMu2Eta");             DistTypeNames->push_back("CObaseMu2Eta");
+  // DistTypeNames->push_back("COMu3Pt");              DistTypeNames->push_back("CObaseMu3Pt");
+  // DistTypeNames->push_back("COMu3Eta");             DistTypeNames->push_back("CObaseMu3Eta");
+  // DistTypeNames->push_back("HFMu2Eta");             DistTypeNames->push_back("HFbaseMu2Eta");
+  // DistTypeNames->push_back("HFMu3Pt");              DistTypeNames->push_back("HFbaseMu3Pt");
+  // DistTypeNames->push_back("HFMu3Eta");             DistTypeNames->push_back("HFbaseMu3Eta");
+  // DistTypeNames->push_back("LFMu2Pt");              DistTypeNames->push_back("LFbaseMu2Pt");
+  // DistTypeNames->push_back("LFMu2Eta");             DistTypeNames->push_back("LFbaseMu2Eta");
+  // DistTypeNames->push_back("LFMu3Pt");              DistTypeNames->push_back("LFbaseMu3Pt");
+  // DistTypeNames->push_back("LFMu3Eta");             DistTypeNames->push_back("LFbaseMu3Eta");
+  // DistTypeNames->push_back("UKMu2Pt");              DistTypeNames->push_back("UKbaseMu2Pt");
+  // DistTypeNames->push_back("UKMu2Eta");             DistTypeNames->push_back("UKbaseMu2Eta");
+  // DistTypeNames->push_back("UKMu3Pt");              DistTypeNames->push_back("UKbaseMu3Pt");
+  // DistTypeNames->push_back("UKEl3Eta");             DistTypeNames->push_back("UKbaseMu3Eta");
   // DistTypeNames->push_back("baselepOrigin");
   // DistTypeNames->push_back("baselep1Origin");
   // DistTypeNames->push_back("baselep2Origin");
@@ -195,73 +206,73 @@ void SetBGType(void){
   }
 
   //WZ files
-  BGFileNames[WZ]->push_back("187160"); BGIncludeFlag[WZ]->push_back("01000");
-  BGFileNames[WZ]->push_back("187161"); BGIncludeFlag[WZ]->push_back("00010");
-  BGFileNames[WZ]->push_back("187162"); BGIncludeFlag[WZ]->push_back("01110");
-  BGFileNames[WZ]->push_back("187163"); BGIncludeFlag[WZ]->push_back("00100");
-  BGFileNames[WZ]->push_back("187164"); BGIncludeFlag[WZ]->push_back("00001");
-  BGFileNames[WZ]->push_back("187165"); BGIncludeFlag[WZ]->push_back("00111");
-  BGFileNames[WZ]->push_back("187166"); BGIncludeFlag[WZ]->push_back("01100");
-  BGFileNames[WZ]->push_back("187167"); BGIncludeFlag[WZ]->push_back("00011");
-  BGFileNames[WZ]->push_back("187168"); BGIncludeFlag[WZ]->push_back("01111");
-  BGFileNames[WZ]->push_back("187170"); BGIncludeFlag[WZ]->push_back("01000");
-  BGFileNames[WZ]->push_back("187171"); BGIncludeFlag[WZ]->push_back("00010");
-  BGFileNames[WZ]->push_back("187172"); BGIncludeFlag[WZ]->push_back("01110");
-  BGFileNames[WZ]->push_back("187173"); BGIncludeFlag[WZ]->push_back("00100");
-  BGFileNames[WZ]->push_back("187174"); BGIncludeFlag[WZ]->push_back("00001");
-  BGFileNames[WZ]->push_back("187175"); BGIncludeFlag[WZ]->push_back("00111");
-  BGFileNames[WZ]->push_back("187176"); BGIncludeFlag[WZ]->push_back("01100");
-  BGFileNames[WZ]->push_back("187177"); BGIncludeFlag[WZ]->push_back("00011");
-  BGFileNames[WZ]->push_back("187178"); BGIncludeFlag[WZ]->push_back("01111");
+  // BGFileNames[WZ]->push_back("187160"); BGIncludeFlag[WZ]->push_back("01000");
+  // BGFileNames[WZ]->push_back("187161"); BGIncludeFlag[WZ]->push_back("00010");
+  // BGFileNames[WZ]->push_back("187162"); BGIncludeFlag[WZ]->push_back("01110");
+  // BGFileNames[WZ]->push_back("187163"); BGIncludeFlag[WZ]->push_back("00100");
+  // BGFileNames[WZ]->push_back("187164"); BGIncludeFlag[WZ]->push_back("00001");
+  // BGFileNames[WZ]->push_back("187165"); BGIncludeFlag[WZ]->push_back("00111");
+  // BGFileNames[WZ]->push_back("187166"); BGIncludeFlag[WZ]->push_back("01100");
+  // BGFileNames[WZ]->push_back("187167"); BGIncludeFlag[WZ]->push_back("00011");
+  // BGFileNames[WZ]->push_back("187168"); BGIncludeFlag[WZ]->push_back("01111");
+  // BGFileNames[WZ]->push_back("187170"); BGIncludeFlag[WZ]->push_back("01000");
+  // BGFileNames[WZ]->push_back("187171"); BGIncludeFlag[WZ]->push_back("00010");
+  // BGFileNames[WZ]->push_back("187172"); BGIncludeFlag[WZ]->push_back("01110");
+  // BGFileNames[WZ]->push_back("187173"); BGIncludeFlag[WZ]->push_back("00100");
+  // BGFileNames[WZ]->push_back("187174"); BGIncludeFlag[WZ]->push_back("00001");
+  // BGFileNames[WZ]->push_back("187175"); BGIncludeFlag[WZ]->push_back("00111");
+  // BGFileNames[WZ]->push_back("187176"); BGIncludeFlag[WZ]->push_back("01100");
+  // BGFileNames[WZ]->push_back("187177"); BGIncludeFlag[WZ]->push_back("00011");
+  // BGFileNames[WZ]->push_back("187178"); BGIncludeFlag[WZ]->push_back("01111");
 
-  //ZZ files
-  BGFileNames[ZZ]->push_back("187180"); BGIncludeFlag[ZZ]->push_back("01000");
-  BGFileNames[ZZ]->push_back("187181"); BGIncludeFlag[ZZ]->push_back("00110");
-  BGFileNames[ZZ]->push_back("187182"); BGIncludeFlag[ZZ]->push_back("01110");
-  BGFileNames[ZZ]->push_back("187183"); BGIncludeFlag[ZZ]->push_back("00001");
-  BGFileNames[ZZ]->push_back("187184"); BGIncludeFlag[ZZ]->push_back("00111");
-  BGFileNames[ZZ]->push_back("187185"); BGIncludeFlag[ZZ]->push_back("01111");
-  BGFileNames[ZZ]->push_back("187186"); BGIncludeFlag[ZZ]->push_back("01111");
-  BGFileNames[ZZ]->push_back("187187"); BGIncludeFlag[ZZ]->push_back("01111");
-  BGFileNames[ZZ]->push_back("187188"); BGIncludeFlag[ZZ]->push_back("01111");
+  // //ZZ files
+  // BGFileNames[ZZ]->push_back("187180"); BGIncludeFlag[ZZ]->push_back("01000");
+  // BGFileNames[ZZ]->push_back("187181"); BGIncludeFlag[ZZ]->push_back("00110");
+  // BGFileNames[ZZ]->push_back("187182"); BGIncludeFlag[ZZ]->push_back("01110");
+  // BGFileNames[ZZ]->push_back("187183"); BGIncludeFlag[ZZ]->push_back("00001");
+  // BGFileNames[ZZ]->push_back("187184"); BGIncludeFlag[ZZ]->push_back("00111");
+  // BGFileNames[ZZ]->push_back("187185"); BGIncludeFlag[ZZ]->push_back("01111");
+  // BGFileNames[ZZ]->push_back("187186"); BGIncludeFlag[ZZ]->push_back("01111");
+  // BGFileNames[ZZ]->push_back("187187"); BGIncludeFlag[ZZ]->push_back("01111");
+  // BGFileNames[ZZ]->push_back("187188"); BGIncludeFlag[ZZ]->push_back("01111");
 
-  //ttV files
-  BGFileNames[ttV]->push_back("119353"); BGIncludeFlag[ttV]->push_back("01111");//ttW
-  BGFileNames[ttV]->push_back("119355"); BGIncludeFlag[ttV]->push_back("01111");//ttZ
-  BGFileNames[ttV]->push_back("119583"); BGIncludeFlag[ttV]->push_back("01111");//ttWW
+  // //ttV files
+  // BGFileNames[ttV]->push_back("119353"); BGIncludeFlag[ttV]->push_back("01111");//ttW
+  // BGFileNames[ttV]->push_back("119355"); BGIncludeFlag[ttV]->push_back("01111");//ttZ
+  // BGFileNames[ttV]->push_back("119583"); BGIncludeFlag[ttV]->push_back("01111");//ttWW
 
-  //Higgs
-  BGFileNames[Higgs]->push_back("161105"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->WW(lnulnu)
-  BGFileNames[Higgs]->push_back("161155"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->WW(lnulnu)
-  BGFileNames[Higgs]->push_back("161305"); BGIncludeFlag[Higgs]->push_back("01111");//ttH:H->WW(incl.)
-  //  BGFileNames[Higgs]->push_back("160755"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->ZZ(llnunu)
-  //  BGFileNames[Higgs]->push_back("160805"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->ZZ(llnunu)
-  //  BGFileNames[Higgs]->push_back("169072"); BGIncludeFlag[Higgs]->push_back("01111");//ttH:H->ZZ(incl.)
-  //  BGFileNames[Higgs]->push_back("160155"); BGIncludeFlag[Higgs]->push_back("01111");//ggF:H->ZZ(4l)
-  //  BGFileNames[Higgs]->push_back("160205"); BGIncludeFlag[Higgs]->push_back("01111");//VBF:H->ZZ(4l)
-  //  BGFileNames[Higgs]->push_back("160255"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->ZZ(4l)
-  //  BGFileNames[Higgs]->push_back("160305"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->ZZ(4l)
-  //  BGFileNames[Higgs]->push_back("160505"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->ZZ(llqq)
-  //  BGFileNames[Higgs]->push_back("160555"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->ZZ(llqq)
-  //  BGFileNames[Higgs]->push_back("XXXXXX"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->tautau(ll) ???
-  //  BGFileNames[Higgs]->push_back("161675"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->tautau(ll)
-  //  BGFileNames[Higgs]->push_back("161708"); BGIncludeFlag[Higgs]->push_back("01111");//ttH:H->tautau(ll)
-  //  BGFileNames[Higgs]->push_back("161686"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->tautau(lhad)
-  //  BGFileNames[Higgs]->push_back("161719"); BGIncludeFlag[Higgs]->push_back("01111");//ttH:H->tautau(lhad)
-  //  BGFileNames[Higgs]->push_back("XXXXXX"); BGIncludeFlag[Higgs]->push_back("00011");//WH:H->mumu ???
-  //  BGFileNames[Higgs]->push_back("167418"); BGIncludeFlag[Higgs]->push_back("00111");//ZH:H->mumu
+  // //Higgs
+  // BGFileNames[Higgs]->push_back("161105"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->WW(lnulnu)
+  // BGFileNames[Higgs]->push_back("161155"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->WW(lnulnu)
+  // BGFileNames[Higgs]->push_back("161305"); BGIncludeFlag[Higgs]->push_back("01111");//ttH:H->WW(incl.)
+  // //  BGFileNames[Higgs]->push_back("160755"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->ZZ(llnunu)
+  // //  BGFileNames[Higgs]->push_back("160805"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->ZZ(llnunu)
+  // //  BGFileNames[Higgs]->push_back("169072"); BGIncludeFlag[Higgs]->push_back("01111");//ttH:H->ZZ(incl.)
+  // //  BGFileNames[Higgs]->push_back("160155"); BGIncludeFlag[Higgs]->push_back("01111");//ggF:H->ZZ(4l)
+  // //  BGFileNames[Higgs]->push_back("160205"); BGIncludeFlag[Higgs]->push_back("01111");//VBF:H->ZZ(4l)
+  // //  BGFileNames[Higgs]->push_back("160255"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->ZZ(4l)
+  // //  BGFileNames[Higgs]->push_back("160305"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->ZZ(4l)
+  // //  BGFileNames[Higgs]->push_back("160505"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->ZZ(llqq)
+  // //  BGFileNames[Higgs]->push_back("160555"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->ZZ(llqq)
+  // //  BGFileNames[Higgs]->push_back("XXXXXX"); BGIncludeFlag[Higgs]->push_back("01111");//WH:H->tautau(ll) ???
+  // //  BGFileNames[Higgs]->push_back("161675"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->tautau(ll)
+  // //  BGFileNames[Higgs]->push_back("161708"); BGIncludeFlag[Higgs]->push_back("01111");//ttH:H->tautau(ll)
+  // //  BGFileNames[Higgs]->push_back("161686"); BGIncludeFlag[Higgs]->push_back("01111");//ZH:H->tautau(lhad)
+  // //  BGFileNames[Higgs]->push_back("161719"); BGIncludeFlag[Higgs]->push_back("01111");//ttH:H->tautau(lhad)
+  // //  BGFileNames[Higgs]->push_back("XXXXXX"); BGIncludeFlag[Higgs]->push_back("00011");//WH:H->mumu ???
+  // //  BGFileNames[Higgs]->push_back("167418"); BGIncludeFlag[Higgs]->push_back("00111");//ZH:H->mumu
 
   //ttbar
   BGFileNames[ttbar]->push_back("110401"); BGIncludeFlag[ttbar]->push_back("01111");//no all-had
 
   //SingleTop
-  BGFileNames[SingleTop]->push_back("110302"); BGIncludeFlag[SingleTop]->push_back("01111");//s-chan
-  BGFileNames[SingleTop]->push_back("110305"); BGIncludeFlag[SingleTop]->push_back("01111");//Wt
+  // BGFileNames[SingleTop]->push_back("110302"); BGIncludeFlag[SingleTop]->push_back("01111");//s-chan
+  // BGFileNames[SingleTop]->push_back("110305"); BGIncludeFlag[SingleTop]->push_back("01111");//Wt
 
   //Zjets
-  BGFileNames[Zjets]->push_back("147406"); BGIncludeFlag[Zjets]->push_back("01100");//Zee
-  BGFileNames[Zjets]->push_back("147407"); BGIncludeFlag[Zjets]->push_back("00011");//Zmumu
-  BGFileNames[Zjets]->push_back("147408"); BGIncludeFlag[Zjets]->push_back("01111");//Ztautau
+  // BGFileNames[Zjets]->push_back("147406"); BGIncludeFlag[Zjets]->push_back("01100");//Zee
+  // BGFileNames[Zjets]->push_back("147407"); BGIncludeFlag[Zjets]->push_back("00011");//Zmumu
+  // BGFileNames[Zjets]->push_back("147408"); BGIncludeFlag[Zjets]->push_back("01111");//Ztautau
 
 }
 
@@ -537,7 +548,7 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
   ////////////////////////////////////////////////////
 
   Bool_t debugPlot = kTRUE;
-  TUtil *u = new TUtil(("plots/"+Tag+"."+SelecReg+".ps").Data(),("plots/"+Tag+"."+SelecReg+".root").Data(),debugPlot);
+  TUtil *u  = new TUtil(("plots/"+Tag+"."+SelecReg+".ps").Data(),("plots/"+Tag+"."+SelecReg+".root").Data(),debugPlot);
   gStyle->SetPalette(1);
   
   u->SetPadNumXY(1,1);
@@ -555,15 +566,15 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
   //   }
   // }
 
-  u->SetPadNumXY(3,4);
-  for(Int_t disttype=0; disttype<nDistType; disttype++){
-    for(Int_t sorb=0; sorb<2; sorb++){
-      u->cdPad();
-      for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
-        dist_bg[allchan][bgtype][disttype][sorb]->DrawNormalized(bgtype==0?"":"same");
-      }
-    }
-  }
+  // u->SetPadNumXY(3,4);
+  // for(Int_t disttype=0; disttype<nDistType; disttype++){
+  //   for(Int_t sorb=0; sorb<2; sorb++){
+  //     u->cdPad();
+  //     for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
+  //       dist_bg[allchan][bgtype][disttype][sorb]->DrawNormalized(bgtype==0?"":"same");
+  //     }
+  //   }
+  // }
 
   u->SetPadNumXY(1,3);
   //  u->SetPadNumXY(3,4);
@@ -644,7 +655,7 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
 
   // Plotting  fake rate
   // 0: singal 1: baseline
-  u->Update();
+  u->SetPadNumXY(2,3);
   TH1F* fakerate_bg[nFSType][nDistType];
   TH1F* fakerate_bgErr[nFSType][nDistType];
   TH1F* hist_tmp0[nFSType][nDistType];
@@ -665,11 +676,14 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
       fakerate_bg[fstype][disttype]->Divide(hist_tmp0[fstype][disttype],hist_tmp1[fstype][disttype],1,1,"B");
       fakerate_bg[fstype][disttype]->SetMarkerColor(kBlack);
       fakerate_bg[fstype][disttype]->SetLineColor(kBlack);
-      fakerate_bg[fstype][disttype]->SetStats(0);
+      fakerate_bg[fstype][disttype]->SetStats(1);
       fakerate_bgErr[fstype][disttype]->Divide(hist_tmp0Err[fstype][disttype],hist_tmp1Err[fstype][disttype],1,1,"B");
       fakerate_bg[fstype][disttype]->GetYaxis()->SetTitle("Ratio");
-      fakerate_bg[fstype][disttype]->GetYaxis()->SetRangeUser(0.0,1.1);
+      if(disttype%2==0 ) u->Update();
+      fakerate_bg[fstype][disttype]->GetYaxis()->SetRangeUser(0.0,1.0);
       u->Draw(fakerate_bg[fstype][disttype],"E");
+      fakerate_bg[fstype][disttype]->GetYaxis()->UnZoom();
+      u->Draw(fakerate_bg[fstype][disttype],"text");
       // u->Draw(fakerate_bgErr[fstype][disttype],"sameE2");
 
 
@@ -679,27 +693,6 @@ Int_t mkFRMeas(TString Tag, TString SelecReg){
       // fakerate_bg[fstype][disttype]->Draw("hist");
     }
   }
-
-  // Plotting #signal vs #baseline leptons
-  // fileidx=0;
-  // u->Update();
-  // for(Int_t signaltype=0; signaltype<nSignalType; signaltype++){
-  //   UInt_t nsamples = SignalFileNames[signaltype]->size();
-  //   for(UInt_t signalfile=0; signalfile<nsamples; signalfile++){
-  //     TFile *f_tmp = vec_signalfiles->at(fileidx);
-  //     TH2F *h2_tmp = (TH2F*)(f_tmp->Get("h_nSigBaseLep"));
-  //     h2_tmp->SetStats(0);
-  //     h2_tmp->SetMarkerSize(2.0);
-  //     h2_tmp->GetZaxis()->SetTitle("Events in 10k");
-  //     u->cdPad();
-  //     h2_tmp->DrawNormalized("colztext",10000)->GetZaxis()->SetRangeUser(0,1000);
-  //     myText(0.18,0.78,kBlack,
-  //            Form("MN2=%s,MN1=%s",
-  //                 SignalMN2[signaltype]->at(signalfile).Data(),
-  //                 SignalMN1[signaltype]->at(signalfile).Data()), 0.1);
-  //     fileidx++;
-  //   }
-  // }
 
   //drawing legends again...
   u->SetPadNumXY(1,1);

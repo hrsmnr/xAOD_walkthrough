@@ -11,7 +11,7 @@
 #include <MyAnalysis/MyxAODAnalysis.h>
 
 //added by minoru
-#include"GoodRunsLists/GoodRunsListSelectionTool.h"
+// #include"GoodRunsLists/GoodRunsListSelectionTool.h"
 #include"SUSYTools/SUSYObjDef_xAOD.h"
 #include"SUSYTools/SUSYCrossSection.h"
 
@@ -123,7 +123,8 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   MyDebug("initialize()", "Preparing GRL tool");
   m_grl = new GoodRunsListSelectionTool("GoodRunsListSelectionTool");
   std::vector<std::string> vecStringGRL;
-  vecStringGRL.push_back("$ROOTCOREBIN/data/MyAnalysis/GRL/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml");
+  // vecStringGRL.push_back("$ROOTCOREBIN/data/MyAnalysis/GRL/data12_8TeV.periodAllYear_DetStatus-v61-pro14-02_DQDefects-00-01-00_PHYS_StandardGRL_All_Good.xml");
+  vecStringGRL.push_back("/gpfs/fs2001/dhdaiki/MM3L/RealData/All_Good/data15_13TeV.periodAllYear_DetStatus-v63-pro18-01_DQDefects-00-01-02_PHYS_StandardGRL_All_Good.xml");
   CHECK(m_grl->setProperty("GoodRunsListVec", vecStringGRL));
   CHECK(m_grl->setProperty("PassThrough", false)); // if true (default) will ignore result of GRL and will just pass all events
   if (!m_grl->initialize().isSuccess()) { // check this isSuccess
@@ -164,7 +165,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   
   CHECK(m_susyObjTool->setProperty("EleId","TightLLH") );
   CHECK(m_susyObjTool->setProperty("EleIdBaseline","LooseLLH") );
-  //  CHECK(m_susyObjTool->setProperty("EleIdBaseline","MediumLLH") );
+  // CHECK(m_susyObjTool->setProperty("EleIdBaseline","MediumLLH") );
   CHECK(m_susyObjTool->setProperty("MuId","Medium") );
   CHECK(m_susyObjTool->setProperty("TauId","Tight") );
 
@@ -421,6 +422,8 @@ EL::StatusCode MyxAODAnalysis :: execute ()
       if(initDone==false){
         if(m_processedEvents==1) MyError("execute()", Form("Not supported event selection was detected!! : %s",eveSelecName.c_str()));
         continue;
+      } else {
+        MyDebug("execute()", Form("Event selection has been initialized."));
       }
       if(eveSelecName=="ac"){
         myEveSelec->setBaseElMuPtThreshold(10000, 10000);

@@ -391,6 +391,7 @@ class EventSelector : public TObject
   virtual void Set3S4BMet();
   virtual void Set3S4BZvetoBvetoMet();
   virtual void SetGT1S3B();
+  virtual void SetGT1S3BForward();
 
   /* // Systematics */
   /* void setSystematics(ObjSys::OSys objSys=ObjSys::nom, bool doWeightSys=false){ */

@@ -285,6 +285,7 @@ bool EventSelector::initialize()
   m_availableSel->push_back("3S4BMet"          );
   m_availableSel->push_back("3S4BZvetoBvetoMet");
   m_availableSel->push_back("GT1S3B");
+  m_availableSel->push_back("GT1S3BForward");
 
   //////////////////////////////////////////////
   // Set selection cut variables
@@ -360,7 +361,8 @@ bool EventSelector::initialize()
   else if(m_sel=="3S4BZveto") Set3S4BZveto();
   else if(m_sel=="3S4BMet"  ) Set3S4BMet();
   else if(m_sel=="3S4BZvetoBvetoMet") Set3S4BZvetoBvetoMet();
-  else if(m_sel=="GT1S3B") SetGT1S3B(); // Fake rate estimation
+  else if(m_sel=="GT1S3B") SetGT1S3B();               // Fake rate estimation
+  else if(m_sel=="GT1S3BForward") SetGT1S3BForward(); // Fake rate estimation
   //Used for the legacy paper
   else if(m_sel=="VR0a") {
     TypSel(3,0,3,0,0,0);
@@ -1061,11 +1063,25 @@ void EventSelector::Set3S4BZvetoBvetoMet()
 /*--------------------------------------------------------------------------------*/
 void EventSelector::SetGT1S3B()
 {
+  SetBveto(); // require b veto
+  m_nLepMin = 1;
+  m_nLepMax = 3;
+  m_nBaseLepMin = m_nBaseLepMax = 3;
+  m_selSFOS = true;
+  m_applyTrig = false;
+  m_1stBaseIsSignal = true;
+  m_baseLepEtaMax = 1.5; // require all baseline lepton's |eta| < 1.5
+  return;
+}
+/*--------------------------------------------------------------------------------*/
+void EventSelector::SetGT1S3BForward()
+{
   m_nLepMin = 1;
   m_nLepMax = 3;
   m_nBaseLepMin = m_nBaseLepMax = 3;
   m_applyTrig = false;
   m_1stBaseIsSignal = true;
+  m_baseLepEtaMin = 1.5; // require all baseline lepton's |eta| > 1.5
   return;
 }
 
@@ -1280,6 +1296,7 @@ bool EventSelector::PassIsoMuon(const xAOD::Muon& input,
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::selectObject()
 {
+  MyDebug("selectObject()", "Start object selection");
   bool rtrvFail = false;
   ///////////////////////////////////////////////////
   // Get Electrons from the event
@@ -1306,6 +1323,7 @@ bool EventSelector::selectObject()
   ///////////////////////////////////////////////////
   // Get the Photons from the event
   ///////////////////////////////////////////////////
+  MyDebug("selectObject()", "Retrieve photon container");
   xAOD::PhotonContainer     *photons_copy(0);
   xAOD::ShallowAuxContainer *photons_copyaux(0);
   if(m_susyObjTool->GetPhotons(photons_copy,photons_copyaux)==EL::StatusCode::FAILURE){
@@ -1316,6 +1334,7 @@ bool EventSelector::selectObject()
   ///////////////////////////////////////////////////
   // Get the Muons from the event:
   ///////////////////////////////////////////////////
+  MyDebug("selectObject()", "Retrieve muon container");
   xAOD::MuonContainer       *muons_copy(0);
   xAOD::ShallowAuxContainer *muons_copyaux(0);
   if(m_susyObjTool->GetMuons(muons_copy,muons_copyaux, false, m_baseMuPtCut)==EL::StatusCode::FAILURE){
@@ -1340,6 +1359,7 @@ bool EventSelector::selectObject()
   ///////////////////////////////////////////////////
   // Get the Jets from the event:
   ///////////////////////////////////////////////////
+  MyDebug("selectObject()", "Retrieve jet container");
   //Checking jet containers status
   xAOD::JetContainer        *jets_copy(0);
   xAOD::ShallowAuxContainer *jets_copyaux(0);
@@ -1351,6 +1371,7 @@ bool EventSelector::selectObject()
   xAOD::JetContainer::iterator jet_itr = (jets_copy)->begin();
   xAOD::JetContainer::iterator jet_end = (jets_copy)->end();
   for( ; jet_itr!=jet_end; ++jet_itr){
+  MyDebug("selectObject()", "");
     if(m_sel=="ac"){
       m_susyObjTool->IsBJet(**jet_itr); //Making b-tagged jet flag.
     }else{
@@ -1382,6 +1403,7 @@ bool EventSelector::selectObject()
   ///////////////////////////////////////////////////
   // Get the Taus from the event:
   ///////////////////////////////////////////////////
+  MyDebug("selectObject()", "Retrieve tau container");
   xAOD::TauJetContainer     *taus_copy(0);
   xAOD::ShallowAuxContainer *taus_copyaux(0);
   if(m_susyObjTool->GetTaus(taus_copy,taus_copyaux)==EL::StatusCode::FAILURE){
@@ -1392,6 +1414,7 @@ bool EventSelector::selectObject()
   ///////////////////////////////////////////////////
   // do overlap removal
   ///////////////////////////////////////////////////
+  MyDebug("selectObject()", "Do overlap removal");
   xAOD::JetContainer* goodJets = new xAOD::JetContainer(SG::VIEW_ELEMENTS);
   MyDebug("selectObject()",Form("m_sys=%s",m_sys.c_str()));
   if(m_store->record(goodJets, Form("MySelJets%s",m_sys.c_str()))==EL::StatusCode::FAILURE){
