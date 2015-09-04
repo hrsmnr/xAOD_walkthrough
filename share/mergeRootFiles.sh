@@ -37,12 +37,15 @@ done
 ###################################################
 ## Merging files
 ###################################################
+queue=4h
 for i in "${DSID[@]}"
 do
     for j in "${REGION[@]}"
     do
         echo 'Merging data files of '$i' : SelecReg='$j' for the tag of '$TAG
-        echo time hadd -f ${DIRECTORY}/${TAG}/${i}.${j}.AnaHists.root ${DIRECTORY}/${TAG}/${i}_*/data-*.${j}.*/*.root
-        time hadd -f ${DIRECTORY}/${TAG}/${i}.${j}.AnaHists.root ${DIRECTORY}/${TAG}/${i}_*/data-*.${j}.*/*.root
+#        echo time hadd -f ${DIRECTORY}/${TAG}/${i}.${j}.AnaHists.root ${DIRECTORY}/${TAG}/${i}_*/data-*.${j}.*/*.root
+#        time hadd -f ${DIRECTORY}/${TAG}/${i}.${j}.AnaHists.root ${DIRECTORY}/${TAG}/${i}_*/data-*.${j}.*/*.root
+        echo bsub -q ${queue} -e ${DIRECTORY}/${TAG}/${i}.${j}.AnaHists.err -o ${DIRECTORY}/${TAG}/${i}.${j}.AnaHists.log hadd -f ${DIRECTORY}/${TAG}/${i}.${j}.AnaHists.root ${DIRECTORY}/${TAG}/${i}_*/data-*.${j}.*/*.root
+        bsub -q ${queue} -e ${DIRECTORY}/${TAG}/${i}.${j}.AnaHists.err -o ${DIRECTORY}/${TAG}/${i}.${j}.AnaHists.log hadd -f ${DIRECTORY}/${TAG}/${i}.${j}.AnaHists.root ${DIRECTORY}/${TAG}/${i}_*/data-*.${j}.*/*.root
     done
 done

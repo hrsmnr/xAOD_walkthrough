@@ -1,4 +1,5 @@
 #!/bin/sh
+git clone git://github.com/hrsmnr/MMTool.git
 source /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/user/atlasLocalSetup.sh
 rcSetup Base,2.1.33
 rc checkout_pkg $SVNOFF/PhysicsAnalysis/SUSYPhys/SUSYTools/tags/SUSYTools-00-05-00-31

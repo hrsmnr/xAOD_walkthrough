@@ -76,22 +76,22 @@ void SetDistType(void){
   DistTypeNames->push_back("sumLepPtMet");
   //  DistTypeNames->push_back("dPhiWZ");
   //  DistTypeNames->push_back("nMuComb");
-  DistTypeNames->push_back("elPtcone30");
-  DistTypeNames->push_back("elEtcone30");
-  DistTypeNames->push_back("muPtcone30");
-  DistTypeNames->push_back("muEtcone30");
-  DistTypeNames->push_back("el1Ptcone30");
-  DistTypeNames->push_back("el1Etcone30");
-  DistTypeNames->push_back("mu1Ptcone30");
-  DistTypeNames->push_back("mu1Etcone30");
-  DistTypeNames->push_back("el2Ptcone30");
-  DistTypeNames->push_back("el2Etcone30");
-  DistTypeNames->push_back("mu2Ptcone30");
-  DistTypeNames->push_back("mu2Etcone30");
-  DistTypeNames->push_back("el3Ptcone30");
-  DistTypeNames->push_back("el3Etcone30");
-  DistTypeNames->push_back("mu3Ptcone30");
-  DistTypeNames->push_back("mu3Etcone30");
+  DistTypeNames->push_back("elTrackIso");
+  DistTypeNames->push_back("elCaloIso");
+  DistTypeNames->push_back("muTrackIso");
+  DistTypeNames->push_back("muCaloIso");
+  DistTypeNames->push_back("el1TrackIso");
+  DistTypeNames->push_back("el1CaloIso");
+  DistTypeNames->push_back("mu1TrackIso");
+  DistTypeNames->push_back("mu1CaloIso");
+  DistTypeNames->push_back("el2TrackIso");
+  DistTypeNames->push_back("el2CaloIso");
+  DistTypeNames->push_back("mu2TrackIso");
+  DistTypeNames->push_back("mu2CaloIso");
+  DistTypeNames->push_back("el3TrackIso");
+  DistTypeNames->push_back("el3CaloIso");
+  DistTypeNames->push_back("mu3TrackIso");
+  DistTypeNames->push_back("mu3CaloIso");
   DistTypeNames->push_back("lepD0");
   DistTypeNames->push_back("lep1D0");
   DistTypeNames->push_back("lep2D0");
@@ -797,6 +797,7 @@ Int_t mkPlots(TString Tag, TString SelecReg){
     u->cdPad();
     for(Int_t bgtype=0; bgtype<nBGType; bgtype++){
       dist_bg[allchan][bgtype][disttype]->DrawNormalized(bgtype==0?"":"same");
+      dist_bg[allchan][bgtype][disttype]->Write();
     }
   }
 
@@ -846,6 +847,7 @@ Int_t mkPlots(TString Tag, TString SelecReg){
       if(entry==0.){ //to avoid error in PostScript
         u->Draw(dist_totalbg[fstype][disttype],"hist");
         u->Draw(dist_totalbg[fstype][disttype],"hist",010);
+        dist_totalbg[fstype][disttype]->Write();
         u->cdPad();
         u->cdPad();
       }else{
@@ -861,6 +863,7 @@ Int_t mkPlots(TString Tag, TString SelecReg){
         u->Draw(dist_totalbg   [fstype][disttype],"samehist"); //should be drawn after the error histogram.
         // dist_data[fstype][disttype]->Draw("sameE");
         u->Draw(dist_totalbgErr[fstype][disttype],"sameE2");
+        dist_totalbg[fstype][disttype]->Write();
         TH1F *h_sig[nDrawnSignal];
         for(Int_t cnt=0; cnt<nDrawnSignal; cnt++){
           h_sig[cnt] = vec_dist_signal[fstype][DrawnSignalType->at(cnt)][disttype]->at(DrawnSignalFile->at(cnt));

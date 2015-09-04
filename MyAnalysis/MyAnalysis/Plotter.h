@@ -9,6 +9,9 @@
 
 #include"MyAnalysis/EventSelector.h"
 
+namespace MM {
+  class MMTool;
+}
 class TFile;
 class TH1F;
 class TH2F;
@@ -23,6 +26,7 @@ class Plotter : public TObject
 
   virtual void initialize(const char* path, int dsid, double XS=0., TFile* file=NULL);
   virtual void finalize();
+  void SetRunMM(Bool_t runMM){m_runMM = runMM;};
 
   bool FillHistoPreSelec(EventSelector *EveSelec, double weight);
   bool FillHistograms(EventSelector *EveSelec, double weight);
@@ -36,6 +40,8 @@ class Plotter : public TObject
   MSG::Level m_dbg; // debug level
   std::string m_sel;
   std::string m_sys;
+  Bool_t m_runMM;
+  MM::MMTool *m_MMTool;
   std::string m_filename;
   double m_crossSection;
   Bool_t m_isMC;
@@ -48,6 +54,7 @@ class Plotter : public TObject
   TH1F *h_nEve; //#processed events to make histograms (not #events for whole dataset)
   TH2F *h_nSigBaseLep; // #signal vs #baseline leptons
   TH1F *h_lepChan[nChan]; //count entries for each final state
+  TH1F *h_mmWeight[nChan];//MM weight
   //Lepton kinematics
   TH1F *h_lep1Pt [nChan]; //1st lepton Pt
   TH1F *h_lep2Pt [nChan]; //2nd lepton Pt
@@ -300,22 +307,22 @@ class Plotter : public TObject
   TH1F *h_nMuComb    [nChan]; // number of combined muons
 
   // Isolation
-  TH1F *h_elPtcone30[nChan]; // electron ptcone30
-  TH1F *h_elEtcone30[nChan]; // electron etcone30
-  TH1F *h_muPtcone30[nChan]; // muon ptcone30
-  TH1F *h_muEtcone30[nChan]; // muon etcone30
-  TH1F *h_el1Ptcone30[nChan]; // electron ptcone30
-  TH1F *h_el1Etcone30[nChan]; // electron etcone30
-  TH1F *h_mu1Ptcone30[nChan]; // muon ptcone30
-  TH1F *h_mu1Etcone30[nChan]; // muon etcone30
-  TH1F *h_el2Ptcone30[nChan]; // electron ptcone30
-  TH1F *h_el2Etcone30[nChan]; // electron etcone30
-  TH1F *h_mu2Ptcone30[nChan]; // muon ptcone30
-  TH1F *h_mu2Etcone30[nChan]; // muon etcone30
-  TH1F *h_el3Ptcone30[nChan]; // electron ptcone30
-  TH1F *h_el3Etcone30[nChan]; // electron etcone30
-  TH1F *h_mu3Ptcone30[nChan]; // muon ptcone30
-  TH1F *h_mu3Etcone30[nChan]; // muon etcone30
+  TH1F *h_elTrackIso[nChan]; // electron track iso.
+  TH1F *h_elCaloIso [nChan]; // electron calo iso.
+  TH1F *h_muTrackIso[nChan]; // muon track iso.
+  TH1F *h_muCaloIso [nChan]; // muon calo iso.
+  TH1F *h_el1TrackIso[nChan]; // electron track iso.
+  TH1F *h_el1CaloIso [nChan]; // electron calo iso.
+  TH1F *h_mu1TrackIso[nChan]; // muon track iso.
+  TH1F *h_mu1CaloIso [nChan]; // muon calo iso.
+  TH1F *h_el2TrackIso[nChan]; // electron track iso.
+  TH1F *h_el2CaloIso [nChan]; // electron calo iso.
+  TH1F *h_mu2TrackIso[nChan]; // muon track iso.
+  TH1F *h_mu2CaloIso [nChan]; // muon calo iso.
+  TH1F *h_el3TrackIso[nChan]; // electron track iso.
+  TH1F *h_el3CaloIso [nChan]; // electron calo iso.
+  TH1F *h_mu3TrackIso[nChan]; // muon track iso.
+  TH1F *h_mu3CaloIso [nChan]; // muon calo iso.
 
   // impact parameter histograms
   TH1F *h_lepD0 [nChan]; // all lepton d0
