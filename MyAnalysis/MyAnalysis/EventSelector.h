@@ -47,6 +47,7 @@ class EventSelector : public TObject
   virtual void setSigJetPtEtaThreshold(double jetPtCut=20000, double jetEtaCut=2.8);
   virtual void setBaseJetPtEtaThreshold(double jetPtCut=20000, double jetEtaCut=2.8);
   virtual void setRunMM(Bool_t runMM){m_runMM = runMM;};
+  virtual void setMeasureEff(Bool_t measureEff){m_measureEff = measureEff;};
 
   // Preselection, before object selection
   //    virtual bool preSelectEvent();
@@ -437,6 +438,7 @@ class EventSelector : public TObject
   std::string                    m_sel;            // event selection string
   std::string                    m_sys;            // systematic name string
   Bool_t                         m_runMM;          // modify cut selection to run MM
+  Bool_t                         m_measureEff;     // modify cut selection to measure efficiency
   std::vector<std::string>*      m_availableSel;   // all available selection regions (need to add manually...)
   bool                           m_is3SigLepSel;   // true if (m_nLepMin and m_nLepMax)!=3
   double                         m_sigElPtCut;     // signal electron Pt threshold

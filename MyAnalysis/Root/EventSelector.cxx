@@ -32,6 +32,7 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   m_sel(sel),
   m_sys(sys),
   m_runMM(false),
+  m_measureEff(false),
   m_availableSel(NULL),
   m_is3SigLepSel(true),
   m_sigElPtCut(5000),
@@ -490,7 +491,7 @@ bool EventSelector::initialize()
     }
     return false;
   }
-  if(m_runMM){
+  if(m_runMM || m_measureEff){
     m_nLepMin = 1;
     m_nLepMax = 3;
     m_1stBaseIsSignal = true;
@@ -1063,14 +1064,14 @@ void EventSelector::Set3S4BZvetoBvetoMet()
 /*--------------------------------------------------------------------------------*/
 void EventSelector::SetGT1S3B()
 {
-  SetBveto(); // require b veto
+  //  SetBveto(); // require b veto
   m_nLepMin = 1;
   m_nLepMax = 3;
   m_nBaseLepMin = m_nBaseLepMax = 3;
   m_selSFOS = true;
   m_applyTrig = false;
   m_1stBaseIsSignal = true;
-  m_baseLepEtaMax = 1.5; // require all baseline lepton's |eta| < 1.5
+  //  m_baseLepEtaMax = 1.5; // require all baseline lepton's |eta| < 1.5
   return;
 }
 /*--------------------------------------------------------------------------------*/

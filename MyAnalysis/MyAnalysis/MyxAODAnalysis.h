@@ -73,6 +73,7 @@ public:
   std::vector<std::string> *m_vec_eveSelec;
   std::string m_outputDir;
   bool m_runMM;
+  bool m_measureEff;
 
 #ifndef __CINT__
   ST::SUSYObjDef_xAOD *m_susyObjTool; //!
@@ -99,6 +100,7 @@ public:
   void SetSelectionRegion(const char* selec){m_vec_eveSelec->push_back(selec);};
   void SetOutputDir(const char* path){m_outputDir = path;};
   void SetRunMM(bool runMM){m_runMM = runMM;};
+  void SetMeasureEff(bool measureEff){m_measureEff = measureEff;};
 
   // Event counters
   // First index is for selection regions and second for systematic variation.

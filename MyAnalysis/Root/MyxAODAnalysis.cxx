@@ -418,6 +418,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
       EventSelector* myEveSelec = 
         new EventSelector(m_susyObjTool, eveSelecName.c_str(), (sysListItr->name()).c_str(), (m_isMC?1:0), m_debugMode);
       myEveSelec->setRunMM(m_runMM);//Need to be called before initialize();
+      myEveSelec->setMeasureEff(m_measureEff);//Need to be called before initialize();
       bool initDone = myEveSelec->initialize();
       if(initDone==false){
         if(m_processedEvents==1) MyError("execute()", Form("Not supported event selection was detected!! : %s",eveSelecName.c_str()));
