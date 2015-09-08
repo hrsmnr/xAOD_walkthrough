@@ -25,10 +25,20 @@ if [ $# -lt 2 ]; then
 fi
 
 #additional target selection region
+enRunMM=''
+enMeasureEff=''
 while [ "$2" != "" ]
 do
-  TARGETSELECREG='-S '$2' '$TARGETSELECREG
-  shift
+    if [ "$2" == "--runMM" ]; then
+        echo 'Enabled --runMM'
+        enRunMM='true'
+    elif [ "$2" == "--measureEff" ]; then
+        echo 'Enabled --measureEff'
+        enMeasureEff='--measureEff'
+    else
+        TARGETSELECREG='-S '$2' '$TARGETSELECREG
+    fi
+    shift
 done
 
 echo Target DS directory     = $TARGETDS
@@ -112,14 +122,17 @@ FakeDSID=("110070" "110071" "110302" "110305" #single top
     "187155" "187156" "187157" "187158" #WW
     "187401" "187402" "187403" "187404" "187405" "187406" "187407" "187408" "187409" #gg->WW
 )
+
 runMM=''
-#for fakeDS in "${FakeDSID[@]}"
-#do
-#    if [ "$runnum" = "$fakeDS" ]; then
-#        echo 'MC samples for fake leptons was found!!'
-#        runMM='--runMM'
-#    fi
-#done
+if [ $enRunMM = 'true' ]; then
+    for fakeDS in "${FakeDSID[@]}"
+    do
+        if [ "$runnum" = "$fakeDS" ]; then
+            echo 'MC samples for fake leptons was found!!'
+            runMM='--runMM'
+        fi
+    done
+fi
 
 ###################################################################
 # Submitting jobs to LSF
@@ -127,8 +140,8 @@ runMM=''
 maxEve=-1
 queue=1d
 echo Starting testRun for DSID=$runnum ...
-echo bsub -q ${queue} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM}
-bsub -q ${queue} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM}
+echo bsub -q ${queue} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM} ${enMeasureEff}
+bsub -q ${queue} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM} ${enMeasureEff}
 echo ''
 done
 
