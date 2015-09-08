@@ -32,6 +32,9 @@ int main( int argc, char* argv[] ) {
   std::string filelist = "";
   std::string fileDirBase = "/home/hirose/atlas/data/DC14/mc14_13TeV";
   std::string outputDir = "result/submitDir";
+  std::string eleIdBaseline = "LooseLLH";
+  std::string isoWP = "GradientLoose";
+  std::string effFile = "";
   bool doSys = false;
   bool runMM = false;
   bool measureEff = false;
@@ -59,6 +62,12 @@ int main( int argc, char* argv[] ) {
       outputDir = argv[++i];
     else if (strcmp(argv[i], "-S") == 0)
       sels.push_back(argv[++i]);
+    else if (strcmp(argv[i], "--eleIdBaseline") == 0)
+      eleIdBaseline = argv[++i];
+    else if (strcmp(argv[i], "--isoWP") == 0)
+      isoWP = argv[++i];
+    else if (strcmp(argv[i], "--effFile") == 0)
+      effFile = argv[++i];
     else if (strcmp(argv[i], "--sys") == 0)
       doSys = true;
     else if (strcmp(argv[i], "--runMM") == 0)
@@ -86,10 +95,13 @@ int main( int argc, char* argv[] ) {
   if(!fileDir    .empty()) std::cout << Form("  inputDir : %s", fileDir    .c_str()) << std::endl;
   if(!file       .empty()) std::cout << Form("  file     : %s", file       .c_str()) << std::endl;
   if(!filelist   .empty()) std::cout << Form("  filelist : %s", filelist   .c_str()) << std::endl;
+  std::cout <<Form("  eleId    : %s"  , eleIdBaseline.c_str()  ) << std::endl;
+  std::cout <<Form("  isoWP    : %s"  , isoWP.c_str()          ) << std::endl;
   std::cout <<Form("  useFAX   : %s"  , (useFAX?"true":"false")) << std::endl;
   std::cout <<Form("  useGRID  : %s"  , (useGRID?"true":"false")) << std::endl;
   std::cout <<Form("  doSys    : %s"  , (doSys ?"true":"false")) << std::endl;
   std::cout <<Form("  runMM    : %s"  , (runMM ?"true":"false")) << std::endl;
+  std::cout <<Form("  effFile  : %s"  , effFile.c_str()        ) << std::endl;
   std::cout <<Form("  measureEff: %s"  , (measureEff ?"true":"false")) << std::endl;
   std::cout << std::endl;
 
@@ -108,6 +120,12 @@ int main( int argc, char* argv[] ) {
   // Aborting if runMM and measureEff are asserted at the same time
   if(runMM && measureEff){
     std::cout<<"Error: Please do not specify --runMM and --measureEff at the same time."<<std::endl;
+    return 0;
+  }
+
+  // Aborting if runMM but effFile is not specified
+  if(runMM && effFile.empty()){
+    std::cout<<"Error: Please specify --effFile [filename] when using --runMM."<<std::endl;
     return 0;
   }
 
@@ -234,6 +252,9 @@ int main( int argc, char* argv[] ) {
   alg->SetSkipNum(nSkip);
   alg->SetRunMM(runMM);
   alg->SetMeasureEff(measureEff);
+  alg->SetEleIdBaseline(eleIdBaseline.c_str());
+  alg->SetIsoWP(isoWP.c_str());
+  alg->SetEffFile(effFile.c_str());
   if(useGRID) alg->SetOutputDir("./");
   else        alg->SetOutputDir(submitDir.c_str());
   for(uint i=0; i<sels.size(); i++) alg->SetSelectionRegion(sels.at(i).c_str());
@@ -295,6 +316,12 @@ void help()
   std::cout << "  --sys turns on MC systematics"     << std::endl;
 
   std::cout << "  --runMM uses MM weight for histograms" << std::endl;
+
+  std::cout << "  --effFile [filename]: efficiency file for MM (should be in MMTool/share)" << std::endl;
+
+  std::cout << "  --eleIdBaseline [(e.g. LooseLLH)]: baseline electron quality requirement (default LooseLLH)" << std::endl;
+
+  std::cout << "  --isoWP [(e.g. GradientLoose)]: isolation working point for IsolationTool (default GradienLoose)" << std::endl;
 
   std::cout << "  --measureEff to measure efficiency in specified regions" << std::endl;
 

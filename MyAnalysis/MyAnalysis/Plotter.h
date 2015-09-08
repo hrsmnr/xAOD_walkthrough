@@ -27,6 +27,7 @@ class Plotter : public TObject
   virtual void initialize(const char* path, int dsid, double XS=0., TFile* file=NULL);
   virtual void finalize();
   void SetRunMM(Bool_t runMM){m_runMM = runMM;};
+  void SetEffFile(const char* effFile){m_effFile = effFile;};
 
   bool FillHistoPreSelec(EventSelector *EveSelec, double weight);
   bool FillHistograms(EventSelector *EveSelec, double weight);
@@ -41,6 +42,7 @@ class Plotter : public TObject
   std::string m_sel;
   std::string m_sys;
   Bool_t m_runMM;
+  std::string m_effFile;
   MM::MMTool *m_MMTool;
   std::string m_filename;
   double m_crossSection;

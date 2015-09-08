@@ -26,15 +26,30 @@ fi
 
 #additional target selection region
 enRunMM=''
+enEffFile=''
 enMeasureEff=''
+enEleIdBaseline=''
+enIsoWP=''
 while [ "$2" != "" ]
 do
     if [ "$2" == "--runMM" ]; then
         echo 'Enabled --runMM'
         enRunMM='true'
+    elif [ "$2" == "--effFile" ]; then
+        enEffFile='--effFile '${3}
+        echo 'Enabled --effFile:' ${enEffFile}
+        shift
     elif [ "$2" == "--measureEff" ]; then
         echo 'Enabled --measureEff'
         enMeasureEff='--measureEff'
+    elif [ "$2" == "--eleIdBaseline" ]; then
+        enEleIdBaseline='--eleIdBaselien '${3}
+        echo 'Enabled --eleIdBaselien:' ${enEleIdBaseline}
+        shift
+    elif [ "$2" == "--isoWP" ]; then
+        enIsoWP='--isoWP '${3}
+        echo 'Enabled --isoWP:' ${enIsoWP}
+        shift
     else
         TARGETSELECREG='-S '$2' '$TARGETSELECREG
     fi
@@ -140,8 +155,8 @@ fi
 maxEve=-1
 queue=1d
 echo Starting testRun for DSID=$runnum ...
-echo bsub -q ${queue} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM} ${enMeasureEff}
-bsub -q ${queue} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM} ${enMeasureEff}
+echo bsub -q ${queue} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM} ${enMeasureEff} ${enEffFile} ${enEleIdBaseline} ${enIsoWP}
+bsub -q ${queue} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM} ${enMeasureEff}${enEffFile} ${enEleIdBaseline} ${enIsoWP}
 echo ''
 done
 

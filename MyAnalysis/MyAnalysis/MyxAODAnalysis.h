@@ -74,6 +74,9 @@ public:
   std::string m_outputDir;
   bool m_runMM;
   bool m_measureEff;
+  std::string m_eleIdBaseline;
+  std::string m_isoWP;
+  std::string m_effFile;
 
 #ifndef __CINT__
   ST::SUSYObjDef_xAOD *m_susyObjTool; //!
@@ -101,6 +104,9 @@ public:
   void SetOutputDir(const char* path){m_outputDir = path;};
   void SetRunMM(bool runMM){m_runMM = runMM;};
   void SetMeasureEff(bool measureEff){m_measureEff = measureEff;};
+  void SetEleIdBaseline(const char* eleIdBaseline){m_eleIdBaseline = eleIdBaseline;};
+  void SetIsoWP(const char* isoWP){m_isoWP = isoWP;};
+  void SetEffFile(const char* effFile){m_effFile = effFile;};
 
   // Event counters
   // First index is for selection regions and second for systematic variation.
