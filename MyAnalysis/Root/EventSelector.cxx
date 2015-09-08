@@ -32,6 +32,7 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   m_sel(sel),
   m_sys(sys),
   m_runMM(false),
+  m_measureEff(false),
   m_availableSel(NULL),
   m_is3SigLepSel(true),
   m_sigElPtCut(5000),
@@ -490,7 +491,7 @@ bool EventSelector::initialize()
     }
     return false;
   }
-  if(m_runMM){
+  if(m_runMM || m_measureEff){
     m_nLepMin = 1;
     m_nLepMax = 3;
     m_1stBaseIsSignal = true;
