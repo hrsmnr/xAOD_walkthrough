@@ -1,5 +1,5 @@
 # xAOD_walkthrough
-Analysis framework based on Base,2.1.33 with SUSYTools-00-05-00-31.
+Analysis framework based on Base,2.3.24a with SUSYTools-00-06-23.
 
 ## Contents of the package ----
 ./MyAnalysis : analysis package for EventLoop.  
