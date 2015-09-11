@@ -16,10 +16,12 @@
 #include "PATInterfaces/SystematicRegistry.h"
 #include "PATInterfaces/SystematicCode.h"
 
-#include"MyAnalysis/Plotter.h"
+#include "MyAnalysis/Plotter.h"
 
 #include<string>
 #include<vector>
+#include "TFile.h"
+#include "TSystem.h"
 
 namespace ST{
   class SUSYObjDef_xAOD;
@@ -72,6 +74,8 @@ public:
   long long int m_nSkipNum;
   std::vector<std::string> *m_vec_eveSelec;
   std::string m_outputDir;
+  std::string m_eleIso_WP;
+  std::string m_muIso_WP;
 
 #ifndef __CINT__
   ST::SUSYObjDef_xAOD *m_susyObjTool; //!

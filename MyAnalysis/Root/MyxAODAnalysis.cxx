@@ -11,7 +11,6 @@
 #include <MyAnalysis/MyxAODAnalysis.h>
 
 //added by minoru
-#include"GoodRunsLists/GoodRunsListSelectionTool.h"
 #include"SUSYTools/SUSYObjDef_xAOD.h"
 #include"SUSYTools/SUSYCrossSection.h"
 
@@ -167,6 +166,9 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   CHECK(m_susyObjTool->setProperty("EleIdBaseline","LooseLLH") );
   CHECK(m_susyObjTool->setProperty("MuId","Medium") );
   CHECK(m_susyObjTool->setProperty("TauId","Tight") );
+
+  CHECK(m_susyObjTool->setProperty( "EleIsoWP",m_eleIso_WP = "GradientLoose"));
+  CHECK(m_susyObjTool->setProperty( "MuIsoWP", m_muIso_WP  = "GradientLoose"));
 
   CHECK(m_susyObjTool->setProperty("DoTruthBtag",true     ));
   CHECK(m_susyObjTool->setProperty("btagCutType","FlatCut"));
@@ -518,8 +520,8 @@ EL::StatusCode MyxAODAnalysis :: finalize ()
       }
     }
   }
-  delete m_vec_plotter;
-  delete m_vec_watch;
+  // delete m_vec_plotter;
+  // delete m_vec_watch;
   //end adding
 
   return EL::StatusCode::SUCCESS;

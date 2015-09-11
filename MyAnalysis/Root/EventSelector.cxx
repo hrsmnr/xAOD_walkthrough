@@ -12,7 +12,8 @@
 #include"EventLoop/StatusCode.h"
 #include"EventPrimitives/EventPrimitivesHelpers.h"
 #include"xAODMissingET/MissingETAuxContainer.h"
-#include"xAODEgamma/EgammaxAODHelpers.h"
+// #include"xAODEgamma/EgammaxAODHelpers.h"
+#include "xAODTruth/xAODTruthHelpers.h"
 #include"MyAnalysis/MCTruthClassifierDefs.h"//Copied from MCTruthClassifier-00-01-31
 #include"MyAnalysis/MT2_ROOT.h"//MT2 tool by CalcGenericMT2
 
@@ -1010,10 +1011,10 @@ void EventSelector::finalize()
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::IsMyBaselineElectron(const xAOD::Electron& el){
   if((int)el.auxdata<char>("baseline")!=1) return false;
-  if(m_isoBase){
-    ST::IsSignalElectronExpCutArgs args;
-    args.etcut(m_baseElPtCut);
-    if(not PassIsoElectron(el, ST::SignalIsoExp::LooseIso, args)) return false;
+  if(m_isoBase){ // will modify
+  //   // ST::IsSignalElectronExpCutArgs args;
+  //   // args.etcut(m_baseElPtCut);
+  //   // if(not PassIsoElectron(el, ST::SignalIso::LooseIso, args)) return false;
   }
   return true;
 }
@@ -1024,10 +1025,10 @@ bool EventSelector::IsMySignalElectron(const xAOD::Electron& el){
 }
 bool EventSelector::IsMyBaselineMuon(const xAOD::Muon& mu){
   if((int)mu.auxdata<char>("baseline")!=1) return false;
-  if(m_isoBase){
-    ST::IsSignalMuonExpCutArgs args;
-    args.ptcut(m_baseMuPtCut);
-    if(not PassIsoMuon(mu, ST::SignalIsoExp::LooseIso, args)) return false;
+  if(m_isoBase){ // will modify
+  //   ST::IsSignalMuonExpCutArgs args;
+  //   args.ptcut(m_baseMuPtCut);
+  //   if(not PassIsoMuon(mu, ST::SignalIso::LooseIso, args)) return false;
   }
   return true;
 }
@@ -1045,114 +1046,114 @@ bool EventSelector::IsMyBaselineJet(xAOD::Jet& jet){
 bool EventSelector::IsMyPreJet(xAOD::Jet& jet){
   return true;
 }
-bool EventSelector::PassIsoElectron(const xAOD::Electron& input,
-                                    const ST::SignalIsoExp::IsoExp whichiso,
-                                    ST::IsSignalElectronExpCutArgs args)
-{
-  ///////////////////////////////////////////
-  //copied from SUSYTools-00-05-00-26
-  ///////////////////////////////////////////
-  const xAOD::TrackParticle* track = input.trackParticle();
-  const xAOD::Vertex* pv = m_susyObjTool->GetPrimVtx();
-  double primvertex_z = pv ? pv->z() : 0;
-  double el_d0sig = fabs(track->d0()) /  Amg::error(track->definingParametersCovMatrix(),0);
-  double el_z0 = track->z0() + track->vz() - primvertex_z;
-  float el_ptcone30(0.);
-  input.isolationValue(el_ptcone30,xAOD::Iso::ptcone30);
-  float el_topoEtcone30(0.);
-  input.isolationValue(el_topoEtcone30,xAOD::Iso::topoetcone30);
+// bool EventSelector::PassIsoElectron(const xAOD::Electron& input,
+//                                     const ST::SignalIsoExp::IsoExp whichiso,
+//                                     ST::IsSignalElectronExpCutArgs args)
+// {
+//   ///////////////////////////////////////////
+//   //copied from SUSYTools-00-05-00-26
+//   ///////////////////////////////////////////
+//   const xAOD::TrackParticle* track = input.trackParticle();
+//   const xAOD::Vertex* pv = m_susyObjTool->GetPrimVtx();
+//   double primvertex_z = pv ? pv->z() : 0;
+//   double el_d0sig = fabs(track->d0()) /  Amg::error(track->definingParametersCovMatrix(),0);
+//   double el_z0 = track->z0() + track->vz() - primvertex_z;
+//   float el_ptcone30(0.);
+//   input.isolationValue(el_ptcone30,xAOD::Iso::ptcone30);
+//   float el_topoEtcone30(0.);
+//   input.isolationValue(el_topoEtcone30,xAOD::Iso::topoetcone30);
   
-  // Use a relative cut on the isolation by default and an aboslute cut on the isolation if pt_isoMax>0 && pt > pt_isoMax
-  if(args._pt_isoMax>0 && input.p4().Perp2()> args._pt_isoMax*args._pt_isoMax){
-    args._id_isocut *= args._pt_isoMax;
-    args._calo_isocut *= args._pt_isoMax;
-  }
-  else{
-    args._id_isocut *= input.pt();
-    args._calo_isocut *= input.pt();
-  }
+//   // Use a relative cut on the isolation by default and an aboslute cut on the isolation if pt_isoMax>0 && pt > pt_isoMax
+//   if(args._pt_isoMax>0 && input.p4().Perp2()> args._pt_isoMax*args._pt_isoMax){
+//     args._id_isocut *= args._pt_isoMax;
+//     args._calo_isocut *= args._pt_isoMax;
+//   }
+//   else{
+//     args._id_isocut *= input.pt();
+//     args._calo_isocut *= input.pt();
+//   }
   
-  if(whichiso == ST::SignalIsoExp::LooseIso){
-    if((input.p4().Perp2() <= args._etcut*args._etcut || input.p4().Perp2() == 0)) return false; // eT cut (might be necessary for leading electron to pass trigger)
-    if(args._id_isocut > 0.0 && el_ptcone30 >= args._id_isocut) return false; // track isolation
-    if((args._z0cut > 0.0 && fabs(el_z0*TMath::Sin(input.p4().Theta())) > args._z0cut)) return false; // longitudinal IP cut
-  }
-  else if(whichiso == ST::SignalIsoExp::MediumIso){
-    if((input.p4().Perp2() <= args._etcut*args._etcut || input.p4().Perp2() == 0)) return false; // eT cut (might be necessary for leading electron to pass trigger)
-    if((args._id_isocut > 0.0 && el_ptcone30 >= args._id_isocut)) return false; // track isolation
-    if((args._z0cut > 0.0 && fabs(el_z0*TMath::Sin(input.p4().Theta())) > args._z0cut)) return false; // longitudinal IP cut
-    if(el_d0sig != 0){
-      if((args._d0sigcut > 0.0 && fabs(el_d0sig) > args._d0sigcut)) return false; // transverse IP cut
-    }
-  }
-  else if(whichiso == ST::SignalIsoExp::TightIso){
-    if((input.p4().Perp2() <= args._etcut*args._etcut || input.p4().Perp2() == 0)) return false; // eT cut (might be necessary for leading electron to pass trigger)
-    if((args._id_isocut > 0.0 && el_ptcone30 >= args._id_isocut)) return false; // track isolation
-    if((args._z0cut > 0.0 && fabs(el_z0*TMath::Sin(input.p4().Theta())) > args._z0cut)) return false; // longitudinal IP cut
-    if(el_d0sig != 0){
-      if((args._d0sigcut > 0.0 && fabs(el_d0sig) > args._d0sigcut)) return false; // transverse IP cut
-    }
-    if(args._calo_isocut > 0.0 && el_topoEtcone30 >= args._calo_isocut) return false; // calo isolation
-  }
-  else {
-    MyError("PassIsoElectron()", "wrong isolation quality specified for electron .... returning false");
-    return false;
-  }
-  return true;
-}
-bool EventSelector::PassIsoMuon(const xAOD::Muon& input,
-                                const ST::SignalIsoExp::IsoExp whichiso,
-                                ST::IsSignalMuonExpCutArgs args)
-{
-  ///////////////////////////////////////////
-  //copied from SUSYTools-00-05-00-26
-  ///////////////////////////////////////////
-  const xAOD::TrackParticle* track =  input.primaryTrackParticle();
-  const xAOD::Vertex* pv = m_susyObjTool->GetPrimVtx();
-  double primvertex_z = pv ? pv->z() : 0;
-  double mu_d0sig = fabs(track->d0()) /  Amg::error(track->definingParametersCovMatrix(),0);
-  double mu_z0 = track->z0() + track->vz() - primvertex_z;
-  float mu_ptcone30 = input.auxdata<float>("ptcone30");
-  float mu_etcone30 = input.auxdata<float>("etcone30");
+//   if(whichiso == ST::SignalIso::LooseIso){
+//     if((input.p4().Perp2() <= args._etcut*args._etcut || input.p4().Perp2() == 0)) return false; // eT cut (might be necessary for leading electron to pass trigger)
+//     if(args._id_isocut > 0.0 && el_ptcone30 >= args._id_isocut) return false; // track isolation
+//     if((args._z0cut > 0.0 && fabs(el_z0*TMath::Sin(input.p4().Theta())) > args._z0cut)) return false; // longitudinal IP cut
+//   }
+//   else if(whichiso == ST::SignalIso::MediumIso){
+//     if((input.p4().Perp2() <= args._etcut*args._etcut || input.p4().Perp2() == 0)) return false; // eT cut (might be necessary for leading electron to pass trigger)
+//     if((args._id_isocut > 0.0 && el_ptcone30 >= args._id_isocut)) return false; // track isolation
+//     if((args._z0cut > 0.0 && fabs(el_z0*TMath::Sin(input.p4().Theta())) > args._z0cut)) return false; // longitudinal IP cut
+//     if(el_d0sig != 0){
+//       if((args._d0sigcut > 0.0 && fabs(el_d0sig) > args._d0sigcut)) return false; // transverse IP cut
+//     }
+//   }
+//   else if(whichiso == ST::SignalIso::TightIso){
+//     if((input.p4().Perp2() <= args._etcut*args._etcut || input.p4().Perp2() == 0)) return false; // eT cut (might be necessary for leading electron to pass trigger)
+//     if((args._id_isocut > 0.0 && el_ptcone30 >= args._id_isocut)) return false; // track isolation
+//     if((args._z0cut > 0.0 && fabs(el_z0*TMath::Sin(input.p4().Theta())) > args._z0cut)) return false; // longitudinal IP cut
+//     if(el_d0sig != 0){
+//       if((args._d0sigcut > 0.0 && fabs(el_d0sig) > args._d0sigcut)) return false; // transverse IP cut
+//     }
+//     if(args._calo_isocut > 0.0 && el_topoEtcone30 >= args._calo_isocut) return false; // calo isolation
+//   }
+//   else {
+//     MyError("PassIsoElectron()", "wrong isolation quality specified for electron .... returning false");
+//     return false;
+//   }
+//   return true;
+// }
+// bool EventSelector::PassIsoMuon(const xAOD::Muon& input,
+//                                 const ST::SignalIso::IsoExp whichiso,
+//                                 ST::IsSignalMuonExpCutArgs args)
+// {
+//   ///////////////////////////////////////////
+//   //copied from SUSYTools-00-05-00-26
+//   ///////////////////////////////////////////
+//   const xAOD::TrackParticle* track =  input.primaryTrackParticle();
+//   const xAOD::Vertex* pv = m_susyObjTool->GetPrimVtx();
+//   double primvertex_z = pv ? pv->z() : 0;
+//   double mu_d0sig = fabs(track->d0()) /  Amg::error(track->definingParametersCovMatrix(),0);
+//   double mu_z0 = track->z0() + track->vz() - primvertex_z;
+//   float mu_ptcone30 = input.auxdata<float>("ptcone30");
+//   float mu_etcone30 = input.auxdata<float>("etcone30");
 
-  // Use a relative cut on the isolation by default and an aboslute cut on the isolation if pt_isoMax>0 && pt > pt_isoMax
-  if(args._pt_isoMax>0 && input.pt()> args._pt_isoMax){
-    args._id_isocut *= args._pt_isoMax;
-    args._calo_isocut *= args._pt_isoMax;
-  }
-  else{
-    args._id_isocut *= input.pt();
-    args._calo_isocut *= input.pt();
-  }
+//   // Use a relative cut on the isolation by default and an aboslute cut on the isolation if pt_isoMax>0 && pt > pt_isoMax
+//   if(args._pt_isoMax>0 && input.pt()> args._pt_isoMax){
+//     args._id_isocut *= args._pt_isoMax;
+//     args._calo_isocut *= args._pt_isoMax;
+//   }
+//   else{
+//     args._id_isocut *= input.pt();
+//     args._calo_isocut *= input.pt();
+//   }
 
-  if(whichiso == ST::SignalIsoExp::LooseIso){
-    if(input.pt() <= args._ptcut || input.pt() == 0) return false; // pT cut (might be necessary for leading muon to pass trigger)
-    if(args._id_isocut > 0.0 && mu_ptcone30 >= args._id_isocut) return false; // track isolation
-    if(args._z0cut > 0.0 && fabs(mu_z0*TMath::Sin(input.p4().Theta())) > args._z0cut) return false; // longitudinal IP cut
-  }
-  else if(whichiso == ST::SignalIsoExp::MediumIso){
-    if(input.pt() <= args._ptcut || input.pt() == 0) return false; // pT cut (might be necessary for leading muon to pass trigger)
-    if(args._id_isocut > 0.0 && mu_ptcone30 >= args._id_isocut) return false; // track isolation
-    if(args._z0cut > 0.0 && fabs(mu_z0*TMath::Sin(input.p4().Theta())) > args._z0cut) return false; // longitudinal IP cut
-    if(mu_d0sig != 0){
-      if(args._d0sigcut > 0.0 && fabs(mu_d0sig) > args._d0sigcut) return false; // transverse IP cut
-    }
-  }
-  else if(whichiso == ST::SignalIsoExp::TightIso){
-    if(input.pt() <= args._ptcut || input.pt() == 0) return false; // pT cut (might be necessary for leading muon to pass trigger)
-    if(args._id_isocut > 0.0 && mu_ptcone30 >= args._id_isocut) return false; // track isolation
-    if(args._z0cut > 0.0 && fabs(mu_z0*TMath::Sin(input.p4().Theta())) > args._z0cut) return false; // longitudinal IP cut
-    if(mu_d0sig != 0){
-      if(args._d0sigcut > 0.0 && fabs(mu_d0sig) > args._d0sigcut) return false; // transverse IP cut
-    }
-    if(args._calo_isocut > 0.0 && mu_etcone30 >= args._calo_isocut) return false; // calo isolation
-  }
-  else{
-    MyError("PassIsoMuon()", "wrong isolation quality specified for muon .... returning false");
-    return false;
-  }
-  return true;
-}
+//   // if(whichiso == ST::SignalIso::LooseIso){
+//   //   if(input.pt() <= args._ptcut || input.pt() == 0) return false; // pT cut (might be necessary for leading muon to pass trigger)
+//   //   if(args._id_isocut > 0.0 && mu_ptcone30 >= args._id_isocut) return false; // track isolation
+//   //   if(args._z0cut > 0.0 && fabs(mu_z0*TMath::Sin(input.p4().Theta())) > args._z0cut) return false; // longitudinal IP cut
+//   // }
+//   // else if(whichiso == ST::SignalIso::MediumIso){
+//   //   if(input.pt() <= args._ptcut || input.pt() == 0) return false; // pT cut (might be necessary for leading muon to pass trigger)
+//   //   if(args._id_isocut > 0.0 && mu_ptcone30 >= args._id_isocut) return false; // track isolation
+//   //   if(args._z0cut > 0.0 && fabs(mu_z0*TMath::Sin(input.p4().Theta())) > args._z0cut) return false; // longitudinal IP cut
+//   //   if(mu_d0sig != 0){
+//   //     if(args._d0sigcut > 0.0 && fabs(mu_d0sig) > args._d0sigcut) return false; // transverse IP cut
+//   //   }
+//   // }
+//   // else if(whichiso == ST::SignalIso::TightIso){
+//   //   if(input.pt() <= args._ptcut || input.pt() == 0) return false; // pT cut (might be necessary for leading muon to pass trigger)
+//   //   if(args._id_isocut > 0.0 && mu_ptcone30 >= args._id_isocut) return false; // track isolation
+//   //   if(args._z0cut > 0.0 && fabs(mu_z0*TMath::Sin(input.p4().Theta())) > args._z0cut) return false; // longitudinal IP cut
+//   //   if(mu_d0sig != 0){
+//   //     if(args._d0sigcut > 0.0 && fabs(mu_d0sig) > args._d0sigcut) return false; // transverse IP cut
+//   //   }
+//   //   if(args._calo_isocut > 0.0 && mu_etcone30 >= args._calo_isocut) return false; // calo isolation
+//   // }
+//   // else{
+//   //   MyError("PassIsoMuon()", "wrong isolation quality specified for muon .... returning false");
+//   //   return false;
+//   // }
+//   return true;
+// }
 
 /*--------------------------------------------------------------------------------*/
 // Object selection
@@ -1174,13 +1175,7 @@ bool EventSelector::selectObject()
   xAOD::ElectronContainer::iterator el_itr = (electrons_copy)->begin();
   xAOD::ElectronContainer::iterator el_end = (electrons_copy)->end();
   for( ; el_itr!=el_end; ++el_itr){
-    ST::IsSignalElectronExpCutArgs args; //default values are set by construnter.
-    args.etcut(m_sigElPtCut);
-    if(m_sel=="ac"){
-      m_susyObjTool->IsSignalElectron( **el_itr ); //Signal flag are set here.
-    }else{
-      m_susyObjTool->IsSignalElectronExp( **el_itr, args); //Signal flag are set here.
-    }
+    m_susyObjTool->IsSignalElectron( **el_itr ); //Signal flag are set here.
   }
 
   ///////////////////////////////////////////////////
@@ -1208,14 +1203,8 @@ bool EventSelector::selectObject()
   xAOD::MuonContainer::iterator mu_itr = (muons_copy)->begin();
   xAOD::MuonContainer::iterator mu_end = (muons_copy)->end();
   for( ; mu_itr!=mu_end; ++mu_itr){
-    ST::IsSignalMuonExpCutArgs args; //default values are set by construnter.
-    args.ptcut(m_sigMuPtCut);
-    if(m_sel=="ac"){
-      m_susyObjTool->IsSignalMuon( **mu_itr ); //Signal flag are set here.
-    }else{
-      m_susyObjTool->IsSignalMuonExp( **mu_itr, args); //Signal flag are set here.
-    }
-    m_susyObjTool->IsCosmicMuon   ( **mu_itr ); //Cosmic flag are set here.
+    m_susyObjTool->IsSignalMuon( **mu_itr ); //Signal flag are set here.
+    m_susyObjTool->IsCosmicMuon( **mu_itr ); //Cosmic flag are set here.
     if(m_sel=="ac")passACCut_badMuon();
   }
 
@@ -1226,7 +1215,8 @@ bool EventSelector::selectObject()
   //Checking jet containers status
   xAOD::JetContainer        *jets_copy(0);
   xAOD::ShallowAuxContainer *jets_copyaux(0);
-  if(m_susyObjTool->GetJets(jets_copy, jets_copyaux, false, m_baseJetPtCut, m_baseJetEtaCut)==EL::StatusCode::FAILURE){
+  // if(m_susyObjTool->GetJets(jets_copy, jets_copyaux, false, m_baseJetPtCut, m_baseJetEtaCut)==EL::StatusCode::FAILURE){
+  if(m_susyObjTool->GetJets(jets_copy, jets_copyaux, false)==EL::StatusCode::FAILURE){
     MyError("selectObject()","Failing to retrieve JetContainer.");
     rtrvFail = true;
   }
@@ -1234,12 +1224,8 @@ bool EventSelector::selectObject()
   xAOD::JetContainer::iterator jet_itr = (jets_copy)->begin();
   xAOD::JetContainer::iterator jet_end = (jets_copy)->end();
   for( ; jet_itr!=jet_end; ++jet_itr){
-  MyDebug("selectObject()", "");
-    if(m_sel=="ac"){
-      m_susyObjTool->IsBJet(**jet_itr); //Making b-tagged jet flag.
-    }else{
-      m_susyObjTool->IsBJet(**jet_itr,true,0.3511); //Making b-tagged jet flag.
-    }
+    MyDebug("selectObject()", "");
+    m_susyObjTool->IsBJet(**jet_itr); //Making b-tagged jet flag.
     //(https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingBenchmarks)
     //MV1: Eff70%=0.3511, Eff80%=0.6073, Eff85%=0.3511
     m_vec_preJet->push_back(**jet_itr);
@@ -1720,7 +1706,11 @@ bool EventSelector::passACCut_jetClean  (xAOD::Jet& jet){
   if(jet.auxdata<char>("baseline")==1 && jet.auxdata<char>("passOR")==1){
     if(jet.pt()>m_baseJetPtCut && fabs(jet.eta())<m_baseJetEtaCut){
       //This "if" is needed since "false" will be returned when we input a jet with pt<m_baseJetPtCut to IsGoodJet()...
-      if(not m_susyObjTool->IsGoodJet(jet, m_baseJetPtCut, m_baseJetEtaCut)){
+      // if(not m_susyObjTool->IsGoodJet(jet, m_baseJetPtCut, m_baseJetEtaCut)){ // No IsGoodJet() in SUSYTools6
+      //   b_passAC_jetClean = false;
+      //   return false;
+      // }
+      if(m_susyObjTool->IsBadJet(jet)){ // bool IsBadJet(const xAOD::Jet& input, float jvtcut=0.64);
         b_passAC_jetClean = false;
         return false;
       }
@@ -3184,7 +3174,8 @@ bool EventSelector::isRealLepton(unsigned int id)
   if(lepIndex[id]==-1) return false;
   else{
     if(lepFlavor[id]==0){
-      Int_t type   = xAOD::EgammaHelpers::getParticleTruthType  (&(vec_electron->at(lepIndex[id])));
+      Int_t type   = xAOD::TruthHelpers::getParticleTruthType  (vec_electron->at(lepIndex[id]));
+      //      Int_t type   = xAOD::EgammaHelpers::getParticleTruthType  (&(vec_electron->at(lepIndex[id])));
       //      Int_t origin = xAOD::EgammaHelpers::getParticleTruthOrigin(&(vec_electron->at(lepIndex[id])));
       //      std::cout<<Form("Electron type %d origin %d", type, origin)<<std::endl;
       if(type==MCTruthPartClassifier::IsoElectron) return true;
@@ -3228,7 +3219,7 @@ bool EventSelector::isChargeFlipElectron(unsigned int id)
   //Assuming lepton[id] is electron and true isolated electron.
   Int_t* lepIndex  = m_is3SigLepSel ? m_leadLepIndex  : m_baseLepIndex ;
   std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
-  const xAOD::TruthParticle* truthEle = xAOD::EgammaHelpers::getTruthParticle(&(vec_electron->at(lepIndex[id])));
+  const xAOD::TruthParticle* truthEle = xAOD::TruthHelpers::getTruthParticle(vec_electron->at(lepIndex[id]));
   Int_t trueCharge = truthEle->charge();
   Int_t recoCharge = (vec_electron->at(lepIndex[id])).charge();
   if(isSS(trueCharge, recoCharge)) return false;

@@ -8,7 +8,8 @@
 #include<iostream>
 #include"MyAnalysis/Plotter.h"
 #include"SUSYTools/SUSYObjDef_xAOD.h"
-#include"xAODEgamma/EgammaxAODHelpers.h"
+// #include"xAODEgamma/EgammaxAODHelpers.h"
+#include "xAODTruth/xAODTruthHelpers.h"
 #include"MyAnalysis/MCTruthClassifierDefs.h"
 #include"EventPrimitives/EventPrimitivesHelpers.h"
 
@@ -1168,9 +1169,9 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
       std::vector< xAOD::Electron >* vec_electron = EveSelec->is3SigLepSel() ? vec_signalElectron : vec_baseElectron;
       std::vector< xAOD::Muon >*     vec_muon     = EveSelec->is3SigLepSel() ? vec_signalMuon     : vec_baseMuon;
       if(lepFlavor[id]==0){
-        type   = xAOD::EgammaHelpers::getParticleTruthType  (&(vec_electron->at(lepIndex[id])));
-        origin = xAOD::EgammaHelpers::getParticleTruthOrigin(&(vec_electron->at(lepIndex[id])));
-        const xAOD::TruthParticle* etrue = xAOD::EgammaHelpers::getTruthParticle(&(vec_electron->at(lepIndex[id])));
+        type   = xAOD::TruthHelpers::getParticleTruthType  (vec_electron->at(lepIndex[id]));
+        origin = xAOD::TruthHelpers::getParticleTruthOrigin(vec_electron->at(lepIndex[id]));
+        const xAOD::TruthParticle* etrue = xAOD::TruthHelpers::getTruthParticle(vec_electron->at(lepIndex[id]));
         if(etrue) pdgid = etrue->pdgId();
       }else{
         const xAOD::TrackParticle* trackParticle = (&(vec_muon->at(lepIndex[id])))->primaryTrackParticle();
@@ -1257,9 +1258,9 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
       Int_t pdgid  = 0;
       Int_t pdgid_parent = 0;
       if(baseLepFlavor[id]==0){
-        type   = xAOD::EgammaHelpers::getParticleTruthType  (&(vec_baseElectron->at(baseLepIndex[id])));
-        origin = xAOD::EgammaHelpers::getParticleTruthOrigin(&(vec_baseElectron->at(baseLepIndex[id])));
-        const xAOD::TruthParticle* etrue = xAOD::EgammaHelpers::getTruthParticle(&(vec_baseElectron->at(baseLepIndex[id])));
+        type   = xAOD::TruthHelpers::getParticleTruthType  (vec_baseElectron->at(baseLepIndex[id]));
+        origin = xAOD::TruthHelpers::getParticleTruthOrigin(vec_baseElectron->at(baseLepIndex[id]));
+        const xAOD::TruthParticle* etrue = xAOD::TruthHelpers::getTruthParticle(vec_baseElectron->at(baseLepIndex[id]));
         if(etrue) pdgid = etrue->pdgId();
         if(etrue){
           const xAOD::TruthParticle* etrue_parent = etrue->parent();

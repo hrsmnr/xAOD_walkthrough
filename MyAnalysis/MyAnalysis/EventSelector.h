@@ -125,8 +125,8 @@ class EventSelector : public TObject
   virtual bool IsMyPreJet          (xAOD::Jet& jet);
   virtual bool IsMyBaselineJet     (xAOD::Jet& jet);
   virtual bool IsMySignalJet       (xAOD::Jet& jet);
-  virtual bool PassIsoElectron(const xAOD::Electron& input, const ST::SignalIsoExp::IsoExp whichiso, ST::IsSignalElectronExpCutArgs args);
-  virtual bool PassIsoMuon(const xAOD::Muon& input, const ST::SignalIsoExp::IsoExp whichiso, ST::IsSignalMuonExpCutArgs args);
+  // virtual bool PassIsoElectron(const xAOD::Electron& input, const ST::SignalIso::IsoExp whichiso, ST::IsSignalElectronExpCutArgs args);
+  // virtual bool PassIsoMuon(const xAOD::Muon& input, const ST::SignalIso::IsoExp whichiso, ST::IsSignalMuonExpCutArgs args);
 
 
   std::vector< xAOD::Electron >* GetSignalElectron(){return m_vec_signalElectron;};
