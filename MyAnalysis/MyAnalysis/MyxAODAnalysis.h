@@ -76,6 +76,8 @@ public:
   std::string m_outputDir;
   std::string m_eleIso_WP;
   std::string m_muIso_WP;
+  bool m_runMM;
+  bool m_measureEff;
 
 #ifndef __CINT__
   ST::SUSYObjDef_xAOD *m_susyObjTool; //!
@@ -101,6 +103,8 @@ public:
   void SetSkipNum(long long int nskip){m_nSkipNum = nskip;};
   void SetSelectionRegion(const char* selec){m_vec_eveSelec->push_back(selec);};
   void SetOutputDir(const char* path){m_outputDir = path;};
+  void SetRunMM(bool runMM){m_runMM = runMM;};
+  void SetMeasureEff(bool measureEff){m_measureEff = measureEff;};
 
   // Event counters
   // First index is for selection regions and second for systematic variation.

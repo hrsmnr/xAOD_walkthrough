@@ -8,14 +8,16 @@
 #include<iostream>
 #include"MyAnalysis/Plotter.h"
 #include"SUSYTools/SUSYObjDef_xAOD.h"
-// #include"xAODEgamma/EgammaxAODHelpers.h"
 #include "xAODTruth/xAODTruthHelpers.h"
 #include"MyAnalysis/MCTruthClassifierDefs.h"
 #include"EventPrimitives/EventPrimitivesHelpers.h"
 
+#include"MMTool/MMTool.h"
+
 #include"TFile.h"
 #include"TH1F.h"
 #include"TH2F.h"
+#include "TSystem.h"
 
 /////////////////////////////
 // Histogram bins
@@ -54,6 +56,8 @@ Plotter::Plotter(const std::string& sel, const std::string& sys, const MSG::Leve
   m_dbg(dbg),
   m_sel(sel),
   m_sys(sys),
+  m_runMM(false),
+  m_MMTool(NULL),
   m_filename(""),
   m_crossSection(0.),
   m_isMC(kFALSE)
@@ -84,6 +88,22 @@ void Plotter::initialize(const char* path, int dsid, double XS, TFile* file)
   // Booking histograms
   BookHistograms();
 
+  if(m_runMM){
+    m_MMTool = new MM::MMTool(MM::TwoLepMM,m_dbg);
+    std::string prefix = gSystem->ExpandPathName("$ROOTCOREBIN/data/MMTool/");
+    Int_t nDimForEff = 1;
+    if     (nDimForEff==0) m_MMTool->prepEffHists(prefix+"h0026.GT1S3B.root",nDimForEff);
+    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0032.GT1S3B.root",nDimForEff);
+    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0033.GT1S3B.root",nDimForEff);
+    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0034.GT1S3B.root",nDimForEff);
+    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0035.GT1S3B.root",nDimForEff);
+    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0036.GT1S3B.root",nDimForEff);
+    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0037.GT1S3B.root",nDimForEff);
+    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0038.GT1S3B.root",nDimForEff);
+    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0039.GT1S3B.root",nDimForEff);
+    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0041.GT1S3B.root",nDimForEff);
+  }
+
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -101,6 +121,7 @@ void Plotter::finalize()
     h_lepChan[Ch_all]->Write();
     h_baselepChan[Ch_all]->Write();
     for(uint iCh=0; iCh<nChan; iCh++){
+      h_mmWeight[iCh]->Write();
       h_lep1Pt[iCh]->Write();
       h_lep2Pt[iCh]->Write();
       h_lep3Pt[iCh]->Write();
@@ -119,6 +140,42 @@ void Plotter::finalize()
       h_mu1Eta[iCh]->Write();
       h_mu2Eta[iCh]->Write();
       h_mu3Eta[iCh]->Write();
+      h_PRbaselep1Pt [iCh]->Write();
+      h_PRbaselep2Pt [iCh]->Write();
+      h_PRbaselep3Pt [iCh]->Write();
+      h_CObaselep1Pt [iCh]->Write();
+      h_CObaselep2Pt [iCh]->Write();
+      h_CObaselep3Pt [iCh]->Write();
+      h_HFbaselep1Pt [iCh]->Write();
+      h_HFbaselep2Pt [iCh]->Write();
+      h_HFbaselep3Pt [iCh]->Write();
+      h_LFbaselep1Pt [iCh]->Write();
+      h_LFbaselep2Pt [iCh]->Write();
+      h_LFbaselep3Pt [iCh]->Write();
+      h_UKbaselep1Pt [iCh]->Write();
+      h_UKbaselep2Pt [iCh]->Write();
+      h_UKbaselep3Pt [iCh]->Write();
+      h_PRbaselep1Eta[iCh]->Write();
+      h_PRbaselep2Eta[iCh]->Write();
+      h_PRbaselep3Eta[iCh]->Write();
+      h_CObaselep1Eta[iCh]->Write();
+      h_CObaselep2Eta[iCh]->Write();
+      h_CObaselep3Eta[iCh]->Write();
+      h_HFbaselep1Eta[iCh]->Write();
+      h_HFbaselep2Eta[iCh]->Write();
+      h_HFbaselep3Eta[iCh]->Write();
+      h_LFbaselep1Eta[iCh]->Write();
+      h_LFbaselep2Eta[iCh]->Write();
+      h_LFbaselep3Eta[iCh]->Write();
+      h_UKbaselep1Eta[iCh]->Write();
+      h_UKbaselep2Eta[iCh]->Write();
+      h_UKbaselep3Eta[iCh]->Write();
+      h_CObaselep2and3Pt [iCh]->Write();
+      h_LFbaselep2and3Pt [iCh]->Write();
+      h_PRbaselep2and3Eta[iCh]->Write();
+      h_HFbaselep2and3Eta[iCh]->Write();
+      h_LFbaselep2and3Eta[iCh]->Write();
+      h_UKbaselep2and3Eta[iCh]->Write();
       h_PRbaseEl2Pt     [iCh]->Write();
       h_PRbaseEl3Pt     [iCh]->Write();
       h_PRbaseEl2and3Pt [iCh]->Write();
@@ -272,22 +329,22 @@ void Plotter::finalize()
       h_sumLepPtMet[iCh]->Write();
       h_dPhiWZ[iCh]->Write();
       h_nMuComb[iCh]->Write();
-      h_elPtcone30[iCh]->Write();
-      h_elEtcone30[iCh]->Write();
-      h_muPtcone30[iCh]->Write();
-      h_muEtcone30[iCh]->Write();
-      h_el1Ptcone30[iCh]->Write();
-      h_el1Etcone30[iCh]->Write();
-      h_mu1Ptcone30[iCh]->Write();
-      h_mu1Etcone30[iCh]->Write();
-      h_el2Ptcone30[iCh]->Write();
-      h_el2Etcone30[iCh]->Write();
-      h_mu2Ptcone30[iCh]->Write();
-      h_mu2Etcone30[iCh]->Write();
-      h_el3Ptcone30[iCh]->Write();
-      h_el3Etcone30[iCh]->Write();
-      h_mu3Ptcone30[iCh]->Write();
-      h_mu3Etcone30[iCh]->Write();
+      h_elTrackIso[iCh]->Write();
+      h_elCaloIso[iCh]->Write();
+      h_muTrackIso[iCh]->Write();
+      h_muCaloIso[iCh]->Write();
+      h_el1TrackIso[iCh]->Write();
+      h_el1CaloIso[iCh]->Write();
+      h_mu1TrackIso[iCh]->Write();
+      h_mu1CaloIso[iCh]->Write();
+      h_el2TrackIso[iCh]->Write();
+      h_el2CaloIso[iCh]->Write();
+      h_mu2TrackIso[iCh]->Write();
+      h_mu2CaloIso[iCh]->Write();
+      h_el3TrackIso[iCh]->Write();
+      h_el3CaloIso[iCh]->Write();
+      h_mu3TrackIso[iCh]->Write();
+      h_mu3CaloIso[iCh]->Write();
       h_lepD0[iCh]->Write();
       h_lep1D0[iCh]->Write();
       h_lep2D0[iCh]->Write();
@@ -402,6 +459,8 @@ void Plotter::finalize()
     }
   }
 
+  delete m_MMTool;
+
   MyAlways("finalize()",Form("Finalizing TFile: %s",m_rootfile->GetName()));
   if(m_sys!=""){
     m_rootfile->Close();
@@ -461,6 +520,8 @@ bool Plotter::BookHistograms()
     std::string chanName = vec_chan.at(iCh);
     h_lepChan[Ch_all]->GetXaxis()->SetBinLabel(iCh+1, chanName.c_str());
     h_baselepChan[Ch_all]->GetXaxis()->SetBinLabel(iCh+1, chanName.c_str());
+    // MM weight
+    NEWHIST( mmWeight, "MM Weight;Events", 100, -3., 3.);
     // lep pt - my choice of binning                                                                            
     NEWVARHIST( lep1Pt, "Leading lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
     NEWVARHIST( lep2Pt, "Second lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
@@ -594,6 +655,27 @@ bool Plotter::BookHistograms()
     NEWVARHIST( fakeBaseMu3Pt,                "Third fake baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
     NEWVARHIST( fakeBaseMu2and3Pt, "Second and Third fake baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
 
+    NEWVARHIST( PRbaselep1Pt, "Leading PR base lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
+    NEWVARHIST( PRbaselep2Pt,  "Second PR base lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( PRbaselep3Pt,   "Third PR base lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
+    NEWVARHIST( CObaselep1Pt, "Leading CO base lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
+    NEWVARHIST( CObaselep2Pt,  "Second CO base lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( CObaselep3Pt,   "Third CO base lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
+    NEWVARHIST( HFbaselep1Pt, "Leading HF base lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
+    NEWVARHIST( HFbaselep2Pt,  "Second HF base lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( HFbaselep3Pt,   "Third HF base lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
+    NEWVARHIST( LFbaselep1Pt, "Leading LF base lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
+    NEWVARHIST( LFbaselep2Pt,  "Second LF base lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( LFbaselep3Pt,   "Third LF base lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
+    NEWVARHIST( UKbaselep1Pt, "Leading UK base lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
+    NEWVARHIST( UKbaselep2Pt,  "Second UK base lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( UKbaselep3Pt,   "Third UK base lepton_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
+
+    NEWVARHIST( PRbaselep2and3Pt, "Second and third PR base lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( CObaselep2and3Pt, "Second and third CO base lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( HFbaselep2and3Pt, "Second and third HF base lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( LFbaselep2and3Pt, "Second and third LF base lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( UKbaselep2and3Pt, "Second and third UK base lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
     // baseline lep eta
     ETAHIST( PRbaseEl2Eta,               "Second PR baseline electron_{} #eta;Events" );
     ETAHIST( PRbaseEl3Eta,                "Third PR baseline electron_{} #eta;Events" );
@@ -632,6 +714,29 @@ bool Plotter::BookHistograms()
     ETAHIST( fakeBaseMu3Eta,                "Third fake baseline muon_{} #eta;Events" );
     ETAHIST( fakeBaseMu2and3Eta, "Second and Third fake baseline muon_{} #eta;Events" );
 
+    ETAHIST( PRbaselep1Eta, "Leading PR base lepton #eta;Events" );
+    ETAHIST( PRbaselep2Eta,  "Second PR base lepton #eta;Events" );
+    ETAHIST( PRbaselep3Eta,   "Third PR base lepton #eta;Events" );
+    ETAHIST( CObaselep1Eta, "Leading CO base lepton #eta;Events" );
+    ETAHIST( CObaselep2Eta,  "Second CO base lepton #eta;Events" );
+    ETAHIST( CObaselep3Eta,   "Third CO base lepton #eta;Events" );
+    ETAHIST( HFbaselep1Eta, "Leading HF base lepton #eta;Events" );
+    ETAHIST( HFbaselep2Eta,  "Second HF base lepton #eta;Events" );
+    ETAHIST( HFbaselep3Eta,   "Third HF base lepton #eta;Events" );
+    ETAHIST( LFbaselep1Eta, "Leading LF base lepton #eta;Events" );
+    ETAHIST( LFbaselep2Eta,  "Second LF base lepton #eta;Events" );
+    ETAHIST( LFbaselep3Eta,   "Third LF base lepton #eta;Events" );
+    ETAHIST( UKbaselep1Eta, "Leading UK base lepton #eta;Events" );
+    ETAHIST( UKbaselep2Eta,  "Second UK base lepton #eta;Events" );
+    ETAHIST( UKbaselep3Eta,   "Third UK base lepton #eta;Events" );
+
+    ETAHIST( PRbaselep2and3Eta, "Second and third PR base lepton #eta;Events" );
+    ETAHIST( CObaselep2and3Eta, "Second and third CO base lepton #eta;Events" );
+    ETAHIST( HFbaselep2and3Eta, "Second and third HF base lepton #eta;Events" );
+    ETAHIST( LFbaselep2and3Eta, "Second and third LF base lepton #eta;Events" );
+    ETAHIST( UKbaselep2and3Eta, "Second and third UK base lepton #eta;Events" );
+
+
     // signal/base lepton for real efficiency/fake rate
     NEWHIST( sgnlfakelepClass,      "signal lepton classcation", 6, 0, 6 );
     NEWHIST( basefakelepClass, "baseline lepton classification", 6, 0, 6 );
@@ -662,40 +767,40 @@ bool Plotter::BookHistograms()
     NEWHIST( nMuComb, "Number of combined muons;Events", 4, -0.5, 3.5 );
 
     // isolation vars
-    NEWHIST( elPtcone30, "Electron ptcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( elEtcone30, "Electron topo etcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( muPtcone30, "Muon ptcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( muEtcone30, "Muon etcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( el1Ptcone30, "Leading electron ptcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( el1Etcone30, "Leading electron topo etcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( mu1Ptcone30, "Leading muon ptcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( mu1Etcone30, "Leading muon etcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( el2Ptcone30, "Second electron ptcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( el2Etcone30, "Second electron topo etcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( mu2Ptcone30, "Second muon ptcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( mu2Etcone30, "Second muon etcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( el3Ptcone30, "Third electron ptcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( el3Etcone30, "Third electron topo etcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( mu3Ptcone30, "Third muon ptcone30 [GeV];Events", 50, 0, 50 );
-    NEWHIST( mu3Etcone30, "Third muon etcone30 [GeV];Events", 50, 0, 50 );
+    NEWHIST( elTrackIso, "Electron TrackIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( elCaloIso, "Electron CaloIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( muTrackIso, "Muon TrackIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( muCaloIso, "Muon CaloIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( el1TrackIso, "Leading electron TrackIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( el1CaloIso, "Leading electron CaloIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( mu1TrackIso, "Leading muon TrackIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( mu1CaloIso, "Leading muon CaloIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( el2TrackIso, "Second electron TrackIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( el2CaloIso, "Second electron CaloIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( mu2TrackIso, "Second muon TrackIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( mu2CaloIso, "Second muon CaloIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( el3TrackIso, "Third electron TrackIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( el3CaloIso, "Third electron CaloIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( mu3TrackIso, "Third muon TrackIso/P_{T};Events", 50, 0, 1 );
+    NEWHIST( mu3CaloIso, "Third muon CaloIso/P_{T};Events", 50, 0, 1 );
 
     // impact parameters
-    NEWHIST( lepD0, "Lepton |d0| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lep1D0, "Leading lepton |d0| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lep2D0, "Second lepton |d0| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lep3D0, "Third lepton |d0| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lepZ0, "Lepton |z0| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lep1Z0, "Leading lepton |z0| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lep2Z0, "Second lepton |z0| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lep3Z0, "Third lepton |z0| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lepD0Sig, "Lepton |d0/#sigma_{d0}|;Events", 20, 0, 3.0 );
-    NEWHIST( lep1D0Sig, "Leading lepton |d0/#sigma_{d0}|;Events", 20, 0, 3.0 );
-    NEWHIST( lep2D0Sig, "Second lepton |d0/#sigma_{d0}|;Events", 20, 0, 3.0 );
-    NEWHIST( lep3D0Sig, "Third lepton |d0/#sigma_{d0}|;Events", 20, 0, 3.0 );
-    NEWHIST( lepZ0SinTheta, "Lepton |z0sin#theta| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lep1Z0SinTheta, "Leading lepton |z0sin#theta| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lep2Z0SinTheta, "Second lepton |z0sin#theta| [mm];Events", 20, 0, 0.5 );
-    NEWHIST( lep3Z0SinTheta, "Third lepton |z0sin#theta| [mm];Events", 20, 0, 0.5 );
+    NEWHIST( lepD0, "Lepton |d0| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lep1D0, "Leading lepton |d0| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lep2D0, "Second lepton |d0| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lep3D0, "Third lepton |d0| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lepZ0, "Lepton |z0| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lep1Z0, "Leading lepton |z0| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lep2Z0, "Second lepton |z0| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lep3Z0, "Third lepton |z0| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lepD0Sig, "Lepton |d0/#sigma_{d0}|;Events", 25, 0, 6.0 );
+    NEWHIST( lep1D0Sig, "Leading lepton |d0/#sigma_{d0}|;Events", 25, 0, 6.0 );
+    NEWHIST( lep2D0Sig, "Second lepton |d0/#sigma_{d0}|;Events", 25, 0, 6.0 );
+    NEWHIST( lep3D0Sig, "Third lepton |d0/#sigma_{d0}|;Events", 25, 0, 6.0 );
+    NEWHIST( lepZ0SinTheta, "Lepton |z0sin#theta| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lep1Z0SinTheta, "Leading lepton |z0sin#theta| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lep2Z0SinTheta, "Second lepton |z0sin#theta| [mm];Events", 25, 0, 0.5 );
+    NEWHIST( lep3Z0SinTheta, "Third lepton |z0sin#theta| [mm];Events", 25, 0, 0.5 );
 
     // lepton truth matching
     NEWHIST( lepOrigin, "Lepton truth origin;Leptons", PARTICLETYPES, 0, PARTICLETYPES );
@@ -971,9 +1076,9 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
 
   //Prepare 1st-3rd leading signal lepton's four-vector
   const Int_t nSigLeps = EveSelec->nSignalLeps();
-  Int_t leadLepIndex[nSigLeps];
-  Int_t leadLepFlavor[nSigLeps];
-  TLorentzVector leadLep[nSigLeps];
+  std::vector<Int_t> leadLepIndex(nSigLeps);
+  std::vector<Int_t> leadLepFlavor(nSigLeps);
+  std::vector<TLorentzVector> leadLep(nSigLeps);
   for(Int_t id=0; id<nSigLeps; id++){
     leadLepIndex [id] = EveSelec->getLeadLepIndex (id);
     leadLepFlavor[id] = EveSelec->getLeadLepFlavor(id);
@@ -984,10 +1089,12 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   Int_t baseLepIndex[3];
   Int_t baseLepFlavor[3];
   TLorentzVector baseLep[3];
+  Int_t baseLepIsSig[3];
   for(Int_t id=0; id<3; id++){
     baseLepIndex [id] = EveSelec->getBaseLepIndex (id);
     baseLepFlavor[id] = EveSelec->getBaseLepFlavor(id);
     baseLep      [id] = EveSelec->getBaseLep      (id);
+    baseLepIsSig [id] = EveSelec->getBaseLepIsSig (id);
   }
 
   //Prepare 1st-3rd lepton's used for the analysis (can treat events with less than three signal lepton region)
@@ -1010,6 +1117,19 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
 
   //===========================================================================
   Double_t w = weight*EveSelec->getTotalSF();
+  Double_t mmWeight = 0.;
+  if(m_runMM){
+    MM::LepProp lepProp[2];
+    for(Int_t lep=0; lep<2; lep++){
+      lepProp[lep].pt       = baseLep      [lep+1].Pt(); //in GeV
+      lepProp[lep].eta      = baseLep      [lep+1].Eta();
+      lepProp[lep].flav     = (MM::LepFlav)baseLepFlavor[lep+1];
+      lepProp[lep].isSignal = baseLepIsSig [lep+1];
+      m_MMTool->setLepProp(lep,lepProp[lep]);
+    }
+    mmWeight = m_MMTool->getMMWeight();
+    w *= mmWeight;
+  }
 
   // Preprocessor convenience
   // All this does is append the corrent indices to the histo for sys and channel
@@ -1050,30 +1170,74 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   h_baselepChan[Ch_all]->Fill(Ch_all,w);
   h_baselepChan[Ch_all]->Fill(chan,w);
 
-  //Fill lead lepton
-  for(Int_t id=0; id<nSigLeps; id++){
+  //MM Weight
+  FillChanHist( h_mmWeight, mmWeight, 1.);
+
+  //Fill lepton
+  for(Int_t id=0; id<3; id++){
+    if(lepIndex[id]==-1) continue;
     if(id==0){
-      FillChanHist( h_lep1Pt, leadLep[0].Pt()/1000., w );
-      FillElHist( 0, h_el1Pt, vec_signalElectron->at(leadLepIndex[0]).pt()/1000., w );
-      FillMuHist( 0, h_mu1Pt, vec_signalMuon    ->at(leadLepIndex[0]).pt()/1000., w );
-      FillChanHist( h_lep1Eta, leadLep[0].Eta(), w );
-      FillElHist( 0, h_el1Eta, vec_signalElectron->at(leadLepIndex[0]).eta(), w );
-      FillMuHist( 0, h_mu1Eta, vec_signalMuon    ->at(leadLepIndex[0]).eta(), w );
-    } else if (id==1) {
-      FillChanHist( h_lep2Pt, leadLep[1].Pt()/1000., w );
-      FillElHist( 1, h_el2Pt, vec_signalElectron->at(leadLepIndex[1]).pt()/1000., w );
-      FillMuHist( 1, h_mu2Pt, vec_signalMuon    ->at(leadLepIndex[1]).pt()/1000., w );
-      FillChanHist( h_lep2Eta, leadLep[1].Eta(), w );
-      FillElHist( 1, h_el2Eta, vec_signalElectron->at(leadLepIndex[1]).eta(), w );
-      FillMuHist( 1, h_mu2Eta, vec_signalMuon    ->at(leadLepIndex[1]).eta(), w );
-    } else if (id==2) {
-      FillChanHist( h_lep3Pt, leadLep[2].Pt()/1000., w );
-      FillElHist( 2, h_el3Pt, vec_signalElectron->at(leadLepIndex[2]).pt()/1000., w );
-      FillMuHist( 2, h_mu3Pt, vec_signalMuon    ->at(leadLepIndex[2]).pt()/1000., w );
-      FillChanHist( h_lep3Eta, leadLep[2].Eta(), w );
-      FillElHist( 2, h_el3Eta, vec_signalElectron->at(leadLepIndex[2]).eta(), w );
-      FillMuHist( 2, h_mu3Eta, vec_signalMuon    ->at(leadLepIndex[2]).eta(), w );
+      FillChanHist( h_lep1Pt , lep[id].Pt()/1000., w );
+      FillChanHist( h_lep1Eta, lep[id].Eta(), w );
+      if(lepFlavor[id]==0){
+        if(EveSelec->is3SigLepSel()){
+          FillElHist( id, h_el1Pt,  vec_signalElectron->at(leadLepIndex[id]).pt()/1000., w );
+          FillElHist( id, h_el1Eta, vec_signalElectron->at(leadLepIndex[id]).eta(), w );
+        }else{
+          FillBaseElHist( id, h_el1Pt,  vec_baseElectron->at(baseLepIndex[id]).pt()/1000., w );
+          FillBaseElHist( id, h_el1Eta, vec_baseElectron->at(baseLepIndex[id]).eta(), w );
+        }
+      }else if(lepFlavor[id]==1){
+        if(EveSelec->is3SigLepSel()){
+          FillMuHist( id, h_mu1Pt,  vec_signalMuon->at(leadLepIndex[id]).pt()/1000., w );
+          FillMuHist( id, h_mu1Eta, vec_signalMuon->at(leadLepIndex[id]).eta(), w );
+        }else{
+          FillBaseMuHist( id, h_mu1Pt,  vec_baseMuon->at(baseLepIndex[id]).pt()/1000., w );
+          FillBaseMuHist( id, h_mu1Eta, vec_baseMuon->at(baseLepIndex[id]).eta(), w );
+        }
+      }
+    }else if(id==1){
+      FillChanHist( h_lep2Pt , lep[id].Pt()/1000., w );
+      FillChanHist( h_lep2Eta, lep[id].Eta(), w );
+      if(lepFlavor[id]==0){
+        if(EveSelec->is3SigLepSel()){
+          FillElHist( id, h_el2Pt,  vec_signalElectron->at(leadLepIndex[id]).pt()/1000., w );
+          FillElHist( id, h_el2Eta, vec_signalElectron->at(leadLepIndex[id]).eta(), w );
+        }else{
+          FillBaseElHist( id, h_el2Pt,  vec_baseElectron->at(baseLepIndex[id]).pt()/1000., w );
+          FillBaseElHist( id, h_el2Eta, vec_baseElectron->at(baseLepIndex[id]).eta(), w );
+        }
+      }else if(lepFlavor[id]==1){
+        if(EveSelec->is3SigLepSel()){
+          FillMuHist( id, h_mu2Pt,  vec_signalMuon->at(leadLepIndex[id]).pt()/1000., w );
+          FillMuHist( id, h_mu2Eta, vec_signalMuon->at(leadLepIndex[id]).eta(), w );
+        }else{
+          FillBaseMuHist( id, h_mu2Pt,  vec_baseMuon->at(baseLepIndex[id]).pt()/1000., w );
+          FillBaseMuHist( id, h_mu2Eta, vec_baseMuon->at(baseLepIndex[id]).eta(), w );
+        }
+      }
+    }else if(id==2){
+      FillChanHist( h_lep3Pt , lep[id].Pt()/1000., w );
+      FillChanHist( h_lep3Eta, lep[id].Eta(), w );
+      if(lepFlavor[id]==0){
+        if(EveSelec->is3SigLepSel()){
+          FillElHist( id, h_el3Pt,  vec_signalElectron->at(leadLepIndex[id]).pt()/1000., w );
+          FillElHist( id, h_el3Eta, vec_signalElectron->at(leadLepIndex[id]).eta(), w );
+        }else{
+          FillBaseElHist( id, h_el3Pt,  vec_baseElectron->at(baseLepIndex[id]).pt()/1000., w );
+          FillBaseElHist( id, h_el3Eta, vec_baseElectron->at(baseLepIndex[id]).eta(), w );
+        }
+      }else if(lepFlavor[id]==1){
+        if(EveSelec->is3SigLepSel()){
+          FillMuHist( id, h_mu3Pt,  vec_signalMuon->at(leadLepIndex[id]).pt()/1000., w );
+          FillMuHist( id, h_mu3Eta, vec_signalMuon->at(leadLepIndex[id]).eta(), w );
+        }else{
+          FillBaseMuHist( id, h_mu3Pt,  vec_baseMuon->at(baseLepIndex[id]).pt()/1000., w );
+          FillBaseMuHist( id, h_mu3Eta, vec_baseMuon->at(baseLepIndex[id]).eta(), w );
+        }
+      }
     }
+
   }
 
   //Fill lepton system, sum Pt
@@ -1087,33 +1251,35 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   //Fill isolation values
   for(Int_t id=0; id<3; id++){
     if(lepIndex[id]==-1) continue;
-    float ptcone30 = EveSelec->getIsolationValue(lepIndex[id], lepFlavor[id], xAOD::Iso::ptcone30);
-    float etcone30 = EveSelec->getIsolationValue(lepIndex[id], lepFlavor[id], xAOD::Iso::etcone30);
     if(lepFlavor[id]==0){
-      FillChanHist( h_elPtcone30, ptcone30/1000., w);
-      FillChanHist( h_elEtcone30, etcone30/1000., w);
+      float TrackIso = EveSelec->getIsolationValue(lepIndex[id], lepFlavor[id], xAOD::Iso::ptvarcone20 );
+      float CaloIso  = EveSelec->getIsolationValue(lepIndex[id], lepFlavor[id], xAOD::Iso::topoetcone20);
+      FillChanHist( h_elTrackIso, TrackIso/lep[id].Pt(), w);
+      FillChanHist( h_elCaloIso , CaloIso /lep[id].Pt(), w);
       if(id==0){
-        FillChanHist( h_el1Ptcone30, ptcone30/1000., w);
-        FillChanHist( h_el1Etcone30, etcone30/1000., w);
+        FillChanHist( h_el1TrackIso, TrackIso/lep[id].Pt(), w);
+        FillChanHist( h_el1CaloIso , CaloIso /lep[id].Pt(), w);
       }else if(id==1){
-        FillChanHist( h_el2Ptcone30, ptcone30/1000., w);
-        FillChanHist( h_el2Etcone30, etcone30/1000., w);
+        FillChanHist( h_el2TrackIso, TrackIso/lep[id].Pt(), w);
+        FillChanHist( h_el2CaloIso , CaloIso /lep[id].Pt(), w);
       }else if(id==2){
-        FillChanHist( h_el3Ptcone30, ptcone30/1000., w);
-        FillChanHist( h_el3Etcone30, etcone30/1000., w);
+        FillChanHist( h_el3TrackIso, TrackIso/lep[id].Pt(), w);
+        FillChanHist( h_el3CaloIso , CaloIso /lep[id].Pt(), w);
       }
     }else{
-      FillChanHist( h_muPtcone30, ptcone30/1000., w);
-      FillChanHist( h_muEtcone30, etcone30/1000., w);
+      float TrackIso = EveSelec->getIsolationValue(lepIndex[id], lepFlavor[id], xAOD::Iso::ptvarcone30 );
+      float CaloIso  = EveSelec->getIsolationValue(lepIndex[id], lepFlavor[id], xAOD::Iso::topoetcone20);
+      FillChanHist( h_muTrackIso, TrackIso/lep[id].Pt(), w);
+      FillChanHist( h_muCaloIso , CaloIso /lep[id].Pt(), w);
       if(id==0){
-        FillChanHist( h_mu1Ptcone30, ptcone30/1000., w);
-        FillChanHist( h_mu1Etcone30, etcone30/1000., w);
+        FillChanHist( h_mu1TrackIso, TrackIso/lep[id].Pt(), w);
+        FillChanHist( h_mu1CaloIso , CaloIso /lep[id].Pt(), w);
       }else if(id==1){
-        FillChanHist( h_mu2Ptcone30, ptcone30/1000., w);
-        FillChanHist( h_mu2Etcone30, etcone30/1000., w);
+        FillChanHist( h_mu2TrackIso, TrackIso/lep[id].Pt(), w);
+        FillChanHist( h_mu2CaloIso , CaloIso /lep[id].Pt(), w);
       }else if(id==2){
-        FillChanHist( h_mu3Ptcone30, ptcone30/1000., w);
-        FillChanHist( h_mu3Etcone30, etcone30/1000., w);
+        FillChanHist( h_mu3TrackIso, TrackIso/lep[id].Pt(), w);
+        FillChanHist( h_mu3CaloIso , CaloIso /lep[id].Pt(), w);
       }
     }
   }
@@ -1315,8 +1481,14 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
         FillChanHist( h_baselepClass, 0., w);
         if       (id==0) {
           FillChanHist( h_baselep1Class, 0., w);
+          FillChanHist( h_PRbaselep1Pt,  baseLep[0].Pt()/1000., w );
+          FillChanHist( h_PRbaselep1Eta, baseLep[0].Eta()     , w );
         } else if(id==1) {
           FillChanHist( h_baselep2Class, 0., w);
+          FillChanHist( h_PRbaselep2Pt,  baseLep[1].Pt()/1000., w );
+          FillChanHist( h_PRbaselep2Eta, baseLep[1].Eta()     , w );
+          FillChanHist( h_PRbaselep2and3Pt,  baseLep[1].Pt()/1000., w );
+          FillChanHist( h_PRbaselep2and3Eta, baseLep[1].Eta(),w );
           FillBaseElHist( id, h_basefakelepClass,     0., w);
           FillBaseElHist( id, h_basefakelepClass,     2., w);
           FillBaseElHist( id, h_fakebaseEl2and3Class, 0., w);
@@ -1355,6 +1527,10 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           }
         } else if(id==2) {
           FillChanHist( h_baselep3Class, 0., w);
+          FillChanHist( h_PRbaselep3Pt,  baseLep[2].Pt()/1000., w );
+          FillChanHist( h_PRbaselep3Eta, baseLep[2].Eta()     , w );
+          FillChanHist( h_PRbaselep2and3Pt,  baseLep[2].Pt()/1000., w );
+          FillChanHist( h_PRbaselep2and3Eta, baseLep[2].Eta()     , w );
           FillBaseElHist( id, h_basefakelepClass,     0., w);
           FillBaseElHist( id, h_basefakelepClass,     2., w);
           FillBaseElHist( id, h_fakebaseEl2and3Class, 0., w);
@@ -1398,8 +1574,14 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
         FillChanHist( h_baselepClass, 1., w );
         if       (id==0) {
           FillChanHist( h_baselep1Class, 1., w );
+          FillChanHist( h_CObaselep1Pt,  baseLep[0].Pt()/1000., w );
+          FillChanHist( h_CObaselep1Eta, baseLep[0].Eta()     , w );
         } else if(id==1) {
           FillChanHist( h_baselep2Class, 1., w );
+          FillChanHist( h_CObaselep2Pt,  baseLep[1].Pt()/1000., w );
+          FillChanHist( h_CObaselep2Eta, baseLep[1].Eta()     , w );
+          FillChanHist( h_CObaselep2and3Pt,  baseLep[1].Pt()/1000., w );
+          FillChanHist( h_CObaselep2and3Eta, baseLep[1].Eta()     , w );
           FillBaseElHist( id, h_basefakelepClass,     1., w );
           FillBaseElHist( id, h_basefakelepClass,     3., w );
           FillBaseElHist( id, h_fakebaseEl2and3Class, 1., w );
@@ -1453,6 +1635,10 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           }
         } else if(id==2) {
           FillChanHist( h_baselep3Class, 1., w );
+          FillChanHist( h_CObaselep3Pt,  baseLep[2].Pt()/1000., w );
+          FillChanHist( h_CObaselep3Eta, baseLep[2].Eta()     , w );
+          FillChanHist( h_CObaselep2and3Pt,  baseLep[2].Pt()/1000., w );
+          FillChanHist( h_CObaselep2and3Eta, baseLep[2].Eta()     , w );
           FillBaseElHist( id, h_basefakelepClass,     1., w );
           FillBaseElHist( id, h_basefakelepClass,     3., w );
           FillBaseElHist( id, h_fakebaseEl2and3Class, 1., w );
@@ -1512,8 +1698,14 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
         FillChanHist( h_baselepClass, 2., w);
         if     (id==0)   { 
           FillChanHist( h_baselep1Class, 2., w);
+          FillChanHist( h_HFbaselep1Pt,  baseLep[0].Pt()/1000., w );
+          FillChanHist( h_HFbaselep1Eta, baseLep[0].Eta()     , w );
         } else if(id==1) {
           FillChanHist( h_baselep2Class, 2., w);
+          FillChanHist( h_HFbaselep2Pt,  baseLep[1].Pt()/1000., w );
+          FillChanHist( h_HFbaselep2Eta, baseLep[1].Eta()     , w );
+          FillChanHist( h_HFbaselep2and3Pt,  baseLep[1].Pt()/1000., w );
+          FillChanHist( h_HFbaselep2and3Eta, baseLep[1].Eta()     , w );
           FillBaseElHist( id, h_basefakelepClass,     1., w);
           FillBaseElHist( id, h_basefakelepClass,     3., w);
           FillBaseElHist( id, h_fakebaseEl2and3Class, 2., w);
@@ -1567,6 +1759,10 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           }
         } else if(id==2) {
           FillChanHist( h_baselep3Class, 2., w);
+          FillChanHist( h_HFbaselep3Pt,  baseLep[2].Pt()/1000., w );
+          FillChanHist( h_HFbaselep3Eta, baseLep[2].Eta()     , w );
+          FillChanHist( h_HFbaselep2and3Pt,  baseLep[2].Pt()/1000., w );
+          FillChanHist( h_HFbaselep2and3Eta, baseLep[2].Eta()     , w );
           FillBaseElHist( id, h_basefakelepClass,     1., w);
           FillBaseElHist( id, h_basefakelepClass,     3., w);
           FillBaseElHist( id, h_fakebaseEl2and3Class, 2., w);
@@ -1625,8 +1821,14 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
         FillChanHist( h_baselepClass, 3., w);
         if     (id==0)   { 
           FillChanHist( h_baselep1Class, 3., w);
+          FillChanHist( h_LFbaselep1Pt,  baseLep[0].Pt()/1000., w );
+          FillChanHist( h_LFbaselep1Eta, baseLep[0].Eta()     , w );
         } else if(id==1) {
           FillChanHist( h_baselep2Class, 3., w);
+          FillChanHist( h_LFbaselep2Pt,  baseLep[1].Pt()/1000., w );
+          FillChanHist( h_LFbaselep2Eta, baseLep[1].Eta()     , w );
+          FillChanHist( h_LFbaselep2and3Pt,  baseLep[1].Pt()/1000., w );
+          FillChanHist( h_LFbaselep2and3Eta, baseLep[1].Eta()     , w );
           FillBaseElHist( id, h_basefakelepClass,     1., w );
           FillBaseElHist( id, h_basefakelepClass,     3., w );
           FillBaseElHist( id, h_fakebaseEl2and3Class, 3., w );
@@ -1680,6 +1882,10 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           }
         } else if(id==2) {
           FillChanHist( h_baselep3Class, 3., w);
+          FillChanHist( h_LFbaselep3Pt,  baseLep[2].Pt()/1000., w );
+          FillChanHist( h_LFbaselep3Eta, baseLep[2].Eta()     , w );
+          FillChanHist( h_LFbaselep2and3Pt,  baseLep[2].Pt()/1000., w );
+          FillChanHist( h_LFbaselep2and3Eta, baseLep[2].Eta()     , w );
           FillBaseElHist( id, h_basefakelepClass,     1., w );
           FillBaseElHist( id, h_basefakelepClass,     3., w );
           FillBaseElHist( id, h_fakebaseEl2and3Class, 3., w );
@@ -1737,8 +1943,14 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
         FillChanHist( h_baselepClass, 4., w);
         if     (id==0)   { 
           FillChanHist( h_baselep1Class, 4., w);
+          FillChanHist( h_UKbaselep1Pt,  baseLep[0].Pt()/1000., w );
+          FillChanHist( h_UKbaselep1Eta, baseLep[0].Eta()     , w );
         } else if(id==1) {
           FillChanHist( h_baselep2Class, 4., w);
+          FillChanHist( h_UKbaselep2Pt,  baseLep[1].Pt()/1000., w );
+          FillChanHist( h_UKbaselep2Eta, baseLep[1].Eta()     , w );
+          FillChanHist( h_UKbaselep2and3Pt,  baseLep[1].Pt()/1000., w );
+          FillChanHist( h_UKbaselep2and3Eta, baseLep[1].Eta(),w );
           FillBaseElHist( id, h_basefakelepClass,     1., w );
           FillBaseElHist( id, h_basefakelepClass,     3., w );
           FillBaseElHist( id, h_fakebaseEl2and3Class, 4., w );
@@ -1792,6 +2004,10 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           }
         } else if(id==2) {
           FillChanHist( h_baselep3Class, 4., w);
+          FillChanHist( h_UKbaselep3Pt,  baseLep[2].Pt()/1000., w );
+          FillChanHist( h_UKbaselep3Eta, baseLep[2].Eta()     , w );
+          FillChanHist( h_UKbaselep2and3Pt,  baseLep[2].Pt()/1000., w );
+          FillChanHist( h_UKbaselep2and3Eta, baseLep[2].Eta(),w );
           FillBaseElHist( id, h_basefakelepClass,     1., w );
           FillBaseElHist( id, h_basefakelepClass,     3., w );
           FillBaseElHist( id, h_fakebaseEl2and3Class, 4., w );

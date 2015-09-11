@@ -33,6 +33,8 @@ int main( int argc, char* argv[] ) {
   std::string fileDirBase = "/home/hirose/atlas/data/DC14/mc14_13TeV";
   std::string outputDir = "result/submitDir";
   bool doSys = false;
+  bool runMM = false;
+  bool measureEff = false;
   bool useFAX = false;
   bool useGRID = false;
   //  bool limitTree = false;
@@ -59,6 +61,10 @@ int main( int argc, char* argv[] ) {
       sels.push_back(argv[++i]);
     else if (strcmp(argv[i], "--sys") == 0)
       doSys = true;
+    else if (strcmp(argv[i], "--runMM") == 0)
+      runMM = true;
+    else if (strcmp(argv[i], "--measureEff") == 0)
+      measureEff = true;
     else if (strcmp(argv[i], "--useFAX") == 0)
       useFAX = true;
     else if (strcmp(argv[i], "--useGRID") == 0)
@@ -83,6 +89,8 @@ int main( int argc, char* argv[] ) {
   std::cout <<Form("  useFAX   : %s"  , (useFAX?"true":"false")) << std::endl;
   std::cout <<Form("  useGRID  : %s"  , (useGRID?"true":"false")) << std::endl;
   std::cout <<Form("  doSys    : %s"  , (doSys ?"true":"false")) << std::endl;
+  std::cout <<Form("  runMM    : %s"  , (runMM ?"true":"false")) << std::endl;
+  std::cout <<Form("  measureEff: %s"  , (measureEff ?"true":"false")) << std::endl;
   std::cout << std::endl;
 
   // Aborting if useFAX but filelist was not specified
@@ -94,6 +102,12 @@ int main( int argc, char* argv[] ) {
   // Aborting if useGRID but filelist was specified
   if(useGRID && (!filelist.empty() || !file.empty())){
     std::cout<<"Error: Please do not specify -F, --filelist, --FileDirBase with --useGRID."<<std::endl;
+    return 0;
+  }
+
+  // Aborting if runMM and measureEff are asserted at the same time
+  if(runMM && measureEff){
+    std::cout<<"Error: Please do not specify --runMM and --measureEff at the same time."<<std::endl;
     return 0;
   }
 
@@ -218,6 +232,8 @@ int main( int argc, char* argv[] ) {
   alg->SetNoSyst(!doSys);
   alg->SetDSID(dsid);
   alg->SetSkipNum(nSkip);
+  alg->SetRunMM(runMM);
+  alg->SetMeasureEff(measureEff);
   if(useGRID) alg->SetOutputDir("./");
   else        alg->SetOutputDir(submitDir.c_str());
   for(uint i=0; i<sels.size(); i++) alg->SetSelectionRegion(sels.at(i).c_str());
@@ -277,6 +293,10 @@ void help()
   std::cout << "     each usage adds one region"     << std::endl;
 
   std::cout << "  --sys turns on MC systematics"     << std::endl;
+
+  std::cout << "  --runMM uses MM weight for histograms" << std::endl;
+
+  std::cout << "  --measureEff to measure efficiency in specified regions" << std::endl;
 
   //  std::cout << "  --limitTree write limit tree"      << std::endl;
 
