@@ -56,6 +56,7 @@ Plotter::Plotter(const std::string& sel, const std::string& sys, const MSG::Leve
   m_sel(sel),
   m_sys(sys),
   m_runMM(false),
+  m_effFile(""),
   m_MMTool(NULL),
   m_filename(""),
   m_crossSection(0.),
@@ -92,15 +93,7 @@ void Plotter::initialize(const char* path, int dsid, double XS, TFile* file)
     std::string prefix = gSystem->ExpandPathName("$ROOTCOREBIN/data/MMTool/");
     Int_t nDimForEff = 1;
     if     (nDimForEff==0) m_MMTool->prepEffHists(prefix+"h0026.GT1S3B.root",nDimForEff);
-    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0032.GT1S3B.root",nDimForEff);
-    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0033.GT1S3B.root",nDimForEff);
-    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0034.GT1S3B.root",nDimForEff);
-    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0035.GT1S3B.root",nDimForEff);
-    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0036.GT1S3B.root",nDimForEff);
-    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0037.GT1S3B.root",nDimForEff);
-    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0038.GT1S3B.root",nDimForEff);
-    //    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0039.GT1S3B.root",nDimForEff);
-    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+"h0041.GT1S3B.root",nDimForEff);
+    else if(nDimForEff==1) m_MMTool->prepEffHists(prefix+m_effFile,nDimForEff);
   }
 
 }

@@ -164,10 +164,10 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   CHECK(m_susyObjTool->setProperty("Is8TeV", false) ) ;
   
   CHECK(m_susyObjTool->setProperty("EleId","TightLLH") );
-  CHECK(m_susyObjTool->setProperty("EleIdBaseline","LooseLLH") );
-  // CHECK(m_susyObjTool->setProperty("EleIdBaseline","MediumLLH") );
+  CHECK(m_susyObjTool->setProperty("EleIdBaseline",m_eleIdBaseline.c_str()) );
   CHECK(m_susyObjTool->setProperty("MuId","Medium") );
   CHECK(m_susyObjTool->setProperty("TauId","Tight") );
+  CHECK(m_susyObjTool->setProperty("IsoWP",m_isoWP.c_str()) );
 
   CHECK(m_susyObjTool->setProperty("DoTruthBtag",true     ));
   CHECK(m_susyObjTool->setProperty("btagCutType","FlatCut"));
@@ -309,6 +309,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
       std::string systName     = sysListItr->name();
       Plotter* tmp_plotter = new Plotter(eveSelecName.c_str(), systName.c_str(), m_debugMode);
       tmp_plotter->SetRunMM(m_runMM);
+      tmp_plotter->SetEffFile(m_effFile.c_str());
       m_vec_plotter->at(eveSelec).push_back(tmp_plotter);
       if(systName==""){
         TFile *outfile = wk()->getOutputFile(Form("%d.%s.AnaHists",m_dsid,m_vec_eveSelec->at(eveSelec).c_str()));
