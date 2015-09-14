@@ -32,21 +32,21 @@ enEleIdBaseline=''
 enIsoWP=''
 while [ "$2" != "" ]
 do
-    if [ "$2" == "--runMM" ]; then
+    if [ "$2" = "--runMM" ]; then
         echo 'Enabled --runMM'
         enRunMM='true'
-    elif [ "$2" == "--effFile" ]; then
+    elif [ "$2" = "--effFile" ]; then
         enEffFile='--effFile '${3}
         echo 'Enabled --effFile:' ${enEffFile}
         shift
-    elif [ "$2" == "--measureEff" ]; then
+    elif [ "$2" = "--measureEff" ]; then
         echo 'Enabled --measureEff'
         enMeasureEff='--measureEff'
-    elif [ "$2" == "--eleIdBaseline" ]; then
-        enEleIdBaseline='--eleIdBaselien '${3}
-        echo 'Enabled --eleIdBaselien:' ${enEleIdBaseline}
+    elif [ "$2" = "--eleIdBaseline" ]; then
+        enEleIdBaseline='--eleIdBaseline '${3}
+        echo 'Enabled --eleIdBaseline:' ${enEleIdBaseline}
         shift
-    elif [ "$2" == "--isoWP" ]; then
+    elif [ "$2" = "--isoWP" ]; then
         enIsoWP='--isoWP '${3}
         echo 'Enabled --isoWP:' ${enIsoWP}
         shift
@@ -78,7 +78,6 @@ do
 done
 tagNum4ThisTime=`expr $maxTagNum + 1`
 tagNum=`printf "%04d" $tagNum4ThisTime` #zero padding
-echo h$tagNum
 \mkdir lsfoutput/h${tagNum}
 \mkdir result/h${tagNum}
 
@@ -114,15 +113,15 @@ runnum=`echo $TXT | cut -c $startPos-$runnumEndPos`
 #echo $TXT
 ######################################################
 
-######################################################
-# Waiting for #submitted jobs to be less than maxJobs
-maxJobs=800
-while [ $(bjobs | wc -l) -gt $maxJobs  ]
-do
-    echo Currently $(bjobs | wc -l) jobs are runnning. Wait for 10 seconds to keep less running jobs...
-    sleep 10
-done
-######################################################
+#######################################################
+## Waiting for #submitted jobs to be less than maxJobs
+#maxJobs=800
+#while [ $(bjobs | wc -l) -gt $maxJobs  ]
+#do
+#    echo Currently $(bjobs | wc -l) jobs are runnning. Wait for 10 seconds to keep less running jobs...
+#    sleep 10
+#done
+#######################################################
 
 ###################################################################
 # Finding MC samples with fake leptons for MM
@@ -139,7 +138,7 @@ FakeDSID=("110070" "110071" "110302" "110305" #single top
 )
 
 runMM=''
-if [ $enRunMM = 'true' ]; then
+if [ "$enRunMM" = 'true' ]; then
     for fakeDS in "${FakeDSID[@]}"
     do
         if [ "$runnum" = "$fakeDS" ]; then
@@ -155,8 +154,8 @@ fi
 maxEve=-1
 queue=1d
 echo Starting testRun for DSID=$runnum ...
-echo bsub -q ${queue} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM} ${enMeasureEff} ${enEffFile} ${enEleIdBaseline} ${enIsoWP}
-bsub -q ${queue} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM} ${enMeasureEff}${enEffFile} ${enEleIdBaseline} ${enIsoWP}
+echo bsub -q ${queue} -J h${tagNum} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM} ${enMeasureEff} ${enEffFile} ${enEleIdBaseline} ${enIsoWP}
+bsub -q ${queue} -J h${tagNum} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM} ${enMeasureEff}${enEffFile} ${enEleIdBaseline} ${enIsoWP}
 echo ''
 done
 
