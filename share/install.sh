@@ -1,8 +1,8 @@
 #!/bin/sh
 git clone git://github.com/hrsmnr/MMTool.git
 source /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/user/atlasLocalSetup.sh
-rcSetup SUSY,2.3.24a
-rc checkout_pkg $SVNOFF/PhysicsAnalysis/SUSYPhys/SUSYTools/tags/SUSYTools-00-06-23-03
+rcSetup SUSY,2.3.23
+rc checkout_pkg $SVNOFF/PhysicsAnalysis/SUSYPhys/SUSYTools/tags/SUSYTools-00-06-22
 rc checkout SUSYTools/doc/packages.txt
 # rc checkout_pkg $SVNOFF/Reconstruction/EventShapes/EventShapeTools/tags/EventShapeTools-00-01-09
 # rc checkout_pkg $SVNOFF/Reconstruction/EventShapes/EventShapeInterface/tags/EventShapeInterface-00-00-09

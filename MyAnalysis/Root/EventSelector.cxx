@@ -13,7 +13,8 @@
 #include"EventPrimitives/EventPrimitivesHelpers.h"
 #include"xAODMissingET/MissingETAuxContainer.h"
 // #include"xAODEgamma/EgammaxAODHelpers.h"
-#include "xAODTruth/xAODTruthHelpers.h"
+#include"xAODTruth/xAODTruthHelpers.h"
+#include"TauAnalysisTools/TauTruthMatchingTool.h"
 #include"MyAnalysis/MCTruthClassifierDefs.h"//Copied from MCTruthClassifier-00-01-31
 #include"MyAnalysis/MT2_ROOT.h"//MT2 tool by CalcGenericMT2
 
@@ -1397,6 +1398,21 @@ bool EventSelector::selectObject()
     MyError("selectObject()","Failing to retrieve TauContainer.");
     rtrvFail = true;
   }
+
+  // // Print their properties, using the tools
+  // for(const auto& tau : *taus_copy){
+  //   if(m_isMC){
+  //     const xAOD::TruthParticle* truthTau = m_tauTruthMatchingTool->getTruth(*tau);
+  //     if(tau->auxdata<char>("IsTruthMatched") || !truthTau) {
+  //       if(m_dbg<=MSG::DEBUG) MyInfo( APP_NAME,
+  //                                     Form("Tau was matched to a truth tau, which has %i prongs and a charge of %i",
+  //                                          int(tau->auxdata<size_t>("TruthProng")),
+  //                                          tau->auxdata<int>("TruthCharge")));
+  //     } else {
+  //       if(m_dbg<=MSG::DEBUG) MyInfo( APP_NAME, "Tau was not matched to truth" );
+  //     }
+  //   }
+  // }
 
   ///////////////////////////////////////////////////
   // do overlap removal

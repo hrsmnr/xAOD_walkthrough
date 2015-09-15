@@ -197,8 +197,10 @@ int main( int argc, char* argv[] ) {
   int dsid = -1;
   if(useDir){
     if     (fileDir.substr(0,10)=="mc14_13TeV"  ) dsid = atoi(fileDir.substr(11,6).c_str());
-    else if(fileDir.substr(0, 9)=="mc14_8TeV"   ) dsid = atoi(fileDir.substr(10,6).c_str());
+    else if(fileDir.substr(0,10)=="mc15_13TeV"  ) dsid = atoi(fileDir.substr(11,6).c_str());
     else if(fileDir.substr(0,12)=="data14_13TeV") dsid = atoi(fileDir.substr(13,6).c_str());
+    else if(fileDir.substr(0,12)=="data15_13TeV") dsid = atoi(fileDir.substr(13,6).c_str());
+    else if(fileDir.substr(0, 9)=="mc14_8TeV"   ) dsid = atoi(fileDir.substr(10,6).c_str());
   }else{
     std::cout<<filelist.substr(0,6).c_str()<<std::endl;
     dsid = atoi(filelist.substr(0,6).c_str());

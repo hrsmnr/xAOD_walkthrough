@@ -11,8 +11,11 @@
 #include <MyAnalysis/MyxAODAnalysis.h>
 
 //added by minoru
+#include"TauAnalysisTools/TauTruthMatchingTool.h"
 #include"SUSYTools/SUSYObjDef_xAOD.h"
 #include"SUSYTools/SUSYCrossSection.h"
+#include"xAODCutFlow/CutBookkeeper.h"
+#include"xAODCutFlow/CutBookkeeperContainer.h"
 
 #include"MyAnalysis/EventSelector.h"
 #include"TStopwatch.h"
@@ -80,6 +83,41 @@ EL::StatusCode MyxAODAnalysis :: fileExecute ()
   // Here you do everything that needs to be done exactly once for every
   // single file, e.g. collect a list of all lumi-blocks processed
 
+  //Added by minoru
+  m_event = wk()->xaodEvent();
+  MyAlways("initialize()", Form("Input file changed... Number of events in this file = %lli.", m_event->getEntries())); //print in long long int
+
+  ///////////////////////////////////////////
+  //Read the CutBookkeeper container
+  const xAOD::CutBookkeeperContainer* completeCBC = 0;
+  if(!m_event->retrieveMetaInput(completeCBC, "CutBookkeepers").isSuccess()){
+    MyError(APP_NAME, "Failed to retrieve CutBookkeepers from MetaData! Exiting.");
+  }
+  // First, let's find the smallest cycle number,
+  // i.e., the original first processing step/cycle
+  int minCycle = 10000;
+  for(auto cbk : *completeCBC){
+    if(minCycle>cbk->cycle()) minCycle = cbk->cycle();
+  }
+  // Now, let's actually find the right one that contains all the needed info...
+  const xAOD::CutBookkeeper* allEventsCBK = 0;
+  for(auto cbk : *completeCBC){
+    if(minCycle==cbk->cycle() && cbk->name()=="AllExecutedEvents"){
+      allEventsCBK = cbk;
+      break;
+    }
+  }
+  if(allEventsCBK){
+    uint64_t nEventsProcessed  = allEventsCBK->nAcceptedEvents();
+    double sumOfWeights        = allEventsCBK->sumOfEventWeights();
+    double sumOfWeightsSquared = allEventsCBK->sumOfEventWeightsSquared();
+    MyAlways(APP_NAME, Form("CutBookkeepers Accepted %lu SumWei %f sumWei2 %f ",nEventsProcessed,sumOfWeights,sumOfWeightsSquared));
+  }else{
+    MyError(APP_NAME, "No relevent CutBookKeepers found"); 
+  }
+  std::cout<<"hogehoge"<<std::endl;
+  getchar();
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -90,6 +128,7 @@ EL::StatusCode MyxAODAnalysis :: changeInput (bool firstFile)
   // Here you do everything you need to do when we change input files,
   // e.g. resetting branch addresses on trees.  If you are using
   // D3PDReader or a similar service this method is not needed.
+
   return EL::StatusCode::SUCCESS;
 }
 
@@ -108,10 +147,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
 
   //Added by minoru
   MyDebug("initialize()", "Initializing MyxAODAnalysis");
-  m_event = wk()->xaodEvent();
-
-  //as a check, let's see the number of events in our xAOD
-  MyAlways("initialize()", Form("Number of events = %lli. %lli events will be processed.", m_event->getEntries(), m_maxEvent)); //print in long long int
+  MyAlways("initialize()", Form("%lli events will be processed.", m_maxEvent)); //print in long long int
 
   m_eventCounter = 0;
   m_processedEvents = 0;
@@ -152,6 +188,16 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
 
   ST::SettingDataSource datasource = isData ? ST::Data : (isAtlFast ? ST::AtlfastII : ST::FullSim);
 
+  // Tau Truth matching tool:
+  m_tauTruthMatchingTool = NULL;
+  if(!isData){
+    m_tauTruthMatchingTool = new TauAnalysisTools::TauTruthMatchingTool("TauTruthMatchingTool");
+    m_tauTruthMatchingTool->msg().setLevel( MSG::INFO );
+    //    m_tauTruthMatchingTool->setProperty("WriteTruthTaus",true);
+    CHECK(m_tauTruthMatchingTool->initialize());
+  }
+
+  ///////////////////////////////////////////
   //  Create the tool(s) to test:
   MyDebug("initialize()", "Preparing SUSYTools");
   m_susyObjTool = new ST::SUSYObjDef_xAOD("SUSYObjDef_xAOD");
@@ -160,24 +206,18 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
 
   CHECK(m_susyObjTool->setProperty("DataSource",datasource) ) ;
 
-  CHECK(m_susyObjTool->setProperty("Is8TeV", false) ) ;
+  CHECK(m_susyObjTool->setProperty("JetInputType", xAOD::JetInput::EMTopo) );
   
-  CHECK(m_susyObjTool->setProperty("EleId","TightLLH") );
-  CHECK(m_susyObjTool->setProperty("EleIdBaseline","LooseLLH") );
-  // CHECK(m_susyObjTool->setProperty("EleIdBaseline","MediumLLH") );
-  CHECK(m_susyObjTool->setProperty("MuId","Medium") );
+  CHECK(m_susyObjTool->setProperty("EleId","TightLH") );
+  CHECK(m_susyObjTool->setProperty("EleIdBaseline","LooseLH") );
+  CHECK(m_susyObjTool->setProperty("MuId",xAOD::Muon::Medium) );
   CHECK(m_susyObjTool->setProperty("TauId","Tight") );
 
-  CHECK(m_susyObjTool->setProperty("MuIsoWP", m_muIso_WP  = "Gradient"));
-  CHECK(m_susyObjTool->setProperty("EleIsoWP",m_eleIso_WP = "Tight"));
+  //  CHECK(m_susyObjTool->setProperty("EleIsoWP",m_eleIso_WP = "EL0p06"));
+  //  CHECK(m_susyObjTool->setProperty("MuIsoWP", m_muIso_WP  = "MU0p06"));
+  CHECK(m_susyObjTool->setProperty("EleIsoWP",m_eleIso_WP = "GradientLoose"));
+  CHECK(m_susyObjTool->setProperty("MuIsoWP", m_muIso_WP  = "GradientLoose"));
 
-  CHECK(m_susyObjTool->setProperty("DoTruthBtag",true     ));
-  CHECK(m_susyObjTool->setProperty("btagCutType","FlatCut"));
-  CHECK(m_susyObjTool->setProperty("btagParamD" ,"1D"     ));
-  CHECK(m_susyObjTool->setProperty("btagAlg"    ,"MV2c00" ));
-  CHECK(m_susyObjTool->setProperty("btagEff"    ,"90"     ));//Modified from 70 to 90
-  
-  CHECK(m_susyObjTool->setProperty("IsDerived",true) ) ; //??? need to check
   // Set to true for DxAOD, false for primary xAOD
   CHECK(m_susyObjTool->setProperty("DoJetAreaCalib",true) ); //somehow "false" craches the process.
   // Set to false if not doing JetAreaCalib
@@ -385,6 +425,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   //Filling event into h_nEve.
   for(uint eve=0; eve<m_vec_eveSelec->size(); eve++){
     for(uint syst=0; syst<m_sysList.size(); syst++){
+      //      if(m_noSyst==false || syst==0) m_vec_plotter->at(eve).at(syst)->FillNEvent(m_eventWeight);// do not work for skimmed datasets.
       if(m_noSyst==false || syst==0) m_vec_plotter->at(eve).at(syst)->FillNEvent(m_eventWeight);
     }
   }
@@ -396,6 +437,17 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   // End of preselection
   ///////////////////////////////////////////////////////////////////////////
   if(m_debugMode<=MSG::DEBUG) m_store.print();
+
+  ///////////////////////////////////////////////////////////////////////////
+  // Prepare the tau truth matching before the systematic variations
+  ///////////////////////////////////////////////////////////////////////////
+  const xAOD::TruthParticleContainer* truthP = 0;
+  if(m_isMC){
+    // Get the Truth Particles from the event:
+    CHECK( m_event->retrieve(truthP, "TruthParticles"));
+    if(m_debugMode<=MSG::DEBUG) MyInfo( APP_NAME, Form("Number of truth particles: %i", static_cast<int>(truthP->size())));
+    CHECK( m_tauTruthMatchingTool->initializeEvent() );
+  }
 
   /////////////////////////////////////////////////////////////////////////
   // Now loop over all the systematic variations and event selections
@@ -438,6 +490,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
       myEveSelec->setBaseJetPtEtaThreshold(20000,2.8);
       myEveSelec->setSigJetPtEtaThreshold(20000,2.8);
       myEveSelec->setStore(&m_store);
+      myEveSelec->setTauTruthMatchingTool(m_tauTruthMatchingTool);
       myEveSelec->selectObject();
       m_vec_plotter->at(eveSelec).at(isys)->FillHistoPreSelec(myEveSelec,m_eventWeight);
       Bool_t passSelec = myEveSelec->selectEvent();
@@ -453,7 +506,6 @@ EL::StatusCode MyxAODAnalysis :: execute ()
       ++isys;
     }
 
-  
     MyDebug("execute()", "Store before .clear()");
     if(m_debugMode<=MSG::DEBUG) m_store.print();
     m_store.clear();
@@ -513,6 +565,10 @@ EL::StatusCode MyxAODAnalysis :: finalize ()
   if(m_grl){
     delete m_grl;
     m_grl = 0;
+  }
+  if(m_tauTruthMatchingTool){
+    delete m_tauTruthMatchingTool;
+    m_tauTruthMatchingTool = 0;
   }
 
   for(uint eve=0; eve<m_vec_eveSelec->size(); eve++){

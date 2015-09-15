@@ -36,6 +36,9 @@ namespace xAOD{
 namespace CP{
   class SystematicSet;
 }
+namespace TauAnalysisTools{
+  class TauTruthMatchingTool;
+}
 class GoodRunsListSelectionTool;
 class EventSelector;
 class TStopwatch;
@@ -83,6 +86,7 @@ public:
   ST::SUSYObjDef_xAOD *m_susyObjTool; //!
   SUSY::CrossSectionDB *m_XSDB; //!
   GoodRunsListSelectionTool *m_grl; //!
+  TauAnalysisTools::TauTruthMatchingTool *m_tauTruthMatchingTool; //!
 #endif // not __CINT__
 
   std::vector<std::vector<Plotter*> > *m_vec_plotter; //!
