@@ -1,5 +1,5 @@
 # xAOD_walkthrough
-Analysis framework based on Base,2.1.33 with SUSYTools-00-05-00-31.
+Analysis framework based on Base,2.3.23 with SUSYTools-00-06-22.
 
 ## Contents of the package ----
 ./MyAnalysis : analysis package for EventLoop.  
@@ -15,7 +15,7 @@ kinit [your account]@CERN.CH #not necessary but recommended
 
 ## Tips / example -----
 $git clone git://github.com/hrsmnr/xAOD_walkthrough.git [destination]  
-$git clone git://github.com/hrsmnr/MMTool.git
+$git clone git://github.com/hrsmnr/MMTool.git  
 $git remote add origin https://hrsmnr@github.com/hrsmnr/xAOD_walkthrough.git  
 $git log --branches --not --remotes  
 $source rcSetup.sh  
