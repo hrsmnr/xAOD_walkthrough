@@ -603,8 +603,8 @@ EL::StatusCode MyxAODAnalysis :: finalize ()
       }
     }
   }
-  // delete m_vec_plotter;
-  // delete m_vec_watch;
+  delete m_vec_plotter;
+  delete m_vec_watch;
   //end adding
 
   return EL::StatusCode::SUCCESS;
