@@ -84,6 +84,9 @@ EL::StatusCode MyxAODAnalysis :: fileExecute ()
   // single file, e.g. collect a list of all lumi-blocks processed
 
   //Added by minoru
+  m_processedEventsInFile = 0;
+  m_processedEventsBeforeSkim = 0;
+  m_sumWeightBeforeSkim = 0;
   m_event = wk()->xaodEvent();
   MyAlways("initialize()", Form("Input file changed... Number of events in this file = %lli.", m_event->getEntries())); //print in long long int
 
@@ -112,11 +115,11 @@ EL::StatusCode MyxAODAnalysis :: fileExecute ()
     double sumOfWeights        = allEventsCBK->sumOfEventWeights();
     double sumOfWeightsSquared = allEventsCBK->sumOfEventWeightsSquared();
     MyAlways(APP_NAME, Form("CutBookkeepers Accepted %lu SumWei %f sumWei2 %f ",nEventsProcessed,sumOfWeights,sumOfWeightsSquared));
+    m_processedEventsBeforeSkim = nEventsProcessed;
+    m_sumWeightBeforeSkim = sumOfWeights;
   }else{
     MyError(APP_NAME, "No relevent CutBookKeepers found"); 
   }
-  std::cout<<"hogehoge"<<std::endl;
-  getchar();
 
   return EL::StatusCode::SUCCESS;
 }
@@ -145,11 +148,15 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   // you create here won't be available in the output if you have no
   // input events.
 
+  CP::SystematicCode::enableFailure();
+
   //Added by minoru
   MyDebug("initialize()", "Initializing MyxAODAnalysis");
   MyAlways("initialize()", Form("%lli events will be processed.", m_maxEvent)); //print in long long int
 
   m_eventCounter = 0;
+  m_totalProcessedEventsBeforeSkim = 0;
+  m_totalSumWeightBeforeSkim = 0;
   m_processedEvents = 0;
   m_numCleanEvents = 0;
   m_eventWeight = 1.;
@@ -385,6 +392,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   m_eventCounter++; //Incrementing here since event might be rejected by some quality checks below.
   if( m_maxEvent>=0 && 
       ( m_eventCounter<=m_nSkipNum || (m_maxEvent+m_nSkipNum)<m_eventCounter ) ) return EL::StatusCode::SUCCESS;
+  m_processedEventsInFile++;
   m_processedEvents++;
 
   //----------------------------
@@ -426,7 +434,15 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   for(uint eve=0; eve<m_vec_eveSelec->size(); eve++){
     for(uint syst=0; syst<m_sysList.size(); syst++){
       //      if(m_noSyst==false || syst==0) m_vec_plotter->at(eve).at(syst)->FillNEvent(m_eventWeight);// do not work for skimmed datasets.
-      if(m_noSyst==false || syst==0) m_vec_plotter->at(eve).at(syst)->FillNEvent(m_eventWeight);
+      if(m_noSyst==false || syst==0){
+        if(m_maxEvent>0){
+          m_vec_plotter->at(eve).at(syst)->FillNEvent(m_eventWeight);
+        }else if(m_processedEventsInFile==1){
+          m_vec_plotter->at(eve).at(syst)->FillNEvent(m_sumWeightBeforeSkim);
+          m_totalProcessedEventsBeforeSkim+=m_processedEventsBeforeSkim;
+          m_totalSumWeightBeforeSkim+=m_sumWeightBeforeSkim;
+        }
+      }
     }
   }
 
@@ -500,7 +516,10 @@ EL::StatusCode MyxAODAnalysis :: execute ()
       myEveSelec->finalize();
       delete myEveSelec;
 
-      m_susyObjTool->resetSystematics();
+      if(m_susyObjTool->resetSystematics()!=CP::SystematicCode::Ok){
+        MyError("execute()", "Cannot reset SUSYTools systematics" );
+        exit(-2);
+      }
       m_vec_watch->at(eveSelec).at(isys)->Stop();
       if(m_noSyst) break; //break if NoSyst flag is true;
       ++isys;
@@ -553,8 +572,10 @@ EL::StatusCode MyxAODAnalysis :: finalize ()
   // gets called on worker nodes that processed input events.
 
   //Added by minoru
-  MyAlways("finalize()", Form("Total #Events in the sample dataset : %lli", m_eventCounter) );
-  MyAlways("finalize()", Form("#(Used Events) : %lli, #(Healthy events) : %lli", m_processedEvents, m_numCleanEvents) );
+  MyAlways("finalize()", Form("Total #events in the sample dataset before skimming: %lli", m_processedEventsBeforeSkim) );
+  MyAlways("finalize()", Form("Total #events given to this algorithm              : %lli", m_eventCounter) );
+  MyAlways("finalize()", Form("#(Processed Events)                                : %lli", m_processedEvents) );
+  MyAlways("finalize()", Form("#(Healthy events)                                  : %lli", m_numCleanEvents) );
   dumpEventCounters();
   dumpEventCountersAC();
 

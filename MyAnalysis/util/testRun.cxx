@@ -125,6 +125,19 @@ int main( int argc, char* argv[] ) {
     return 0;
   }
 
+  // Warning if "-k" or "-n" which won't work to scale MC with skimmed datasets is specified.
+  if(nSkip!=0 || nEvt>0){
+    std::cout<<std::endl;
+    std::cout<<"============================================================================"<<std::endl;
+    std::cout<<"Warning!!: \"-k\" or \"-n\" option was specified."                           <<std::endl;
+    std::cout<<"           This option prevents proper scaling for MC without special care. "<<std::endl;
+    std::cout<<"           Process interupted to check if you are sure."                     <<std::endl;
+    std::cout<<"           Hit enter to proceed..."                                          <<std::endl;
+    std::cout<<"============================================================================"<<std::endl;
+    std::cout<<std::endl;
+    getchar();
+  }
+
   std::cout << "selections: ";
   for(uint i=0; i<sels.size(); i++) std::cout << "\"" << sels[i] << "\" ";
   std::cout << std::endl;

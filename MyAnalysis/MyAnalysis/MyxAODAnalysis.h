@@ -62,6 +62,11 @@ public:
   xAOD::TStore m_store; //!
   bool m_isMC; //!
   long long int m_eventCounter; //!
+  long long int m_processedEventsBeforeSkim; //!
+  long long int m_sumWeightBeforeSkim; //!
+  long long int m_totalProcessedEventsBeforeSkim; //!
+  long long int m_totalSumWeightBeforeSkim; //!
+  long long int m_processedEventsInFile; //!
   long long int m_processedEvents; //!
   long long int m_numCleanEvents; //!
   double m_eventWeight; //!
