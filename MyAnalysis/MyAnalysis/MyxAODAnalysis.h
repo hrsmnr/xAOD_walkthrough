@@ -16,10 +16,12 @@
 #include "PATInterfaces/SystematicRegistry.h"
 #include "PATInterfaces/SystematicCode.h"
 
-#include"MyAnalysis/Plotter.h"
+#include "MyAnalysis/Plotter.h"
 
 #include<string>
 #include<vector>
+#include "TFile.h"
+#include "TSystem.h"
 
 namespace ST{
   class SUSYObjDef_xAOD;
@@ -33,6 +35,9 @@ namespace xAOD{
 }
 namespace CP{
   class SystematicSet;
+}
+namespace TauAnalysisTools{
+  class TauTruthMatchingTool;
 }
 class GoodRunsListSelectionTool;
 class EventSelector;
@@ -57,6 +62,11 @@ public:
   xAOD::TStore m_store; //!
   bool m_isMC; //!
   long long int m_eventCounter; //!
+  long long int m_processedEventsBeforeSkim; //!
+  long long int m_sumWeightBeforeSkim; //!
+  long long int m_totalProcessedEventsBeforeSkim; //!
+  long long int m_totalSumWeightBeforeSkim; //!
+  long long int m_processedEventsInFile; //!
   long long int m_processedEvents; //!
   long long int m_numCleanEvents; //!
   double m_eventWeight; //!
@@ -72,6 +82,8 @@ public:
   long long int m_nSkipNum;
   std::vector<std::string> *m_vec_eveSelec;
   std::string m_outputDir;
+  std::string m_eleIso_WP;
+  std::string m_muIso_WP;
   bool m_runMM;
   bool m_measureEff;
   std::string m_eleIdBaseline;
@@ -82,6 +94,7 @@ public:
   ST::SUSYObjDef_xAOD *m_susyObjTool; //!
   SUSY::CrossSectionDB *m_XSDB; //!
   GoodRunsListSelectionTool *m_grl; //!
+  TauAnalysisTools::TauTruthMatchingTool *m_tauTruthMatchingTool; //!
 #endif // not __CINT__
 
   std::vector<std::vector<Plotter*> > *m_vec_plotter; //!

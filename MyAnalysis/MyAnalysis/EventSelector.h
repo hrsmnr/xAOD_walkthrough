@@ -22,6 +22,10 @@ namespace xAOD{
   class TStore;
 }
 
+namespace TauAnalysisTools{
+  class TauTruthMatchingTool;
+}
+
 #define nAnaLep 4
 #define nAnaJet 4
 enum ChIndex{Ch_all,Ch_eee,Ch_eem,Ch_emm,Ch_mmm,nChannels};
@@ -42,6 +46,7 @@ class EventSelector : public TObject
   virtual bool initialize();
   virtual void finalize();
   virtual void setStore(xAOD::TStore* store){m_store=store;};
+  virtual void setTauTruthMatchingTool(TauAnalysisTools::TauTruthMatchingTool* tauTruthMatchingTool){m_tauTruthMatchingTool=tauTruthMatchingTool;};
   virtual void setSigElMuPtThreshold(double elPtCut=5000, double muPtCut=5000);
   virtual void setBaseElMuPtThreshold(double elPtCut=5000, double muPtCut=5000);
   virtual void setSigJetPtEtaThreshold(double jetPtCut=20000, double jetEtaCut=2.8);
@@ -128,8 +133,8 @@ class EventSelector : public TObject
   virtual bool IsMyPreJet          (xAOD::Jet& jet);
   virtual bool IsMyBaselineJet     (xAOD::Jet& jet);
   virtual bool IsMySignalJet       (xAOD::Jet& jet);
-  virtual bool PassIsoElectron(const xAOD::Electron& input, const ST::SignalIsoExp::IsoExp whichiso, ST::IsSignalElectronExpCutArgs args);
-  virtual bool PassIsoMuon(const xAOD::Muon& input, const ST::SignalIsoExp::IsoExp whichiso, ST::IsSignalMuonExpCutArgs args);
+  // virtual bool PassIsoElectron(const xAOD::Electron& input, const ST::SignalIso::IsoExp whichiso, ST::IsSignalElectronExpCutArgs args);
+  // virtual bool PassIsoMuon(const xAOD::Muon& input, const ST::SignalIso::IsoExp whichiso, ST::IsSignalMuonExpCutArgs args);
 
 
   std::vector< xAOD::Electron >* GetSignalElectron(){return m_vec_signalElectron;};
@@ -425,6 +430,7 @@ class EventSelector : public TObject
 
   ST::SUSYObjDef_xAOD           *m_susyObjTool;    // Object definition tool in SUSYTools
   xAOD::TStore                  *m_store;          // TStore passed by MyxAODAnalysis
+  TauAnalysisTools::TauTruthMatchingTool *m_tauTruthMatchingTool; //TauTruthMatchingTool passed by MyxAODAnalysis
 
   bool                           m_objReady;       // true after calling selectObject();
   int                            m_nSignalLeps;

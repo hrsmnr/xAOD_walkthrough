@@ -32,7 +32,7 @@ int main( int argc, char* argv[] ) {
   std::string filelist = "";
   std::string fileDirBase = "/home/hirose/atlas/data/DC14/mc14_13TeV";
   std::string outputDir = "result/submitDir";
-  std::string eleIdBaseline = "LooseLLH";
+  std::string eleIdBaseline = "LooseLH";
   std::string isoWP = "GradientLoose";
   std::string effFile = "";
   bool doSys = false;
@@ -143,6 +143,19 @@ int main( int argc, char* argv[] ) {
     return 0;
   }
 
+  // Warning if "-k" or "-n" which won't work to scale MC with skimmed datasets is specified.
+  if(nSkip!=0 || nEvt>0){
+    std::cout<<std::endl;
+    std::cout<<"============================================================================"<<std::endl;
+    std::cout<<"Warning!!: \"-k\" or \"-n\" option was specified."                           <<std::endl;
+    std::cout<<"           This option prevents proper scaling for MC without special care. "<<std::endl;
+    std::cout<<"           Process interupted to check if you are sure."                     <<std::endl;
+    std::cout<<"           Hit enter to proceed..."                                          <<std::endl;
+    std::cout<<"============================================================================"<<std::endl;
+    std::cout<<std::endl;
+    getchar();
+  }
+
   std::cout << "selections: ";
   for(uint i=0; i<sels.size(); i++) std::cout << "\"" << sels[i] << "\" ";
   std::cout << std::endl;
@@ -215,8 +228,10 @@ int main( int argc, char* argv[] ) {
   int dsid = -1;
   if(useDir){
     if     (fileDir.substr(0,10)=="mc14_13TeV"  ) dsid = atoi(fileDir.substr(11,6).c_str());
-    else if(fileDir.substr(0, 9)=="mc14_8TeV"   ) dsid = atoi(fileDir.substr(10,6).c_str());
+    else if(fileDir.substr(0,10)=="mc15_13TeV"  ) dsid = atoi(fileDir.substr(11,6).c_str());
     else if(fileDir.substr(0,12)=="data14_13TeV") dsid = atoi(fileDir.substr(13,6).c_str());
+    else if(fileDir.substr(0,12)=="data15_13TeV") dsid = atoi(fileDir.substr(13,6).c_str());
+    else if(fileDir.substr(0, 9)=="mc14_8TeV"   ) dsid = atoi(fileDir.substr(10,6).c_str());
   }else{
     std::cout<<filelist.substr(0,6).c_str()<<std::endl;
     dsid = atoi(filelist.substr(0,6).c_str());
