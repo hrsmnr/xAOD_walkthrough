@@ -12,7 +12,7 @@
 #include"EventLoop/StatusCode.h"
 #include"EventPrimitives/EventPrimitivesHelpers.h"
 #include"xAODMissingET/MissingETAuxContainer.h"
-// #include"xAODEgamma/EgammaxAODHelpers.h"
+
 #include"xAODTruth/xAODTruthHelpers.h"
 #include"TauAnalysisTools/TauTruthMatchingTool.h"
 #include"MyAnalysis/MCTruthClassifierDefs.h"//Copied from MCTruthClassifier-00-01-31
@@ -1868,10 +1868,6 @@ bool EventSelector::passACCut_jetClean  (xAOD::Jet& jet){
   if(jet.auxdata<char>("baseline")==1 && jet.auxdata<char>("passOR")==1){
     if(jet.pt()>m_baseJetPtCut && fabs(jet.eta())<m_baseJetEtaCut){
       //This "if" is needed since "false" will be returned when we input a jet with pt<m_baseJetPtCut to IsGoodJet()...
-      // if(not m_susyObjTool->IsGoodJet(jet, m_baseJetPtCut, m_baseJetEtaCut)){ // No IsGoodJet() in SUSYTools6
-      //   b_passAC_jetClean = false;
-      //   return false;
-      // }
       if(m_susyObjTool->IsBadJet(jet)){ // bool IsBadJet(const xAOD::Jet& input, float jvtcut=0.64);
         b_passAC_jetClean = false;
         return false;
@@ -3338,16 +3334,7 @@ bool EventSelector::isRealLepton(unsigned int id)
   else{
     if(lepFlavor[id]==0){
       Int_t type   = xAOD::TruthHelpers::getParticleTruthType  (vec_electron->at(lepIndex[id]));
-      //      Int_t type   = xAOD::EgammaHelpers::getParticleTruthType  (&(vec_electron->at(lepIndex[id])));
-      //      Int_t origin = xAOD::EgammaHelpers::getParticleTruthOrigin(&(vec_electron->at(lepIndex[id])));
-      //      std::cout<<Form("Electron type %d origin %d", type, origin)<<std::endl;
       if(type==MCTruthPartClassifier::IsoElectron) return true;
-      //      const xAOD::TruthParticle* truthEle = xAOD::EgammaHelpers::getTruthParticle(&el);
-      //      if(truthEle){
-      //        std::cout<<Form(" Truth Electron pt %f eta %f", truthEle->pt(), truthEle->eta())<<std::endl;
-      //      }else{
-      //        std::cout<<Form(" Truth Electron not found")<<std::endl;
-      //      }
     }else{
       int muonTruthType   = 0;
       //      int muonTruthOrigin = 0;
@@ -3359,12 +3346,6 @@ bool EventSelector::isRealLepton(unsigned int id)
         //        if(acc_truthOrigin.isAvailable(*trackParticle)) muonTruthOrigin = acc_truthOrigin(*trackParticle);
         //        std::cout<<Form("Muon type %d origin %d", muonTruthType, muonTruthOrigin)<<std::endl;
         if(muonTruthType==MCTruthPartClassifier::IsoMuon) return true;
-        // const xAOD::TruthParticle* truthMu = xAOD::EgammaHelpers::getTruthParticle(trackParticle);
-        // if(truthMu){
-        //   Info( APP_NAME, " Truth Muon pt %f eta %f", truthMu->pt(), truthMu->eta() );
-        // }else{
-        //   Info( APP_NAME, " Truth Muon not found");
-        // }
       }
     }
   }

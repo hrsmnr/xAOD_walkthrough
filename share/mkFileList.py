@@ -7,8 +7,7 @@ import os,sys,commands
 print 'Making filelist for testRun...'
 
 #defining the target directory
-targetDir = '/home/hirose/atlas/data/DC14/mc14_13TeV'
-# targetDir = '/gpfs/fs2001/dhdaiki/MM3L/FAX/DC14/mc14_13TeV'
+targetDir = '/gpfs/fs2001/hirose/MC15/SUSY2'
 if len(sys.argv)==2: targetDir = os.path.abspath(sys.argv[1])
 
 #checking if the specified target is a directory
@@ -36,7 +35,7 @@ for dirid in range(ndirs):
     if not isDir: continue
     if len(dirlist[dirid])<20: continue
     print 'For directory of ...', dirlist[dirid]
-    projectName = 'mc14_13TeV.'
+    projectName = 'mc15_13TeV.'
     dsidStartPos = dirlist[dirid].find(projectName)
     if dsidStartPos==-1: #case of the real data
         projectName = 'data15_13TeV.'

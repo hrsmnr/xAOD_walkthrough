@@ -4,12 +4,6 @@ source /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/user/atlasLocalSetup.sh
 rcSetup SUSY,2.3.23
 rc checkout_pkg $SVNOFF/PhysicsAnalysis/SUSYPhys/SUSYTools/tags/SUSYTools-00-06-22
 rc checkout SUSYTools/doc/packages.txt
-# rc checkout_pkg $SVNOFF/Reconstruction/EventShapes/EventShapeTools/tags/EventShapeTools-00-01-09
-# rc checkout_pkg $SVNOFF/Reconstruction/EventShapes/EventShapeInterface/tags/EventShapeInterface-00-00-09
-# rc checkout_pkg $SVNOFF/PhysicsAnalysis/ElectronPhotonID/ElectronEfficiencyCorrection/tags/ElectronEfficiencyCorrection-00-01-19
-# rc checkout_pkg $SVNOFF/PhysicsAnalysis/ElectronPhotonID/PhotonEfficiencyCorrection/tags/PhotonEfficiencyCorrection-00-01-05
-# rc checkout_pkg $SVNPERF/CombPerf/FlavorTag/FlavorTagEfficiencyMaps/PreRun2_DC14/tags/PreRun2_DC14-00-00-07
-# mv $ROOTCOREBIN/../PreRun2_DC14 $ROOTCOREBIN/../BTagEfficiencyReader
 rc checkout_pkg svn+ssh://svn.cern.ch/reps/atlasphys/Physics/SUSY/Tools/CalcGenericMT2
 cp CalcGenericMT2/src/MT2.h MyAnalysis/MyAnalysis/
 cp CalcGenericMT2/src/MT2_ROOT.h MyAnalysis/MyAnalysis/
