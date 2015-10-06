@@ -8,12 +8,13 @@
 #include<iostream>
 #include"MyAnalysis/Plotter.h"
 #include"SUSYTools/SUSYObjDef_xAOD.h"
-#include"xAODEgamma/EgammaxAODHelpers.h"
+#include"xAODTruth/xAODTruthHelpers.h"
 #include"MyAnalysis/MCTruthClassifierDefs.h"
 #include"EventPrimitives/EventPrimitivesHelpers.h"
 
 #include"MMTool/MMTool.h"
 
+#include"TSystem.h"
 #include"TFile.h"
 #include"TH1F.h"
 #include"TH2F.h"
@@ -26,6 +27,8 @@ double lep1PtBins[] = {0, 10, 20, 30, 50, 75, 100, 125, 150, 200, 300, 400, 500}
 uint nLep1PtBins = 12;
 double lep2PtBins[] = {0, 10, 20, 30, 40, 50, 60, 80, 100, 120, 150, 200};
 uint nLep2PtBins = 11;
+double mmEffPtBins[] = {0, 5, 7, 10, 15, 25, 50, 100, 200};
+uint nMmEffPtBins = 8;
 double lep3PtBins[] = {0, 10, 20, 30, 40, 50, 60, 80, 100, 120, 150};
 uint nLep3PtBins = 10;
 double massBins[] = {0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500};
@@ -524,42 +527,42 @@ bool Plotter::BookHistograms()
     NEWVARHIST( mu1Pt, "Leading muon_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
     NEWVARHIST( mu2Pt, "Second muon_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
     NEWVARHIST( mu3Pt, "Third muon_{} P_{T} [GeV];Events", nLep3PtBins, lep3PtBins );
-    NEWVARHIST( PREl2Pt,               "Second PR electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( PREl3Pt,                "Third PR electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( PREl2and3Pt, "Second and Third PR electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( COEl2Pt,               "Second CO electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( COEl3Pt,                "Third CO electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( COEl2and3Pt, "Second and Third CO electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( HFEl2Pt,               "Second HF electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( HFEl3Pt,                "Third HF electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( HFEl2and3Pt, "Second and Third HF electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( LFEl2Pt,               "Second LF electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( LFEl3Pt,                "Third LF electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( LFEl2and3Pt, "Second and Third LF electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( UKEl2Pt,               "Second UK electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( UKEl3Pt,                "Third UK electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( UKEl2and3Pt, "Second and Third UK electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( PRMu2Pt,               "Second PR muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( PRMu3Pt,                "Third PR muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( PRMu2and3Pt, "Second and Third PR muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( COMu2Pt,               "Second CO muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( COMu3Pt,                "Third CO muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( COMu2and3Pt, "Second and Third CO muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( HFMu2Pt,               "Second HF muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( HFMu3Pt,                "Third HF muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( HFMu2and3Pt, "Second and Third HF muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( LFMu2Pt,               "Second LF muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( LFMu3Pt,                "Third LF muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( LFMu2and3Pt, "Second and Third LF muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( UKMu2Pt,               "Second UK muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( UKMu3Pt,                "Third UK muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( UKMu2and3Pt, "Second and Third UK muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( fakeEl2Pt,               "Second fake electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( fakeEl3Pt,                "Third fake electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( fakeEl2and3Pt, "Second and Third fake electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( fakeMu2Pt,               "Second fake muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( fakeMu3Pt,                "Third fake muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( fakeMu2and3Pt, "Second and Third fake muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( PREl2Pt,               "Second PR electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( PREl3Pt,                "Third PR electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( PREl2and3Pt, "Second and Third PR electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( COEl2Pt,               "Second CO electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( COEl3Pt,                "Third CO electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( COEl2and3Pt, "Second and Third CO electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( HFEl2Pt,               "Second HF electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( HFEl3Pt,                "Third HF electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( HFEl2and3Pt, "Second and Third HF electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( LFEl2Pt,               "Second LF electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( LFEl3Pt,                "Third LF electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( LFEl2and3Pt, "Second and Third LF electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( UKEl2Pt,               "Second UK electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( UKEl3Pt,                "Third UK electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( UKEl2and3Pt, "Second and Third UK electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( PRMu2Pt,               "Second PR muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( PRMu3Pt,                "Third PR muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( PRMu2and3Pt, "Second and Third PR muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( COMu2Pt,               "Second CO muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( COMu3Pt,                "Third CO muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( COMu2and3Pt, "Second and Third CO muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( HFMu2Pt,               "Second HF muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( HFMu3Pt,                "Third HF muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( HFMu2and3Pt, "Second and Third HF muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( LFMu2Pt,               "Second LF muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( LFMu3Pt,                "Third LF muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( LFMu2and3Pt, "Second and Third LF muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( UKMu2Pt,               "Second UK muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( UKMu3Pt,                "Third UK muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( UKMu2and3Pt, "Second and Third UK muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( fakeEl2Pt,               "Second fake electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( fakeEl3Pt,                "Third fake electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( fakeEl2and3Pt, "Second and Third fake electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( fakeMu2Pt,               "Second fake muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( fakeMu3Pt,                "Third fake muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( fakeMu2and3Pt, "Second and Third fake muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
 
 
     // lep eta
@@ -610,42 +613,42 @@ bool Plotter::BookHistograms()
     ETAHIST( fakeMu2and3Eta, "Second and Third fake muon_{} #eta;Events" );
 
     // baseline lep pt
-    NEWVARHIST( PRbaseEl2Pt,               "Second PR baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( PRbaseEl3Pt,                "Third PR baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( PRbaseEl2and3Pt, "Second and Third PR baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( CObaseEl2Pt,               "Second CO baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( CObaseEl3Pt,                "Third CO baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( CObaseEl2and3Pt, "Second and Third CO baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( HFbaseEl2Pt,               "Second HF baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( HFbaseEl3Pt,                "Third HF baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( HFbaseEl2and3Pt, "Second and Third HF baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( LFbaseEl2Pt,               "Second LF baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( LFbaseEl3Pt,                "Third LF baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( LFbaseEl2and3Pt, "Second and Third LF baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( UKbaseEl2Pt,               "Second UK baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( UKbaseEl3Pt,                "Third UK baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( UKbaseEl2and3Pt, "Second and Third UK baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( PRbaseMu2Pt,               "Second PR baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( PRbaseMu3Pt,                "Third PR baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( PRbaseMu2and3Pt, "Second and Third PR baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( CObaseMu2Pt,               "Second CO baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( CObaseMu3Pt,                "Third CO baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( CObaseMu2and3Pt, "Second and Third CO baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( HFbaseMu2Pt,               "Second HF baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( HFbaseMu3Pt,                "Third HF baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( HFbaseMu2and3Pt, "Second and Third HF baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( LFbaseMu2Pt,               "Second LF baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( LFbaseMu3Pt,                "Third LF baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( LFbaseMu2and3Pt, "Second and Third LF baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( UKbaseMu2Pt,               "Second UK baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( UKbaseMu3Pt,                "Third UK baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( UKbaseMu2and3Pt, "Second and Third UK baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( fakeBaseEl2Pt,               "Second fake baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( fakeBaseEl3Pt,                "Third fake baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( fakeBaseEl2and3Pt, "Second and Third fake baseline electron_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( fakeBaseMu2Pt,               "Second fake baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( fakeBaseMu3Pt,                "Third fake baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
-    NEWVARHIST( fakeBaseMu2and3Pt, "Second and Third fake baseline muon_{} P_{T} [Gev];Events", nLep2PtBins, lep2PtBins );
+    NEWVARHIST( PRbaseEl2Pt,               "Second PR baseline electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( PRbaseEl3Pt,                "Third PR baseline electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( PRbaseEl2and3Pt, "Second and Third PR baseline electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( CObaseEl2Pt,               "Second CO baseline electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( CObaseEl3Pt,                "Third CO baseline electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( CObaseEl2and3Pt, "Second and Third CO baseline electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( HFbaseEl2Pt,               "Second HF baseline electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( HFbaseEl3Pt,                "Third HF baseline electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( HFbaseEl2and3Pt, "Second and Third HF baseline electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( LFbaseEl2Pt,               "Second LF baseline electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( LFbaseEl3Pt,                "Third LF baseline electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( LFbaseEl2and3Pt, "Second and Third LF baseline electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( UKbaseEl2Pt,               "Second UK baseline electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( UKbaseEl3Pt,                "Third UK baseline electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( UKbaseEl2and3Pt, "Second and Third UK baseline electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( PRbaseMu2Pt,               "Second PR baseline muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( PRbaseMu3Pt,                "Third PR baseline muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( PRbaseMu2and3Pt, "Second and Third PR baseline muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( CObaseMu2Pt,               "Second CO baseline muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( CObaseMu3Pt,                "Third CO baseline muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( CObaseMu2and3Pt, "Second and Third CO baseline muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( HFbaseMu2Pt,               "Second HF baseline muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( HFbaseMu3Pt,                "Third HF baseline muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( HFbaseMu2and3Pt, "Second and Third HF baseline muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( LFbaseMu2Pt,               "Second LF baseline muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( LFbaseMu3Pt,                "Third LF baseline muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( LFbaseMu2and3Pt, "Second and Third LF baseline muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( UKbaseMu2Pt,               "Second UK baseline muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( UKbaseMu3Pt,                "Third UK baseline muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( UKbaseMu2and3Pt, "Second and Third UK baseline muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( fakeBaseEl2Pt,               "Second fake baseline electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( fakeBaseEl3Pt,                "Third fake baseline electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( fakeBaseEl2and3Pt, "Second and Third fake baseline electron_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( fakeBaseMu2Pt,               "Second fake baseline muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( fakeBaseMu3Pt,                "Third fake baseline muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
+    NEWVARHIST( fakeBaseMu2and3Pt, "Second and Third fake baseline muon_{} P_{T} [Gev];Events", nMmEffPtBins, mmEffPtBins );
 
     NEWVARHIST( PRbaselep1Pt, "Leading PR base lepton_{} P_{T} [GeV];Events", nLep1PtBins, lep1PtBins );
     NEWVARHIST( PRbaselep2Pt,  "Second PR base lepton_{} P_{T} [GeV];Events", nLep2PtBins, lep2PtBins );
@@ -1063,7 +1066,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   // }
 
   Int_t chan = EveSelec->getChan();
-  MyDebug("FillHistograms()",Form("Analized channel : %d",chan));
+  MyDebug("FillHistograms()",Form("Analyzed channel : %d",chan));
   if(chan<0) return false;
 
   //Prepare 1st-3rd leading signal lepton's four-vector
@@ -1122,6 +1125,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
     mmWeight = m_MMTool->getMMWeight();
     w *= mmWeight;
   }
+  MyDebug("FillHistograms()",Form("Event weight : %f",w));
 
   // Preprocessor convenience
   // All this does is append the corrent indices to the histo for sys and channel
@@ -1241,6 +1245,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   // FillChanHist( h_nMuComb, , w);
 
   //Fill isolation values
+  MyDebug("FillHistograms()","Filling isolation values");
   for(Int_t id=0; id<3; id++){
     if(lepIndex[id]==-1) continue;
     if(lepFlavor[id]==0){
@@ -1277,6 +1282,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   }
 
   //Fill lepton track variables
+  MyDebug("FillHistograms()","Filling lepton track variables");
   for(Int_t id=0; id<3; id++){
     if(lepIndex[id]==-1) continue;
     const xAOD::TrackParticle* track = EveSelec->getTrack(lepIndex[id], lepFlavor[id]);
@@ -1319,7 +1325,8 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
 
   //Fill lepton truth infomation
   if(m_isMC){
-    for(Int_t id=0; id<nSigLeps; id++){
+    MyDebug("FillHistograms()","Filling lepton truth information");
+    for(Int_t id=0; id<3; id++){
       if(lepIndex[id]==-1) continue;
       Int_t type   = -1;
       Int_t origin = -1;
@@ -1327,9 +1334,9 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
       std::vector< xAOD::Electron >* vec_electron = EveSelec->is3SigLepSel() ? vec_signalElectron : vec_baseElectron;
       std::vector< xAOD::Muon >*     vec_muon     = EveSelec->is3SigLepSel() ? vec_signalMuon     : vec_baseMuon;
       if(lepFlavor[id]==0){
-        type   = xAOD::EgammaHelpers::getParticleTruthType  (&(vec_electron->at(lepIndex[id])));
-        origin = xAOD::EgammaHelpers::getParticleTruthOrigin(&(vec_electron->at(lepIndex[id])));
-        const xAOD::TruthParticle* etrue = xAOD::EgammaHelpers::getTruthParticle(&(vec_electron->at(lepIndex[id])));
+        type   = xAOD::TruthHelpers::getParticleTruthType  (vec_electron->at(lepIndex[id]));
+        origin = xAOD::TruthHelpers::getParticleTruthOrigin(vec_electron->at(lepIndex[id]));
+        const xAOD::TruthParticle* etrue = xAOD::TruthHelpers::getTruthParticle(vec_electron->at(lepIndex[id]));
         if(etrue) pdgid = etrue->pdgId();
       }else{
         const xAOD::TrackParticle* trackParticle = (&(vec_muon->at(lepIndex[id])))->primaryTrackParticle();
@@ -1344,7 +1351,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
       }
       //For origin
       FillChanHist( h_lepOrigin, type, w);
-      if     (id==0) { FillChanHist( h_lep1Origin, type, w);
+      if       (id==0) { FillChanHist( h_lep1Origin, type, w);
       } else if(id==1) { 
         FillChanHist( h_lep2Origin, type, w);
       } else if(id==2) {
@@ -1409,16 +1416,19 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
     } // for loop (lead lepton)
 
     // Fill base lepton truth information
+    MyDebug("FillHistograms()","Filling baseline lepton truth information");
     for(Int_t id=0; id<3; id++){
+      MyDebug("FillHistograms()",Form("For baselep[%d]...",id));
       if(baseLepIndex[id]==-1) continue;
       Int_t type   = -1;
       Int_t origin = -1;
       Int_t pdgid  = 0;
       Int_t pdgid_parent = 0;
       if(baseLepFlavor[id]==0){
-        type   = xAOD::EgammaHelpers::getParticleTruthType  (&(vec_baseElectron->at(baseLepIndex[id])));
-        origin = xAOD::EgammaHelpers::getParticleTruthOrigin(&(vec_baseElectron->at(baseLepIndex[id])));
-        const xAOD::TruthParticle* etrue = xAOD::EgammaHelpers::getTruthParticle(&(vec_baseElectron->at(baseLepIndex[id])));
+        MyDebug("FillHistograms()","flav electron");
+        type   = xAOD::TruthHelpers::getParticleTruthType  (vec_baseElectron->at(baseLepIndex[id]));
+        origin = xAOD::TruthHelpers::getParticleTruthOrigin(vec_baseElectron->at(baseLepIndex[id]));
+        const xAOD::TruthParticle* etrue = xAOD::TruthHelpers::getTruthParticle(vec_baseElectron->at(baseLepIndex[id]));
         if(etrue) pdgid = etrue->pdgId();
         if(etrue){
           const xAOD::TruthParticle* etrue_parent = etrue->parent();
@@ -1428,6 +1438,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           FillChanHist( h_elParentPdgId, pdgid_parent, w);
         }
       }else{
+        MyDebug("FillHistograms()","flav muon");
         const xAOD::TrackParticle* trackParticle = (&(vec_baseMuon->at(baseLepIndex[id])))->primaryTrackParticle();
         if(trackParticle){
           static SG::AuxElement::Accessor<int> acc_truthType  ("truthType"  );
@@ -1440,20 +1451,33 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           // if(acc_truthParticle.isAvailable(*trackParticle)) {
           if(trackParticle->isAvailable< ElementLink<xAOD::TruthParticleContainer> >("truthParticleLink")) {
             // try {
-            const xAOD::TruthParticle* mtrue = *trackParticle->auxdata< ElementLink<xAOD::TruthParticleContainer> >("truthParticleLink");
-            if(mtrue!=0){
-              const xAOD::TruthParticle* mtrue_parent = mtrue->parent();
+            //            const xAOD::TruthParticle* mtrue = *trackParticle->auxdata< ElementLink<xAOD::TruthParticleContainer> >("truthParticleLink");
+            ElementLink<xAOD::TruthParticleContainer> truthLink = trackParticle->auxdata< ElementLink<xAOD::TruthParticleContainer> >("truthParticleLink");
+            if(truthLink.isValid()){
+              const xAOD::TruthParticle* mtrue_parent = (*truthLink)->parent();
               if(mtrue_parent!=0){
                 pdgid_parent = mtrue_parent->pdgId();
               }
               FillChanHist( h_muParentPdgId, pdgid_parent, w);
             }
-            FillChanHist( h_muParentPdgId, -1, w); // debug
-            // } catch (...) {}
+            // MyDebug("FillHistograms()","hogehoge1");
+            // if(mtrue!=0){
+            //   MyDebug("FillHistograms()","hogehoge2");
+            //   const xAOD::TruthParticle* mtrue_parent = mtrue->parent();
+            //   if(mtrue_parent!=0){
+            //     MyDebug("FillHistograms()","hogehoge3");
+            //     pdgid_parent = mtrue_parent->pdgId();
+            //   }
+            //   MyDebug("FillHistograms()","hogehoge4");
+            //   FillChanHist( h_muParentPdgId, pdgid_parent, w);
+            // }
+            // FillChanHist( h_muParentPdgId, -1, w); // debug
+            // // } catch (...) {}
           }
           FillChanHist( h_muParentPdgId, -2, w); // debug
         }
       }
+      MyDebug("FillHistograms()","Filling baseline lepton origin");
       //For origin
       FillChanHist( h_baselepOrigin, type, w);
       if     (id==0) {
@@ -1467,6 +1491,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
         // FillBaseElHist( h_fakebaseEl2and3Origin, type, w);
         // FillBaseMuHist( h_fakebaseMu2and3Origin, type, w);
       }
+      MyDebug("FillHistograms()","Filling histogram from each origin (PR/CO/HF/LF/UK)");
       // Classification of Primary/Conversion/HeavyFlavor/LightFlavor/Unknown
       // Primary
       if(isRealLepton(type,origin,pdgid)){
@@ -2056,6 +2081,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
     }
   }
 
+  MyDebug("FillHistograms()","Filling event topology variables");
   FillChanHist( h_hasSS, (EveSelec->hasSS()?1.:0.), w);
   // FillChanHist( h_nTau, , w);
   // FillChanHist( h_tauPt, , w);
