@@ -1314,7 +1314,7 @@ bool EventSelector::selectObject()
   xAOD::ElectronContainer::iterator el_itr = (electrons_copy)->begin();
   xAOD::ElectronContainer::iterator el_end = (electrons_copy)->end();
   for( ; el_itr!=el_end; ++el_itr){
-    m_susyObjTool->IsSignalElectron( **el_itr ); //Signal flag are set here.
+    m_susyObjTool->IsSignalElectron( **el_itr, m_sigElPtCut); //Signal flag are set here.
   }
 
   ///////////////////////////////////////////////////
@@ -1326,6 +1326,12 @@ bool EventSelector::selectObject()
   if(m_susyObjTool->GetPhotons(photons_copy,photons_copyaux)==EL::StatusCode::FAILURE){
     MyError("selectObject()","Failing to retrieve PhotonContainer.");
     rtrvFail = true;
+  }
+
+  // Print their properties, using the tools:
+  for(const auto& ph : *photons_copy){
+    MyDebug("selectObject()",Form("Post-fill Ph pt %f eta %f phi %f", ph->pt(), ph->eta(), ph->phi()));
+    m_susyObjTool->IsSignalPhoton(*ph, 25e3);
   }
 
   ///////////////////////////////////////////////////
@@ -1342,7 +1348,7 @@ bool EventSelector::selectObject()
   xAOD::MuonContainer::iterator mu_itr = (muons_copy)->begin();
   xAOD::MuonContainer::iterator mu_end = (muons_copy)->end();
   for( ; mu_itr!=mu_end; ++mu_itr){
-    m_susyObjTool->IsSignalMuon( **mu_itr ); //Signal flag are set here.
+    m_susyObjTool->IsSignalMuon( **mu_itr, m_sigMuPtCut); //Signal flag are set here.
     m_susyObjTool->IsCosmicMuon( **mu_itr ); //Cosmic flag are set here.
     if(m_sel=="ac")passACCut_badMuon();
   }
@@ -1364,9 +1370,6 @@ bool EventSelector::selectObject()
   xAOD::JetContainer::iterator jet_end = (jets_copy)->end();
   for( ; jet_itr!=jet_end; ++jet_itr){
     MyDebug("selectObject()", "");
-    m_susyObjTool->IsBJet(**jet_itr); //Making b-tagged jet flag.
-    //(https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingBenchmarks)
-    //MV1: Eff70%=0.3511, Eff80%=0.6073, Eff85%=0.3511
     m_vec_preJet->push_back(**jet_itr);
   }
 
@@ -1435,16 +1438,20 @@ bool EventSelector::selectObject()
   jet_itr = (jets_copy)->begin();
   jet_end = (jets_copy)->end();
   for( ; jet_itr != jet_end; ++jet_itr ){
+    m_susyObjTool->IsBadJet(**jet_itr);
+    m_susyObjTool->IsSignalJet(**jet_itr,m_baseJetPtCut,m_baseJetEtaCut);
+    m_susyObjTool->IsBJet(**jet_itr); //Making b-tagged jet flag. Should be called "after" IsSignalJet().
+    MyDebug("selectObject()",Form("jet: bad=%d"     ,(int)(*jet_itr)->auxdata<char>("bad"     )));
     MyDebug("selectObject()",Form("jet: baseline=%d",(int)(*jet_itr)->auxdata<char>("baseline")));
+    MyDebug("selectObject()",Form("jet: signal=%d"  ,(int)(*jet_itr)->auxdata<char>("signal"  )));
     MyDebug("selectObject()",Form("jet: passOR=%d"  ,(int)(*jet_itr)->auxdata<char>("passOR"  )));
     MyDebug("selectObject()",Form("jet: bjet=%d"    ,(int)(*jet_itr)->auxdata<char>("bjet"    )));
     if(m_sel=="ac")passACCut_jetClean(**jet_itr);
     if( (*jet_itr)->auxdata<char>("baseline")==1 &&
-        (*jet_itr)->auxdata<char>("passOR"  )==1 ){
-      if((*jet_itr)->pt()>m_baseJetPtCut && fabs((*jet_itr)->eta())<m_baseJetEtaCut){
-        m_vec_baseJet->push_back(**jet_itr);
-        goodJets->push_back (*jet_itr);
-      }
+        (*jet_itr)->auxdata<char>("passOR"  )==1 &&
+        (*jet_itr)->auxdata<char>("bad"     )==0 ){
+      m_vec_baseJet->push_back(**jet_itr);
+      goodJets->push_back (*jet_itr);
     }
   }
 
@@ -1557,7 +1564,9 @@ bool EventSelector::selectObject()
   jet_end = goodJets->end();
   for( ; jet_itr!=jet_end; ++jet_itr){
     if((*jet_itr)->pt()>m_sigJetPtCut && fabs((*jet_itr)->eta())<m_sigJetEtaCut){
-      m_vec_signalJet->push_back(**jet_itr);
+      if((*jet_itr)->auxdata<char>("signal")==1){
+          m_vec_signalJet->push_back(**jet_itr);
+      }
     }
   }
   MyDebug("selectObject()",

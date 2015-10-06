@@ -1064,7 +1064,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   // }
 
   Int_t chan = EveSelec->getChan();
-  MyDebug("FillHistograms()",Form("Analized channel : %d",chan));
+  MyDebug("FillHistograms()",Form("Analyzed channel : %d",chan));
   if(chan<0) return false;
 
   //Prepare 1st-3rd leading signal lepton's four-vector
@@ -1123,6 +1123,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
     mmWeight = m_MMTool->getMMWeight();
     w *= mmWeight;
   }
+  MyDebug("FillHistograms()",Form("Event weight : %f",w));
 
   // Preprocessor convenience
   // All this does is append the corrent indices to the histo for sys and channel
@@ -1242,6 +1243,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   // FillChanHist( h_nMuComb, , w);
 
   //Fill isolation values
+  MyDebug("FillHistograms()","Filling isolation values");
   for(Int_t id=0; id<3; id++){
     if(lepIndex[id]==-1) continue;
     if(lepFlavor[id]==0){
@@ -1278,6 +1280,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   }
 
   //Fill lepton track variables
+  MyDebug("FillHistograms()","Filling lepton track variables");
   for(Int_t id=0; id<3; id++){
     if(lepIndex[id]==-1) continue;
     const xAOD::TrackParticle* track = EveSelec->getTrack(lepIndex[id], lepFlavor[id]);
@@ -1320,7 +1323,8 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
 
   //Fill lepton truth infomation
   if(m_isMC){
-    for(Int_t id=0; id<nSigLeps; id++){
+    MyDebug("FillHistograms()","Filling lepton truth information");
+    for(Int_t id=0; id<3; id++){
       if(lepIndex[id]==-1) continue;
       Int_t type   = -1;
       Int_t origin = -1;
@@ -1345,7 +1349,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
       }
       //For origin
       FillChanHist( h_lepOrigin, type, w);
-      if     (id==0) { FillChanHist( h_lep1Origin, type, w);
+      if       (id==0) { FillChanHist( h_lep1Origin, type, w);
       } else if(id==1) { 
         FillChanHist( h_lep2Origin, type, w);
       } else if(id==2) {
@@ -1410,13 +1414,16 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
     } // for loop (lead lepton)
 
     // Fill base lepton truth information
+    MyDebug("FillHistograms()","Filling baseline lepton truth information");
     for(Int_t id=0; id<3; id++){
+      MyDebug("FillHistograms()",Form("For baselep[%d]...",id));
       if(baseLepIndex[id]==-1) continue;
       Int_t type   = -1;
       Int_t origin = -1;
       Int_t pdgid  = 0;
       Int_t pdgid_parent = 0;
       if(baseLepFlavor[id]==0){
+        MyDebug("FillHistograms()","flav electron");
         type   = xAOD::TruthHelpers::getParticleTruthType  (vec_baseElectron->at(baseLepIndex[id]));
         origin = xAOD::TruthHelpers::getParticleTruthOrigin(vec_baseElectron->at(baseLepIndex[id]));
         const xAOD::TruthParticle* etrue = xAOD::TruthHelpers::getTruthParticle(vec_baseElectron->at(baseLepIndex[id]));
@@ -1429,6 +1436,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           FillChanHist( h_elParentPdgId, pdgid_parent, w);
         }
       }else{
+        MyDebug("FillHistograms()","flav muon");
         const xAOD::TrackParticle* trackParticle = (&(vec_baseMuon->at(baseLepIndex[id])))->primaryTrackParticle();
         if(trackParticle){
           static SG::AuxElement::Accessor<int> acc_truthType  ("truthType"  );
@@ -1441,20 +1449,33 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           // if(acc_truthParticle.isAvailable(*trackParticle)) {
           if(trackParticle->isAvailable< ElementLink<xAOD::TruthParticleContainer> >("truthParticleLink")) {
             // try {
-            const xAOD::TruthParticle* mtrue = *trackParticle->auxdata< ElementLink<xAOD::TruthParticleContainer> >("truthParticleLink");
-            if(mtrue!=0){
-              const xAOD::TruthParticle* mtrue_parent = mtrue->parent();
+            //            const xAOD::TruthParticle* mtrue = *trackParticle->auxdata< ElementLink<xAOD::TruthParticleContainer> >("truthParticleLink");
+            ElementLink<xAOD::TruthParticleContainer> truthLink = trackParticle->auxdata< ElementLink<xAOD::TruthParticleContainer> >("truthParticleLink");
+            if(truthLink.isValid()){
+              const xAOD::TruthParticle* mtrue_parent = (*truthLink)->parent();
               if(mtrue_parent!=0){
                 pdgid_parent = mtrue_parent->pdgId();
               }
               FillChanHist( h_muParentPdgId, pdgid_parent, w);
             }
-            FillChanHist( h_muParentPdgId, -1, w); // debug
-            // } catch (...) {}
+            // MyDebug("FillHistograms()","hogehoge1");
+            // if(mtrue!=0){
+            //   MyDebug("FillHistograms()","hogehoge2");
+            //   const xAOD::TruthParticle* mtrue_parent = mtrue->parent();
+            //   if(mtrue_parent!=0){
+            //     MyDebug("FillHistograms()","hogehoge3");
+            //     pdgid_parent = mtrue_parent->pdgId();
+            //   }
+            //   MyDebug("FillHistograms()","hogehoge4");
+            //   FillChanHist( h_muParentPdgId, pdgid_parent, w);
+            // }
+            // FillChanHist( h_muParentPdgId, -1, w); // debug
+            // // } catch (...) {}
           }
           FillChanHist( h_muParentPdgId, -2, w); // debug
         }
       }
+      MyDebug("FillHistograms()","Filling baseline lepton origin");
       //For origin
       FillChanHist( h_baselepOrigin, type, w);
       if     (id==0) {
@@ -1468,6 +1489,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
         // FillBaseElHist( h_fakebaseEl2and3Origin, type, w);
         // FillBaseMuHist( h_fakebaseMu2and3Origin, type, w);
       }
+      MyDebug("FillHistograms()","Filling histogram from each origin (PR/CO/HF/LF/UK)");
       // Classification of Primary/Conversion/HeavyFlavor/LightFlavor/Unknown
       // Primary
       if(isRealLepton(type,origin,pdgid)){
@@ -2057,6 +2079,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
     }
   }
 
+  MyDebug("FillHistograms()","Filling event topology variables");
   FillChanHist( h_hasSS, (EveSelec->hasSS()?1.:0.), w);
   // FillChanHist( h_nTau, , w);
   // FillChanHist( h_tauPt, , w);

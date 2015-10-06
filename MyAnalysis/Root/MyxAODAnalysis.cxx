@@ -223,8 +223,10 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
 
   //  CHECK(m_susyObjTool->setProperty("EleIsoWP",m_eleIso_WP = "EL0p06"));
   //  CHECK(m_susyObjTool->setProperty("MuIsoWP", m_muIso_WP  = "MU0p06"));
-  CHECK(m_susyObjTool->setProperty("EleIsoWP",m_eleIso_WP = "GradientLoose"));
-  CHECK(m_susyObjTool->setProperty("MuIsoWP", m_muIso_WP  = "GradientLoose"));
+  //  CHECK(m_susyObjTool->setProperty("EleIsoWP",m_eleIso_WP = "GradientLoose"));
+  //  CHECK(m_susyObjTool->setProperty("MuIsoWP", m_muIso_WP  = "GradientLoose"));
+  CHECK(m_susyObjTool->setProperty("EleIsoWP",m_eleIso_WP = m_isoWP.c_str()) );
+  CHECK(m_susyObjTool->setProperty("MuIsoWP", m_muIso_WP  = m_isoWP.c_str()) );
 
   // Set to true for DxAOD, false for primary xAOD
   CHECK(m_susyObjTool->setProperty("DoJetAreaCalib",true) ); //somehow "false" craches the process.
@@ -574,7 +576,7 @@ EL::StatusCode MyxAODAnalysis :: finalize ()
   // gets called on worker nodes that processed input events.
 
   //Added by minoru
-  MyAlways("finalize()", Form("Total #events in the sample dataset before skimming: %lli", m_processedEventsBeforeSkim) );
+  MyAlways("finalize()", Form("Total #events in the sample dataset before skimming: %lli", m_totalProcessedEventsBeforeSkim) );
   MyAlways("finalize()", Form("Total #events given to this algorithm              : %lli", m_eventCounter) );
   MyAlways("finalize()", Form("#(Processed Events)                                : %lli", m_processedEvents) );
   MyAlways("finalize()", Form("#(Healthy events)                                  : %lli", m_numCleanEvents) );

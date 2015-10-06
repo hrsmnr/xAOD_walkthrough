@@ -142,7 +142,8 @@ void SetBGType(void){
   // //  BGFileNames[Higgs]->push_back("167418"); BGIncludeFlag[Higgs]->push_back("00111");//ZH:H->mumu
 
   //ttbar
-  BGFileNames[ttbar]->push_back("110401"); BGIncludeFlag[ttbar]->push_back("01111");//no all-had
+  //  BGFileNames[ttbar]->push_back("110401"); BGIncludeFlag[ttbar]->push_back("01111");//no all-had
+  BGFileNames[ttbar]->push_back("410000"); BGIncludeFlag[ttbar]->push_back("01111");//no all-had
 
   //SingleTop
   // BGFileNames[SingleTop]->push_back("110302"); BGIncludeFlag[SingleTop]->push_back("01111");//s-chan
