@@ -158,14 +158,26 @@ public:
   int n_passAC_oneSigLep ; //!
   int n_passAC_oneBaseJet; //!
   int n_passAC_oneSigJet ; //!
-  int n_passAC_twoBaseLep; //!
-  int n_passAC_twoSigLep ; //!
   int n_passAC_oneBaseEl ; //!
   int n_passAC_oneSigEl  ; //!
   int n_passAC_oneBaseMu ; //!
   int n_passAC_oneSigMu  ; //!
   int n_passAC_oneBaseTau; //!
   int n_passAC_oneSigTau ; //!
+  int n_passAC_twoBaseLep; //!
+  int n_passAC_twoSigLep ; //!
+  int n_passAC_twoBaseEl ; //!
+  int n_passAC_twoSigEl  ; //!
+  int n_passAC_twoBaseMu ; //!
+  int n_passAC_twoSigMu  ; //!
+  int n_passAC_twoBaseTau; //!
+  int n_passAC_twoSigTau ; //!
+  int n_passAC_threeBaseLep; //!
+  int n_passAC_threeSigLep ; //!
+  int n_passAC_threeBaseEl ; //!
+  int n_passAC_threeSigEl  ; //!
+  int n_passAC_threeBaseMu ; //!
+  int n_passAC_threeSigMu  ; //!
   int n_passAC_oneBjet   ; //!
 
   //end adding
