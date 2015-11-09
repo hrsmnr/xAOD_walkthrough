@@ -204,14 +204,26 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   b_passAC_oneSigLep  = true;
   b_passAC_oneBaseJet = true;
   b_passAC_oneSigJet  = true;
-  b_passAC_twoBaseLep = true;
-  b_passAC_twoSigLep  = true;
   b_passAC_oneBaseEl  = true;
   b_passAC_oneSigEl   = true;
   b_passAC_oneBaseMu  = true;
   b_passAC_oneSigMu   = true;
   b_passAC_oneBaseTau = true;
   b_passAC_oneSigTau  = true;
+  b_passAC_twoBaseLep = true;
+  b_passAC_twoSigLep  = true;
+  b_passAC_twoBaseEl  = true;
+  b_passAC_twoSigEl   = true;
+  b_passAC_twoBaseMu  = true;
+  b_passAC_twoSigMu   = true;
+  b_passAC_twoBaseTau = true;
+  b_passAC_twoSigTau  = true;
+  b_passAC_threeBaseLep = true;
+  b_passAC_threeSigLep  = true;
+  b_passAC_threeBaseEl  = true;
+  b_passAC_threeSigEl   = true;
+  b_passAC_threeBaseMu  = true;
+  b_passAC_threeSigMu   = true;
   b_passAC_oneBjet    = true;
 
   // n_evt_pileup  = 0;
@@ -1750,28 +1762,52 @@ bool EventSelector::selectObject()
       passACCut_oneSigLep ();
       passACCut_oneBaseJet();
       passACCut_oneSigJet ();
-      passACCut_twoBaseLep();
-      passACCut_twoSigLep ();
       passACCut_oneBaseEl ();
       passACCut_oneSigEl  ();
       passACCut_oneBaseMu ();
       passACCut_oneSigMu  ();
       passACCut_oneBaseTau();
       passACCut_oneSigTau ();
+      passACCut_twoBaseLep();
+      passACCut_twoSigLep ();
+      passACCut_twoBaseEl ();
+      passACCut_twoSigEl  ();
+      passACCut_twoBaseMu ();
+      passACCut_twoSigMu  ();
+      passACCut_twoBaseTau();
+      passACCut_twoSigTau ();
+      passACCut_threeBaseLep();
+      passACCut_threeSigLep ();
+      passACCut_threeBaseEl ();
+      passACCut_threeSigEl  ();
+      passACCut_threeBaseMu ();
+      passACCut_threeSigMu  ();
       passACCut_oneBjet   ();
     }else{
       b_passAC_oneBaseLep = false;
       b_passAC_oneSigLep = false;
       b_passAC_oneBaseJet = false;
       b_passAC_oneSigJet = false;
-      b_passAC_twoBaseLep = false;
-      b_passAC_twoSigLep = false;
       b_passAC_oneBaseEl = false;
       b_passAC_oneSigEl = false;
       b_passAC_oneBaseMu = false;
       b_passAC_oneSigMu = false;
       b_passAC_oneBaseTau = false;
       b_passAC_oneSigTau = false;
+      b_passAC_twoBaseLep = false;
+      b_passAC_twoSigLep = false;
+      b_passAC_twoBaseEl = false;
+      b_passAC_twoSigEl = false;
+      b_passAC_twoBaseMu = false;
+      b_passAC_twoSigMu = false;
+      b_passAC_twoBaseTau = false;
+      b_passAC_twoSigTau = false;
+      b_passAC_threeBaseLep = false;
+      b_passAC_threeSigLep = false;
+      b_passAC_threeBaseEl = false;
+      b_passAC_threeSigEl = false;
+      b_passAC_threeBaseMu = false;
+      b_passAC_threeSigMu = false;
       b_passAC_oneBjet = false;
     }
   }
@@ -1826,6 +1862,7 @@ bool EventSelector::selectEvent()
   if(!passLepTauPtCuts()) return false;
   PRINT_STEP(pass_lepPt);
   if(!passBaseLepEtaCut()) return false;
+  MyDebug("selectEvent()","passBaseLepEtaCut()");
   if(!pass1stBaseIsSignal()) return false;
 
   if(!passUpsilonCut()) return false;
@@ -1907,7 +1944,8 @@ bool EventSelector::passACCut_cosmic    (xAOD::Muon& mu){
 }
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::passACCut_oneBaseLep(){
-  if(nBaselineLeps()!=1){
+  //if(nBaselineLeps()!=1){
+  if(nBaselineLeps()<1) {
     b_passAC_oneBaseLep = false;
     return false;
   }
@@ -1915,7 +1953,8 @@ bool EventSelector::passACCut_oneBaseLep(){
 }
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::passACCut_oneSigLep (){
-  if(nSignalLeps()!=1){
+  //if(nSignalLeps()!=1){
+  if(nSignalLeps()<1){
     b_passAC_oneSigLep = false;
     return false;
   }
@@ -1923,7 +1962,8 @@ bool EventSelector::passACCut_oneSigLep (){
 }
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::passACCut_oneBaseJet(){
-  if(nBaselineJets()!=1){
+  //if(nBaselineJets()!=1){
+  if(nBaselineJets()<1){
     b_passAC_oneBaseJet = false;
     return false;
   }
@@ -1931,7 +1971,8 @@ bool EventSelector::passACCut_oneBaseJet(){
 }
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::passACCut_oneSigJet (){
-  if(nSignalJets()!=1){
+  //if(nSignalJets()!=1){
+  if(nSignalJets()<1){
     b_passAC_oneSigJet = false;
     return false;
   }
@@ -1939,7 +1980,8 @@ bool EventSelector::passACCut_oneSigJet (){
 }
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::passACCut_twoBaseLep(){
-  if(nBaselineLeps()!=2){
+  //if(nBaselineLeps()!=2){
+  if(nBaselineLeps()<2){
     b_passAC_twoBaseLep = false;
     return false;
   }
@@ -1947,15 +1989,105 @@ bool EventSelector::passACCut_twoBaseLep(){
 }
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::passACCut_twoSigLep (){
-  if(nSignalLeps()!=2){
+  //if(nSignalLeps()!=2){
+  if(nSignalLeps()<2){
     b_passAC_twoSigLep = false;
     return false;
   }
   return true;
 }
 /*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_twoBaseEl(){
+  if(m_vec_baseElectron->size()<2){
+    b_passAC_twoBaseEl = false;
+    return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_twoSigEl (){
+  if(m_vec_signalElectron->size()<2){
+    b_passAC_twoSigEl = false;
+    return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_twoBaseMu(){
+  if(m_vec_baseMuon->size()<2){
+    b_passAC_twoBaseMu = false;
+    return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_twoSigMu (){
+  if(m_vec_signalMuon->size()<2){
+    b_passAC_twoSigMu = false;
+    return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_twoBaseTau(){
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_twoSigTau (){
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_threeBaseLep(){
+  if(nBaselineLeps()!=3){
+    b_passAC_threeBaseLep = false;
+    return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_threeSigLep (){
+  if(nSignalLeps()!=3){
+    b_passAC_threeSigLep = false;
+    return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_threeBaseEl(){
+  if(m_vec_baseElectron->size()!=3){
+    b_passAC_threeBaseEl = false;
+    return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_threeSigEl (){
+  if(m_vec_signalElectron->size()!=3){
+    b_passAC_threeSigEl = false;
+    return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_threeBaseMu(){
+  if(m_vec_baseMuon->size()!=3){
+    b_passAC_threeBaseMu = false;
+    return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passACCut_threeSigMu (){
+  if(m_vec_signalMuon->size()!=3){
+    b_passAC_threeSigMu = false;
+    return false;
+  }
+  return true;
+}
+/*--------------------------------------------------------------------------------*/
 bool EventSelector::passACCut_oneBaseEl (){
-  if(m_vec_baseElectron->size()!=1){
+  //if(m_vec_baseElectron->size()!=1){
+  if(m_vec_baseElectron->size()<1){
     b_passAC_oneBaseEl = false;
     return false;
   }
@@ -1963,7 +2095,8 @@ bool EventSelector::passACCut_oneBaseEl (){
 }
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::passACCut_oneSigEl  (){
-  if(m_vec_signalElectron->size()!=1){
+  //if(m_vec_signalElectron->size()!=1){
+  if(m_vec_signalElectron->size()<1){
     b_passAC_oneSigEl = false;
     return false;
   }
@@ -1971,7 +2104,8 @@ bool EventSelector::passACCut_oneSigEl  (){
 }
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::passACCut_oneBaseMu (){
-  if(m_vec_baseMuon->size()!=1){
+  //if(m_vec_baseMuon->size()!=1){
+  if(m_vec_baseMuon->size()<1){
     b_passAC_oneBaseMu = false;
     return false;
   }
@@ -1979,7 +2113,8 @@ bool EventSelector::passACCut_oneBaseMu (){
 }
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::passACCut_oneSigMu  (){
-  if(m_vec_signalMuon->size()!=1){
+  //if(m_vec_signalMuon->size()!=1){
+  if(m_vec_signalMuon->size()<1){
     b_passAC_oneSigMu = false;
     return false;  }
   return true;
@@ -2951,7 +3086,7 @@ bool EventSelector::passBaseLepEtaCut()
   Int_t* lepIndex  = m_baseLepIndex ;
   Int_t* lepFlavor = m_baseLepFlavor;
   for (int i_l=0;i_l<3;i_l++){
-    if(lepIndex[i_l]!=-1) lepEta[i_l] = getFourVector(lepIndex[i_l], lepFlavor[i_l]).Eta();
+    if(lepIndex[i_l]!=-1) lepEta[i_l] = getFourVector(lepIndex[i_l], lepFlavor[i_l],false).Eta();
     if(m_baseLepEtaMax > 0 and fabs(lepEta[i_l]) > m_baseLepEtaMax) return false;
     if(m_baseLepEtaMin > 0 and fabs(lepEta[i_l]) < m_baseLepEtaMin) return false;
   }
@@ -3869,12 +4004,13 @@ float EventSelector::getMljj()
   return (dR1<dR2) ? (jj+lep[0]).M() : (jj+lep[1]).M();
 }
 /*--------------------------------------------------------------------------------*/
-TLorentzVector EventSelector::getFourVector(int index, int flav)
+TLorentzVector EventSelector::getFourVector(int index, int flav, bool isSignalLep)
 {
   //method to retrieve four vector by m_leadLepIndex;
   TLorentzVector lep(0.,0.,0.,0.);
-  std::vector< xAOD::Electron >* vec_electron = m_is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
-  std::vector< xAOD::Muon >*     vec_muon     = m_is3SigLepSel ? m_vec_signalMuon     : m_vec_baseMuon;
+  bool is3SigLepSel = isSignalLep ? m_is3SigLepSel : false;
+  std::vector< xAOD::Electron >* vec_electron = is3SigLepSel ? m_vec_signalElectron : m_vec_baseElectron;
+  std::vector< xAOD::Muon >*     vec_muon     = is3SigLepSel ? m_vec_signalMuon     : m_vec_baseMuon;
   if(index!=-1){
     if     (flav==0) lep = (vec_electron->at(index)).p4();
     else if(flav==1) lep = (vec_muon    ->at(index)).p4();

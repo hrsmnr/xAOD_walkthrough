@@ -110,14 +110,26 @@ class EventSelector : public TObject
   bool GetPassAC_oneSigLep (){return b_passAC_oneSigLep ;};
   bool GetPassAC_oneBaseJet(){return b_passAC_oneBaseJet;};
   bool GetPassAC_oneSigJet (){return b_passAC_oneSigJet ;};
-  bool GetPassAC_twoBaseLep(){return b_passAC_twoBaseLep;};
-  bool GetPassAC_twoSigLep (){return b_passAC_twoSigLep ;};
   bool GetPassAC_oneBaseEl (){return b_passAC_oneBaseEl ;};
   bool GetPassAC_oneSigEl  (){return b_passAC_oneSigEl  ;};
   bool GetPassAC_oneBaseMu (){return b_passAC_oneBaseMu ;};
   bool GetPassAC_oneSigMu  (){return b_passAC_oneSigMu  ;};
   bool GetPassAC_oneBaseTau(){return b_passAC_oneBaseTau;};
   bool GetPassAC_oneSigTau (){return b_passAC_oneSigTau ;};
+  bool GetPassAC_twoBaseLep(){return b_passAC_twoBaseLep;};
+  bool GetPassAC_twoSigLep (){return b_passAC_twoSigLep ;};
+  bool GetPassAC_twoBaseEl (){return b_passAC_twoBaseEl ;};
+  bool GetPassAC_twoSigEl  (){return b_passAC_twoSigEl  ;};
+  bool GetPassAC_twoBaseMu (){return b_passAC_twoBaseMu ;};
+  bool GetPassAC_twoSigMu  (){return b_passAC_twoSigMu  ;};
+  bool GetPassAC_twoBaseTau(){return b_passAC_twoBaseTau;};
+  bool GetPassAC_twoSigTau (){return b_passAC_twoSigTau ;};
+  bool GetPassAC_threeBaseLep(){return b_passAC_threeBaseLep;};
+  bool GetPassAC_threeSigLep (){return b_passAC_threeSigLep ;};
+  bool GetPassAC_threeBaseEl (){return b_passAC_threeBaseEl ;};
+  bool GetPassAC_threeSigEl  (){return b_passAC_threeSigEl  ;};
+  bool GetPassAC_threeBaseMu (){return b_passAC_threeBaseMu ;};
+  bool GetPassAC_threeSigMu  (){return b_passAC_threeSigMu  ;};
   bool GetPassAC_oneBjet   (){return b_passAC_oneBjet   ;};
 
 
@@ -249,14 +261,26 @@ class EventSelector : public TObject
   bool passACCut_oneSigLep ();
   bool passACCut_oneBaseJet();
   bool passACCut_oneSigJet ();
-  bool passACCut_twoBaseLep();
-  bool passACCut_twoSigLep ();
   bool passACCut_oneBaseEl ();
   bool passACCut_oneSigEl  ();
   bool passACCut_oneBaseMu ();
   bool passACCut_oneSigMu  ();
   bool passACCut_oneBaseTau();
   bool passACCut_oneSigTau ();
+  bool passACCut_twoBaseLep();
+  bool passACCut_twoSigLep ();
+  bool passACCut_twoBaseEl ();
+  bool passACCut_twoSigEl  ();
+  bool passACCut_twoBaseMu ();
+  bool passACCut_twoSigMu  ();
+  bool passACCut_twoBaseTau();
+  bool passACCut_twoSigTau ();
+  bool passACCut_threeBaseLep();
+  bool passACCut_threeSigLep ();
+  bool passACCut_threeBaseEl ();
+  bool passACCut_threeSigEl  ();
+  bool passACCut_threeBaseMu ();
+  bool passACCut_threeSigMu  ();
   bool passACCut_oneBjet   ();
 
   ///////////////////////////////////////////////
@@ -330,7 +354,7 @@ class EventSelector : public TObject
   virtual float getMt(TLorentzVector lep, TVector2 met);
   virtual float getMeff(float jetPtCut=40., bool useMet=true);
   virtual float getMljj();
-  virtual TLorentzVector getFourVector(int index, int flav);
+  virtual TLorentzVector getFourVector(int index, int flav, bool isSignalLep=true);
   virtual int getCharge(int index, int flav);
   virtual float getIsolationValue(int index, int flav, xAOD::Iso::IsolationType type);
   virtual xAOD::TrackParticle* getTrack(int index, int flav);
@@ -656,14 +680,26 @@ class EventSelector : public TObject
   bool               b_passAC_oneSigLep;
   bool               b_passAC_oneBaseJet;
   bool               b_passAC_oneSigJet;
-  bool               b_passAC_twoBaseLep;
-  bool               b_passAC_twoSigLep;
   bool               b_passAC_oneBaseEl;
   bool               b_passAC_oneSigEl;
   bool               b_passAC_oneBaseMu;
   bool               b_passAC_oneSigMu;
   bool               b_passAC_oneBaseTau;
   bool               b_passAC_oneSigTau;
+  bool               b_passAC_twoBaseLep;
+  bool               b_passAC_twoSigLep;
+  bool               b_passAC_twoBaseEl;
+  bool               b_passAC_twoSigEl;
+  bool               b_passAC_twoBaseMu;
+  bool               b_passAC_twoSigMu;
+  bool               b_passAC_twoBaseTau;
+  bool               b_passAC_twoSigTau;
+  bool               b_passAC_threeBaseLep;
+  bool               b_passAC_threeSigLep;
+  bool               b_passAC_threeBaseEl;
+  bool               b_passAC_threeSigEl;
+  bool               b_passAC_threeBaseMu;
+  bool               b_passAC_threeSigMu;
   bool               b_passAC_oneBjet;
 
   /* // Weighted event counters after all cuts */
