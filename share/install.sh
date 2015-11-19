@@ -1,9 +1,9 @@
 #!/bin/sh
 git clone git://github.com/hrsmnr/MMTool.git
 source /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/user/atlasLocalSetup.sh
-rcSetup SUSY,2.3.23
-rc checkout_pkg $SVNOFF/PhysicsAnalysis/SUSYPhys/SUSYTools/tags/SUSYTools-00-06-22
-rc checkout SUSYTools/doc/packages.txt
+rcSetup SUSY,2.3.33a
+#rc checkout_pkg $SVNOFF/PhysicsAnalysis/SUSYPhys/SUSYTools/tags/SUSYTools-00-06-27-10
+#rc checkout SUSYTools/doc/packages.txt
 rc checkout_pkg svn+ssh://svn.cern.ch/reps/atlasphys/Physics/SUSY/Tools/CalcGenericMT2
 cp CalcGenericMT2/src/MT2.h MyAnalysis/MyAnalysis/
 cp CalcGenericMT2/src/MT2_ROOT.h MyAnalysis/MyAnalysis/
