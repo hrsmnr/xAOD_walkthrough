@@ -1332,19 +1332,19 @@ bool EventSelector::selectObject()
   ///////////////////////////////////////////////////
   // Get the Photons from the event
   ///////////////////////////////////////////////////
-  MyDebug("selectObject()", "Retrieve photon container");
-  xAOD::PhotonContainer     *photons_copy(0);
-  xAOD::ShallowAuxContainer *photons_copyaux(0);
-  if(m_susyObjTool->GetPhotons(photons_copy,photons_copyaux)==EL::StatusCode::FAILURE){
-    MyError("selectObject()","Failing to retrieve PhotonContainer.");
-    rtrvFail = true;
-  }
+  //MyDebug("selectObject()", "Retrieve photon container");
+  //xAOD::PhotonContainer     *photons_copy(0);
+  //xAOD::ShallowAuxContainer *photons_copyaux(0);
+  //if(m_susyObjTool->GetPhotons(photons_copy,photons_copyaux)==EL::StatusCode::FAILURE){
+  //  MyError("selectObject()","Failing to retrieve PhotonContainer.");
+  //  rtrvFail = true;
+  //}
 
   // Print their properties, using the tools:
-  for(const auto& ph : *photons_copy){
-    MyDebug("selectObject()",Form("Post-fill Ph pt %f eta %f phi %f", ph->pt(), ph->eta(), ph->phi()));
-    m_susyObjTool->IsSignalPhoton(*ph, 25e3);
-  }
+  //for(const auto& ph : *photons_copy){
+  //  MyDebug("selectObject()",Form("Post-fill Ph pt %f eta %f phi %f", ph->pt(), ph->eta(), ph->phi()));
+  //  m_susyObjTool->IsSignalPhoton(*ph, 25e3);
+  //}
 
   ///////////////////////////////////////////////////
   // Get the Muons from the event:
@@ -1385,34 +1385,50 @@ bool EventSelector::selectObject()
     m_vec_preJet->push_back(**jet_itr);
   }
 
-  // // Print their properties, using the tools:
-  // xAOD::TauJetContainer::iterator tau_itr = (taus_copy)->begin();
-  // xAOD::TauJetContainer::iterator tau_end = (taus_copy)->end();
-  // for( ; tau_itr != tau_end; ++tau_itr ){
-  //   MyInfo(APP_NAME, "  Tau passing IsBaseline? %i  pt=%g sf=%g",
-  //          (int)(*tau_itr)->auxdata<bool>("baseline"), (*tau_itr)->pt(), m_susyObjTool->GetSignalTauSF(**tau_itr) );
-  //   // if(m_isMC){
-  //   //   T2MT.applyTruthMatch(*(*tau_itr));
-  //   //   if((*tau_itr)->auxdata<bool>("IsTruthMatched")){
-  //   //     Info(APP_NAME, "Tau was matched to a truth tau, which has %i prongs and a charge of %i",
-  //   //          int((*tau_itr)->auxdata<size_t>("TruthProng")),
-  //   //          (*tau_itr)->auxdata<int>("TruthCharge"));
-  //   //   }else{
-  //   //     Info(APP_NAME, "Tau was not matched to truth");
-  //   //   }
-  //   // }
-  // }
+  // Print their properties, using the tools:
+  //xAOD::TauJetContainer::iterator tau_itr = (taus_copy)->begin();
+  //xAOD::TauJetContainer::iterator tau_end = (taus_copy)->end();
+  //for( ; tau_itr != tau_end; ++tau_itr ){
+  //  MyInfo(APP_NAME, "  Tau passing IsBaseline? %i  pt=%g sf=%g",
+  //	(int)(*tau_itr)->auxdata<bool>("baseline"), (*tau_itr)->pt(), m_susyObjTool->GetSignalTauSF(**tau_itr) );
+  //  if(m_isMC){
+  //    m_tauTruthMatchingTool->applyTruthMatch(*(*tau_itr));
+  //    if((*tau_itr)->auxdata<bool>("IsTruthMatched")){
+  //        Info(APP_NAME, "Tau was matched to a truth tau, which has %i prongs and a charge of %i",
+  //	    int((*tau_itr)->auxdata<size_t>("TruthProng")),
+  //	    (*tau_itr)->auxdata<int>("TruthCharge"));
+  //    }else{
+  //	Info(APP_NAME, "Tau was not matched to truth");
+  //    }
+  //  }
+  //}
 
   ///////////////////////////////////////////////////
   // Get the Taus from the event:
   ///////////////////////////////////////////////////
-  MyDebug("selectObject()", "Retrieve tau container");
-  xAOD::TauJetContainer     *taus_copy(0);
-  xAOD::ShallowAuxContainer *taus_copyaux(0);
-  if(m_susyObjTool->GetTaus(taus_copy,taus_copyaux)==EL::StatusCode::FAILURE){
-    MyError("selectObject()","Failing to retrieve TauContainer.");
-    rtrvFail = true;
-  }
+  //MyDebug("selectObject()", "Retrieve tau container");
+  //xAOD::TauJetContainer     *taus_copy(0);
+  //xAOD::ShallowAuxContainer *taus_copyaux(0);
+
+  // copy from above
+  //std::cout << "m_tauTruthMatchingTool: " << m_tauTruthMatchingTool << std::endl;
+  //if(m_susyObjTool->GetTaus(taus_copy,taus_copyaux)==EL::StatusCode::FAILURE){
+  //  MyError("selectObject()","Failing to retrieve TauContainer.");
+  //  rtrvFail = true;
+  //}
+  //xAOD::TauJetContainer::iterator tau_itr = (taus_copy)->begin();
+  //xAOD::TauJetContainer::iterator tau_end = (taus_copy)->end();
+  //std::cout << "Taus container" << std::endl;
+  //for( ; tau_itr != tau_end; ++tau_itr ){
+  //  if (m_isMC) {
+  //    m_tauTruthMatchingTool->applyTruthMatch(*(*tau_itr));
+  //  }
+  //}
+
+  //if(m_susyObjTool->GetTaus(taus_copy,taus_copyaux)==EL::StatusCode::FAILURE){
+  //  MyError("selectObject()","Failing to retrieve TauContainer.");
+  //  rtrvFail = true;
+  //}
 
   // // Print their properties, using the tools
   // for(const auto& tau : *taus_copy){
@@ -1480,8 +1496,13 @@ bool EventSelector::selectObject()
   xAOD::MissingETContainer* metcst = new xAOD::MissingETContainer;
   xAOD::MissingETAuxContainer* metcst_aux = new xAOD::MissingETAuxContainer;
   metcst->setStore(metcst_aux);
-  if( m_susyObjTool->GetMET(*metcst, jets_copy, electrons_copy, muons_copy,
-                            photons_copy, taus_copy)==EL::StatusCode::FAILURE ){
+  if( m_susyObjTool->GetMET(*metcst, 
+			    jets_copy, 
+			    electrons_copy, 
+			    muons_copy,
+                            0, //photons_copy, 
+			    0) //taus_copy)
+      ==EL::StatusCode::FAILURE ){
     MyError("selectObject()","Failing to retrieve METCST.");
     rtrvFail = true;
   }
@@ -1495,8 +1516,14 @@ bool EventSelector::selectObject()
   xAOD::MissingETContainer* mettst = new xAOD::MissingETContainer;
   xAOD::MissingETAuxContainer* mettst_aux = new xAOD::MissingETAuxContainer;
   mettst->setStore(mettst_aux);
-  if( m_susyObjTool->GetMET(*mettst, jets_copy, electrons_copy, muons_copy,
-                            photons_copy, taus_copy, true)==EL::StatusCode::FAILURE ){
+  if( m_susyObjTool->GetMET(*mettst, 
+			    jets_copy, 
+			    electrons_copy, 
+			    muons_copy,
+                            0, //photons_copy, 
+			    0, //taus_copy, 
+			    true)
+      ==EL::StatusCode::FAILURE ){
     MyError("selectObject()","Failing to retrieve METTST.");
     rtrvFail = true;
   }
@@ -1588,14 +1615,14 @@ bool EventSelector::selectObject()
   //Deleting object containers
   if(electrons_copy   !=0) delete electrons_copy;
   if(electrons_copyaux!=0) delete electrons_copyaux;
-  if(photons_copy     !=0) delete photons_copy;
-  if(photons_copyaux  !=0) delete photons_copyaux;
+  //if(photons_copy     !=0) delete photons_copy;
+  //if(photons_copyaux  !=0) delete photons_copyaux;
   if(muons_copy       !=0) delete muons_copy;
   if(muons_copyaux    !=0) delete muons_copyaux;
   if(jets_copy        !=0) delete jets_copy;
   if(jets_copyaux     !=0) delete jets_copyaux;
-  if(taus_copy        !=0) delete taus_copy;
-  if(taus_copyaux     !=0) delete taus_copyaux;
+  //if(taus_copy        !=0) delete taus_copy;
+  //if(taus_copyaux     !=0) delete taus_copyaux;
   //  if(goodJets         !=0) delete goodJets; //deleted by m_store.clear() in MyxAODAnalysis.
   if(metcst           !=0) delete metcst;
   if(metcst_aux       !=0) delete metcst_aux;
@@ -1911,8 +1938,9 @@ bool EventSelector::passACCut_jetClean  (xAOD::Jet& jet){
     b_passAC_jetClean = false;
     return false;
   }
+
   if(jet.auxdata<char>("baseline")==1 && jet.auxdata<char>("passOR")==1){
-    if(jet.pt()>m_baseJetPtCut && fabs(jet.eta())<m_baseJetEtaCut){
+    if(jet.pt()>m_baseJetPtCut) { // && fabs(jet.eta())<m_baseJetEtaCut){
       //This "if" is needed since "false" will be returned when we input a jet with pt<m_baseJetPtCut to IsGoodJet()...
       if(m_susyObjTool->IsBadJet(jet)){ // bool IsBadJet(const xAOD::Jet& input, float jvtcut=0.64);
         b_passAC_jetClean = false;
@@ -1924,7 +1952,7 @@ bool EventSelector::passACCut_jetClean  (xAOD::Jet& jet){
 }
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::passACCut_primVtx   (){
-  if(not (b_passAC_badMuon && b_passAC_jetClean)){
+  if(not (b_passAC_badMuon)) {// && b_passAC_jetClean)){
     b_passAC_primVtx = false;
     return false;
   }
@@ -1932,7 +1960,7 @@ bool EventSelector::passACCut_primVtx   (){
 }
 /*--------------------------------------------------------------------------------*/
 bool EventSelector::passACCut_cosmic    (xAOD::Muon& mu){
-  if(not (b_passAC_badMuon && b_passAC_jetClean && b_passAC_primVtx)){
+  if(not (b_passAC_badMuon)) {// && b_passAC_jetClean && b_passAC_primVtx)){
     b_passAC_cosmic = false;
     return false;
   }

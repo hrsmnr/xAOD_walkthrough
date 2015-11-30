@@ -103,8 +103,8 @@ class EventSelector : public TObject
 
   // For the cutflow comparison
   bool GetPassAC_badMuon   (){return b_passAC_badMuon   ;};
-  bool GetPassAC_jetClean  (){return b_passAC_jetClean  ;};
-  bool GetPassAC_primVtx   (){return b_passAC_primVtx   ;};
+  bool GetPassAC_jetClean  (){return b_passAC_cosmic && b_passAC_jetClean  ;};
+  bool GetPassAC_primVtx   (){return b_passAC_cosmic && b_passAC_jetClean && b_passAC_primVtx   ;};
   bool GetPassAC_cosmic    (){return b_passAC_cosmic    ;};
   bool GetPassAC_oneBaseLep(){return b_passAC_oneBaseLep;};
   bool GetPassAC_oneSigLep (){return b_passAC_oneSigLep ;};

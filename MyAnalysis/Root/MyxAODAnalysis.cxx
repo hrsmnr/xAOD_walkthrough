@@ -200,7 +200,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   if(!isData){
     m_tauTruthMatchingTool = new TauAnalysisTools::TauTruthMatchingTool("TauTruthMatchingTool");
     m_tauTruthMatchingTool->msg().setLevel( MSG::INFO );
-    //    m_tauTruthMatchingTool->setProperty("WriteTruthTaus",true);
+    m_tauTruthMatchingTool->setProperty("WriteTruthTaus",true);
     CHECK(m_tauTruthMatchingTool->initialize());
   }
 
@@ -550,6 +550,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   }
     
   if(m_debugMode<=MSG::VERBOSE){
+  //if(m_debugMode<=MSG::ERROR){
     std::cout<<"Hit enter to proceed to the next event."<<std::endl;
     getchar();
   }
