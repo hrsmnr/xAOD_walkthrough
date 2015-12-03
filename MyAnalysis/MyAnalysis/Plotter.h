@@ -16,7 +16,7 @@ class TFile;
 class TH1F;
 class TH2F;
 
-#define nChan 5
+#define nChan 8
 
 class Plotter : public TObject
 {
