@@ -85,7 +85,8 @@ public:
   std::string m_eleIso_WP;
   std::string m_muIso_WP;
   bool m_runMM;
-  bool m_measureEff;
+  bool m_measureMCEff;
+  bool m_doTagAndProbe;
   std::string m_eleIdBaseline;
   std::string m_isoWP;
   std::string m_effFile;
@@ -116,7 +117,8 @@ public:
   void SetSelectionRegion(const char* selec){m_vec_eveSelec->push_back(selec);};
   void SetOutputDir(const char* path){m_outputDir = path;};
   void SetRunMM(bool runMM){m_runMM = runMM;};
-  void SetMeasureEff(bool measureEff){m_measureEff = measureEff;};
+  void SetMeasureMCEff(bool measureMCEff){m_measureMCEff = measureMCEff;};
+  void SetDoTagAndProbe(bool doTagAndProbe){m_doTagAndProbe = doTagAndProbe;};
   void SetEleIdBaseline(const char* eleIdBaseline){m_eleIdBaseline = eleIdBaseline;};
   void SetIsoWP(const char* isoWP){m_isoWP = isoWP;};
   void SetEffFile(const char* effFile){m_effFile = effFile;};

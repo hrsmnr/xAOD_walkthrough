@@ -28,7 +28,7 @@ namespace TauAnalysisTools{
 
 #define nAnaLep 4
 #define nAnaJet 4
-enum ChIndex{Ch_all,Ch_eee,Ch_eem,Ch_emm,Ch_mmm,nChannels};
+enum ChIndex{Ch_all,Ch_eee,Ch_eem,Ch_emm,Ch_mmm,Ch_ee,Ch_mm,Ch_em,nChannels};
 
 // Signal Requirements
 const float MZ                          = 91.2;
@@ -52,7 +52,8 @@ class EventSelector : public TObject
   virtual void setSigJetPtEtaThreshold(double jetPtCut=20000, double jetEtaCut=2.8);
   virtual void setBaseJetPtEtaThreshold(double jetPtCut=20000, double jetEtaCut=2.8);
   virtual void setRunMM(Bool_t runMM){m_runMM = runMM;};
-  virtual void setMeasureEff(Bool_t measureEff){m_measureEff = measureEff;};
+  virtual void setMeasureMCEff(Bool_t measureMCEff){m_measureMCEff = measureMCEff;};
+  virtual void setDoTagAndProbe(Bool_t doTagAndProbe){m_doTagAndProbe = doTagAndProbe;};
 
   // Preselection, before object selection
   //    virtual bool preSelectEvent();
@@ -69,7 +70,7 @@ class EventSelector : public TObject
   Int_t getLeadLepIndex (Int_t id){return m_leadLepIndex [id];};
   Int_t getLeadLepFlavor(Int_t id){return m_leadLepFlavor[id];};
   TLorentzVector getLeadLep(Int_t id){return m_leadLeps[id];};
-  bool is3SigLepSel(){return m_is3SigLepSel;};
+  bool useSigLeps(){return m_useSigLeps;};
   Int_t getLeadJetIndex (Int_t id){return m_leadJetIndex [id];};
   TLorentzVector getLeadJet(Int_t id){return m_leadJets[id];};
 
@@ -370,6 +371,10 @@ class EventSelector : public TObject
   virtual void SetNSigNBase(int nSig, int nBase);
   virtual void SetBveto();
   // Setter for each selection region
+  virtual void Set2S2B();
+  virtual void Set2S2BSelZ();
+  virtual void Set2S2BSelUpsi();
+  virtual void SetGT1S2B();
   virtual void Set2S3B();
   virtual void Set2S3BBveto();
   virtual void Set2S3BZveto();
@@ -468,9 +473,10 @@ class EventSelector : public TObject
   std::string                    m_sel;            // event selection string
   std::string                    m_sys;            // systematic name string
   Bool_t                         m_runMM;          // modify cut selection to run MM
-  Bool_t                         m_measureEff;     // modify cut selection to measure efficiency
+  Bool_t                         m_measureMCEff;   // modify cut selection to measure true efficiency
+  Bool_t                         m_doTagAndProbe;  // modify cut selection to measure efficiency by tag and probe
   std::vector<std::string>*      m_availableSel;   // all available selection regions (need to add manually...)
-  bool                           m_is3SigLepSel;   // true if (m_nLepMin and m_nLepMax)!=3
+  bool                           m_useSigLeps;     // true if (m_nLepMin != m_nLepMax)
   double                         m_sigElPtCut;     // signal electron Pt threshold
   double                         m_sigMuPtCut;     // signal muon Pt threshold
   double                         m_baseElPtCut;    // baseline electron Pt threshold
@@ -556,6 +562,7 @@ class EventSelector : public TObject
   float               m_metMax;         // maximum met cut 
   float               m_metRelMin;      // minimum met rel 
   bool                m_vetoUpsilon;    // flag to veto Upsilon
+  bool                m_selUpsilon;     // flag to select Upsilon
   bool                m_vetoZ;          // flag to veto Zs 
   bool                m_selZ;           // flag to select Zs 
   bool                m_vetoExtZ;       // extended multilepton Z veto  

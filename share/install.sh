@@ -13,4 +13,6 @@ cp MCTruthClassifier/MCTruthClassifier/MCTruthClassifierDefs.h MyAnalysis/MyAnal
 rm -rf MCTruthClassifier
 rc find_packages
 rc compile
-\cp -f $ROOTCOREBIN/../MyAnalysis/share/CrossSection/CrossSections_13TeV.txt $ROOTCOREBIN/data/SUSYTools/
+
+#\cp -f $ROOTCOREBIN/../MyAnalysis/share/CrossSection/CrossSections_13TeV.txt $ROOTCOREBIN/data/SUSYTools/
+#do not work due to the RootCore directory change. How to add custom cross section files...?

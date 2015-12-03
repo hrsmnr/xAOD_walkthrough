@@ -25,8 +25,10 @@
 // My binning choices
 double lep1PtBins[] = {0, 10, 20, 30, 50, 75, 100, 125, 150, 200, 300, 400, 500};
 uint nLep1PtBins = 12;
-double lep2PtBins[] = {0, 10, 20, 30, 40, 50, 60, 80, 100, 120, 150, 200};
-uint nLep2PtBins = 11;
+//double lep2PtBins[] = {0, 10, 20, 30, 40, 50, 60, 80, 100, 120, 150, 200};
+//uint nLep2PtBins = 11;
+double lep2PtBins[] = {0, 5, 7, 10, 15, 25, 50, 100, 200}; //Changed for TP efficiency measurement
+uint nLep2PtBins = 8; //Changed for TP efficiency measurement
 double mmEffPtBins[] = {0, 5, 7, 10, 15, 25, 50, 100, 200};
 uint nMmEffPtBins = 8;
 double lep3PtBins[] = {0, 10, 20, 30, 40, 50, 60, 80, 100, 120, 150};
@@ -474,6 +476,9 @@ bool Plotter::BookHistograms()
   vec_chan.push_back("eem");
   vec_chan.push_back("emm");
   vec_chan.push_back("mmm");
+  vec_chan.push_back("ee");
+  vec_chan.push_back("mm");
+  vec_chan.push_back("em");
 
   // Preprocessor convenience                                                                                 
   // make a histogram by name (leave off the "h_") and binning
@@ -942,7 +947,8 @@ bool Plotter::BookHistograms()
     // mass plots
     NEWHIST( mll, "M_{ll} [GeV];Events", 50, 50, 150 );
     //    ZMASSHIST( msfos, "M_{SFOS} [GeV];Events" );
-    NEWHIST( msfos, "M_{SFOS} [GeV];Events", 50, 0., 150 );
+    NEWHIST( msfos, "M_{SFOS} [GeV];Events", 300, 0., 150 );
+    //    NEWHIST( msfos, "M_{SFOS} [GeV];Events", 50, 0., 150 );
     NEWHIST( minMsfos, "min M_{SFOS} [GeV];Events", 50, 0., 150 );
     NEWHIST( msfss, "M_{SFSS} [GeV];SFSS lepton pairs", 50, 0, 500 );
     NEWVARHIST( mlll, "M_{lll} [GeV];Events", nMassBins, massBins );
@@ -1097,9 +1103,9 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
   Int_t lepFlavor[3];
   TLorentzVector lep[3];
   for(Int_t id=0; id<3; id++){
-    lepIndex [id] = EveSelec->is3SigLepSel() ? EveSelec->getLeadLepIndex (id) : EveSelec->getBaseLepIndex (id);
-    lepFlavor[id] = EveSelec->is3SigLepSel() ? EveSelec->getLeadLepFlavor(id) : EveSelec->getBaseLepFlavor(id);
-    lep      [id] = EveSelec->is3SigLepSel() ? EveSelec->getLeadLep      (id) : EveSelec->getBaseLep      (id);
+    lepIndex [id] = EveSelec->useSigLeps() ? EveSelec->getLeadLepIndex (id) : EveSelec->getBaseLepIndex (id);
+    lepFlavor[id] = EveSelec->useSigLeps() ? EveSelec->getLeadLepFlavor(id) : EveSelec->getBaseLepFlavor(id);
+    lep      [id] = EveSelec->useSigLeps() ? EveSelec->getLeadLep      (id) : EveSelec->getBaseLep      (id);
   }
 
   //Prepare 1st-3rd leading signal jet's four-vector
@@ -1176,7 +1182,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
       FillChanHist( h_lep1Pt , lep[id].Pt()/1000., w );
       FillChanHist( h_lep1Eta, lep[id].Eta(), w );
       if(lepFlavor[id]==0){
-        if(EveSelec->is3SigLepSel()){
+        if(EveSelec->useSigLeps()){
           FillElHist( id, h_el1Pt,  vec_signalElectron->at(leadLepIndex[id]).pt()/1000., w );
           FillElHist( id, h_el1Eta, vec_signalElectron->at(leadLepIndex[id]).eta(), w );
         }else{
@@ -1184,7 +1190,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           FillBaseElHist( id, h_el1Eta, vec_baseElectron->at(baseLepIndex[id]).eta(), w );
         }
       }else if(lepFlavor[id]==1){
-        if(EveSelec->is3SigLepSel()){
+        if(EveSelec->useSigLeps()){
           FillMuHist( id, h_mu1Pt,  vec_signalMuon->at(leadLepIndex[id]).pt()/1000., w );
           FillMuHist( id, h_mu1Eta, vec_signalMuon->at(leadLepIndex[id]).eta(), w );
         }else{
@@ -1196,7 +1202,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
       FillChanHist( h_lep2Pt , lep[id].Pt()/1000., w );
       FillChanHist( h_lep2Eta, lep[id].Eta(), w );
       if(lepFlavor[id]==0){
-        if(EveSelec->is3SigLepSel()){
+        if(EveSelec->useSigLeps()){
           FillElHist( id, h_el2Pt,  vec_signalElectron->at(leadLepIndex[id]).pt()/1000., w );
           FillElHist( id, h_el2Eta, vec_signalElectron->at(leadLepIndex[id]).eta(), w );
         }else{
@@ -1204,7 +1210,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           FillBaseElHist( id, h_el2Eta, vec_baseElectron->at(baseLepIndex[id]).eta(), w );
         }
       }else if(lepFlavor[id]==1){
-        if(EveSelec->is3SigLepSel()){
+        if(EveSelec->useSigLeps()){
           FillMuHist( id, h_mu2Pt,  vec_signalMuon->at(leadLepIndex[id]).pt()/1000., w );
           FillMuHist( id, h_mu2Eta, vec_signalMuon->at(leadLepIndex[id]).eta(), w );
         }else{
@@ -1216,7 +1222,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
       FillChanHist( h_lep3Pt , lep[id].Pt()/1000., w );
       FillChanHist( h_lep3Eta, lep[id].Eta(), w );
       if(lepFlavor[id]==0){
-        if(EveSelec->is3SigLepSel()){
+        if(EveSelec->useSigLeps()){
           FillElHist( id, h_el3Pt,  vec_signalElectron->at(leadLepIndex[id]).pt()/1000., w );
           FillElHist( id, h_el3Eta, vec_signalElectron->at(leadLepIndex[id]).eta(), w );
         }else{
@@ -1224,7 +1230,7 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
           FillBaseElHist( id, h_el3Eta, vec_baseElectron->at(baseLepIndex[id]).eta(), w );
         }
       }else if(lepFlavor[id]==1){
-        if(EveSelec->is3SigLepSel()){
+        if(EveSelec->useSigLeps()){
           FillMuHist( id, h_mu3Pt,  vec_signalMuon->at(leadLepIndex[id]).pt()/1000., w );
           FillMuHist( id, h_mu3Eta, vec_signalMuon->at(leadLepIndex[id]).eta(), w );
         }else{
@@ -1331,8 +1337,8 @@ bool Plotter::FillHistograms(EventSelector *EveSelec, double weight)
       Int_t type   = -1;
       Int_t origin = -1;
       Int_t pdgid  = 0;
-      std::vector< xAOD::Electron >* vec_electron = EveSelec->is3SigLepSel() ? vec_signalElectron : vec_baseElectron;
-      std::vector< xAOD::Muon >*     vec_muon     = EveSelec->is3SigLepSel() ? vec_signalMuon     : vec_baseMuon;
+      std::vector< xAOD::Electron >* vec_electron = EveSelec->useSigLeps() ? vec_signalElectron : vec_baseElectron;
+      std::vector< xAOD::Muon >*     vec_muon     = EveSelec->useSigLeps() ? vec_signalMuon     : vec_baseMuon;
       if(lepFlavor[id]==0){
         type   = xAOD::TruthHelpers::getParticleTruthType  (vec_electron->at(lepIndex[id]));
         origin = xAOD::TruthHelpers::getParticleTruthOrigin(vec_electron->at(lepIndex[id]));

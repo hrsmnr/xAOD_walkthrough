@@ -37,7 +37,8 @@ int main( int argc, char* argv[] ) {
   std::string effFile = "";
   bool doSys = false;
   bool runMM = false;
-  bool measureEff = false;
+  bool measureMCEff = false;
+  bool doTagAndProbe = false;
   bool useFAX = false;
   bool useGRID = false;
   //  bool limitTree = false;
@@ -72,8 +73,10 @@ int main( int argc, char* argv[] ) {
       doSys = true;
     else if (strcmp(argv[i], "--runMM") == 0)
       runMM = true;
-    else if (strcmp(argv[i], "--measureEff") == 0)
-      measureEff = true;
+    else if (strcmp(argv[i], "--measureMCEff") == 0)
+      measureMCEff = true;
+    else if (strcmp(argv[i], "--doTP") == 0)
+      doTagAndProbe = true;
     else if (strcmp(argv[i], "--useFAX") == 0)
       useFAX = true;
     else if (strcmp(argv[i], "--useGRID") == 0)
@@ -102,7 +105,8 @@ int main( int argc, char* argv[] ) {
   std::cout <<Form("  doSys    : %s"  , (doSys ?"true":"false")) << std::endl;
   std::cout <<Form("  runMM    : %s"  , (runMM ?"true":"false")) << std::endl;
   std::cout <<Form("  effFile  : %s"  , effFile.c_str()        ) << std::endl;
-  std::cout <<Form("  measureEff: %s"  , (measureEff ?"true":"false")) << std::endl;
+  std::cout <<Form("  measureMCEff : %s"  , (measureMCEff ?"true":"false")) << std::endl;
+  std::cout <<Form("  doTagAndProbe: %s"  , (doTagAndProbe ?"true":"false")) << std::endl;
   std::cout << std::endl;
 
   // Aborting if useFAX but filelist was not specified
@@ -117,9 +121,9 @@ int main( int argc, char* argv[] ) {
     return 0;
   }
 
-  // Aborting if runMM and measureEff are asserted at the same time
-  if(runMM && measureEff){
-    std::cout<<"Error: Please do not specify --runMM and --measureEff at the same time."<<std::endl;
+  // Aborting if runMM and measureMCEff are asserted at the same time
+  if(runMM && measureMCEff){
+    std::cout<<"Error: Please do not specify --runMM and --measureMCEff at the same time."<<std::endl;
     return 0;
   }
 
@@ -266,7 +270,8 @@ int main( int argc, char* argv[] ) {
   alg->SetDSID(dsid);
   alg->SetSkipNum(nSkip);
   alg->SetRunMM(runMM);
-  alg->SetMeasureEff(measureEff);
+  alg->SetMeasureMCEff(measureMCEff);
+  alg->SetDoTagAndProbe(doTagAndProbe);
   alg->SetEleIdBaseline(eleIdBaseline.c_str());
   alg->SetIsoWP(isoWP.c_str());
   alg->SetEffFile(effFile.c_str());
@@ -338,7 +343,9 @@ void help()
 
   std::cout << "  --isoWP [(e.g. GradientLoose)]: isolation working point for IsolationTool (default GradienLoose)" << std::endl;
 
-  std::cout << "  --measureEff to measure efficiency in specified regions" << std::endl;
+  std::cout << "  --measureMCEff to measure true efficiency in specified regions" << std::endl;
+
+  std::cout << "  --doTagAndProbe to measure efficiency in specified regions" << std::endl;
 
   //  std::cout << "  --limitTree write limit tree"      << std::endl;
 
