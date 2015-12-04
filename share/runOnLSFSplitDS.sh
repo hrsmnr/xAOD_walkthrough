@@ -30,6 +30,8 @@ enEffFile=''
 enMeasureEff=''
 enEleIdBaseline=''
 enIsoWP=''
+enRunTP=''
+enDryRun=''
 while [ "$2" != "" ]
 do
     if [ "$2" = "--runMM" ]; then
@@ -49,6 +51,13 @@ do
     elif [ "$2" = "--isoWP" ]; then
         enIsoWP='--isoWP '${3}
         echo 'Enabled --isoWP:' ${enIsoWP}
+        shift
+    elif [ "$2" = "--runTP" ]; then
+        echo 'Enabled --runTP'
+        enRunTP='--runTP'
+    elif [ "$2" = "--dryRun" ]; then
+        enDryRun='true'
+        echo 'Enabled --dryRun:' ${enIsoWP}
         shift
     else
         TARGETSELECREG='-S '$2' '$TARGETSELECREG
@@ -78,8 +87,10 @@ do
 done
 tagNum4ThisTime=`expr $maxTagNum + 1`
 tagNum=`printf "%04d" $tagNum4ThisTime` #zero padding
-\mkdir lsfoutput/h${tagNum}
-\mkdir result/h${tagNum}
+if [ "$enDryRun" = 'true' ]; then
+    \mkdir lsfoutput/h${tagNum}
+    \mkdir result/h${tagNum}
+fi
 
 ###########################################################
 # Submitting jobs to the dataset in the target directory 
@@ -155,8 +166,10 @@ fi
 maxEve=-1
 queue=1d
 echo Starting testRun for DSID=$runnum ...
-echo bsub -q ${queue} -J h${tagNum} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM} ${enMeasureEff} ${enEffFile} ${enEleIdBaseline} ${enIsoWP}
-bsub -q ${queue} -J h${tagNum} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM} ${enMeasureEff}${enEffFile} ${enEleIdBaseline} ${enIsoWP}
+echo bsub -q ${queue} -J h${tagNum} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM} ${enMeasureEff} ${enRunTP} ${enEffFile} ${enEleIdBaseline} ${enIsoWP}
+if [ "$enDryRun" = 'true' ]; then
+    bsub -q ${queue} -J h${tagNum} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM} ${enMeasureEff} ${enRunTP} ${enEffFile} ${enEleIdBaseline} ${enIsoWP}
+fi
 echo ''
 done
 
