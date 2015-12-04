@@ -40,7 +40,7 @@ for dirid in range(ndirs):
     if dsidStartPos==-1: #case of the real data
         projectName = 'data15_13TeV.'
         dsidStartPos = dirlist[dirid].find(projectName)
-        dsid = dirlist[dirid][dsidStartPos+len(projectName):dsidStartPos+len(projectName)+7]
+        dsid = dirlist[dirid][dsidStartPos+len(projectName)+2:dsidStartPos+len(projectName)+8]
         isData = 1
     else:
         dsid = dirlist[dirid][dsidStartPos+len(projectName):dsidStartPos+len(projectName)+6]

@@ -248,7 +248,8 @@ int main( int argc, char* argv[] ) {
   // Set meta-data for the given sample.
   if(!filelist.empty()){
     TString tmpListName = filelist.c_str();
-    sh.setMetaString("SampleType", (dsid<900000?"MC":"data"));//DSID==999999(egamma), 999998(muon)
+    //    sh.setMetaString("SampleType", (dsid<900000?"MC":"data"));//DSID==999999(egamma), 999998(muon)
+    sh.setMetaString("SampleType", ((dsid<200000 || 300000<=dsid)?"MC":"data"));
     sh.setMetaString("MCType"    , (tmpListName.Contains("AtlFast")?"AtlFast":"FullSim"));
   }else{
     TString tmpDirName = fileDir.c_str();

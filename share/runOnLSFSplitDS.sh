@@ -7,12 +7,12 @@ fi
 #default target directory
 TARGETDS=$1
 if [ $# -lt 1 ]; then
-  echo '============================================================================'
+  echo '==================================================================================='
   echo 'This script execute "testRun" against all the dataset in [Dataset path].'
   echo 'Works only on the nodes'
   echo 'Usage :'
-  echo '$source brunall.sh [Dataset path] [selction region1] [selection region2],,,'
-  echo '============================================================================'
+  echo '$source runOnLSFSplitDS.sh [Dataset path] [selction region1] [selection region2],,,'
+  echo '==================================================================================='
   echo 'Exitting ...'
   return 1
 fi
