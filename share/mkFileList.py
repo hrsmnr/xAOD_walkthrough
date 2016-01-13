@@ -29,7 +29,7 @@ isNewDsid = 0
 preDsid = 0
 nAddedFiles = 0
 nthFile = 0
-nMaxFiles = 5
+nMaxFiles = 20
 for dirid in range(ndirs):
     isDir = os.path.isdir(targetDir+'/'+dirlist[dirid])
     if not isDir: continue
