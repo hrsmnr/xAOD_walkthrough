@@ -5,17 +5,13 @@
 #include"TH1F.h"
 #include"TUtil.cc"
 
-Int_t mkTPPlots(){
+Int_t mkTPPlots(TString numerTag="", TString denomTag=""){
 
   std::cout<<"Making efficiency file by the tag and probe method."<<std::endl;
 
-  //  TString numerFileName = "../../result/submitDir~/data-2762.2S2B.AnaHists/data15_13TeV.00276262.physics_Main.merge.DAOD_SUSY2.f620_m1480_p2425_tid06564027_00.root";
-  //  TString denomFileName = "../../result/submitDir/data-2762.2S2B.AnaHists/data15_13TeV.00276262.physics_Main.merge.DAOD_SUSY2.f620_m1480_p2425_tid06564027_00.root";
-  //  TString numerFileName = "../../result/submitDir~/data-2762.2S2BSelZ.AnaHists/data15_13TeV.00276262.physics_Main.merge.DAOD_SUSY2.f620_m1480_p2425_tid06564027_00.root";
-  //  TString denomFileName = "../../result/submitDir/data-2762.2S2BSelZ.AnaHists/data15_13TeV.00276262.physics_Main.merge.DAOD_SUSY2.f620_m1480_p2425_tid06564027_00.root";
-  TString twoLepFileName = "../../result/submitDir~/data-2762.2S2B.AnaHists/data15_13TeV.00276262.physics_Main.merge.DAOD_SUSY2.f620_m1480_p2425_tid06564027_00.root";
-  TString numerFileName = "../../result/submitDir~/data-2762.2S2BSelUpsi.AnaHists/data15_13TeV.00276262.physics_Main.merge.DAOD_SUSY2.f620_m1480_p2425_tid06564027_00.root";
-  TString denomFileName = "../../result/submitDir/data-2762.2S2BSelUpsi.AnaHists/data15_13TeV.00276262.physics_Main.merge.DAOD_SUSY2.f620_m1480_p2425_tid06564027_00.root";
+  TString twoLepFileName = "../../result/"+denomTag+"/data.2S2B.AnaHists.root";
+  TString numerFileName  = "../../result/"+numerTag+"/data.2S2BSelZ.AnaHists.root";
+  TString denomFileName  = "../../result/"+denomTag+"/data.2S2BSelZ.AnaHists.root";
   TFile* f_beforeSelec = new TFile(twoLepFileName.Data());
   TFile* f_numer = new TFile(numerFileName.Data());
   TFile* f_denom = new TFile(denomFileName.Data());

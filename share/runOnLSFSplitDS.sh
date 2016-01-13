@@ -30,7 +30,7 @@ enEffFile=''
 enMeasureEff=''
 enEleIdBaseline=''
 enIsoWP=''
-enRunTP=''
+enDoTP=''
 enDryRun=''
 while [ "$2" != "" ]
 do
@@ -52,12 +52,12 @@ do
         enIsoWP='--isoWP '${3}
         echo 'Enabled --isoWP:' ${enIsoWP}
         shift
-    elif [ "$2" = "--runTP" ]; then
-        echo 'Enabled --runTP'
-        enRunTP='--runTP'
+    elif [ "$2" = "--doTP" ]; then
+        echo 'Enabled --doTP'
+        enDoTP='--doTP'
     elif [ "$2" = "--dryRun" ]; then
         enDryRun='true'
-        echo 'Enabled --dryRun:' ${enIsoWP}
+        echo 'Enabled --dryRun:' ${enDryRun}
         shift
     else
         TARGETSELECREG='-S '$2' '$TARGETSELECREG
@@ -87,7 +87,7 @@ do
 done
 tagNum4ThisTime=`expr $maxTagNum + 1`
 tagNum=`printf "%04d" $tagNum4ThisTime` #zero padding
-if [ "$enDryRun" = 'true' ]; then
+if [ "$enDryRun" != 'true' ]; then
     \mkdir lsfoutput/h${tagNum}
     \mkdir result/h${tagNum}
 fi
@@ -165,10 +165,14 @@ fi
 ###################################################################
 maxEve=-1
 queue=1d
-echo Starting testRun for DSID=$runnum ...
-echo bsub -q ${queue} -J h${tagNum} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM} ${enMeasureEff} ${enRunTP} ${enEffFile} ${enEleIdBaseline} ${enIsoWP}
 if [ "$enDryRun" = 'true' ]; then
-    bsub -q ${queue} -J h${tagNum} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM} ${enMeasureEff} ${enRunTP} ${enEffFile} ${enEleIdBaseline} ${enIsoWP}
+    echo '*** Dry Run ***' Will be execute testRun for DSID=$runnum ...
+else
+    echo Starting testRun for DSID=$runnum ...
+fi
+echo bsub -q ${queue} -J h${tagNum} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM} ${enMeasureEff} ${enDoTP} ${enEffFile} ${enEleIdBaseline} ${enIsoWP}
+if [ "$enDryRun" != 'true' ]; then
+    bsub -q ${queue} -J h${tagNum} -e ./lsfoutput/h${tagNum}/${outputDir}_error.log -o ./lsfoutput/h${tagNum}/${outputDir}.log testRun -n $maxEve --FileDirBase $TARGETDS --filelist $TXT -o result/h${tagNum}/$outputDir $TARGETSELECREG ${runMM} ${enMeasureEff} ${enDoTP} ${enEffFile} ${enEleIdBaseline} ${enIsoWP}
 fi
 echo ''
 done
