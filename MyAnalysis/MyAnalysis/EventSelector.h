@@ -192,9 +192,8 @@ class EventSelector : public TObject
   /* virtual bool passOSLepTauCut(const LeptonVector& leptons, const TauVector& taus); */
   bool passFlavChargeCut();
 
-  /* // Trigger */
-  /* bool passEventTrigger(); */
-  /* bool passTrigger(const LeptonVector& leptons, const TauVector& taus, const Susy::Met* met); */
+  // Trigger
+  bool passTrigger();
 
   // MET
   bool passMetCut();
@@ -492,7 +491,8 @@ class EventSelector : public TObject
   /* //bool                      m_subLepIso;      // Flag to control subtraction of leptons from iso cones */
   /* TauID                       m_tauID;          // Tau ID selection flag */
 
-  /* bool                        m_use2LTrig;      // Use the 2-lepton trigger logic instead of 3-lepton */
+  bool                        m_use2LTrig;      // Use the 2-lepton trigger
+  bool                        m_use3LTrig;      // Use the 3-lepton trigger
   /* static DilTrigLogic*        m_2lTrigLogic;    // 2-lepton trigger logic class */
   /* static TrilTrigLogic*       m_3lTrigLogic;    // 3-lepton trigger logic class */
 

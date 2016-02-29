@@ -116,7 +116,8 @@ EL::StatusCode MyxAODAnalysis :: fileExecute ()
     double sumOfWeightsSquared = allEventsCBK->sumOfEventWeightsSquared();
     MyAlways(APP_NAME, Form("CutBookkeepers Accepted %lu SumWei %f sumWei2 %f ",nEventsProcessed,sumOfWeights,sumOfWeightsSquared));
     m_processedEventsBeforeSkim = nEventsProcessed;
-    m_sumWeightBeforeSkim = sumOfWeights;
+    //    m_sumWeightBeforeSkim = sumOfWeights; //should be used but affected by CutBookKeeper's bug as of p2375...
+    m_sumWeightBeforeSkim = nEventsProcessed; //instead of above, temporalily using nEventsProcessed.
   }else{
     MyError(APP_NAME, "No relevent CutBookKeepers found"); 
   }
@@ -438,7 +439,11 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   }else{ //For MC, check DSID and 
     mcChannelNumber = eventInfo->mcChannelNumber(); //DSID
     mcEventNumber   = eventInfo->mcEventNumber(); //Event number in generator?
-    m_eventWeight   = eventInfo->mcEventWeight();
+    //    m_eventWeight   = eventInfo->mcEventWeight();
+    /////////////////////////////////////////////////////////////////////
+    // Warning !!, somehow DSID=36110X (W,Z)
+    m_eventWeight   = 1.;//
+    /////////////////////////////////////////////////////////////////////
     MyInfo("execute()", Form("ChannelNumber : %i, EventNumber : %i, EventWeight : %f", mcChannelNumber, mcEventNumber, m_eventWeight));
     if(m_dsid!=mcChannelNumber){
       MyError("execute()",Form("mcChannelNumber(%d) by EventInfo is different from the one in testRun arugument(%d).",mcChannelNumber,m_dsid));
