@@ -5,13 +5,17 @@
 #include"TH1F.h"
 #include"TUtil.cc"
 
-Int_t mkTPPlots(TString numerTag="", TString denomTag=""){
+Int_t mkTPPlots(TString dsid="", TString numerTag="", TString denomTag=""){
 
   std::cout<<"Making efficiency file by the tag and probe method."<<std::endl;
 
-  TString twoLepFileName = "../../result/"+denomTag+"/data.2S2B.AnaHists.root";
-  TString numerFileName  = "../../result/"+numerTag+"/data.2S2BSelZ.AnaHists.root";
-  TString denomFileName  = "../../result/"+denomTag+"/data.2S2BSelZ.AnaHists.root";
+  TString twoLepFileName = "../../result/"+denomTag+"/"+dsid+".2S2B.AnaHists.root";
+  //  TString numerFileName  = "../../result/"+numerTag+"/"+dsid+".2S2BSelUpsi.AnaHists.root";
+  //  TString denomFileName  = "../../result/"+denomTag+"/"+dsid+".2S2BSelUpsi.AnaHists.root";
+  //  TString numerFileName  = "../../result/"+numerTag+"/"+dsid+".2S2BSelZ.AnaHists.root";
+  //  TString denomFileName  = "../../result/"+denomTag+"/"+dsid+".2S2BSelZ.AnaHists.root";
+  TString numerFileName  = "../../result/"+numerTag+"/"+dsid+".2S2B.AnaHists.root";
+  TString denomFileName  = "../../result/"+denomTag+"/"+dsid+".2S2B.AnaHists.root";
   TFile* f_beforeSelec = new TFile(twoLepFileName.Data());
   TFile* f_numer = new TFile(numerFileName.Data());
   TFile* f_denom = new TFile(denomFileName.Data());

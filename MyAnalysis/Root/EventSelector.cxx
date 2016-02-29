@@ -47,7 +47,8 @@ EventSelector::EventSelector(ST::SUSYObjDef_xAOD *SUSYObjDef, const std::string 
   // m_objSys(ObjSys::nom),
   // //m_subLepIso(true),
   // m_tauID(TauID_medium),
-  // m_use2LTrig(false),
+  m_use2LTrig(true),
+  m_use3LTrig(true),
   // //m_2lTrigLogic(0),
   // //m_3lTrigLogic(0),
   // //m_chargeFlip(0),
@@ -569,7 +570,7 @@ void EventSelector::Set2S2B()
 {
   SetNSigNBase(2,2);
   //  m_selSFOS = true;
-  m_applyTrig = false;
+  //  m_applyTrig = false;
   return;
 }
 /*--------------------------------------------------------------------------------*/
@@ -578,7 +579,7 @@ void EventSelector::Set2S2BSelZ()
   SetNSigNBase(2,2);
   m_selSFOS = true;
   m_selZ = true;
-  m_applyTrig = false;
+  //  m_applyTrig = false;
   return;
 }
 /*--------------------------------------------------------------------------------*/
@@ -587,7 +588,7 @@ void EventSelector::Set2S2BSelUpsi()
   SetNSigNBase(2,2);
   m_selSFOS = true;
   m_selUpsilon = true;
-  m_applyTrig = false;
+  //  m_applyTrig = false;
   return;
 }
 /*--------------------------------------------------------------------------------*/
@@ -1925,7 +1926,7 @@ bool EventSelector::selectEvent()
   //   // Optionally treat base leptons as signal leptons 
   //   const LeptonVector& mySigLeptons = m_useBaseLeps? baseLeps : signalLeptons;
 
-  //   if(!passTrigger(mySigLeptons, signalTaus, met)) return false;
+  if(!passTrigger()) return false;
   PRINT_STEP(pass_trig);
   if(!passLepTruthCut()) return false;
   PRINT_STEP(pass_truth);
@@ -2545,34 +2546,70 @@ bool EventSelector::passFlavChargeCut()
   return true;
 }
 
-// /*--------------------------------------------------------------------------------*/
-// // Trigger cut
-// /*--------------------------------------------------------------------------------*/
-// bool EventSelector::passEventTrigger()
-// {
-//   if(m_applyTrig){
-//     if(m_use2LTrig){
-//       // Not currently applying an event-level flag cut for 2LepWH
-//     }
-//     else{
-//       if(!m_3lTrigLogic->passEventTrigger(m_nt->evt())) return false;
-//     }
-//   }
-//   return true;
-// }
-// /*--------------------------------------------------------------------------------*/
-// bool EventSelector::passTrigger(const LeptonVector& leptons, const TauVector& taus, const Met* met)
-// {
-//   if(m_applyTrig){
-//     if(m_use2LTrig){
-//       if(!m_2lTrigLogic->passDilTrig(leptons, met->Et, m_nt->evt())) return false;
-//     }
-//     else{
-//       if(!m_3lTrigLogic->passTriggerMatching(leptons, taus, m_nt->evt(), m_useDilepTrigs)) return false;
-//     }
-//   }
-//   return true;
-// }
+/*--------------------------------------------------------------------------------*/
+// Trigger cut
+/*--------------------------------------------------------------------------------*/
+bool EventSelector::passTrigger()
+{
+  if(m_applyTrig){
+    std::vector<std::string> vec_1ltrig, vec_2ltrig, vec_3ltrig;
+    vec_1ltrig.clear();
+    vec_2ltrig.clear();
+    vec_3ltrig.clear();
+    //Single leptong trigger
+    vec_1ltrig.push_back("HLT_e24_lhmedium_L1EM18VH"); //Single el. trigger
+    vec_1ltrig.push_back("HLT_e24_lhmedium_L1EM20VH"); //Single el. trigger
+    vec_1ltrig.push_back("HLT_mu20_iloose_L1MU15" ); //Single mu. trigger
+    //Di-lepton trigger
+    vec_2ltrig.push_back("HLT_2e12_lhloose_L12EM10VH"); //2 el. trigger
+    vec_2ltrig.push_back("HLT_2mu10"                 ); //2 mu. trigger
+    vec_2ltrig.push_back("HLT_mu18_mu8noL1"          ); //2 mu. trigger
+    vec_2ltrig.push_back("HLT_e17_loose_mu14"              ); //el+mu trigger
+    vec_2ltrig.push_back("HLT_e24_medium_L1EM20VHI_mu8noL1"); //el+mu trigger
+    vec_2ltrig.push_back("HLT_e7_medium_mu24"              ); //el+mu trigger
+    //Tri-lepton trigger
+    vec_3ltrig.push_back("HLT_e17_lhloose_2e9_lhloose");
+    vec_3ltrig.push_back("HLT_3mu6");
+    vec_3ltrig.push_back("HLT_3mu6_msonly");
+    vec_3ltrig.push_back("HLT_mu18_2mu4noL1");
+    vec_3ltrig.push_back("HLT_2e12_loose_mu10");
+    vec_3ltrig.push_back("HLT_e12_loose_2mu10");
+
+    if      ( m_use2LTrig &&  m_use3LTrig){
+      const Int_t ntrigs = vec_1ltrig.size() + vec_2ltrig.size() + vec_3ltrig.size();
+      std::string trigItem[ntrigs];
+      for(UInt_t tr=0; tr<vec_1ltrig.size(); tr++){
+        trigItem[tr] = vec_1ltrig.at(tr);
+      }
+      for(UInt_t tr=0; tr<vec_2ltrig.size(); tr++){
+        trigItem[vec_1ltrig.size()+tr] = vec_2ltrig.at(tr);
+      }
+      for(UInt_t tr=0; tr<vec_3ltrig.size(); tr++){
+        trigItem[vec_1ltrig.size()+vec_2ltrig.size()+tr] = vec_3ltrig.at(tr);
+      }
+      Bool_t passed = kFALSE;
+      for (int it=0; it<ntrigs; it++) {
+        Bool_t tmppassed = m_susyObjTool->IsTrigPassed(trigItem[it]);
+        float prescale = m_susyObjTool->GetTrigPrescale(trigItem[it]);
+        MyDebug("passTrigger()",Form("passing %s trigger? %d, prescale %f", trigItem[it].c_str(), (int)tmppassed, prescale));
+        if(tmppassed && prescale==1.) passed = kTRUE;
+      }
+      if(!passed) return false;
+    }else if(!m_use2LTrig &&  m_use3LTrig){
+
+    }else if( m_use2LTrig && !m_use3LTrig){
+
+    }else{ // (!m_use2LTrig && !m_use3LTrig)
+
+    }
+    //   if(!m_2lTrigLogic->passDilTrig(leptons, met->Et, m_nt->evt())) return false;
+    // }
+    // else{
+    //   if(!m_3lTrigLogic->passTriggerMatching(leptons, taus, m_nt->evt(), m_useDilepTrigs)) return false;
+    // }
+  }
+  return true;
+}
 
 /*--------------------------------------------------------------------------------*/
 // MET requirements
